@@ -12,7 +12,7 @@ from playground.tree import TreeNodeBranch
 from playground.tree import TreeParser
 
 # SETTINGS
-config_fp = os.path.join(os.path.dirname(__file__), "config/tree_tests.json")
+config_fp = os.path.join(os.path.dirname(__file__), "config/tree.json")
 
 
 class TreeNodeTests(unittest.TestCase):

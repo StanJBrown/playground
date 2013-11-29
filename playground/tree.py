@@ -19,28 +19,28 @@ class TreeNode(object):
         self.node_type = node_type
 
         # function node specific
-        if (node_type == TreeNodeType.UNARY_OP):
+        if node_type == TreeNodeType.UNARY_OP:
             self.name = kwargs.get("name", None)
             self.value_branch = kwargs.get("value_branch", None)
-        elif (node_type == TreeNodeType.BINARY_OP):
+        elif node_type == TreeNodeType.BINARY_OP:
             self.name = kwargs.get("name", None)
             self.left_branch = kwargs.get("left_branch", None)
             self.right_branch = kwargs.get("right_branch", None)
 
         # terminal node specific
-        if (node_type == TreeNodeType.TERM):
+        if node_type == TreeNodeType.TERM:
             self.name = kwargs.get("name", None)
             self.value = kwargs.get("value", None)
-        elif (node_type == TreeNodeType.INPUT):
+        elif node_type == TreeNodeType.INPUT:
             self.name = kwargs.get("name", None)
 
     def has_value_node(self, node):
-        if (self.node_type == TreeNodeType.UNARY_OP):
+        if self.node_type == TreeNodeType.UNARY_OP:
             if self.value_branch is node:
                 return TreeNodeBranch.VALUE
             else:
                 return False
-        elif (self.node_type == TreeNodeType.BINARY_OP):
+        elif self.node_type == TreeNodeType.BINARY_OP:
             if self.left_branch is node:
                 return TreeNodeBranch.LEFT
             elif self.right_branch is node:
@@ -49,6 +49,26 @@ class TreeNode(object):
                 return False
         else:
             return False
+
+    def equals(self, node):
+        if self.node_type == node.node_type:
+            t = node.node_type
+
+            if t == TreeNodeType.UNARY_OP and t == TreeNodeType.BINARY_OP:
+                if self.name == node.name:
+                    return True
+                else:
+                    return False
+            elif t == TreeNodeType.TERM:
+                if self.name == node.name and self.value == node.value:
+                    return True
+                else:
+                    return False
+            elif t == TreeNodeType.INPUT:
+                if self.name == node.name:
+                    return True
+                else:
+                    return False
 
 
 class Tree(object):
@@ -92,6 +112,28 @@ class Tree(object):
         except ValueError:
             return None
 
+    def replace_node(self, target_node, replace_with):
+        linked_node = self.get_linked_node(target_node)
+        branch = linked_node.has_value_node(target_node)
+
+        if branch == TreeNodeBranch.VALUE:
+            linked_node.value_branch = replace_with
+        elif branch == TreeNodeBranch.LEFT:
+            linked_node.left_branch = replace_with
+        elif branch == TreeNodeBranch.RIGHT:
+            linked_node.right_branch = replace_with
+
+    def equals(self, tree):
+        if len(self.program) != len(tree.program):
+            return False
+
+        index = 0
+        for node in self.program:
+            equals = node.equals(tree.program[index])
+            if equals is False:
+                return False
+            index += 1
+
     def update_program(self):
         self.program = self.tree_parser.post_order_traverse(self.root)
 
@@ -99,7 +141,8 @@ class Tree(object):
         for node in self.program:
             t = node.node_type
             if t == TreeNodeType.UNARY_OP or t == TreeNodeType.BINARY_OP:
-                self.func_nodes.append(node)
+                if node is not self.root:
+                    self.func_nodes.append(node)
 
     def update_term_nodes(self):
         for node in self.program:

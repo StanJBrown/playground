@@ -1,0 +1,16 @@
+{
+    "input_nodes" : [
+        {
+            "type": "INPUT",
+            "name": "x"
+        }, 
+        {
+            "type": "INPUT",
+            "name": "y"
+        },
+        {
+            "type": "INPUT",
+            "name": "z"
+        }
+    ]
+}

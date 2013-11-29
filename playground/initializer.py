@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-import pdb
 from random import randint
 
-from playground.tree import Tree
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
 from playground.tree import TreeNodeBranch

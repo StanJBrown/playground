@@ -54,7 +54,7 @@ class TreeNode(object):
         if self.node_type == node.node_type:
             t = node.node_type
 
-            if t == TreeNodeType.UNARY_OP and t == TreeNodeType.BINARY_OP:
+            if t == TreeNodeType.UNARY_OP or t == TreeNodeType.BINARY_OP:
                 if self.name == node.name:
                     return True
                 else:
@@ -132,7 +132,10 @@ class Tree(object):
             equals = node.equals(tree.program[index])
             if equals is False:
                 return False
+            # print("SAME! " + node.name + " " + tree.program[index].name)
             index += 1
+
+        return True
 
     def update_program(self):
         self.program = self.tree_parser.post_order_traverse(self.root)

@@ -96,6 +96,69 @@ class TreeTests(unittest.TestCase):
         linked_node = self.tree.get_linked_node(random_node)
         self.assertFalse(linked_node is add_func)
 
+    def test_equal(self):
+        # create nodes
+        left_node_1 = TreeNode(TreeNodeType.TERM, value=1.0)
+        right_node_1 = TreeNode(TreeNodeType.TERM, value=2.0)
+
+        left_node_2 = TreeNode(TreeNodeType.TERM, value=3.0)
+        right_node_2 = TreeNode(TreeNodeType.TERM, value=4.0)
+
+        cos_func_1 = TreeNode(
+            TreeNodeType.UNARY_OP,
+            name="COS",
+            value_branch=left_node_1,
+        )
+        sin_func_1 = TreeNode(
+            TreeNodeType.UNARY_OP,
+            name="SIN",
+            value_branch=right_node_1,
+        )
+
+        cos_func_2 = TreeNode(
+            TreeNodeType.UNARY_OP,
+            name="COS",
+            value_branch=left_node_2,
+        )
+        sin_func_2 = TreeNode(
+            TreeNodeType.UNARY_OP,
+            name="SIN",
+            value_branch=right_node_2,
+        )
+
+        add_func = TreeNode(
+            TreeNodeType.BINARY_OP,
+            name="ADD",
+            left_branch=cos_func_1,
+            right_branch=sin_func_1
+        )
+
+        sub_func = TreeNode(
+            TreeNodeType.BINARY_OP,
+            name="SUB",
+            left_branch=sin_func_2,
+            right_branch=cos_func_2
+        )
+
+        # create tree_1
+        tree_1 = Tree()
+        tree_1.root = add_func
+        tree_1.update_program()
+        tree_1.update_func_nodes()
+        tree_1.update_term_nodes()
+
+        # create tree_2
+        tree_2 = Tree()
+        tree_2.root = sub_func
+        tree_2.update_program()
+        tree_2.update_func_nodes()
+        tree_2.update_term_nodes()
+
+        self.assertTrue(tree_1.equals(tree_1))
+        self.assertFalse(tree_1.equals(tree_2))
+        self.assertTrue(tree_2.equals(tree_2))
+        self.assertFalse(tree_2.equals(tree_1))
+
 
 if __name__ == '__main__':
     unittest.main()

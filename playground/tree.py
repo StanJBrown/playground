@@ -4,7 +4,7 @@
 class TreeNodeType(object):
     UNARY_OP = "UNARY_OP"
     BINARY_OP = "BINARY_OP"
-    CONSTANT = "CONSTANT"
+    TERM = "TERM"
     INPUT = "INPUT"
 
 
@@ -28,7 +28,7 @@ class TreeNode(object):
             self.right_branch = kwargs.get("right_branch", None)
 
         # terminal node specific
-        if (node_type == TreeNodeType.CONSTANT):
+        if (node_type == TreeNodeType.TERM):
             self.name = kwargs.get("name", None)
             self.value = kwargs.get("value", None)
         elif (node_type == TreeNodeType.INPUT):
@@ -103,7 +103,7 @@ class Tree(object):
 
     def update_term_nodes(self):
         for node in self.program:
-            if node.node_type == TreeNodeType.CONSTANT:
+            if node.node_type == TreeNodeType.TERM:
                 self.term_nodes.append(node)
 
     def update_input_nodes(self):
@@ -114,13 +114,13 @@ class Tree(object):
 
 class TreeParser(object):
     def _print_node(self, node):
-        if node.name is None:
+        if hasattr(node, "name") and node.name is None:
             print('"{0}{1}"'.format(node.value, id(node)))
         else:
             print('"{0}{1}"'.format(node.name, id(node)))
 
     def _print_node_label(self, node):
-        if node.name is None:
+        if hasattr(node, "name") and node.name is None:
             print('{0}{1}[label="{0}"];'.format(node.value, id(node)))
         else:
             print('{0}{1}[label="{0}"];'.format(node.name, id(node)))
@@ -172,9 +172,11 @@ class TreeParser(object):
         for node in node_list:
             self._print_node_label(node)
 
-    def post_order_traverse(self, node, stack=[]):
+    def post_order_traverse(self, node, stack=None):
+        stack = stack if stack is not None else []
         n_type = node.node_type
-        if n_type == TreeNodeType.CONSTANT or n_type == TreeNodeType.INPUT:
+
+        if n_type == TreeNodeType.TERM or n_type == TreeNodeType.INPUT:
             stack.append(node)
         elif n_type == TreeNodeType.UNARY_OP:
             self.post_order_traverse(node.value_branch, stack)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import pdb
 import sys
 import os
 import unittest
@@ -29,8 +30,8 @@ class InitializerTests(unittest.TestCase):
     def test_tree_add_input_nodes(self):
         # setup
         # create nodes
-        left_node = TreeNode(TreeNodeType.CONSTANT, value=1.0)
-        right_node = TreeNode(TreeNodeType.CONSTANT, value=2.0)
+        left_node = TreeNode(TreeNodeType.TERM, value=1.0)
+        right_node = TreeNode(TreeNodeType.TERM, value=2.0)
         add_func = TreeNode(
             TreeNodeType.BINARY_OP,
             name="ADD",
@@ -45,36 +46,38 @@ class InitializerTests(unittest.TestCase):
         tree.update_term_nodes()
 
         # add input nodes
-        self.tree_initializer.add_input_nodes(tree)
-        print "input_nodes: " + str(len(tree.input_nodes))
+        self.tree_initializer._add_input_nodes(tree)
         self.assertTrue(len(tree.input_nodes) == 2)
 
     def test_full_method(self):
         tree = Tree()
         self.tree_initializer.full_method(tree)
 
-        # # func nodes
-        # print("FUNCTION NODES!")
-        # for func_node in tree.func_nodes:
-        #     self.t_parser._print_node(func_node)
+        # func nodes
+        print("FUNCTION NODES!")
+        for func_node in tree.func_nodes:
+            self.t_parser._print_node(func_node)
 
-        # # term nodes
-        # print("\nTERMINAL NODES!")
-        # for term_node in tree.term_nodes:
-        #     self.t_parser._print_node(term_node)
+        # term nodes
+        print("\nTERMINAL NODES!")
+        for term_node in tree.term_nodes:
+            self.t_parser._print_node(term_node)
 
         # program
-        # print("\nPROGRAM STACK!")
-        # for block in tree.program:
-        #     self.t_parser._print_node(block)
+        print("\nPROGRAM STACK!")
+        for block in tree.program:
+            self.t_parser._print_node(block)
 
-        # # dot graph
-        # print("\nDOT GRAPH!")
-        # self.t_parser.print_tree(tree2.root)
+        # dot graph
+        print("\nDOT GRAPH!")
+        self.t_parser.print_tree(tree.root)
 
         # asserts
-        # self.assertEquals(tree2.depth, self.config_file["max_depth"])
-        # self.assertTrue(tree2.size > self.config_file["max_depth"])
+        self.assertEquals(tree.depth, self.config_file["max_depth"])
+        self.assertTrue(tree.size > self.config_file["max_depth"])
+        self.assertTrue(
+            len(tree.input_nodes) > len(self.config_file["input_nodes"])
+        )
 
 if __name__ == '__main__':
     unittest.main()

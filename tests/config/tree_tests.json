@@ -3,7 +3,7 @@
         {
             "type": "INPUT",
             "name": "x"
-        }, 
+        },
         {
             "type": "INPUT",
             "name": "y"

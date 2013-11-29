@@ -28,47 +28,47 @@
     ],
     "terminal_nodes" : [
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 1.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 2.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 2.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 3.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 4.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 5.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 6.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 7.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 8.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 9.0
         },
         {
-            "type": "CONSTANT",
+            "type": "TERM",
             "value": 10.0
         }
     ],

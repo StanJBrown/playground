@@ -40,6 +40,7 @@ class TreeInitializer(object):
                 term_node = self._gen_random_term_node()
                 tree.term_nodes.append(term_node)
                 tree.size += 1
+                tree.depth = self.config["max_depth"]
                 return term_node
         else:
                 func_node = self._gen_random_func_node()
@@ -69,33 +70,30 @@ class TreeInitializer(object):
 
                 self._full_method_build_tree(right_node, tree, depth + 1)
 
-    def add_input_nodes(self, tree):
-        # pdb.set_trace()
+    def _add_input_nodes(self, tree):
         index = 0
         input_nodes_len = len(self.config["input_nodes"])
         term_nodes_len = len(tree.term_nodes)
-        inputs = randint(input_nodes_len, term_nodes_len)
 
-        print "input_nodes_len: " + str(input_nodes_len)
-        print "term_nodes_len: " + str(term_nodes_len)
-        print "inputs: " + str(inputs)
+        start = input_nodes_len
+        end = 0
+        if term_nodes_len / 4 > input_nodes_len:
+            end = term_nodes_len / 4
+        elif term_nodes_len / 3 > input_nodes_len:
+            end = term_nodes_len / 3
+        elif term_nodes_len / 2 > input_nodes_len:
+            end = term_nodes_len / 2
+        else:
+            end = term_nodes_len
+        inputs = randint(start, end)
 
         while inputs != 0:
-            print "INPUT!!"
             # get random terminal node
             term_node_index = randint(0, len(tree.term_nodes) - 1)
             term_node = tree.term_nodes[term_node_index]
-            # print "term_index: " + str(term_node_index)
-            # print "term_node: " + str(term_node.value)
-
-            # print("\nPROGRAM STACK!")
-            # for block in tree.program:
-            #     self.tree_parser._print_node(block)
-            # print("")
 
             # get linked node and also which branch the term node belongs
             linked_node = tree.get_linked_node(term_node)
-            # print "linked_node: " + str(linked_node.name)
             branch = linked_node.has_value_node(term_node)
 
             # get input node
@@ -119,15 +117,17 @@ class TreeInitializer(object):
             # increment inputs modified
             inputs -= 1
 
+        # finish up
+        tree.update_program()  # <- VERY IMPORTANT
+
     def full_method(self, tree):
+        print "FULL-> " + str(id(tree))
         # setup
         tree.root = self._gen_random_func_node()
 
         # build tree
         self._full_method_build_tree(tree.root, tree, 0)
+        tree.update_program()
 
-        # finish up
-        # tree.program = self.tree_parser.post_order_traverse(tree.root)
-        # tree.update_func_nodes()
-        # tree.size = len(tree.program)
-        # tree.depth = self.config["max_depth"]
+        # add input nodes
+        self._add_input_nodes(tree)

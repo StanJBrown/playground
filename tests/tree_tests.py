@@ -17,11 +17,11 @@ config_fp = os.path.join(os.path.dirname(__file__), "config/tree_tests.json")
 
 class TreeNodeTests(unittest.TestCase):
     def setUp(self):
-        self.left_node = TreeNode(TreeNodeType.CONSTANT, value=1.0)
-        self.left_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
+        self.left_node = TreeNode(TreeNodeType.TERM, value=1.0)
+        self.left_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
 
-        self.right_node = TreeNode(TreeNodeType.CONSTANT, value=2.0)
-        self.right_node_2 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
+        self.right_node = TreeNode(TreeNodeType.TERM, value=2.0)
+        self.right_node_2 = TreeNode(TreeNodeType.TERM, value=2.0)
 
         self.binary_node = TreeNode(
             TreeNodeType.BINARY_OP,

@@ -1,13 +1,13 @@
 #!/usr/bin/env python
+import operator
 
 
 class Population(object):
-    def __init__(self):
-        self.max_generation = 0
-        self.max_population = 0
-
+    def __init__(self, config):
+        self.config = config
         self.generation = 0
-        self.population = []
-
+        self.individuals = []
         self.best_individuals = []
-        self.top = 0
+
+    def sort_individuals(self):
+        self.individuals.sort(key=operator.attrgetter('score'))

@@ -49,34 +49,41 @@ class InitializerTests(unittest.TestCase):
         self.assertTrue(len(tree.input_nodes) == 2)
 
     def test_full_method(self):
-        tree = Tree()
-        self.tree_initializer.full_method(tree)
+        tests = 1000
 
-        # func nodes
-        print("FUNCTION NODES!")
-        for func_node in tree.func_nodes:
-            self.t_parser._print_node(func_node)
+        for i in range(tests):
+            tree = self.tree_initializer.full_method()
 
-        # term nodes
-        print("\nTERMINAL NODES!")
-        for term_node in tree.term_nodes:
-            self.t_parser._print_node(term_node)
+            # # func nodes
+            # print("FUNCTION NODES!")
+            # for func_node in tree.func_nodes:
+            #     self.t_parser._print_node(func_node)
 
-        # program
-        print("\nPROGRAM STACK!")
-        for block in tree.program:
-            self.t_parser._print_node(block)
+            # # term nodes
+            # print("\nTERMINAL NODES!")
+            # for term_node in tree.term_nodes:
+            #     self.t_parser._print_node(term_node)
 
-        # dot graph
-        print("\nDOT GRAPH!")
-        self.t_parser.print_tree(tree.root)
+            # # program
+            # print("\nPROGRAM STACK!")
+            # for block in tree.program:
+            #     self.t_parser._print_node(block)
 
-        # asserts
-        self.assertEquals(tree.depth, self.config_file["max_depth"])
-        self.assertTrue(tree.size > self.config_file["max_depth"])
-        self.assertTrue(
-            len(tree.input_nodes) > len(self.config_file["input_nodes"])
-        )
+            # # dot graph
+            # print("\nDOT GRAPH!")
+            # self.t_parser.print_tree(tree.root)
+
+            # asserts
+            self.assertEquals(tree.depth, self.config_file["max_depth"])
+            self.assertTrue(tree.size > self.config_file["max_depth"])
+            self.assertTrue(
+                len(tree.input_nodes) >= len(self.config_file["input_nodes"])
+            )
+
+    def test_init(self):
+        population = self.tree_initializer.init()
+        self.assertEquals(len(population.individuals), 10)
+
 
 if __name__ == '__main__':
     unittest.main()

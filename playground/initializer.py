@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 from random import randint
+from random import sample
 
+from playground.tree import Tree
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
-from playground.tree import TreeNodeBranch
 from playground.tree import TreeParser
+from playground.population import Population
 
 
 class TreeInitializer(object):
@@ -70,40 +72,13 @@ class TreeInitializer(object):
 
     def _add_input_nodes(self, tree):
         index = 0
-        input_nodes_len = len(self.config["input_nodes"])
-        term_nodes_len = len(tree.term_nodes)
+        inputs = len(self.config["input_nodes"])
+        term_nodes = sample(tree.term_nodes, inputs)
 
-        start = input_nodes_len
-        end = 0
-        if term_nodes_len / 4 > input_nodes_len:
-            end = term_nodes_len / 4
-        elif term_nodes_len / 3 > input_nodes_len:
-            end = term_nodes_len / 3
-        elif term_nodes_len / 2 > input_nodes_len:
-            end = term_nodes_len / 2
-        else:
-            end = term_nodes_len
-        inputs = randint(start, end)
-
-        while inputs != 0:
-            # get random terminal node
-            term_node_index = randint(0, len(tree.term_nodes) - 1)
-            term_node = tree.term_nodes[term_node_index]
-
-            # get linked node and also which branch the term node belongs
-            linked_node = tree.get_linked_node(term_node)
-            branch = linked_node.has_value_node(term_node)
-
-            # get input node
+        for term_node in term_nodes:
             input_node = self._gen_input_node(index)
 
-            # replace term node with input node
-            if branch == TreeNodeBranch.VALUE:
-                linked_node.value_branch = input_node
-            elif branch == TreeNodeBranch.LEFT:
-                linked_node.left_branch = input_node
-            elif branch == TreeNodeBranch.RIGHT:
-                linked_node.right_branch = input_node
+            tree.replace_node(term_node, input_node)
             tree.term_nodes.remove(term_node)
             tree.input_nodes.append(input_node)
 
@@ -118,14 +93,31 @@ class TreeInitializer(object):
         # finish up
         tree.update_program()  # <- VERY IMPORTANT
 
-    def full_method(self, tree):
-        print "FULL-> " + str(id(tree))
-        # setup
-        tree.root = self._gen_random_func_node()
+    def full_method(self):
+        while True:
+            # setup
+            tree = Tree()
+            tree.root = self._gen_random_func_node()
 
-        # build tree
-        self._full_method_build_tree(tree.root, tree, 0)
-        tree.update_program()
+            # build tree
+            self._full_method_build_tree(tree.root, tree, 0)
+            tree.update_program()
 
-        # add input nodes
-        self._add_input_nodes(tree)
+            # add input nodes
+            if len(tree.term_nodes) > len(self.config["input_nodes"]):
+                self._add_input_nodes(tree)
+                return tree
+
+        return tree
+
+    def init(self):
+        population = Population(self.config)
+
+        if self.config["tree_init_method"] == "FULL_METHOD":
+            for i in range(self.config["max_population"]):
+                tree = self.full_method()
+                population.individuals.append(tree)
+        else:
+            raise RuntimeError("Tree init method not defined!")
+
+        return population

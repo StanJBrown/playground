@@ -1,4 +1,4 @@
-#1/usr/bin/env python
+#!/usr/bin/env python
 from random import randint
 
 from playground.tree import TreeNodeType
@@ -39,6 +39,7 @@ class TreeMutation(object):
         if mutate_index is None:
             mutate_index = randint(0, len(tree.program) - 1)
 
+        # mutate node
         node = tree.program[mutate_index]
         if node.node_type == TreeNodeType.UNARY_OP:
             new_node = self._get_new_node(node)

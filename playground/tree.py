@@ -73,6 +73,8 @@ class TreeNode(object):
 
 class Tree(object):
     def __init__(self):
+        self.score = 0.0
+
         self.root = None
         self.depth = 0
         self.size = 0

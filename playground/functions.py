@@ -26,6 +26,10 @@ def sin_function(value):
     return math.sin(value)
 
 
+def rad_function(value):
+    return math.radians(value)
+
+
 class FunctionRegistry(object):
     def __init__(self, override_defaults=False):
         self.functions = {}
@@ -37,6 +41,7 @@ class FunctionRegistry(object):
             self.register("DIV", div_function)
             self.register("COS", cos_function)
             self.register("SIN", sin_function)
+            self.register("RAD", rad_function)
 
     def register(self, function_name, function):
         self.functions[function_name] = function

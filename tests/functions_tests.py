@@ -44,5 +44,6 @@ class InitializerTests(unittest.TestCase):
         result = sin(0)
         self.assertEquals(result, 0)
 
+
 if __name__ == '__main__':
     unittest.main()

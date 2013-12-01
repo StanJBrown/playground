@@ -1,64 +1,61 @@
 #!/usr/bin/env python
-
+from playground.tree import TreeNode
 from playground.tree import TreeNodeType
-from playground.functions import FunctionRegistry
 
 
 class TreeEvaluator(object):
-    def __init__(self):
-        print ""
+    def __init__(self, config, function_registry):
+        self.config = config
+        self.functions = function_registry
 
-    def eval_node(self, node, stack):
-        ntype = node.node_type
+    def _gen_term_node(self, node, row):
+        value = self.config["data"][node.name][row]
+        term_node = TreeNode(TreeNodeType.TERM, value=value)
+        return term_node
 
-        if ntype == TreeNodeType.TERM:
-            stack.push(node)
-        elif ntype == TreeNodeType.UNARY_OP:
+    def _eval_node(self, node, stack):
+        if node.node_type == TreeNodeType.TERM:
+            stack.append(node)
+
+        elif node.node_type == TreeNodeType.UNARY_OP:
             value = stack.pop()
 
-            stack.push(node)
-        elif ntype == TreeNodeType.BINARY_OP:
+            function = self.functions.get_function(node.name)
+            result_value = function(value.value)
+            result = TreeNode(TreeNodeType.TERM, value=result_value)
 
+            stack.append(result)
 
-# int evaluate_node(struct ast *node, struct stack *s)
-# {
-#         struct ast *value;
-#         struct ast *x;
-#         struct ast *y;
-#         struct ast *result = NULL;
-#
-#         if (node->tag == INTEGER || node->tag == REAL) {
-#                 stack_push(s, node);
-#
-#         } else if (node->tag == STRING) {
-#                 stack_push(s, node);
-#
-#         } else if (node->tag == UNARY_OP) {
-#                 value = stack_pop(s);
-#
-#                 result = execute_unary_function(node, value);
-#                 stack_push(s, result);
-#
-#                 ast_destroy(value);
-#                 ast_destroy(node);
-#
-#         } else if (node->tag == BINARY_OP) {
-#                 y = stack_pop(s);
-#                 x = stack_pop(s);
-#
-#                 result = execute_binary_function(node, x, y);
-#                 stack_push(s, result);
-#
-#                 ast_destroy(x);
-#                 ast_destroy(y);
-#                 ast_destroy(node);
-#
-#         } else {
-#                 log_err("Error! Unknown node->tag!");
-#                 goto error;
-#         }
-#
-#         return 0;
-# error:
-#         return -1;
-# }
+        elif node.node_type == TreeNodeType.BINARY_OP:
+            left = stack.pop()
+            right = stack.pop()
+
+            function = self.functions.get_function(node.name)
+            result_value = function(left.value, right.value)
+            result = TreeNode(TreeNodeType.TERM, value=result_value)
+
+            stack.append(result)
+
+    def eval_program(self, tree):
+        stack = []
+        sse = 0.0  # squared sum error
+        response_var = self.config["response_variable"]["name"]
+        response_data = self.config["data"][response_var]
+        rows = len(response_data)
+
+        for i in range(rows):
+            for node in tree.program:
+                if node.node_type == TreeNodeType.INPUT:
+                    term_node = self._gen_term_node(node, i)
+                    self._eval_node(term_node, stack)
+                else:
+                    self._eval_node(node, stack)
+
+            # accumulate squared sum error
+            node = stack.pop()
+            sse += pow(node.value - response_data[i], 2)
+
+            # reset stack
+            del stack[:]
+
+        return sse

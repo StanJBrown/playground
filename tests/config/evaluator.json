@@ -1,8 +1,5 @@
 {
-    "max_population" : 10,
-    "tree_init_method" : "FULL_METHOD",
     "max_depth" : 4,
-
     "function_nodes" : [
         {
             "type": "BINARY_OP",
@@ -29,7 +26,6 @@
             "name": "SIN"
         }
     ],
-
     "terminal_nodes" : [
         {
             "type": "TERM",
@@ -81,10 +77,13 @@
         {
             "type": "INPUT",
             "name": "x"
-        },
-        {
-            "type": "INPUT",
-            "name": "y"
         }
-    ]
+    ],
+
+    "data_file" : "tests/data/sine.dat",
+
+    "response_variable" : {
+        "name": "y"
+    }
+
 }

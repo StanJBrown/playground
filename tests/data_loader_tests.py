@@ -6,7 +6,7 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import playground.config as config
-from playground.data_loader import DataLoader
+import playground.data_loader as data
 
 # SETTINGS
 config_fp = os.path.join(os.path.dirname(__file__), "config/data_loader.json")
@@ -15,8 +15,6 @@ config_fp = os.path.join(os.path.dirname(__file__), "config/data_loader.json")
 class DataLoaderTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
-        self.data = DataLoader()
-
         self.data_file = open(self.config["data_file"], "rb")
         self.csv_reader = csv.reader(self.data_file, delimiter=',')
 
@@ -45,15 +43,15 @@ class DataLoaderTests(unittest.TestCase):
         header_line = [el.strip() for el in header_line]
 
         # get index of x
-        index = self.data._find_header_index(header_line, "x")
+        index = data._find_header_index(header_line, "x")
         self.assertEquals(index, 0)
 
         # get index of y
-        index = self.data._find_header_index(header_line, "y")
+        index = data._find_header_index(header_line, "y")
         self.assertEquals(index, 1)
 
     def test_parse_header(self):
-        self.data._parse_header(self.csv_reader, self.config)
+        data._parse_header(self.csv_reader, self.config)
 
         # check index of x
         input_node = self.config["input_nodes"][0]
@@ -64,7 +62,7 @@ class DataLoaderTests(unittest.TestCase):
         self.assertEquals(response_var["data_index"], 1)
 
     def test_parse_data_row(self):
-        self.data._parse_header(self.csv_reader, self.config)
+        data._parse_header(self.csv_reader, self.config)
 
         row = [0, 100]
         self.config["data"] = []
@@ -77,19 +75,19 @@ class DataLoaderTests(unittest.TestCase):
         for var in variables:
             self.config["data"][str(var["name"])] = []
 
-        self.data._parse_data_row(row, self.config, variables)
+        data._parse_data_row(row, self.config, variables)
 
         # assert x and y
         self.assertEquals(self.config["data"]["x"][0], 0)
         self.assertEquals(self.config["data"]["y"][0], 100)
 
     def test_parse_data(self):
-        self.data._parse_header(self.csv_reader, self.config)
-        self.data._parse_data(self.csv_reader, self.config)
+        data._parse_header(self.csv_reader, self.config)
+        data._parse_data(self.csv_reader, self.config)
         self.assertEquals(self.config["data"], self.solution)
 
     def test_load_data(self):
-        self.data.load_data(self.config)
+        data.load_data(self.config)
         self.assertEquals(self.config["data"], self.solution)
 
 

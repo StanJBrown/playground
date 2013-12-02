@@ -82,5 +82,10 @@
             "type": "INPUT",
             "name": "y"
         }
-    ]
+    ],
+
+    "crossover" : {
+        "method" : "POINT_CROSSOVER"
+
+    }
 }

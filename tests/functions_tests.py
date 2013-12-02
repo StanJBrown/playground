@@ -11,7 +11,7 @@ from playground.functions import FunctionRegistry
 config_fp = os.path.join(os.path.dirname(__file__), "config/initializer.json")
 
 
-class InitializerTests(unittest.TestCase):
+class FunctionsTests(unittest.TestCase):
     def setUp(self):
         self.config_file = config.load_config(config_fp)
         self.function = FunctionRegistry()

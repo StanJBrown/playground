@@ -29,7 +29,6 @@ class Selection(object):
         # select loop
         selected = 0
         max_select = len(population.individuals) / 2
-
         while selected < max_select:
 
             # spin the wheel

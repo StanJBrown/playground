@@ -17,7 +17,7 @@ from playground.operators.mutation import TreeMutation
 
 # SETTINGS
 config_fp = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "../config/crossover.json")
+    os.path.join(os.path.dirname(__file__), "../config/mutation.json")
 )
 
 
@@ -34,7 +34,7 @@ class MutatorTests(unittest.TestCase):
 
         # create nodes
         left_node = TreeNode(TreeNodeType.TERM, value=1.0)
-        right_node = TreeNode(TreeNodeType.TERM, value=2.0)
+        right_node = TreeNode(TreeNodeType.INPUT, name="x")
 
         cos_func = TreeNode(
             TreeNodeType.UNARY_OP,

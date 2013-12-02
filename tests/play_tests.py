@@ -24,8 +24,8 @@ class PlayTests(unittest.TestCase):
         data.load_data(self.config)
 
         functions = FunctionRegistry()
-        self.tree_evaluator = TreeEvaluator(self.config, functions)
-        self.tree_initializer = TreeInitializer(self.config)
+        self.evaluator = TreeEvaluator(self.config, functions)
+        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
 
         self.selection = Selection(self.config)
         self.crossover = TreeCrossover(self.config)
@@ -34,7 +34,7 @@ class PlayTests(unittest.TestCase):
     def tearDown(self):
         del self.config
 
-        del self.tree_evaluator
+        del self.evaluator
         del self.tree_initializer
 
         del self.selection
@@ -43,21 +43,27 @@ class PlayTests(unittest.TestCase):
 
     def test_reproduce(self):
         population = self.tree_initializer.init()
-        population.evaluator = self.tree_evaluator
         population.evaluate_population()
         population = self.selection.select(population)
 
-        print("len before reproduction: " + str(len(population.individuals)))
+        # reproduce
         play.reproduce(population, self.crossover, self.mutation, self.config)
-        print("len after reproduce: " + str(len(population.individuals)))
 
+        # assert
         max_pop = self.config["max_population"]
         self.assertEquals(len(population.individuals), max_pop)
+        self.assertTrue(population.config is self.config)
+        self.assertTrue(population.evaluator is self.evaluator)
+        self.assertEquals(population.generation, 0)
 
     def test_play(self):
-        print ""
-        # functions = FunctionRegistry()
-        # tree_evaluator = TreeEvaluator(self.config, self.functions)
+        play.play(
+            self.tree_initializer,
+            self.selection,
+            self.crossover,
+            self.mutation,
+            self.config
+        )
 
 if __name__ == '__main__':
     unittest.main()

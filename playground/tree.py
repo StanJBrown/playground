@@ -69,6 +69,8 @@ class TreeNode(object):
                     return True
                 else:
                     return False
+        else:
+            return False
 
 
 class Tree(object):

@@ -1,0 +1,89 @@
+{
+    "max_depth" : 4,
+
+    "mutation" : {
+        "method": "POINT_MUTATION",
+        "probability": 1.0
+    },
+
+    "function_nodes" : [
+        {
+            "type": "BINARY_OP",
+            "name": "ADD"
+        },
+        {
+            "type": "BINARY_OP",
+            "name": "SUB"
+        },
+        {
+            "type": "BINARY_OP",
+            "name": "MUL"
+        },
+        {
+            "type": "BINARY_OP",
+            "name": "DIV"
+        },
+        {
+            "type": "UNARY_OP",
+            "name": "COS"
+        },
+        {
+            "type": "UNARY_OP",
+            "name": "SIN"
+        }
+    ],
+    "terminal_nodes" : [
+        {
+            "type": "TERM",
+            "value": 1.0
+        },
+        {
+            "type": "TERM",
+            "value": 2.0
+        },
+        {
+            "type": "TERM",
+            "value": 2.0
+        },
+        {
+            "type": "TERM",
+            "value": 3.0
+        },
+        {
+            "type": "TERM",
+            "value": 4.0
+        },
+        {
+            "type": "TERM",
+            "value": 5.0
+        },
+        {
+            "type": "TERM",
+            "value": 6.0
+        },
+        {
+            "type": "TERM",
+            "value": 7.0
+        },
+        {
+            "type": "TERM",
+            "value": 8.0
+        },
+        {
+            "type": "TERM",
+            "value": 9.0
+        },
+        {
+            "type": "TERM",
+            "value": 10.0
+        }
+    ],
+
+    "input_nodes" : [
+        {
+            "type": "INPUT",
+            "name": "x"
+        }
+    ]
+
+}

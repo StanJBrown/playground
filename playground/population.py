@@ -18,6 +18,8 @@ class Population(object):
     def evaluate_population(self):
         index = 0
         bad_eggs = []
+
+        # evaluate population
         for individual in self.individuals:
             try:
                 self.evaluator.evaluate(individual)

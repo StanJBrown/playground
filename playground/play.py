@@ -19,15 +19,29 @@ def reproduce(population, crossover, mutation, config):
         child_2 = copy.deepcopy(parents[1])
 
         crossover.crossover(child_1, child_2)
+
         mutation.mutate(child_1)
         mutation.mutate(child_2)
 
         population.individuals.append(child_1)
         population.individuals.append(child_2)
 
+    # remove the one extra at the end
     if len(population.individuals) > max_pop:
         population.individuals.pop()
 
 
-def play(eval_function, selection, crossover, mutation, config):
-    print ""
+def play(initializer, selection, crossover, mutation, config):
+    generation = 0
+    max_generation = config["max_generation"]
+    goal_reached = False
+
+    population = initializer.init()
+    while generation < max_generation and goal_reached is not True:
+        print "generation: ", generation
+        population.evaluate_population()
+        population.sort_individuals()
+
+        population = selection.select(population)
+        reproduce(population, crossover, mutation, config)
+        generation += 1

@@ -80,8 +80,6 @@ class TreeInitializer(object):
             input_node = self._gen_input_node(index)
 
             tree.replace_node(term_node, input_node)
-            tree.term_nodes.remove(term_node)
-            tree.input_nodes.append(input_node)
 
             # increment index
             index += 1
@@ -90,9 +88,6 @@ class TreeInitializer(object):
 
             # increment inputs modified
             inputs -= 1
-
-        # finish up
-        tree.update_program()  # <- VERY IMPORTANT
 
     def full_method(self):
         while True:

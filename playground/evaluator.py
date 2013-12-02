@@ -18,9 +18,12 @@ class TreeEvaluator(object):
         self.functions = function_registry
 
     def _gen_term_node(self, node, row):
-        value = self.config["data"][node.name][row]
-        term_node = TreeNode(TreeNodeType.TERM, value=value)
-        return term_node
+        try:
+            value = self.config["data"][node.name][row]
+            term_node = TreeNode(TreeNodeType.TERM, value=value)
+            return term_node
+        except KeyError:
+            print node.name, row
 
     def _eval_node(self, node, stack):
         try:

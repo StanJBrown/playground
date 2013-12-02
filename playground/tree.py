@@ -50,6 +50,25 @@ class TreeNode(object):
         else:
             return False
 
+    def is_function(self):
+        function_node_types = [TreeNodeType.UNARY_OP, TreeNodeType.BINARY_OP]
+        if self.node_type in function_node_types:
+            return True
+        else:
+            return False
+
+    def is_terminal(self):
+        if self.node_type == TreeNodeType.TERM:
+            return True
+        else:
+            return False
+
+    def is_input(self):
+        if self.node_type == TreeNodeType.INPUT:
+            return True
+        else:
+            return False
+
     def equals(self, node):
         if self.node_type == node.node_type:
             t = node.node_type
@@ -71,6 +90,26 @@ class TreeNode(object):
                     return False
         else:
             return False
+
+    def __str__(self):
+        obj_str = self.node_type + " "
+
+        if self.is_function():
+            obj_str += "name: " + self.name + " "
+            obj_str += "address: " + str(id(self))
+        elif self.is_terminal():
+            if self.name is not None:
+                obj_str += "name: " + self.name + " "
+                obj_str += "value: " + str(self.value) + " "
+                obj_str += "address: " + str(id(self))
+            else:
+                obj_str += "value: " + str(self.value) + " "
+                obj_str += "address: " + str(id(self))
+        elif self.is_input():
+            obj_str += "name: " + self.name + " "
+            obj_str += "address: " + str(id(self))
+
+        return obj_str
 
 
 class Tree(object):
@@ -116,7 +155,7 @@ class Tree(object):
         except ValueError:
             return None
 
-    def replace_node(self, target_node, replace_with):
+    def replace_node(self, target_node, replace_with, override_update=False):
         linked_node = self.get_linked_node(target_node)
         branch = linked_node.has_value_node(target_node)
 
@@ -127,9 +166,8 @@ class Tree(object):
         elif branch == TreeNodeBranch.RIGHT:
             linked_node.right_branch = replace_with
 
-        self.update_program()
-        self.update_func_nodes()
-        self.update_term_nodes()
+        if override_update is False:
+            self.update()
 
     def equals(self, tree):
         if len(self.program) != len(tree.program):
@@ -145,9 +183,11 @@ class Tree(object):
         return True
 
     def update_program(self):
+        del self.program[:]
         self.program = self.tree_parser.post_order_traverse(self.root)
 
     def update_func_nodes(self):
+        del self.func_nodes[:]
         for node in self.program:
             t = node.node_type
             if t == TreeNodeType.UNARY_OP or t == TreeNodeType.BINARY_OP:
@@ -155,14 +195,22 @@ class Tree(object):
                     self.func_nodes.append(node)
 
     def update_term_nodes(self):
+        del self.term_nodes[:]
         for node in self.program:
             if node.node_type == TreeNodeType.TERM:
                 self.term_nodes.append(node)
 
     def update_input_nodes(self):
+        del self.input_nodes[:]
         for node in self.program:
             if node.node_type == TreeNodeType.INPUT:
                 self.input_nodes.append(node)
+
+    def update(self):
+        self.update_program()
+        self.update_func_nodes()
+        self.update_term_nodes()
+        self.update_input_nodes()
 
 
 class TreeParser(object):

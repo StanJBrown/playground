@@ -1,10 +1,11 @@
 {
-    "max_population" : 1000,
+    "max_population" : 50,
+    "max_generation" : 10,
     "tree_init_method" : "FULL_METHOD",
     "max_depth" : 2,
 
     "selection" : {
-        "method" : "ROULETTE_SELECTION"
+        "method" : "TOURNAMENT_SELECTION"
     },
 
     "crossover" : {

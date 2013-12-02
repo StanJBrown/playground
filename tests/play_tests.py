@@ -42,19 +42,27 @@ class PlayTests(unittest.TestCase):
         del self.mutation
 
     def test_reproduce(self):
-        population = self.tree_initializer.init()
-        population.evaluate_population()
-        population = self.selection.select(population)
+        tests = 1000
 
-        # reproduce
-        play.reproduce(population, self.crossover, self.mutation, self.config)
+        for i in range(tests):
+            population = self.tree_initializer.init()
+            population.evaluate_population()
+            population = self.selection.select(population)
 
-        # assert
-        max_pop = self.config["max_population"]
-        self.assertEquals(len(population.individuals), max_pop)
-        self.assertTrue(population.config is self.config)
-        self.assertTrue(population.evaluator is self.evaluator)
-        self.assertEquals(population.generation, 0)
+            # reproduce
+            play.reproduce(
+                population,
+                self.crossover,
+                self.mutation,
+                self.config
+            )
+
+            # assert
+            max_pop = self.config["max_population"]
+            self.assertEquals(len(population.individuals), max_pop)
+            self.assertTrue(population.config is self.config)
+            self.assertTrue(population.evaluator is self.evaluator)
+            self.assertEquals(population.generation, 0)
 
     def test_play(self):
         play.play(

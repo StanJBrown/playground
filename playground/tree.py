@@ -73,7 +73,7 @@ class TreeNode(object):
 
 class Tree(object):
     def __init__(self):
-        self.score = 0.0
+        self.score = None
 
         self.root = None
         self.depth = 0
@@ -129,12 +129,26 @@ class Tree(object):
         if len(self.program) != len(tree.program):
             return False
 
+        print "\nSELF"
+        for el in self.program:
+            if el.name is not None:
+                print el.name
+            else:
+                print el.value
+
+        print "\nTree"
+        for el in tree.program:
+            if el.name is not None:
+                print el.name
+            else:
+                print el.value
+        print "\n"
+
         index = 0
         for node in self.program:
             equals = node.equals(tree.program[index])
             if equals is False:
                 return False
-            # print("SAME! " + node.name + " " + tree.program[index].name)
             index += 1
 
         return True

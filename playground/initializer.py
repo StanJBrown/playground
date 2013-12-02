@@ -10,9 +10,10 @@ from playground.population import Population
 
 
 class TreeInitializer(object):
-    def __init__(self, config):
+    def __init__(self, config, evaluator):
         self.config = config
         self.tree_parser = TreeParser()
+        self.tree_evaluator = evaluator
 
     def _gen_random_func_node(self):
         index = randint(0, len(self.config["function_nodes"]) - 1)
@@ -111,7 +112,7 @@ class TreeInitializer(object):
         return tree
 
     def init(self):
-        population = Population(self.config)
+        population = Population(self.config, self.tree_evaluator)
 
         if self.config["tree_init_method"] == "FULL_METHOD":
             for i in range(self.config["max_population"]):

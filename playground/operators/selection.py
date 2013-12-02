@@ -21,7 +21,7 @@ class Selection(object):
             individual.score = individual.score / total_score
 
     def roulette_wheel_selection(self, population):
-        new_population = Population(self.config)
+        new_population = Population(self.config, population.evaluator)
 
         # normalize individuals
         self._normalize_scores(population)
@@ -45,7 +45,7 @@ class Selection(object):
         return new_population
 
     def tournament_selection(self, population):
-        new_population = Population(self.config)
+        new_population = Population(self.config, population.evaluator)
 
         # select loop
         selected = 0

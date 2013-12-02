@@ -6,8 +6,10 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import playground.config as config
-from playground.operators.selection import Selection
 from playground.initializer import TreeInitializer
+from playground.functions import FunctionRegistry
+from playground.evaluator import TreeEvaluator
+from playground.operators.selection import Selection
 
 # SETTINGS
 config_fp = os.path.normpath(
@@ -18,8 +20,12 @@ config_fp = os.path.normpath(
 class SelectionTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
+
+        self.functions = FunctionRegistry()
+        self.evaluator = TreeEvaluator(self.config, self.functions)
+        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+
         self.selection = Selection(self.config)
-        self.tree_initializer = TreeInitializer(self.config)
         self.population = self.tree_initializer.init()
 
         # give population random scores

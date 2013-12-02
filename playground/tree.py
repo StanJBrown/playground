@@ -125,24 +125,13 @@ class Tree(object):
         elif branch == TreeNodeBranch.RIGHT:
             linked_node.right_branch = replace_with
 
+        self.update_program()
+        self.update_func_nodes()
+        self.update_term_nodes()
+
     def equals(self, tree):
         if len(self.program) != len(tree.program):
             return False
-
-        print "\nSELF"
-        for el in self.program:
-            if el.name is not None:
-                print el.name
-            else:
-                print el.value
-
-        print "\nTree"
-        for el in tree.program:
-            if el.name is not None:
-                print el.name
-            else:
-                print el.value
-        print "\n"
 
         index = 0
         for node in self.program:

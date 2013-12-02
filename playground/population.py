@@ -5,11 +5,10 @@ from playground.evaluator import EvaluationError
 
 
 class Population(object):
-    def __init__(self, config, evaluator=None):
+    def __init__(self, config, evaluator):
         self.config = config
         self.generation = 0
         self.individuals = []
-        self.best_individuals = []
         self.evaluator = evaluator
 
     def sort_individuals(self):
@@ -36,3 +35,7 @@ class Population(object):
 
         # remove bad individuals
         self.individuals = [i for i in self.individuals if i not in bad_eggs]
+
+    def evaluate_individual(self, individual):
+        if individual in self.individuals:
+            self.evaluator.evaluate(individual)

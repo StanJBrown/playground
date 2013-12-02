@@ -6,6 +6,8 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import playground.config as config
 from playground.initializer import TreeInitializer
+from playground.functions import FunctionRegistry
+from playground.evaluator import TreeEvaluator
 from playground.tree import Tree
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
@@ -17,12 +19,16 @@ config_fp = os.path.join(os.path.dirname(__file__), "config/initializer.json")
 
 class InitializerTests(unittest.TestCase):
     def setUp(self):
-        self.config_file = config.load_config(config_fp)
-        self.tree_initializer = TreeInitializer(self.config_file)
+        self.config = config.load_config(config_fp)
+
+        self.functions = FunctionRegistry()
+        self.evaluator = TreeEvaluator(self.config, self.functions)
+        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+
         self.t_parser = TreeParser()
 
     def tearDown(self):
-        del self.config_file
+        del self.config
         del self.tree_initializer
         del self.t_parser
 
@@ -74,10 +80,10 @@ class InitializerTests(unittest.TestCase):
             # self.t_parser.print_tree(tree.root)
 
             # asserts
-            self.assertEquals(tree.depth, self.config_file["max_depth"])
-            self.assertTrue(tree.size > self.config_file["max_depth"])
+            self.assertEquals(tree.depth, self.config["max_depth"])
+            self.assertTrue(tree.size > self.config["max_depth"])
             self.assertTrue(
-                len(tree.input_nodes) >= len(self.config_file["input_nodes"])
+                len(tree.input_nodes) >= len(self.config["input_nodes"])
             )
 
     def test_init(self):

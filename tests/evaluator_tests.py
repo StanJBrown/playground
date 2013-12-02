@@ -11,10 +11,11 @@ from playground.tree import TreeNode
 from playground.tree import TreeNodeType
 from playground.initializer import TreeInitializer
 from playground.evaluator import TreeEvaluator
+from playground.evaluator import EvaluationError
 from playground.functions import FunctionRegistry
 
 # SETTINGS
-config_fp = os.path.join(os.path.dirname(__file__), "config/data_loader.json")
+config_fp = os.path.join(os.path.dirname(__file__), "config/evaluator.json")
 
 
 class EvaluatorTests(unittest.TestCase):
@@ -40,7 +41,7 @@ class EvaluatorTests(unittest.TestCase):
         # asserts
         self.assertEquals(term_node.node_type, TreeNodeType.TERM)
         self.assertEquals(term_node.name, None)
-        self.assertEquals(term_node.value, 0)
+        self.assertEquals(term_node.value, 10.0)
 
     def test_eval_node(self):
         term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
@@ -114,6 +115,15 @@ class EvaluatorTests(unittest.TestCase):
         res = self.tree_evaluator.eval_program(tree)
         self.assertTrue(res is not None)
         self.assertEquals(round(res, 4), 0.0)
+
+    def test_evaluate(self):
+        population = self.tree_initializer.init()
+        population.evaluator = self.tree_evaluator
+        population.evaluate_population()
+
+        for individual in population.individuals:
+            self.assertTrue(individual.score is not None)
+            self.assertTrue(individual.score > 0)
 
 
 if __name__ == '__main__':

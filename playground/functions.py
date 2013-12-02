@@ -2,6 +2,14 @@
 import math
 
 
+class FunctionExecutionError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return repr(self.message)
+
+
 def add_function(left, right):
     return left + right
 
@@ -15,7 +23,11 @@ def mul_function(left, right):
 
 
 def div_function(left, right):
-    return left / right
+    try:
+        result = left / right
+        return result
+    except ZeroDivisionError as e:
+        raise FunctionExecutionError(e.message)
 
 
 def cos_function(value):

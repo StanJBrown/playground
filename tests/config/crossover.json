@@ -1,5 +1,11 @@
 {
     "max_depth" : 4,
+
+    "crossover" : {
+        "method": "POINT_CROSSOVER",
+        "probability": 1.0
+    },
+
     "function_nodes" : [
         {
             "type": "BINARY_OP",
@@ -82,10 +88,6 @@
             "type": "INPUT",
             "name": "y"
         }
-    ],
+    ]
 
-    "crossover" : {
-        "method" : "POINT_CROSSOVER"
-
-    }
 }

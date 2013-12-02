@@ -119,6 +119,33 @@ class TreeTests(unittest.TestCase):
         linked_node = self.tree.get_linked_node(random_node)
         self.assertFalse(linked_node is add_func)
 
+    def test_replace_node(self):
+        # setup
+        node_x = TreeNode(TreeNodeType.INPUT, name="x")
+        node_y = TreeNode(TreeNodeType.INPUT, name="y")
+        add_func = TreeNode(
+            TreeNodeType.BINARY_OP,
+            name="ADD",
+            left_branch=node_x,
+            right_branch=node_y
+        )
+
+        tree = Tree()
+        tree.root = add_func
+        tree.update_program()
+
+        # replace node
+        new_node = TreeNode(TreeNodeType.INPUT, name="z")
+        before_replace = list(tree.program)
+        tree.replace_node(node_x, new_node)
+        after_replace = list(tree.program)
+
+        # assert
+        self.assertTrue(before_replace == before_replace)
+        self.assertTrue(after_replace == after_replace)
+        self.assertFalse(before_replace == after_replace)
+        self.assertTrue(add_func.left_branch is new_node)
+
     def test_equal(self):
         # create nodes
         left_node_1 = TreeNode(TreeNodeType.TERM, value=1.0)

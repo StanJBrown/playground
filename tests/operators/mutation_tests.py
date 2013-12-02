@@ -7,6 +7,8 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import playground.config as config
 from playground.initializer import TreeInitializer
+from playground.functions import FunctionRegistry
+from playground.evaluator import TreeEvaluator
 from playground.tree import Tree
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
@@ -22,7 +24,11 @@ config_fp = os.path.normpath(
 class MutatorTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
-        self.tree_initializer = TreeInitializer(self.config)
+
+        self.functions = FunctionRegistry()
+        self.evaluator = TreeEvaluator(self.config, self.functions)
+        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+
         self.tree_parser = TreeParser()
         self.tree_mutation = TreeMutation(self.config)
 
@@ -61,21 +67,37 @@ class MutatorTests(unittest.TestCase):
         del self.tree_initializer
         del self.tree_parser
 
+    def build_tree_str(self, tree):
+        tree_str = ""
+
+        for node in tree.program:
+            if hasattr(node, "name") and node.name is not None:
+                tree_str += "node:{0} addr:{1}\n".format(node.name, id(node))
+            else:
+                tree_str += "node:{0} addr:{1}\n".format(node.value, id(node))
+
+        return tree_str
+
+    def tree_equals(self, tree_1_str, tree_2_str):
+        if tree_1_str == tree_2_str:
+            return True
+        else:
+            return False
+
     def test_point_mutation(self):
-        tree_before = copy.deepcopy(self.tree)
+        tree_before = self.build_tree_str(self.tree)
         self.tree_mutation.point_mutation(self.tree)
-        tree_after = copy.deepcopy(self.tree)
+        tree_after = self.build_tree_str(self.tree)
 
         print("Before Mutation")
-        self.tree_parser.print_tree(tree_before.root)
-        print("\n")
+        print(tree_before)
 
-        print("After Mutation")
-        self.tree_parser.print_tree(tree_after.root)
+        print("\nAfter Mutation")
+        print(tree_after)
 
-        # self.assertTrue(tree_before.equals(tree_before))
-        # self.assertTrue(tree_after.equals(tree_after))
-        # self.assertFalse(tree_before.equals(tree_after))
+        self.assertTrue(self.tree_equals(tree_before, tree_before))
+        self.assertTrue(self.tree_equals(tree_after, tree_after))
+        self.assertFalse(self.tree_equals(tree_before, tree_after))
 
 
 if __name__ == '__main__':

@@ -10,6 +10,7 @@ class TreeMutation(object):
         self.config = config
 
     def _get_new_node(self, node):
+        # determine what kind of node it is
         t = node.node_type
         if t == TreeNodeType.UNARY_OP or t == TreeNodeType.BINARY_OP:
             config_index = "function_nodes"
@@ -18,20 +19,19 @@ class TreeMutation(object):
         elif t == TreeNodeType.INPUT:
             config_index = "input_nodes"
 
-        index = randint(0, len(self.config[config_index]) - 1)
-        new_node = self.config[config_index][index]
+        # check the node and return
+        loop = True
+        while loop:
+            # obtain a new node of the same type
+            index = randint(0, len(self.config[config_index]) - 1)
+            new_node = self.config[config_index][index]
 
-        # loop = True
-        # while loop:
-        #     index = randint(0, len(self.config[config_index]) - 1)
-        #     new_node = self.config[config_index][index]
-
-        #     if new_node["type"] == TreeNodeType.TERM:
-        #         if new_node["type"] == t and new_node["value"] != node.value:
-        #             loop = False
-        #     else:
-        #         if new_node["type"] == t and new_node["name"] != node.name:
-        #             loop = False
+            if new_node["type"] == TreeNodeType.TERM:
+                if new_node["type"] == t and new_node["value"] != node.value:
+                    loop = False
+            else:
+                if new_node["type"] == t and new_node["name"] != node.name:
+                    loop = False
 
         return new_node
 

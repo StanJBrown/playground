@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 import sys
 import os
-import copy
+# import copy
 import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import playground.config as config
 from playground.initializer import TreeInitializer
+from playground.functions import FunctionRegistry
+from playground.evaluator import TreeEvaluator
 from playground.tree import Tree
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
@@ -19,10 +21,14 @@ config_fp = os.path.normpath(
 )
 
 
-class CrossoverTests(unittest.TestCase):
+class TreeCrossoverTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
-        self.tree_initializer = TreeInitializer(self.config)
+
+        self.functions = FunctionRegistry()
+        self.evaluator = TreeEvaluator(self.config, self.functions)
+        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+
         self.crossover = TreeCrossover(self.config)
         self.tree_parser = TreeParser()
 
@@ -90,51 +96,88 @@ class CrossoverTests(unittest.TestCase):
         del self.tree_initializer
         del self.tree_parser
 
+    def build_tree_str(self, tree):
+        tree_str = ""
+
+        for node in tree.program:
+            if hasattr(node, "name") and node.name is not None:
+                tree_str += "node:{0} addr:{1}\n".format(node.name, id(node))
+            else:
+                tree_str += "node:{0} addr:{1}\n".format(node.value, id(node))
+
+        return tree_str
+
+    def tree_equals(self, tree_1_str, tree_2_str):
+        if tree_1_str == tree_2_str:
+            return True
+        else:
+            return False
+
     def test_point_crossover(self):
-        print("Before Crossover")
-        print("\nTree 1!")
-        self.tree_parser.print_tree(self.tree_1.root)
-        print("\nTree 2!")
-        self.tree_parser.print_tree(self.tree_2.root)
+        # record before crossover
+        tree_1_before = self.build_tree_str(self.tree_1)
+        tree_2_before = self.build_tree_str(self.tree_2)
 
-        # tree_1_before = copy.deepcopy(self.tree_1)
-        # tree_2_before = copy.deepcopy(self.tree_2)
+        # point crossover
         self.crossover.point_crossover(self.tree_1, self.tree_2)
-        # tree_1_after = copy.deepcopy(self.tree_1)
-        # tree_2_after = copy.deepcopy(self.tree_2)
 
-        print("After Crossover")
-        print("\nTree 1!")
-        self.tree_parser.print_tree(self.tree_1.root)
-        print("\nTree 2!")
-        self.tree_parser.print_tree(self.tree_2.root)
+        # record after crossover
+        tree_1_after = self.build_tree_str(self.tree_1)
+        tree_2_after = self.build_tree_str(self.tree_2)
+
+        print("Before Crossover")
+        print("\nTree 1")
+        print(tree_1_before)
+        print("\nTree 2")
+        print(tree_2_before)
+
+        print("\nAfter Crossover")
+        print("\nTree 1")
+        print(tree_1_after)
+        print("\nTree 2")
+        print(tree_2_after)
 
         # asserts
-        # self.assertFalse(tree_1_before.equals(tree_1_after))
-        # self.assertFalse(tree_2_before.equals(tree_2_after))
+        self.assertTrue(self.tree_equals(tree_1_before, tree_1_before))
+        self.assertTrue(self.tree_equals(tree_2_before, tree_2_before))
+        self.assertTrue(self.tree_equals(tree_1_after, tree_1_after))
+        self.assertTrue(self.tree_equals(tree_2_after, tree_2_after))
 
-    # def test_crossover(self):
-    #     print("Before Crossover")
-    #     print("\nTree 1!")
-    #     self.tree_parser.print_tree(self.tree_1.root)
-    #     print("\nTree 2!")
-    #     self.tree_parser.print_tree(self.tree_2.root)
+        self.assertFalse(self.tree_equals(tree_1_before, tree_1_after))
+        self.assertFalse(self.tree_equals(tree_2_before, tree_2_after))
 
-    #     tree_1_before = copy.deepcopy(self.tree_1)
-    #     tree_2_before = copy.deepcopy(self.tree_2)
-    #     self.crossover.crossover(self.tree_1, self.tree_2)
-    #     tree_1_after = copy.deepcopy(self.tree_1)
-    #     tree_2_after = copy.deepcopy(self.tree_2)
+    def test_crossover(self):
+        # record before crossover
+        tree_1_before = self.build_tree_str(self.tree_1)
+        tree_2_before = self.build_tree_str(self.tree_2)
 
-    #     print("After Crossover")
-    #     print("\nTree 1!")
-    #     self.tree_parser.print_tree(self.tree_1.root)
-    #     print("\nTree 2!")
-    #     self.tree_parser.print_tree(self.tree_2.root)
+        # point crossover
+        self.crossover.crossover(self.tree_1, self.tree_2)
 
-    #     # asserts
-    #     self.assertFalse(tree_1_before.equals(tree_1_after))
-    #     self.assertFalse(tree_2_before.equals(tree_2_after))
+        # record after crossover
+        tree_1_after = self.build_tree_str(self.tree_1)
+        tree_2_after = self.build_tree_str(self.tree_2)
+
+        print("Before Crossover")
+        print("\nTree 1!")
+        print(tree_1_before)
+        print("\nTree 2!")
+        print(tree_2_before)
+
+        print("\nAfter Crossover")
+        print("\nTree 1!")
+        print(tree_1_after)
+        print("\nTree 2!")
+        print(tree_2_after)
+
+        # asserts
+        self.assertTrue(self.tree_equals(tree_1_before, tree_1_before))
+        self.assertTrue(self.tree_equals(tree_2_before, tree_2_before))
+        self.assertTrue(self.tree_equals(tree_1_after, tree_1_after))
+        self.assertTrue(self.tree_equals(tree_2_after, tree_2_after))
+
+        self.assertFalse(self.tree_equals(tree_1_before, tree_1_after))
+        self.assertFalse(self.tree_equals(tree_2_before, tree_2_after))
 
 
 if __name__ == '__main__':

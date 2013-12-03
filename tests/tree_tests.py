@@ -10,6 +10,9 @@ from playground.tree import TreeNode
 from playground.tree import TreeNodeType
 from playground.tree import TreeNodeBranch
 from playground.tree import TreeParser
+from playground.initializer import TreeInitializer
+from playground.functions import FunctionRegistry
+from playground.evaluator import TreeEvaluator
 
 # SETTINGS
 config_fp = os.path.join(os.path.dirname(__file__), "config/tree.json")
@@ -208,6 +211,56 @@ class TreeTests(unittest.TestCase):
         self.assertFalse(tree_1.equals(tree_2))
         self.assertTrue(tree_2.equals(tree_2))
         self.assertFalse(tree_2.equals(tree_1))
+
+
+class TreeParserTests(unittest.TestCase):
+    def setUp(self):
+        self.config = config.load_config(config_fp)
+
+        self.functions = FunctionRegistry()
+        self.evaluator = TreeEvaluator(self.config, self.functions)
+        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+
+        self.tree_parser = TreeParser()
+
+    def tearDown(self):
+        del self.config
+        del self.tree_initializer
+        del self.tree_parser
+
+    def test_parse_equation(self):
+        # create nodes
+        left_node = TreeNode(TreeNodeType.TERM, value=1.0)
+        right_node = TreeNode(TreeNodeType.TERM, value=2.0)
+
+        cos_func = TreeNode(
+            TreeNodeType.UNARY_OP,
+            name="COS",
+            value_branch=left_node,
+        )
+        sin_func = TreeNode(
+            TreeNodeType.UNARY_OP,
+            name="SIN",
+            value_branch=right_node,
+        )
+
+        add_func = TreeNode(
+            TreeNodeType.BINARY_OP,
+            name="ADD",
+            left_branch=cos_func,
+            right_branch=sin_func
+        )
+
+        # create tree
+        tree = Tree()
+        tree.root = add_func
+        tree.update_program()
+        tree.update_func_nodes()
+        tree.update_term_nodes()
+
+        # self.tree_parser.print_tree(tree.root)
+        equation = self.tree_parser.parse_equation(tree.root)
+        self.assertEquals(equation, "((cos(1.0)) + (sin(2.0)))")
 
 
 if __name__ == '__main__':

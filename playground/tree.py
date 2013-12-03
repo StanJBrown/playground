@@ -17,6 +17,7 @@ class TreeNodeBranch(object):
 class TreeNode(object):
     def __init__(self, node_type, **kwargs):
         self.node_type = node_type
+        self.score = None
 
         # function node specific
         if node_type == TreeNodeType.UNARY_OP:
@@ -215,6 +216,20 @@ class Tree(object):
         self.update_term_nodes()
         self.update_input_nodes()
 
+    # def __str__(self):
+    #     equation = []
+    #     self.tree_parser.infix_order_traverse(self.root, equation)
+
+    #     # eq_str = ""
+    #     for el in equation:
+    #         if el.is_terminal() or el.is_input():
+    #             if el.name is not None:
+    #                 print el.name
+    #             else:
+    #                 print el.value
+    #         if el.is_function():
+    #             print el.name
+
 
 class TreeParser(object):
     def _print_node(self, node):
@@ -291,3 +306,37 @@ class TreeParser(object):
             stack.append(node)
 
         return stack
+
+    def parse_equation(self, node, eq_str=None):
+        eq_str = eq_str if eq_str is not None else ""
+        n_type = node.node_type
+
+        if n_type == TreeNodeType.TERM or n_type == TreeNodeType.INPUT:
+            if node.name is not None:
+                eq_str += node.name
+            else:
+                eq_str += str(node.value)
+
+        elif n_type == TreeNodeType.UNARY_OP:
+            eq_str += "("
+            eq_str += node.name
+            eq_str += "("
+            eq_str = self.parse_equation(node.value_branch, eq_str)
+            eq_str += ")"
+            eq_str += ")"
+
+        elif n_type == TreeNodeType.BINARY_OP:
+            eq_str += "("
+            eq_str = self.parse_equation(node.left_branch, eq_str)
+            eq_str += " " + node.name + " "
+            eq_str = self.parse_equation(node.right_branch, eq_str)
+            eq_str += ")"
+
+        eq_str = eq_str.replace("ADD", "+")
+        eq_str = eq_str.replace("SUB", "-")
+        eq_str = eq_str.replace("MUL", "*")
+        eq_str = eq_str.replace("DIV", "/")
+        eq_str = eq_str.replace("COS", "cos")
+        eq_str = eq_str.replace("SIN", "sin")
+
+        return eq_str

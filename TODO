@@ -1,9 +1,21 @@
 # TODO
 
 - Cache sub tree scores
-- Symbolic maths simplifier
 - Generation record (with Database?)
 
 - Different Mutation methods
     - Shrink Mutation
     - Subtree Replacement
+
+
+# COMPLETED!
+
+- Symbolic maths simplifier [DONE!]
+- Point crossover [DONE!]
+- Point mutation [DONE!]
+- Tree initialization via Full method [DONE!]
+- Tree initialization via Grow method [DONE!]
+- Tree Evaluator [DONE!]
+- Population [DONE!]
+- Reproduce loop [DONE!]
+- Play loop [DONE!]

@@ -4,7 +4,15 @@ Playground is a Gentic Programming framework implemented in Python.
 
 ## Requirements
 
-- Python version 2.7 and higher
+- Python (version 2.7 and higher)
+
+## Optional Requirements
+
+If you want evolution recording (such as fitness/evaluation score vs time):
+
+- MongoDB (version 2.4 and higher)
+- PyMongo (version 2.6 and higher)
+
 
 ## Licence
 LGPL License

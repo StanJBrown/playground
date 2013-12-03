@@ -85,6 +85,7 @@ class MutatorTests(unittest.TestCase):
             return False
 
     def test_point_mutation(self):
+        print "POINT MUATION!"
         tree_before = self.build_tree_str(self.tree)
         self.tree_mutation.point_mutation(self.tree)
         tree_after = self.build_tree_str(self.tree)
@@ -100,6 +101,7 @@ class MutatorTests(unittest.TestCase):
         self.assertFalse(self.tree_equals(tree_before, tree_after))
 
     def test_hoist_mutation(self):
+        print "HOIST MUATION!"
         tree_before = self.build_tree_str(self.tree)
         self.tree_mutation.hoist_mutation(self.tree, 3)
         tree_after = self.build_tree_str(self.tree)
@@ -122,6 +124,54 @@ class MutatorTests(unittest.TestCase):
         self.assertEquals(len(self.tree.func_nodes), 0)
         self.assertEquals(len(self.tree.term_nodes), 0)
         self.assertEquals(len(self.tree.input_nodes), 1)
+
+    def test_subtree_mutation(self):
+        print "SUBTREE MUATION!"
+        tree_before = self.build_tree_str(self.tree)
+        self.tree_mutation.subtree_mutation(self.tree, 3)
+        tree_after = self.build_tree_str(self.tree)
+
+        print("Before Mutation")
+        print(tree_before)
+
+        print("\nAfter Mutation")
+        print(tree_after)
+
+        self.assertTrue(self.tree_equals(tree_before, tree_before))
+        self.assertTrue(self.tree_equals(tree_after, tree_after))
+        self.assertFalse(self.tree_equals(tree_before, tree_after))
+
+    def test_expansion_mutation(self):
+        print "EXPANSION MUATION!"
+        tree_before = self.build_tree_str(self.tree)
+        self.tree_mutation.expansion_mutation(self.tree, 3)
+        tree_after = self.build_tree_str(self.tree)
+
+        print("Before Mutation")
+        print(tree_before)
+
+        print("\nAfter Mutation")
+        print(tree_after)
+
+        self.assertTrue(self.tree_equals(tree_before, tree_before))
+        self.assertTrue(self.tree_equals(tree_after, tree_after))
+        self.assertFalse(self.tree_equals(tree_before, tree_after))
+
+    def test_shrink_mutation(self):
+        print "SHRINK MUATION!"
+        tree_before = self.build_tree_str(self.tree)
+        self.tree_mutation.shrink_mutation(self.tree, 3)
+        tree_after = self.build_tree_str(self.tree)
+
+        print("Before Mutation")
+        print(tree_before)
+
+        print("\nAfter Mutation")
+        print(tree_after)
+
+        self.assertTrue(self.tree_equals(tree_before, tree_before))
+        self.assertTrue(self.tree_equals(tree_after, tree_after))
+        self.assertFalse(self.tree_equals(tree_before, tree_after))
 
 
 if __name__ == '__main__':

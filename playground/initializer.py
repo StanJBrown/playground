@@ -153,6 +153,16 @@ class TreeInitializer(object):
 
         return tree
 
+    def generate_tree(self):
+        if self.config["tree_init_method"] == "FULL_METHOD":
+            tree = self.full_method()
+        elif self.config["tree_init_method"] == "GROW_METHOD":
+            tree = self.grow_method()
+        else:
+            raise RuntimeError("Tree init method not defined!")
+
+        return tree
+
     def init(self):
         population = Population(self.config, self.tree_evaluator)
 

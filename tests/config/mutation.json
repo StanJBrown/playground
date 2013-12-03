@@ -1,5 +1,6 @@
 {
     "max_depth" : 4,
+    "tree_init_method": "GROW_METHOD",
 
     "mutation" : {
         "method": "POINT_MUTATION",

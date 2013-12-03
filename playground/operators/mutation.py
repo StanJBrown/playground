@@ -4,11 +4,13 @@ from random import sample
 
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
+from playground.initializer import TreeInitializer
 
 
 class TreeMutation(object):
     def __init__(self, config):
         self.config = config
+        self.tree_generator = TreeInitializer(self.config, None)
 
     def _gen_func_node(self, func_type, name):
         func_node = TreeNode(
@@ -44,8 +46,8 @@ class TreeMutation(object):
         elif details["type"] == TreeNodeType.BINARY_OP:
             return self._gen_func_node(details["type"], details["name"])
         elif details["type"] == TreeNodeType.TERM:
-            name = getattr(details, "name", None)
-            value = getattr(details, "value", None)
+            name = details.get("name", None)
+            value = details.get("value", None)
             return self._gen_term_node(name, value)
         elif details["type"] == TreeNodeType.INPUT:
             return self._gen_input_node(details["name"])
@@ -76,7 +78,7 @@ class TreeMutation(object):
             if node.equals(new_node) is False:
                 return new_node_details
 
-    def point_mutation(self, tree, mutate_index=None):
+    def point_mutation(self, tree, mutation_index=None):
         # mutate node
         node = sample(tree.program, 1)[0]
         new_node = self._get_new_node(node)
@@ -89,31 +91,59 @@ class TreeMutation(object):
             node.name = new_node.get("name", None)
             node.value = new_node.get("value", None)
 
-    def hoist_mutation(self, tree, mutate_index=None):
+    def hoist_mutation(self, tree, mutation_index=None):
         # new indivdiaul generated from subtree
         new_root = None
-        if mutate_index is None:
+        if mutation_index is None:
             new_root = sample(tree.func_nodes, 1)[0]
         else:
-            new_root = tree.program[mutate_index]
+            new_root = tree.program[mutation_index]
 
         tree.root = new_root
         tree.update()
 
-    def subtree_mutation(self, tree):
+    def subtree_mutation(self, tree, mutation_index=None):
         # subtree exchanged against external random subtree
-        # func_node = sample(tree.func_nodes, 1)[0]
-        # tree.replace_node(func_node)
-        # tree.update()
-        print ""
+        func_node = None
+        if mutation_index is None:
+            func_node = sample(tree.func_nodes, 1)[0]
+        else:
+            func_node = tree.program[mutation_index]
 
-    def expansion_mutation(self, tree):
+        sub_tree = self.tree_generator.generate_tree()
+        tree.replace_node(func_node, sub_tree.root)
+        tree.update()
+
+    def expansion_mutation(self, tree, mutation_index=None):
         # terminal exchanged against external random subtree
-        print ""
+        term_node = None
+        if mutation_index is None:
+            term_node = sample(tree.term_nodes, 1)[0]
+        else:
+            term_node = tree.program[mutation_index]
 
-    def shrink_mutation(self, tree):
+        sub_tree = self.tree_generator.generate_tree()
+        tree.replace_node(term_node, sub_tree.root)
+        tree.update()
+
+    def shrink_mutation(self, tree, mutation_index=None):
         # subtree exchanged against terminal
-        print ""
+        func_node = None
+        if mutation_index is None:
+            func_node = sample(tree.func_nodes, 1)[0]
+        else:
+            func_node = tree.program[mutation_index]
+
+        term_node = None
+        if len(tree.term_nodes) > 0:
+            node_details = self._get_new_node(sample(tree.term_nodes, 1)[0])
+            term_node = self._gen_new_node(node_details)
+        else:
+            node_details = self._get_new_node(sample(tree.input_nodes, 1)[0])
+            term_node = self._gen_new_node(node_details)
+
+        tree.replace_node(func_node, term_node)
+        tree.update()
 
     def mutate(self, tree):
         method = self.config["mutation"]["method"]

@@ -1,4 +1,9 @@
 # TODO
 
-- Generation record (with Database?)
+- Cache sub tree scores
 - Symbolic maths simplifier
+- Generation record (with Database?)
+
+- Different Mutation methods
+    - Shrink Mutation
+    - Subtree Replacement

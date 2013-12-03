@@ -120,6 +120,9 @@ class Tree(object):
         self.depth = 0
         self.size = 0
 
+        self.branches = 1
+        self.open_branches = 1
+
         self.program = []
         self.func_nodes = []
         self.term_nodes = []

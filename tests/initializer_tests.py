@@ -70,7 +70,7 @@ class InitializerTests(unittest.TestCase):
             # for term_node in tree.term_nodes:
             #     self.t_parser._print_node(term_node)
 
-            # # program
+            # program
             # print("\nPROGRAM STACK!")
             # for block in tree.program:
             #     self.t_parser._print_node(block)
@@ -82,6 +82,42 @@ class InitializerTests(unittest.TestCase):
             # asserts
             self.assertEquals(tree.depth, self.config["max_depth"])
             self.assertTrue(tree.size > self.config["max_depth"])
+            self.assertTrue(tree.branches > 0)
+            self.assertEquals(tree.open_branches, 0)
+            self.assertTrue(
+                len(tree.input_nodes) >= len(self.config["input_nodes"])
+            )
+
+    def test_grow_method(self):
+        tests = 1000
+
+        for i in range(tests):
+            tree = self.tree_initializer.grow_method()
+
+            # # func nodes
+            # print("FUNCTION NODES!")
+            # for func_node in tree.func_nodes:
+            #     self.t_parser._print_node(func_node)
+
+            # # term nodes
+            # print("\nTERMINAL NODES!")
+            # for term_node in tree.term_nodes:
+            #     self.t_parser._print_node(term_node)
+
+            # # program
+            # print("\nPROGRAM STACK!")
+            # for block in tree.program:
+            #     self.t_parser._print_node(block)
+
+            # dot graph
+            # print("\nDOT GRAPH!")
+            # self.t_parser.print_tree(tree.root)
+
+            # asserts
+            self.assertEquals(tree.depth, self.config["max_depth"])
+            self.assertTrue(tree.size > self.config["max_depth"])
+            self.assertTrue(tree.branches > 0)
+            self.assertEquals(tree.open_branches, 0)
             self.assertTrue(
                 len(tree.input_nodes) >= len(self.config["input_nodes"])
             )

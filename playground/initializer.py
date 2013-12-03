@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from random import randint
+from random import random
 from random import sample
 
 from playground.tree import Tree
@@ -15,20 +16,28 @@ class TreeInitializer(object):
         self.tree_parser = TreeParser()
         self.tree_evaluator = evaluator
 
-    def _gen_random_func_node(self):
+    def _gen_random_func_node(self, tree):
         index = randint(0, len(self.config["function_nodes"]) - 1)
         node = self.config["function_nodes"][index]
         func_node = TreeNode(node["type"], name=node["name"])
+
+        if node["type"] == TreeNodeType.BINARY_OP:
+            tree.branches += 1
+            tree.open_branches += 1
+
         return func_node
 
-    def _gen_random_term_node(self):
+    def _gen_random_term_node(self, tree):
         index = randint(0, len(self.config["terminal_nodes"]) - 1)
         node = self.config["terminal_nodes"][index]
+
         term_node = TreeNode(
             node["type"],
             name=node.get("name", None),
             value=node.get("value", None)
         )
+        tree.open_branches -= 1
+
         return term_node
 
     def _gen_input_node(self, index):
@@ -36,40 +45,26 @@ class TreeInitializer(object):
         input_node = TreeNode(node["type"], name=node.get("name", None))
         return input_node
 
-    def _full_method_gen_new_node(self, tree, depth):
-        if depth + 1 == self.config["max_depth"]:
-                term_node = self._gen_random_term_node()
-                tree.term_nodes.append(term_node)
-                tree.size += 1
-                tree.depth = self.config["max_depth"]
-                return term_node
-        else:
-                func_node = self._gen_random_func_node()
-                tree.func_nodes.append(func_node)
-                tree.size += 1
-                return func_node
+    def _build_tree(self, node, tree, depth, node_generator):
+        if node.node_type == TreeNodeType.UNARY_OP:
+            # value
+            value_node = node_generator(tree, depth)
+            node.value_branch = value_node
 
-    def _full_method_build_tree(self, node, tree, depth):
-        if depth <= self.config["max_depth"]:
-            if node.node_type == TreeNodeType.UNARY_OP:
-                # value
-                value_node = self._full_method_gen_new_node(tree, depth)
-                node.value_branch = value_node
+            self._build_tree(value_node, tree, depth + 1, node_generator)
 
-                self._full_method_build_tree(value_node, tree, depth + 1)
+        elif node.node_type == TreeNodeType.BINARY_OP:
+            # left
+            left_node = node_generator(tree, depth)
+            node.left_branch = left_node
 
-            elif node.node_type == TreeNodeType.BINARY_OP:
-                # left
-                left_node = self._full_method_gen_new_node(tree, depth)
-                node.left_branch = left_node
+            self._build_tree(left_node, tree, depth + 1, node_generator)
 
-                self._full_method_build_tree(left_node, tree, depth + 1)
+            # right
+            right_node = node_generator(tree, depth)
+            node.right_branch = right_node
 
-                # right
-                right_node = self._full_method_gen_new_node(tree, depth)
-                node.right_branch = right_node
-
-                self._full_method_build_tree(right_node, tree, depth + 1)
+            self._build_tree(right_node, tree, depth + 1, node_generator)
 
     def _add_input_nodes(self, tree):
         index = 0
@@ -89,15 +84,67 @@ class TreeInitializer(object):
             # increment inputs modified
             inputs -= 1
 
+    def _full_method_node_gen(self, tree, depth):
+        if depth + 1 == self.config["max_depth"]:
+                term_node = self._gen_random_term_node(tree)
+                tree.term_nodes.append(term_node)
+                tree.size += 1
+                tree.depth = self.config["max_depth"]
+                return term_node
+        else:
+                func_node = self._gen_random_func_node(tree)
+                tree.func_nodes.append(func_node)
+                tree.size += 1
+                return func_node
+
     def full_method(self):
         while True:
             # setup
             tree = Tree()
-            tree.root = self._gen_random_func_node()
+            tree.root = self._gen_random_func_node(tree)
 
             # build tree
-            self._full_method_build_tree(tree.root, tree, 0)
+            self._build_tree(tree.root, tree, 0, self._full_method_node_gen)
             tree.update_program()
+
+            # add input nodes
+            if len(tree.term_nodes) > len(self.config["input_nodes"]):
+                self._add_input_nodes(tree)
+                return tree
+
+        return tree
+
+    def _grow_method_node_gen(self, tree, depth):
+        if depth + 1 == self.config["max_depth"]:
+            term_node = self._gen_random_term_node(tree)
+            tree.term_nodes.append(term_node)
+            tree.size += 1
+            tree.depth = self.config["max_depth"]
+            return term_node
+        else:
+            prob = random()
+            node = None
+            if tree.open_branches == 1:
+                node = self._gen_random_func_node(tree)
+                tree.func_nodes.append(node)
+            elif prob < 0.5:
+                node = self._gen_random_func_node(tree)
+                tree.func_nodes.append(node)
+            else:
+                node = self._gen_random_term_node(tree)
+                tree.term_nodes.append(node)
+            tree.size += 1
+            return node
+
+    def grow_method(self):
+        while True:
+            # setup
+            tree = Tree()
+            tree.root = self._gen_random_func_node(tree)
+
+            # build tree
+            self._build_tree(tree.root, tree, 0, self._grow_method_node_gen)
+            tree.update()
 
             # add input nodes
             if len(tree.term_nodes) > len(self.config["input_nodes"]):
@@ -112,6 +159,10 @@ class TreeInitializer(object):
         if self.config["tree_init_method"] == "FULL_METHOD":
             for i in range(self.config["max_population"]):
                 tree = self.full_method()
+                population.individuals.append(tree)
+        elif self.config["tree_init_method"] == "GROW_METHOD":
+            for i in range(self.config["max_population"]):
+                tree = self.grow_method()
                 population.individuals.append(tree)
         else:
             raise RuntimeError("Tree init method not defined!")

@@ -210,25 +210,12 @@ class Tree(object):
             if node.node_type == TreeNodeType.INPUT:
                 self.input_nodes.append(node)
 
+    def update_tree_info(self):
+        self.size = len(self.program)
+        self.branches = len(self.term_nodes) + len(self.input_nodes)
+
     def update(self):
-        self.update_program()
-        self.update_func_nodes()
-        self.update_term_nodes()
-        self.update_input_nodes()
-
-    # def __str__(self):
-    #     equation = []
-    #     self.tree_parser.infix_order_traverse(self.root, equation)
-
-    #     # eq_str = ""
-    #     for el in equation:
-    #         if el.is_terminal() or el.is_input():
-    #             if el.name is not None:
-    #                 print el.name
-    #             else:
-    #                 print el.value
-    #         if el.is_function():
-    #             print el.name
+        self.program = self.tree_parser.parse_tree(self, self.root)
 
 
 class TreeParser(object):
@@ -297,14 +284,67 @@ class TreeParser(object):
 
         if n_type == TreeNodeType.TERM or n_type == TreeNodeType.INPUT:
             stack.append(node)
+
         elif n_type == TreeNodeType.UNARY_OP:
             self.post_order_traverse(node.value_branch, stack)
             stack.append(node)
+
         elif n_type == TreeNodeType.BINARY_OP:
             self.post_order_traverse(node.left_branch, stack)
             self.post_order_traverse(node.right_branch, stack)
             stack.append(node)
 
+        return stack
+
+    def parse_tree(self, tree, node, depth=None, stack=None):
+        if depth is None and stack is None:
+            depth = 0
+            stack = []
+
+            tree.size = 0
+            tree.depth = 0
+            tree.branches = 1
+            tree.open_branches = 1
+            del tree.func_nodes[:]
+            del tree.term_nodes[:]
+            del tree.input_nodes[:]
+
+        if node.node_type == TreeNodeType.TERM:
+            tree.size += 1
+            tree.open_branches -= 1
+            tree.term_nodes.append(node)
+
+            stack.append(node)
+
+        elif node.node_type == TreeNodeType.INPUT:
+            tree.size += 1
+            tree.open_branches -= 1
+            tree.input_nodes.append(node)
+
+            stack.append(node)
+
+        elif node.node_type == TreeNodeType.UNARY_OP:
+            self.parse_tree(tree, node.value_branch, depth + 1, stack)
+
+            tree.size += 1
+            if node is not tree.root:
+                tree.func_nodes.append(node)
+
+            stack.append(node)
+
+        elif node.node_type == TreeNodeType.BINARY_OP:
+            self.parse_tree(tree, node.left_branch, depth + 1, stack)
+            self.parse_tree(tree, node.right_branch, depth + 1, stack)
+
+            tree.size += 1
+            tree.branches += 1
+            tree.open_branches += 1
+            if node is not tree.root:
+                tree.func_nodes.append(node)
+
+            stack.append(node)
+
+        tree.depth = depth if depth > tree.depth else tree.depth
         return stack
 
     def parse_equation(self, node, eq_str=None):

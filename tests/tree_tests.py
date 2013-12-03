@@ -223,12 +223,6 @@ class TreeParserTests(unittest.TestCase):
 
         self.tree_parser = TreeParser()
 
-    def tearDown(self):
-        del self.config
-        del self.tree_initializer
-        del self.tree_parser
-
-    def test_parse_equation(self):
         # create nodes
         left_node = TreeNode(TreeNodeType.TERM, value=1.0)
         right_node = TreeNode(TreeNodeType.TERM, value=2.0)
@@ -252,14 +246,38 @@ class TreeParserTests(unittest.TestCase):
         )
 
         # create tree
-        tree = Tree()
-        tree.root = add_func
-        tree.update_program()
-        tree.update_func_nodes()
-        tree.update_term_nodes()
+        self.tree = Tree()
+        self.tree.root = add_func
+        self.tree.update_program()
+        self.tree.update_func_nodes()
+        self.tree.update_term_nodes()
 
+    def tearDown(self):
+        del self.config
+        del self.tree_initializer
+        del self.tree_parser
+
+    def test_parse_tree(self):
         # self.tree_parser.print_tree(tree.root)
-        equation = self.tree_parser.parse_equation(tree.root)
+        program = self.tree_parser.parse_tree(self.tree, self.tree.root)
+        for i in program:
+            if i.name is not None:
+                print i.name
+            else:
+                print i.value
+
+        self.assertEquals(self.tree.size, 5)
+        self.assertEquals(self.tree.depth, 2)
+        self.assertEquals(self.tree.branches, 2)
+        self.assertEquals(self.tree.open_branches, 0)
+
+        self.assertEquals(len(self.tree.func_nodes), 2)
+        self.assertEquals(len(self.tree.term_nodes), 2)
+        self.assertEquals(len(self.tree.input_nodes), 0)
+
+    def test_parse_equation(self):
+        # self.tree_parser.print_tree(tree.root)
+        equation = self.tree_parser.parse_equation(self.tree.root)
         self.assertEquals(equation, "((cos(1.0)) + (sin(2.0)))")
 
 

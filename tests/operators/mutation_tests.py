@@ -99,6 +99,30 @@ class MutatorTests(unittest.TestCase):
         self.assertTrue(self.tree_equals(tree_after, tree_after))
         self.assertFalse(self.tree_equals(tree_before, tree_after))
 
+    def test_hoist_mutation(self):
+        tree_before = self.build_tree_str(self.tree)
+        self.tree_mutation.hoist_mutation(self.tree, 3)
+        tree_after = self.build_tree_str(self.tree)
+
+        print("Before Mutation")
+        print(tree_before)
+
+        print("\nAfter Mutation")
+        print(tree_after)
+
+        self.assertTrue(self.tree_equals(tree_before, tree_before))
+        self.assertTrue(self.tree_equals(tree_after, tree_after))
+        self.assertFalse(self.tree_equals(tree_before, tree_after))
+
+        self.assertEquals(self.tree.size, 2)
+        self.assertEquals(self.tree.depth, 1)
+        self.assertEquals(self.tree.branches, 1)
+        self.assertEquals(self.tree.open_branches, 0)
+
+        self.assertEquals(len(self.tree.func_nodes), 0)
+        self.assertEquals(len(self.tree.term_nodes), 0)
+        self.assertEquals(len(self.tree.input_nodes), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

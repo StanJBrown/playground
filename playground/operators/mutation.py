@@ -89,6 +89,32 @@ class TreeMutation(object):
             node.name = new_node.get("name", None)
             node.value = new_node.get("value", None)
 
+    def hoist_mutation(self, tree, mutate_index=None):
+        # new indivdiaul generated from subtree
+        new_root = None
+        if mutate_index is None:
+            new_root = sample(tree.func_nodes, 1)[0]
+        else:
+            new_root = tree.program[mutate_index]
+
+        tree.root = new_root
+        tree.update()
+
+    def subtree_mutation(self, tree):
+        # subtree exchanged against external random subtree
+        # func_node = sample(tree.func_nodes, 1)[0]
+        # tree.replace_node(func_node)
+        # tree.update()
+        print ""
+
+    def expansion_mutation(self, tree):
+        # terminal exchanged against external random subtree
+        print ""
+
+    def shrink_mutation(self, tree):
+        # subtree exchanged against terminal
+        print ""
+
     def mutate(self, tree):
         method = self.config["mutation"]["method"]
         mutation_prob = self.config["mutation"]["probability"]

@@ -114,18 +114,6 @@ class TreeMutation(object):
         tree.replace_node(func_node, sub_tree.root)
         tree.update()
 
-    def expansion_mutation(self, tree, mutation_index=None):
-        # terminal exchanged against external random subtree
-        term_node = None
-        if mutation_index is None:
-            term_node = sample(tree.term_nodes, 1)[0]
-        else:
-            term_node = tree.program[mutation_index]
-
-        sub_tree = self.tree_generator.generate_tree()
-        tree.replace_node(term_node, sub_tree.root)
-        tree.update()
-
     def shrink_mutation(self, tree, mutation_index=None):
         # subtree exchanged against terminal
         func_node = None
@@ -145,13 +133,37 @@ class TreeMutation(object):
         tree.replace_node(func_node, term_node)
         tree.update()
 
+    def expansion_mutation(self, tree, mutation_index=None):
+        # terminal exchanged against external random subtree
+        term_node = None
+        if mutation_index is None:
+            term_node = sample(tree.term_nodes, 1)[0]
+        else:
+            term_node = tree.program[mutation_index]
+
+        sub_tree = self.tree_generator.generate_tree()
+        tree.replace_node(term_node, sub_tree.root)
+        tree.update()
+
     def mutate(self, tree):
-        method = self.config["mutation"]["method"]
+        mutation_methods = {
+            "POINT_MUTATION": self.point_mutation,
+            "HOIST_MUTATION": self.hoist_mutation,
+            "SUBTREE_MUTATION": self.subtree_mutation,
+            "SHRINK_MUTATION": self.shrink_mutation,
+            "EXPAND_MUTATION": self.expansion_mutation
+        }
+
+        method = sample(self.config["mutation"]["methods"], 1)[0]
         mutation_prob = self.config["mutation"]["probability"]
         prob = random()
 
+        if len(tree.term_nodes) < 1 or len(tree.input_nodes) < 1:
+                prob = 1.1
+
+        if len(tree.func_nodes) < 1:
+                prob = 1.1
+
         if mutation_prob >= prob:
-            if method == "POINT_MUTATION":
-                self.point_mutation(tree)
-            else:
-                raise RuntimeError("Undefined mutation method!")
+            mutation_func = mutation_methods[method]
+            mutation_func(tree)

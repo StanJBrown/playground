@@ -141,6 +141,22 @@ class MutatorTests(unittest.TestCase):
         self.assertTrue(self.tree_equals(tree_after, tree_after))
         self.assertFalse(self.tree_equals(tree_before, tree_after))
 
+    def test_shrink_mutation(self):
+        print "SHRINK MUATION!"
+        tree_before = self.build_tree_str(self.tree)
+        self.tree_mutation.shrink_mutation(self.tree, 3)
+        tree_after = self.build_tree_str(self.tree)
+
+        print("Before Mutation")
+        print(tree_before)
+
+        print("\nAfter Mutation")
+        print(tree_after)
+
+        self.assertTrue(self.tree_equals(tree_before, tree_before))
+        self.assertTrue(self.tree_equals(tree_after, tree_after))
+        self.assertFalse(self.tree_equals(tree_before, tree_after))
+
     def test_expansion_mutation(self):
         print "EXPANSION MUATION!"
         tree_before = self.build_tree_str(self.tree)
@@ -157,21 +173,21 @@ class MutatorTests(unittest.TestCase):
         self.assertTrue(self.tree_equals(tree_after, tree_after))
         self.assertFalse(self.tree_equals(tree_before, tree_after))
 
-    def test_shrink_mutation(self):
-        print "SHRINK MUATION!"
-        tree_before = self.build_tree_str(self.tree)
-        self.tree_mutation.shrink_mutation(self.tree, 3)
-        tree_after = self.build_tree_str(self.tree)
+    # def test_mutate(self):
+    #     print "MUTATE!"
+    #     tree_before = self.build_tree_str(self.tree)
+    #     self.tree_mutation.mutate(self.tree)
+    #     tree_after = self.build_tree_str(self.tree)
 
-        print("Before Mutation")
-        print(tree_before)
+    #     print("Before Mutation")
+    #     print(tree_before)
 
-        print("\nAfter Mutation")
-        print(tree_after)
+    #     print("\nAfter Mutation")
+    #     print(tree_after)
 
-        self.assertTrue(self.tree_equals(tree_before, tree_before))
-        self.assertTrue(self.tree_equals(tree_after, tree_after))
-        self.assertFalse(self.tree_equals(tree_before, tree_after))
+    #     self.assertTrue(self.tree_equals(tree_before, tree_before))
+    #     self.assertTrue(self.tree_equals(tree_after, tree_after))
+    #     self.assertFalse(self.tree_equals(tree_before, tree_after))
 
 
 if __name__ == '__main__':

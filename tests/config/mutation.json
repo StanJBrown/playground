@@ -3,7 +3,13 @@
     "tree_init_method": "GROW_METHOD",
 
     "mutation" : {
-        "method": "POINT_MUTATION",
+        "methods": [
+            "POINT_MUTATION",
+            "HOIST_MUTATION",
+            "SUBTREE_MUTATION",
+            "SHRINK_MUTATION",
+            "EXPAND_MUTATION"
+        ],
         "probability": 1.0
     },
 
@@ -31,6 +37,10 @@
         {
             "type": "UNARY_OP",
             "name": "SIN"
+        },
+        {
+            "type": "UNARY_OP",
+            "name": "RAD"
         }
     ],
     "terminal_nodes" : [

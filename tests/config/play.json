@@ -1,21 +1,28 @@
 {
     "max_population" : 50,
     "max_generation" : 10,
-    "tree_init_method" : "FULL_METHOD",
-    "max_depth" : 2,
+    "tree_init_method" : "GROW_METHOD",
+    "max_depth" : 3,
 
     "selection" : {
-        "method" : "TOURNAMENT_SELECTION"
+        "method" : "TOURNAMENT_SELECTION",
+        "tournament_size": 10
     },
 
     "crossover" : {
         "method" : "POINT_CROSSOVER",
-        "probability" : 0.5
+        "probability" : 0.6
     },
 
     "mutation" : {
-        "method" : "POINT_MUTATION",
-        "probability" : 0.2
+        "methods": [
+            "POINT_MUTATION",
+            "HOIST_MUTATION",
+            "SUBTREE_MUTATION",
+            "SHRINK_MUTATION",
+            "EXPAND_MUTATION"
+        ],
+        "probability" : 0.8
     },
 
     "function_nodes" : [
@@ -42,6 +49,10 @@
         {
             "type": "UNARY_OP",
             "name": "SIN"
+        },
+        {
+            "type": "UNARY_OP",
+            "name": "RAD"
         }
     ],
 

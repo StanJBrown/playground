@@ -42,7 +42,7 @@ class PlayTests(unittest.TestCase):
         del self.mutation
 
     def test_reproduce(self):
-        tests = 1000
+        tests = 10
 
         for i in range(tests):
             population = self.tree_initializer.init()

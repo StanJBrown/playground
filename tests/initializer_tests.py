@@ -25,12 +25,12 @@ class InitializerTests(unittest.TestCase):
         self.evaluator = TreeEvaluator(self.config, self.functions)
         self.tree_initializer = TreeInitializer(self.config, self.evaluator)
 
-        self.t_parser = TreeParser()
+        self.tree_parser = TreeParser()
 
     def tearDown(self):
         del self.config
         del self.tree_initializer
-        del self.t_parser
+        del self.tree_parser
 
     def test_tree_add_input_nodes(self):
         # setup
@@ -63,21 +63,21 @@ class InitializerTests(unittest.TestCase):
             # # func nodes
             # print("FUNCTION NODES!")
             # for func_node in tree.func_nodes:
-            #     self.t_parser._print_node(func_node)
+            #     self.tree_parser._print_node(func_node)
 
             # # term nodes
             # print("\nTERMINAL NODES!")
             # for term_node in tree.term_nodes:
-            #     self.t_parser._print_node(term_node)
+            #     self.tree_parser._print_node(term_node)
 
             # program
             # print("\nPROGRAM STACK!")
             # for block in tree.program:
-            #     self.t_parser._print_node(block)
+            #     self.tree_parser._print_node(block)
 
             # # dot graph
             # print("\nDOT GRAPH!")
-            # self.t_parser.print_tree(tree.root)
+            # self.tree_parser.print_tree(tree.root)
 
             # asserts
             self.assertEquals(tree.depth, self.config["max_depth"])
@@ -97,21 +97,21 @@ class InitializerTests(unittest.TestCase):
             # # func nodes
             # print("FUNCTION NODES!")
             # for func_node in tree.func_nodes:
-            #     self.t_parser._print_node(func_node)
+            #     self.tree_parser._print_node(func_node)
 
             # # term nodes
             # print("\nTERMINAL NODES!")
             # for term_node in tree.term_nodes:
-            #     self.t_parser._print_node(term_node)
+            #     self.tree_parser._print_node(term_node)
 
             # # program
             # print("\nPROGRAM STACK!")
             # for block in tree.program:
-            #     self.t_parser._print_node(block)
+            #     self.tree_parser._print_node(block)
 
             # dot graph
             # print("\nDOT GRAPH!")
-            # self.t_parser.print_tree(tree.root)
+            # self.tree_parser.print_tree(tree.root)
 
             # asserts
             self.assertEquals(tree.depth, self.config["max_depth"])

@@ -17,7 +17,6 @@ class TreeNodeBranch(object):
 class TreeNode(object):
     def __init__(self, node_type, **kwargs):
         self.node_type = node_type
-        self.score = None
 
         # function node specific
         if node_type == TreeNodeType.UNARY_OP:

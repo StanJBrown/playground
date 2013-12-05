@@ -35,6 +35,9 @@ class TreeCrossover(object):
         crossover_prob = self.config["crossover"]["probability"]
         prob = random()
 
+        if len(tree_1.func_nodes) < 1 or len(tree_2.func_nodes) < 1:
+            prob = 1.1  # i.e. do not crossover
+
         if crossover_prob >= prob:
             if method == "POINT_CROSSOVER":
                 self.point_crossover(tree_1, tree_2)

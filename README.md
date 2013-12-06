@@ -10,8 +10,8 @@ Playground is a Gentic Programming framework implemented in Python.
 
 If you want evolution recording (such as fitness/evaluation score vs time):
 
-- MongoDB (version 2.4 and higher)
-- PyMongo (version 2.6 and higher)
+- PostgreSQL (version 9.3 and higher)
+- Psycopg (version 2.5 and higher)
 
 
 ## Licence

@@ -7,11 +7,12 @@ from playground.evaluator import EvaluationError
 class Population(object):
     def __init__(self, config, evaluator):
         self.config = config
+        self.evaluator = evaluator
+
         self.generation = 0
         self.best_top = 10
         self.best_individuals = []
         self.individuals = []
-        self.evaluator = evaluator
 
     def sort_individuals(self):
         self.individuals.sort(key=operator.attrgetter('score'))

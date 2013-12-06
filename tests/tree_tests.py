@@ -212,6 +212,23 @@ class TreeTests(unittest.TestCase):
         self.assertTrue(tree_2.equals(tree_2))
         self.assertFalse(tree_2.equals(tree_1))
 
+    def test_str(self):
+        # setup
+        del self.tree.input_nodes[:]
+        left_node = TreeNode(TreeNodeType.INPUT, name="x")
+        right_node = TreeNode(TreeNodeType.INPUT, name="y")
+        add_func = TreeNode(
+            TreeNodeType.BINARY_OP,
+            name="ADD",
+            left_branch=left_node,
+            right_branch=right_node
+        )
+        self.tree.root = add_func
+        self.tree.program = self.t_parser.post_order_traverse(self.tree.root)
+
+        # assert
+        self.assertEquals(str(self.tree), "(x + y)")
+
 
 class TreeParserTests(unittest.TestCase):
     def setUp(self):

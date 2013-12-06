@@ -216,6 +216,9 @@ class Tree(object):
     def update(self):
         self.program = self.tree_parser.parse_tree(self, self.root)
 
+    def __str__(self):
+        return self.tree_parser.parse_equation(self.root)
+
 
 class TreeParser(object):
     def _print_node(self, node):

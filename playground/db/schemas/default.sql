@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS selections
     selection_id SERIAL,
 
     method TEXT NOT NULL,
-    probability REAL NOT NULL,
     selected INT NOT NULL,
 
     PRIMARY KEY (selection_id)

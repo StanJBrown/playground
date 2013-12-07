@@ -3,6 +3,27 @@
     "tree_init_method" : "FULL_METHOD",
     "max_depth" : 4,
 
+    "selection" : {
+        "method" : "TOURNAMENT_SELECTION",
+        "tournament_size": 2
+    },
+
+    "crossover" : {
+        "method" : "POINT_CROSSOVER",
+        "probability" : 0.6
+    },
+
+    "mutation" : {
+        "methods": [
+            "POINT_MUTATION",
+            "HOIST_MUTATION",
+            "SUBTREE_MUTATION",
+            "SHRINK_MUTATION",
+            "EXPAND_MUTATION"
+        ],
+        "probability" : 0.8
+    },
+
     "function_nodes" : [
         {
             "type": "BINARY_OP",

@@ -5,7 +5,7 @@ import psycopg2 as db
 import psycopg2.extras as db_extras
 
 
-class DBDataType(object):
+class RecordType(object):
     POPULATION = "POPULATION"
     TREE = "TREE"
     SELECTION = "SELECTION"
@@ -46,11 +46,17 @@ class DBAdaptor(object):
         except db.DatabaseError:
             raise
 
-    def table_name(self, data_type):
-        if data_type == DBDataType.POPULATION:
+    def table_name(self, record_type):
+        if record_type == RecordType.POPULATION:
             return self.populations
-        elif data_type == DBDataType.TREE:
+        elif record_type == RecordType.TREE:
             return self.trees
+        elif record_type == RecordType.SELECTION:
+            return self.selections
+        elif record_type == RecordType.CROSSOVER:
+            return self.crossovers
+        elif record_type == RecordType.MUTATION:
+            return self.mutations
 
     def setup_tables(self):
         try:
@@ -194,10 +200,36 @@ class DBAdaptor(object):
             self.conn.rollback()
             raise
 
-    def record(self, data_type, data):
+    def record_selection(self, selection):
         try:
-            if data_type == DBDataType.POPULATION:
+            query = """
+                INSERT INTO {table}
+                (
+                    method,
+                    selected
+                )
+                VALUES
+                (
+                    '{method}',
+                    {selected}
+                )
+            """.format(
+                table=self.selections,
+                method=selection["method"],
+                selected=selection["selected"],
+            )
+            self.cursor.execute(query)
+
+        except db.DatabaseError:
+            self.conn.rollback()
+            raise
+
+    def record(self, record_type, data):
+        try:
+            if record_type == RecordType.POPULATION:
                 self.record_population(data)
+            elif record_type == RecordType.SELECTION:
+                self.record_selection(data)
             self.conn.commit()
 
         except db.DatabaseError:
@@ -218,9 +250,9 @@ class DBAdaptor(object):
             limit = ""
         return limit
 
-    def select(self, data_type, conditions=None, limit=None):
+    def select(self, record_type, conditions=None, limit=None):
         try:
-            table = self.table_name(data_type)
+            table = self.table_name(record_type)
             conditions = self._build_conditions(conditions)
             limit = self._build_limit(limit)
 
@@ -241,9 +273,9 @@ class DBAdaptor(object):
             self.conn.rollback()
             raise
 
-    def remove(self, data_type, conditions=None, limit=None):
+    def remove(self, record_type, conditions=None, limit=None):
         try:
-            table = self.table_name(data_type)
+            table = self.table_name(record_type)
             conditions = self._build_conditions(conditions)
             limit = self._build_limit(limit)
 

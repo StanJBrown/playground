@@ -9,8 +9,11 @@ import playground.data_loader as data
 from playground.functions import FunctionRegistry
 from playground.evaluator import TreeEvaluator
 from playground.initializer import TreeInitializer
-from playground.db.db_adaptor import DBDataType
+from playground.db.db_adaptor import RecordType
 from playground.db.db_adaptor import DBAdaptor
+from playground.operators.selection import Selection
+from playground.operators.crossover import TreeCrossover
+from playground.operators.mutation import TreeMutation
 
 # SETTINGS
 config_fp = os.path.normpath(
@@ -34,6 +37,10 @@ class DBAdaptorTests(unittest.TestCase):
         self.population.evaluate_population()
         self.population.sort_individuals()
 
+        self.selection = Selection(self.config)
+        self.crossover = TreeCrossover(self.config)
+        self.mutation = TreeMutation(self.config)
+
     def tearDown(self):
         self.db.purge_tables()
 
@@ -51,7 +58,7 @@ class DBAdaptorTests(unittest.TestCase):
         self.db.conn.commit()
 
         # assert
-        data = self.db.select(DBDataType.TREE)[0]
+        data = self.db.select(RecordType.TREE)[0]
 
         self.assertEquals(round(data["score"], 4), round(individual.score, 4))
         self.assertEquals(data["size"], individual.size)
@@ -63,7 +70,7 @@ class DBAdaptorTests(unittest.TestCase):
         self.db.conn.commit()
 
         # assert
-        data = self.db.select(DBDataType.POPULATION)[0]
+        data = self.db.select(RecordType.POPULATION)[0]
 
         best_individual = str(self.population.best_individuals[0])
         best_score = self.population.best_individuals[0].score
@@ -71,13 +78,29 @@ class DBAdaptorTests(unittest.TestCase):
         self.assertEquals(round(data["best_score"], 4), round(best_score, 4))
         self.assertEquals(data["best_individual"], best_individual)
 
+    def test_record_selection(self):
+        new_population = self.selection.tournament_selection(self.population)
+        self.selection.new_population = new_population
+        selection_dict = self.selection._build_selection_dict()
+        self.db.record_selection(selection_dict)
+        self.db.conn.commit()
+
+        # assert
+        data = self.db.select(RecordType.SELECTION)
+        self.assertEquals(len(data), 1)
+
+        data = data[0]
+        self.assertEquals(len(data), 3)
+        self.assertEquals(data["method"], selection_dict["method"])
+        self.assertEquals(data["selected"], selection_dict["selected"])
+
     def test_record(self):
         individual = self.population.individuals[0]
-        self.db.record(DBDataType.POPULATION, self.population)
+        self.db.record(RecordType.POPULATION, self.population)
         self.db.conn.commit()
 
         # assert population
-        data = self.db.select(DBDataType.POPULATION)[0]
+        data = self.db.select(RecordType.POPULATION)[0]
 
         best_individual = str(self.population.best_individuals[0])
         best_score = self.population.best_individuals[0].score
@@ -95,8 +118,8 @@ class DBAdaptorTests(unittest.TestCase):
         self.assertEquals(data["branches"], individual.branches)
 
     def test_select(self):
-        self.db.record(DBDataType.POPULATION, self.population)
-        data = self.db.select(DBDataType.POPULATION)
+        self.db.record(RecordType.POPULATION, self.population)
+        data = self.db.select(RecordType.POPULATION)
 
         # population
         data_best_score = round(data[0]["best_score"], 4)
@@ -104,25 +127,25 @@ class DBAdaptorTests(unittest.TestCase):
         self.assertEquals(pop_best_score, data_best_score)
 
         # individuals
-        data = self.db.select(DBDataType.TREE)
+        data = self.db.select(RecordType.TREE)
         self.assertEquals(len(self.population.individuals), len(data))
 
-        data = self.db.select(DBDataType.TREE, None, 1)
+        data = self.db.select(RecordType.TREE, None, 1)
         self.assertEquals(len(data), 1)
 
     def test_remove(self):
         # setup
-        self.db.record(DBDataType.POPULATION, self.population)
+        self.db.record(RecordType.POPULATION, self.population)
 
         # check before remove
-        data = self.db.select(DBDataType.POPULATION)
+        data = self.db.select(RecordType.POPULATION)
         self.assertTrue(len(data) > 0)
 
         # remove
-        self.db.remove(DBDataType.POPULATION)
+        self.db.remove(RecordType.POPULATION)
 
         # check after remove
-        data = self.db.select(DBDataType.POPULATION)
+        data = self.db.select(RecordType.POPULATION)
         self.assertEquals(len(data), 0)
 
 if __name__ == '__main__':

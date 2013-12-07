@@ -53,13 +53,9 @@ CREATE TABLE IF NOT EXISTS crossovers
 (
     crossover_id SERIAL,
 
-    generation INT NOT NULL,
     method TEXT NOT NULL,
-    probability REAL NOT NULL,
-    probability_threshold REAL NOT NULL,
-
-    parent_1_id INT NOT NULL,
-    parent_2_id INT NOT NULL,
+    crossover_probability REAL NOT NULL,
+    random_probability REAL NOT NULL,
     crossovered BOOL NOT NULL,
 
     PRIMARY KEY (crossover_id)

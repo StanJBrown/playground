@@ -2,10 +2,19 @@
 from random import randint
 from random import random
 
+from playground.db.db_adaptor import RecordType
+
 
 class TreeCrossover(object):
-    def __init__(self, config):
+    def __init__(self, config, **kwargs):
         self.config = config
+        self.recorder = kwargs.get("recorder", None)
+
+        self.method = None
+        self.index = None
+        self.crossover_probability = None
+        self.random_probability = None
+        self.crossovered = False
 
     def _symetric_crossover_index(self, tree_1, tree_2):
         t_1_len = len(tree_1.func_nodes)
@@ -31,15 +40,23 @@ class TreeCrossover(object):
         tree_2.replace_node(func_node_2, func_node_1)
 
     def crossover(self, tree_1, tree_2):
-        method = self.config["crossover"]["method"]
-        crossover_prob = self.config["crossover"]["probability"]
-        prob = random()
+        self.method = self.config["crossover"]["method"]
+        self.crossover_probability = self.config["crossover"]["probability"]
+        self.random_probability = random()
+        self.crossovered = False
 
+        # pre-checks
         if len(tree_1.func_nodes) < 1 or len(tree_2.func_nodes) < 1:
-            prob = 1.1  # i.e. do not crossover
+            self.random_probability = 1.1  # i.e. do not crossover
 
-        if crossover_prob >= prob:
-            if method == "POINT_CROSSOVER":
+        # crossover
+        if self.crossover_probability >= self.random_probability:
+            if self.method == "POINT_CROSSOVER":
                 self.point_crossover(tree_1, tree_2)
+                self.crossovered = True
             else:
                 raise RuntimeError("Undefined crossover method!")
+
+        # record
+        if self.recorder is not None:
+            self.recorder.record(RecordType.CROSSOVER, self)

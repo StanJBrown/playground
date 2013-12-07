@@ -2,8 +2,11 @@
 
 - Generation record (with Database?)
     Preferably with PostgreSQL. Things to record are:
-        - population size
-        - population generation number
+        - population
+            - size
+            - generation number
+            - best score
+            - best individual
         - individuals
             - score
             - size
@@ -11,14 +14,14 @@
             - branches
             - tree structure in post-order format
         - selection
-            - probability
             - method
+            - selected
         - crossover
-            - probability
             - method
+            - probability
         - mutation
-            - probability
             - method
+            - probability
 
 - Add 2 more symbolic regression examples
 - Add ability to seed random

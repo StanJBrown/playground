@@ -37,9 +37,9 @@ class DBAdaptorTests(unittest.TestCase):
         self.population.evaluate_population()
         self.population.sort_individuals()
 
-        self.selection = Selection(self.config)
-        self.crossover = TreeCrossover(self.config)
-        self.mutation = TreeMutation(self.config)
+        self.selection = Selection(self.config, recorder=self.db)
+        self.crossover = TreeCrossover(self.config, recorder=self.db)
+        self.mutation = TreeMutation(self.config, recorder=self.db)
 
     def tearDown(self):
         self.db.purge_tables()
@@ -79,11 +79,7 @@ class DBAdaptorTests(unittest.TestCase):
         self.assertEquals(data["best_individual"], best_individual)
 
     def test_record_selection(self):
-        new_population = self.selection.tournament_selection(self.population)
-        self.selection.new_population = new_population
-        selection_dict = self.selection._build_selection_dict()
-        self.db.record_selection(selection_dict)
-        self.db.conn.commit()
+        self.selection.select(self.population)
 
         # assert
         data = self.db.select(RecordType.SELECTION)
@@ -91,8 +87,33 @@ class DBAdaptorTests(unittest.TestCase):
 
         data = data[0]
         self.assertEquals(len(data), 3)
-        self.assertEquals(data["method"], selection_dict["method"])
-        self.assertEquals(data["selected"], selection_dict["selected"])
+        self.assertEquals(data["method"], self.selection.method)
+        self.assertEquals(data["selected"], self.selection.selected)
+
+    def test_record_crossover(self):
+        tree_1 = self.population.individuals[0]
+        tree_2 = self.population.individuals[1]
+        self.crossover.crossover(tree_1, tree_2)
+
+        # assert
+        data = self.db.select(RecordType.CROSSOVER)
+        self.assertEquals(len(data), 1)
+
+        data = data[0]
+        self.assertEquals(len(data), 5)
+        self.assertEquals(data["method"], self.crossover.method)
+        self.assertEquals(
+            round(data["crossover_probability"], 4),
+            round(self.crossover.crossover_probability, 4)
+        )
+        self.assertEquals(
+            round(data["random_probability"], 4),
+            round(self.crossover.random_probability, 4)
+        )
+        self.assertEquals(
+            data["crossovered"],
+            self.crossover.crossovered
+        )
 
     def test_record(self):
         individual = self.population.individuals[0]

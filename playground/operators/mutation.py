@@ -8,8 +8,10 @@ from playground.initializer import TreeInitializer
 
 
 class TreeMutation(object):
-    def __init__(self, config):
+    def __init__(self, config, **kwargs):
         self.config = config
+        self.recorder = kwargs.get("recorder", None)
+
         self.tree_generator = TreeInitializer(self.config, None)
 
     def _gen_func_node(self, func_type, name):

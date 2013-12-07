@@ -215,8 +215,38 @@ class DBAdaptor(object):
                 )
             """.format(
                 table=self.selections,
-                method=selection["method"],
-                selected=selection["selected"],
+                method=selection.method,
+                selected=selection.selected,
+            )
+            self.cursor.execute(query)
+
+        except db.DatabaseError:
+            self.conn.rollback()
+            raise
+
+    def record_crossover(self, crossover):
+        try:
+            query = """
+                INSERT INTO {table}
+                (
+                    method,
+                    crossover_probability,
+                    random_probability,
+                    crossovered
+                )
+                VALUES
+                (
+                    '{method}',
+                    {crossover_probability},
+                    {random_probability},
+                    {crossovered}
+                )
+            """.format(
+                table=self.crossovers,
+                method=crossover.method,
+                crossover_probability=crossover.crossover_probability,
+                random_probability=crossover.random_probability,
+                crossovered=crossover.crossovered
             )
             self.cursor.execute(query)
 
@@ -230,6 +260,8 @@ class DBAdaptor(object):
                 self.record_population(data)
             elif record_type == RecordType.SELECTION:
                 self.record_selection(data)
+            elif record_type == RecordType.CROSSOVER:
+                self.record_crossover(data)
             self.conn.commit()
 
         except db.DatabaseError:

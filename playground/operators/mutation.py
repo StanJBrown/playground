@@ -5,7 +5,7 @@ from random import sample
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
 from playground.initializer import TreeInitializer
-from playground.db.db_adaptor import RecordType
+from playground.recorder.record_type import RecordType
 
 
 class TreeMutation(object):

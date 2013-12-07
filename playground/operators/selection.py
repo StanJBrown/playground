@@ -4,7 +4,7 @@ from random import sample
 import operator
 
 from playground.population import Population
-from playground.db.db_adaptor import RecordType
+from playground.recorder.record_type import RecordType
 
 
 class Selection(object):
@@ -56,9 +56,9 @@ class Selection(object):
         # select loop
         self.selected = 0
         max_select = len(population.individuals) / 2
+        t_size = self.config["selection"].get("tournament_size", 2)
         while self.selected < max_select:
             # randomly select N individuals for tournament
-            t_size = self.config["selection"].get("tournament_size", 2)
             tournament = sample(population.individuals, t_size)
 
             # find best by sorting

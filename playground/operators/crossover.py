@@ -1,8 +1,8 @@
-#1/usr/bin/env python
+#!/usr/bin/env python
 from random import randint
 from random import random
 
-from playground.db.db_adaptor import RecordType
+from playground.recorder.record_type import RecordType
 
 
 class TreeCrossover(object):

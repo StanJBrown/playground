@@ -9,8 +9,8 @@ import playground.data_loader as data
 from playground.functions import FunctionRegistry
 from playground.evaluator import TreeEvaluator
 from playground.initializer import TreeInitializer
-from playground.db.db_adaptor import RecordType
-from playground.db.db_adaptor import DBAdaptor
+from playground.recorder.db import RecordType
+from playground.recorder.db import DB
 from playground.operators.selection import Selection
 from playground.operators.crossover import TreeCrossover
 from playground.operators.mutation import TreeMutation
@@ -21,7 +21,7 @@ config_fp = os.path.normpath(
 )
 
 
-class DBAdaptorTests(unittest.TestCase):
+class DBTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
         data.load_data(self.config)
@@ -30,7 +30,7 @@ class DBAdaptorTests(unittest.TestCase):
         self.evaluator = TreeEvaluator(self.config, self.functions)
         self.tree_initializer = TreeInitializer(self.config, self.evaluator)
 
-        self.db = DBAdaptor(self.config)
+        self.db = DB(self.config)
         self.db.setup_tables()
 
         self.population = self.tree_initializer.init()

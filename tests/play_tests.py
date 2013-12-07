@@ -12,7 +12,7 @@ import playground.play as play
 from playground.initializer import TreeInitializer
 from playground.evaluator import TreeEvaluator
 from playground.functions import FunctionRegistry
-from playground.db.db_adaptor import DBAdaptor
+# from playground.recorder.db import DB
 from playground.operators.selection import Selection
 from playground.operators.crossover import TreeCrossover
 from playground.operators.mutation import TreeMutation
@@ -30,18 +30,22 @@ class PlayTests(unittest.TestCase):
         self.evaluator = TreeEvaluator(self.config, functions)
         self.tree_initializer = TreeInitializer(self.config, self.evaluator)
 
-        self.db = DBAdaptor(self.config)
-        self.db.setup_tables()
+        # self.db = DB(self.config)
+        # self.db.setup_tables()
+        self.db = None
 
         self.selection = Selection(self.config, recorder=self.db)
         self.crossover = TreeCrossover(self.config, recorder=self.db)
         self.mutation = TreeMutation(self.config, recorder=self.db)
 
     def tearDown(self):
+        # self.db.purge_tables()
+
         del self.config
 
         del self.evaluator
         del self.tree_initializer
+        del self.db
 
         del self.selection
         del self.crossover

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import copy
-import random
 
 from sympy import simplify
 
@@ -37,7 +36,6 @@ def reproduce(population, crossover, mutation, config):
 
 
 def play(initializer, selection, crossover, mutation, config):
-    random.seed(10)
     generation = 0
     max_generation = config["max_generation"]
     goal_reached = False

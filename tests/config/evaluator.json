@@ -4,6 +4,10 @@
 
     "tree_init_method": "FULL_METHOD",
 
+    "evaluator" : {
+        "use_cache": true
+    },
+
     "function_nodes" : [
         {
             "type": "BINARY_OP",

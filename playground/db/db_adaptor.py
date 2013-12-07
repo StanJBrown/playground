@@ -37,9 +37,20 @@ class DBAdaptor(object):
         try:
             self.conn = db.connect(database=self.db, user=self.user)
             self.cursor = self.conn.cursor(cursor_factory=db_extras.DictCursor)
-        except db.DatabaseError, e:
-            print('Error {0}'.format(e))
+        except db.DatabaseError:
             raise
+
+    def disconnect(self):
+        try:
+            self.conn.close()
+        except db.DatabaseError:
+            raise
+
+    def table_name(self, data_type):
+        if data_type == DBDataType.POPULATION:
+            return self.populations
+        elif data_type == DBDataType.TREE:
+            return self.trees
 
     def setup_tables(self):
         try:
@@ -49,8 +60,7 @@ class DBAdaptor(object):
 
             self.cursor.execute(open(table_schema, "r").read())
             self.conn.commit()
-        except db.DatabaseError, e:
-            print('Error {0}'.format(e))
+        except db.DatabaseError:
             raise
 
     def purge_tables(self):
@@ -61,8 +71,7 @@ class DBAdaptor(object):
 
             self.cursor.execute(open(table_schema, "r").read())
             self.conn.commit()
-        except db.DatabaseError, e:
-            print('Error {0}'.format(e))
+        except db.DatabaseError:
             raise
 
     def record_individual(self, population_id, generation, individual):
@@ -182,6 +191,7 @@ class DBAdaptor(object):
                 self.record_individual(1, generation, individual)
 
         except db.DatabaseError:
+            self.conn.rollback()
             raise
 
     def record(self, data_type, data):
@@ -191,13 +201,62 @@ class DBAdaptor(object):
             self.conn.commit()
 
         except db.DatabaseError:
+            self.conn.rollback()
             raise
 
-    def remove(self, data):
-        print ""
+    def _build_conditions(self, conditions):
+        if conditions is not None:
+            conditions = "WHERE " + " AND ".join(conditions)
+        else:
+            conditions = ""
+        return conditions
 
-    def update(self, data):
-        print ""
+    def _build_limit(self, limit):
+        if limit is not None:
+            limit = "LIMIT " + str(limit)
+        else:
+            limit = ""
+        return limit
 
-    def read(self, data):
-        print ""
+    def select(self, data_type, conditions=None, limit=None):
+        try:
+            table = self.table_name(data_type)
+            conditions = self._build_conditions(conditions)
+            limit = self._build_limit(limit)
+
+            query = "SELECT * FROM {table} {conditions} {limit}".format(
+                table=table,
+                conditions=conditions,
+                limit=limit
+            )
+            query = query.strip()
+            query += ";"
+
+            self.cursor.execute(query)
+            data = self.cursor.fetchall()
+
+            return data
+
+        except db.DatabaseError:
+            self.conn.rollback()
+            raise
+
+    def remove(self, data_type, conditions=None, limit=None):
+        try:
+            table = self.table_name(data_type)
+            conditions = self._build_conditions(conditions)
+            limit = self._build_limit(limit)
+
+            query = "DELETE FROM {table} {conditions} {limit}".format(
+                table=table,
+                conditions=conditions,
+                limit=limit
+            )
+            query = query.strip()
+            query += ";"
+
+            self.cursor.execute(query)
+
+        except db.DatabaseError:
+            self.conn.rollback()
+            raise

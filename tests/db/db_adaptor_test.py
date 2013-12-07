@@ -51,10 +51,9 @@ class DBAdaptorTests(unittest.TestCase):
         self.db.conn.commit()
 
         # assert
-        self.db.cursor.execute("SELECT * FROM trees")
-        data = self.db.cursor.fetchall()[0]
+        data = self.db.select(DBDataType.TREE)[0]
 
-        self.assertEquals(data["score"], round(individual.score, 4))
+        self.assertEquals(round(data["score"], 4), round(individual.score, 4))
         self.assertEquals(data["size"], individual.size)
         self.assertEquals(data["depth"], individual.depth)
         self.assertEquals(data["branches"], individual.branches)
@@ -64,13 +63,12 @@ class DBAdaptorTests(unittest.TestCase):
         self.db.conn.commit()
 
         # assert
-        self.db.cursor.execute("SELECT * FROM populations")
-        data = self.db.cursor.fetchall()[0]
+        data = self.db.select(DBDataType.POPULATION)[0]
 
         best_individual = str(self.population.best_individuals[0])
         best_score = self.population.best_individuals[0].score
         self.assertEquals(data["generation"], self.population.generation)
-        self.assertEquals(data["best_score"], round(best_score, 4))
+        self.assertEquals(round(data["best_score"], 4), round(best_score, 4))
         self.assertEquals(data["best_individual"], best_individual)
 
     def test_record(self):
@@ -79,24 +77,53 @@ class DBAdaptorTests(unittest.TestCase):
         self.db.conn.commit()
 
         # assert population
-        self.db.cursor.execute("SELECT * FROM populations")
-        data = self.db.cursor.fetchall()[0]
+        data = self.db.select(DBDataType.POPULATION)[0]
 
         best_individual = str(self.population.best_individuals[0])
         best_score = self.population.best_individuals[0].score
         self.assertEquals(data["generation"], self.population.generation)
-        self.assertEquals(data["best_score"], round(best_score, 4))
+        self.assertEquals(round(data["best_score"], 4), round(best_score, 4))
         self.assertEquals(data["best_individual"], best_individual)
 
         # assert individual
         self.db.cursor.execute("SELECT * FROM trees")
         data = self.db.cursor.fetchall()[0]
 
-        self.assertEquals(data["score"], round(individual.score, 4))
+        self.assertEquals(round(data["score"], 4), round(individual.score, 4))
         self.assertEquals(data["size"], individual.size)
         self.assertEquals(data["depth"], individual.depth)
         self.assertEquals(data["branches"], individual.branches)
 
+    def test_select(self):
+        self.db.record(DBDataType.POPULATION, self.population)
+        data = self.db.select(DBDataType.POPULATION)
+
+        # population
+        data_best_score = round(data[0]["best_score"], 4)
+        pop_best_score = round(self.population.best_individuals[0].score, 4)
+        self.assertEquals(pop_best_score, data_best_score)
+
+        # individuals
+        data = self.db.select(DBDataType.TREE)
+        self.assertEquals(len(self.population.individuals), len(data))
+
+        data = self.db.select(DBDataType.TREE, None, 1)
+        self.assertEquals(len(data), 1)
+
+    def test_remove(self):
+        # setup
+        self.db.record(DBDataType.POPULATION, self.population)
+
+        # check before remove
+        data = self.db.select(DBDataType.POPULATION)
+        self.assertTrue(len(data) > 0)
+
+        # remove
+        self.db.remove(DBDataType.POPULATION)
+
+        # check after remove
+        data = self.db.select(DBDataType.POPULATION)
+        self.assertEquals(len(data), 0)
 
 if __name__ == '__main__':
     unittest.main()

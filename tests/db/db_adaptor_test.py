@@ -110,10 +110,28 @@ class DBAdaptorTests(unittest.TestCase):
             round(data["random_probability"], 4),
             round(self.crossover.random_probability, 4)
         )
+        self.assertEquals(data["crossovered"], self.crossover.crossovered)
+
+    def test_record_mutation(self):
+        tree = self.population.individuals[0]
+        self.mutation.mutate(tree)
+
+        # assert
+        data = self.db.select(RecordType.MUTATION)
+        self.assertEquals(len(data), 1)
+
+        data = data[0]
+        self.assertEquals(len(data), 5)
+        self.assertEquals(data["method"], self.mutation.method)
         self.assertEquals(
-            data["crossovered"],
-            self.crossover.crossovered
+            round(data["mutation_probability"], 4),
+            round(self.mutation.mutation_probability, 4)
         )
+        self.assertEquals(
+            round(data["random_probability"], 4),
+            round(self.mutation.random_probability, 4)
+        )
+        self.assertEquals(data["mutated"], self.mutation.mutated)
 
     def test_record(self):
         individual = self.population.individuals[0]

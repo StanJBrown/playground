@@ -5,6 +5,7 @@ from random import sample
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
 from playground.initializer import TreeInitializer
+from playground.db.db_adaptor import RecordType
 
 
 class TreeMutation(object):
@@ -13,6 +14,12 @@ class TreeMutation(object):
         self.recorder = kwargs.get("recorder", None)
 
         self.tree_generator = TreeInitializer(self.config, None)
+
+        self.method = None
+        self.index = None
+        self.mutation_probability = None
+        self.random_probability = None
+        self.mutated = False
 
     def _gen_func_node(self, func_type, name):
         func_node = TreeNode(
@@ -156,16 +163,21 @@ class TreeMutation(object):
             "EXPAND_MUTATION": self.expansion_mutation
         }
 
-        method = sample(self.config["mutation"]["methods"], 1)[0]
-        mutation_prob = self.config["mutation"]["probability"]
-        prob = random()
+        self.method = sample(self.config["mutation"]["methods"], 1)[0]
+        self.mutation_probability = self.config["mutation"]["probability"]
+        self.random_probability = random()
+        self.mutated = False
 
         if len(tree.term_nodes) < 1 or len(tree.input_nodes) < 1:
-                prob = 1.1
+                self.random_probability = 1.1
 
         if len(tree.func_nodes) < 1:
-                prob = 1.1
+                self.random_probability = 1.1
 
-        if mutation_prob >= prob:
-            mutation_func = mutation_methods[method]
+        if self.mutation_probability >= self.random_probability:
+            mutation_func = mutation_methods[self.method]
             mutation_func(tree)
+            self.mutated = True
+
+        if self.recorder is not None:
+            self.recorder.record(RecordType.MUTATION, self)

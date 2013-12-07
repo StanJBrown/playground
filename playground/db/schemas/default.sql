@@ -66,12 +66,9 @@ CREATE TABLE IF NOT EXISTS mutations
 (
     mutation_id SERIAL,
 
-    generation INT NOT NULL,
     method TEXT NOT NULL,
-    probability REAL NOT NULL,
-    probability_threshold REAL NOT NULL,
-
-    target_id INT NOT NULL,
+    mutation_probability REAL NOT NULL,
+    random_probability REAL NOT NULL,
     mutated BOOL NOT NULL,
 
     PRIMARY KEY (mutation_id)

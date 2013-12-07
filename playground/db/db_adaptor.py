@@ -254,6 +254,36 @@ class DBAdaptor(object):
             self.conn.rollback()
             raise
 
+    def record_mutation(self, mutation):
+        try:
+            query = """
+                INSERT INTO {table}
+                (
+                    method,
+                    mutation_probability,
+                    random_probability,
+                    mutated
+                )
+                VALUES
+                (
+                    '{method}',
+                    {mutation_probability},
+                    {random_probability},
+                    {mutated}
+                )
+            """.format(
+                table=self.mutations,
+                method=mutation.method,
+                mutation_probability=mutation.mutation_probability,
+                random_probability=mutation.random_probability,
+                mutated=mutation.mutated
+            )
+            self.cursor.execute(query)
+
+        except db.DatabaseError:
+            self.conn.rollback()
+            raise
+
     def record(self, record_type, data):
         try:
             if record_type == RecordType.POPULATION:
@@ -262,11 +292,18 @@ class DBAdaptor(object):
                 self.record_selection(data)
             elif record_type == RecordType.CROSSOVER:
                 self.record_crossover(data)
+            elif record_type == RecordType.MUTATION:
+                self.record_mutation(data)
+            else:
+                raise RuntimeError("Undefined record type!")
             self.conn.commit()
 
         except db.DatabaseError:
-            self.conn.rollback()
             raise
+        except:
+            raise
+        finally:
+            self.conn.rollback()
 
     def _build_conditions(self, conditions):
         if conditions is not None:

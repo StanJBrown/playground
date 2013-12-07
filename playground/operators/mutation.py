@@ -8,7 +8,7 @@ from playground.initializer import TreeInitializer
 from playground.recorder.record_type import RecordType
 
 
-class TreeMutation(object):
+class GPTreeMutation(object):
     def __init__(self, config, **kwargs):
         self.config = config
         self.recorder = kwargs.get("recorder", None)

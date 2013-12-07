@@ -13,7 +13,7 @@ from playground.tree import Tree
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
 from playground.tree import TreeParser
-from playground.operators.mutation import TreeMutation
+from playground.operators.mutation import GPTreeMutation
 
 # SETTINGS
 config_fp = os.path.normpath(
@@ -30,7 +30,7 @@ class MutatorTests(unittest.TestCase):
         self.tree_initializer = TreeInitializer(self.config, self.evaluator)
 
         self.tree_parser = TreeParser()
-        self.tree_mutation = TreeMutation(self.config)
+        self.tree_mutation = GPTreeMutation(self.config)
 
         # create nodes
         left_node = TreeNode(TreeNodeType.TERM, value=1.0)

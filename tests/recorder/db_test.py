@@ -12,8 +12,8 @@ from playground.initializer import TreeInitializer
 from playground.recorder.db import RecordType
 from playground.recorder.db import DB
 from playground.operators.selection import Selection
-from playground.operators.crossover import TreeCrossover
-from playground.operators.mutation import TreeMutation
+from playground.operators.crossover import GPTreeCrossover
+from playground.operators.mutation import GPTreeMutation
 
 # SETTINGS
 config_fp = os.path.normpath(
@@ -38,8 +38,8 @@ class DBTests(unittest.TestCase):
         self.population.sort_individuals()
 
         self.selection = Selection(self.config, recorder=self.db)
-        self.crossover = TreeCrossover(self.config, recorder=self.db)
-        self.mutation = TreeMutation(self.config, recorder=self.db)
+        self.crossover = GPTreeCrossover(self.config, recorder=self.db)
+        self.mutation = GPTreeMutation(self.config, recorder=self.db)
 
     def tearDown(self):
         self.db.purge_tables()

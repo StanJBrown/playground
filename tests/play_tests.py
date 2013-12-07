@@ -14,8 +14,8 @@ from playground.evaluator import TreeEvaluator
 from playground.functions import FunctionRegistry
 # from playground.recorder.db import DB
 from playground.operators.selection import Selection
-from playground.operators.crossover import TreeCrossover
-from playground.operators.mutation import TreeMutation
+from playground.operators.crossover import GPTreeCrossover
+from playground.operators.mutation import GPTreeMutation
 
 # SETTINGS
 config_fp = os.path.join(os.path.dirname(__file__), "config/play.json")
@@ -35,8 +35,8 @@ class PlayTests(unittest.TestCase):
         self.db = None
 
         self.selection = Selection(self.config, recorder=self.db)
-        self.crossover = TreeCrossover(self.config, recorder=self.db)
-        self.mutation = TreeMutation(self.config, recorder=self.db)
+        self.crossover = GPTreeCrossover(self.config, recorder=self.db)
+        self.mutation = GPTreeMutation(self.config, recorder=self.db)
 
     def tearDown(self):
         # self.db.purge_tables()

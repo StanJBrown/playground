@@ -7,7 +7,6 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import playground.config as config
-import playground.data_loader as data
 import playground.play as play
 from playground.initializer import TreeInitializer
 from playground.evaluator import TreeEvaluator
@@ -24,7 +23,6 @@ config_fp = os.path.join(os.path.dirname(__file__), "config/play.json")
 class PlayTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
-        data.load_data(self.config)
 
         functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, functions)

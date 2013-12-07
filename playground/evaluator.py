@@ -19,6 +19,13 @@ class TreeEvaluator(object):
         self.functions = function_registry
         self.tree_parser = TreeParser()
 
+        evaluator_config = config.get("evaluator", None)
+        if evaluator_config is not None:
+            self.use_cache = evaluator_config.get("use_cache", False)
+            self.cache = {}
+
+        self.match_cached = 0
+
     def _gen_term_node(self, node, row):
         try:
             value = self.config["data"][node.name][row]
@@ -105,8 +112,16 @@ class TreeEvaluator(object):
 
     def evaluate(self, tree):
         try:
-            score = self.eval_program(tree.program, tree.size)
-            tree.score = score
+            if self.use_cache:
+                if str(tree) not in self.cache:
+                    score = self.eval_program(tree.program, tree.size)
+                    tree.score = score
+                    self.cache[str(tree)] = score
+                else:
+                    tree.score = self.cache[str(tree)]
+                    self.match_cached += 1
+            else:
+                tree.score = self.eval_program(tree.program, tree.size)
 
         except EvaluationError:
             raise

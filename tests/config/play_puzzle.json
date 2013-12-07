@@ -1,12 +1,8 @@
 {
     "max_population" : 5000,
-    "max_generation" : 5,
+    "max_generation" : 1000,
     "tree_init_method" : "GROW_METHOD",
     "max_depth" : 3,
-
-    "evaluator": {
-        "use_cache" : true
-    },
 
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",
@@ -111,19 +107,20 @@
         {
             "type": "INPUT",
             "name": "x"
+        },
+        {
+            "type": "INPUT",
+            "name": "y"
+        },
+        {
+            "type": "INPUT",
+            "name": "z"
         }
     ],
 
-    "data_file" : "tests/data/sine.dat",
+    "data_file" : "tests/data/puzzle.dat",
 
     "response_variable" : {
-        "name": "y"
-    },
-
-    "database" : {
-        "database": "playground",
-        "host": "localhost",
-        "port": 5432,
-        "user": "playground_user"
+        "name": "result"
     }
 }

@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 import copy
+import random
+
+from sympy import simplify
+
+from playground.tree import TreeParser
 
 
 def reproduce(population, crossover, mutation, config):
@@ -32,15 +37,32 @@ def reproduce(population, crossover, mutation, config):
 
 
 def play(initializer, selection, crossover, mutation, config):
+    random.seed(10)
     generation = 0
     max_generation = config["max_generation"]
     goal_reached = False
 
+    tree_parser = TreeParser()
+
     population = initializer.init()
     while generation < max_generation and goal_reached is not True:
-        print "generation: ", generation
         population.evaluate_population()
         population.sort_individuals()
+
+        best_individual = population.best_individuals[0]
+        print "generation: ", generation
+        print "best_score: " + str(best_individual.score)
+        print "tree_size: " + str(best_individual.size)
+        print "match_cached: " + str(population.evaluator.match_cached)
+        print "cache_size: " + str(len(population.evaluator.cache))
+        population.evaluator.match_cached = 0
+        print ""
+
+        if best_individual.score < 1.0:
+            eq = tree_parser.parse_equation(best_individual.root)
+            if best_individual.size < 20:
+                print simplify(eq)
+            print ""
 
         population = selection.select(population)
         reproduce(population, crossover, mutation, config)

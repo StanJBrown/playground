@@ -1,7 +1,49 @@
 # TODO
 
-- Generation record (with Database?)
-    Preferably with PostgreSQL. Things to record are:
+- Add 2 more symbolic regression examples
+- Add ability to seed random
+- Look at Cartesian GP
+- Look at Co-evolution and how to implement it
+
+---
+
+- Enable playground to become a dedicated evaluator
+
+Refactoring:
+    - Tree generator
+    - Tree node generator
+    - GP stuff into its rightful place (e.g. "playground/gp/")
+    - Refactor config, instead of "input_nodes" use "input_variables"
+
+
+# COMPLETED!
+
+- GP Initializer
+    - Tree initialization via Full method [DONE!]
+    - Tree initialization via Grow method [DONE!]
+
+- GP Evaluator
+    - Tree Evaluator [DONE!]
+    - Basic cache system [DONE!]
+
+- Crossover methods
+    - Point crossover [DONE!]
+
+- Mutation methods
+    - Point mutation [DONE!]
+    - Hoist mutation [DONE!]
+    - Shrink Mutation [DONE!]
+    - Expand Mutation [DONE!]
+    - Subtree Replacement [DONE!]
+
+- Essential elements
+    - Population [DONE!]
+    - Reproduce loop [DONE!]
+    - Play loop [DONE!]
+
+- Extra features
+    - Symbolic maths simplifier [DONE!]
+    - Record convergence process [DONE!]:
         - population
             - size
             - generation number
@@ -22,49 +64,3 @@
         - mutation
             - method
             - probability
-
-- Add 2 more symbolic regression examples
-- Add ability to seed random
-- Look at Cartesian GP
-- Look at Co-evolution and how to implement it
-
----
-
-- Cache sub tree scores:
-    more complicated than once thought
-
-- Enable playground to become a dedicated evaluator
-
-Refactoring:
-    - Tree generator
-    - Tree node generator
-    - GP stuff into its rightful place
-    - Refactor config, instead of "input_nodes" use "input_variables"
-
-
-# COMPLETED!
-
-- GP Initializer
-    - Tree initialization via Full method [DONE!]
-    - Tree initialization via Grow method [DONE!]
-
-- GP Evaluator
-    - Tree Evaluator [DONE!]
-
-- Crossover methods
-    - Point crossover [DONE!]
-
-- Mutation methods
-    - Point mutation [DONE!]
-    - Hoist mutation [DONE!]
-    - Shrink Mutation [DONE!]
-    - Expand Mutation [DONE!]
-    - Subtree Replacement [DONE!]
-
-- Essential elements
-    - Population [DONE!]
-    - Reproduce loop [DONE!]
-    - Play loop [DONE!]
-
-- Extra features
-    - Symbolic maths simplifier [DONE!]

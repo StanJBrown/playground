@@ -5,7 +5,7 @@ from random import random
 from playground.recorder.record_type import RecordType
 
 
-class TreeCrossover(object):
+class GPTreeCrossover(object):
     def __init__(self, config, **kwargs):
         self.config = config
         self.recorder = kwargs.get("recorder", None)

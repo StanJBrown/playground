@@ -13,7 +13,7 @@ from playground.tree import Tree
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
 from playground.tree import TreeParser
-from playground.operators.crossover import TreeCrossover
+from playground.operators.crossover import GPTreeCrossover
 
 # SETTINGS
 config_fp = os.path.normpath(
@@ -21,7 +21,7 @@ config_fp = os.path.normpath(
 )
 
 
-class TreeCrossoverTests(unittest.TestCase):
+class GPTreeCrossoverTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
 
@@ -29,7 +29,7 @@ class TreeCrossoverTests(unittest.TestCase):
         self.evaluator = TreeEvaluator(self.config, self.functions)
         self.tree_initializer = TreeInitializer(self.config, self.evaluator)
 
-        self.crossover = TreeCrossover(self.config)
+        self.crossover = GPTreeCrossover(self.config)
         self.tree_parser = TreeParser()
 
         # create nodes

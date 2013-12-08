@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import operator
 
-from playground.evaluator import EvaluationError
+from playground.functions import EvaluationError
 
 
 class Population(object):

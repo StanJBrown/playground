@@ -8,7 +8,7 @@ import playground.config as config
 import playground.data_loader as data
 from playground.functions import FunctionRegistry
 from playground.evaluator import TreeEvaluator
-from playground.initializer import TreeInitializer
+from playground.tree import TreeInitializer
 from playground.recorder.db import RecordType
 from playground.recorder.db import DB
 from playground.operators.selection import Selection

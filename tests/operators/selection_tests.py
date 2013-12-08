@@ -6,15 +6,14 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import playground.config as config
-from playground.initializer import TreeInitializer
+from playground.tree import TreeInitializer
+from playground.tree import TreeEvaluator
 from playground.functions import FunctionRegistry
-from playground.evaluator import TreeEvaluator
 from playground.operators.selection import Selection
 
 # SETTINGS
-config_fp = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "../config/selection.json")
-)
+cwd = os.path.dirname(__file__)
+config_fp = os.path.normpath(os.path.join(cwd, "../config/selection.json"))
 
 
 class SelectionTests(unittest.TestCase):

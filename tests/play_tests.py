@@ -8,8 +8,8 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import playground.config as config
 import playground.play as play
-from playground.initializer import TreeInitializer
-from playground.evaluator import TreeEvaluator
+from playground.tree import TreeInitializer
+from playground.tree import TreeEvaluator
 from playground.functions import FunctionRegistry
 # from playground.recorder.db import DB
 from playground.operators.selection import Selection

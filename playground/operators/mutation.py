@@ -4,7 +4,7 @@ from random import sample
 
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
-from playground.initializer import TreeInitializer
+from playground.tree import TreeInitializer
 from playground.recorder.record_type import RecordType
 
 

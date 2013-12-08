@@ -2,7 +2,7 @@
 import math
 
 
-class FunctionExecutionError(Exception):
+class EvaluationError(Exception):
     def __init__(self, message):
         self.message = message
 
@@ -27,7 +27,7 @@ def div_function(left, right):
         result = left / right
         return result
     except ZeroDivisionError as e:
-        raise FunctionExecutionError(e.message)
+        raise EvaluationError(e.message)
 
 
 def cos_function(value):

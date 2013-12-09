@@ -50,7 +50,9 @@ class GPTreeMutation(object):
         return input_node
 
     def _gen_new_node(self, details):
-        if details["type"] == TreeNodeType.UNARY_OP:
+        if details.get("type") is None:  # it is an input node
+            return self._gen_input_node(details["name"])
+        elif details["type"] == TreeNodeType.UNARY_OP:
             return self._gen_func_node(details["type"], details["name"])
         elif details["type"] == TreeNodeType.BINARY_OP:
             return self._gen_func_node(details["type"], details["name"])
@@ -58,8 +60,6 @@ class GPTreeMutation(object):
             name = details.get("name", None)
             value = details.get("value", None)
             return self._gen_term_node(name, value)
-        elif details["type"] == TreeNodeType.INPUT:
-            return self._gen_input_node(details["name"])
 
     def _get_new_node(self, node):
         # determine what kind of node it is
@@ -75,11 +75,10 @@ class GPTreeMutation(object):
             nodes.extend(tmp)
         elif t == TreeNodeType.TERM or t == TreeNodeType.INPUT:
             nodes.extend(self.config["terminal_nodes"])
-            nodes.extend(self.config["input_nodes"])
+            nodes.extend(self.config["input_variables"])
 
         # check the node and return
         while True:
-
             # obtain a new node
             new_node_details = sample(nodes, 1)[0]
             new_node = self._gen_new_node(new_node_details)
@@ -92,11 +91,10 @@ class GPTreeMutation(object):
         node = sample(tree.program, 1)[0]
         new_node = self._get_new_node(node)
 
-        t = node.node_type
-        if t == TreeNodeType.UNARY_OP or t == TreeNodeType.BINARY_OP:
+        if node.is_function():
             node.name = new_node["name"]
-        elif t == TreeNodeType.TERM or t == TreeNodeType.INPUT:
-            node.node_type = new_node["type"]
+        elif node.is_terminal() or node.is_input():
+            node.node_type = new_node.get("type", TreeNodeType.INPUT)
             node.name = new_node.get("name", None)
             node.value = new_node.get("value", None)
 

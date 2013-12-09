@@ -22,7 +22,7 @@ def _parse_header(csv_reader, config):
     response_var["data_index"] = response_index
 
     # obtain and set input variable index
-    for input_node in config["input_nodes"]:
+    for input_node in config["input_variables"]:
         index = _find_header_index(header, input_node["name"])
         input_node["data_index"] = index
 
@@ -40,7 +40,7 @@ def _parse_data(csv_reader, config):
     # var list containig details what each column is
     variables = []
     variables.append(config["response_variable"])
-    variables.extend(config["input_nodes"])
+    variables.extend(config["input_variables"])
 
     # create data and variables (i.e. a data table in list form)
     config["data"] = {}
@@ -68,6 +68,7 @@ def load_data(config):
 def load_config(config_file):
     config = json.loads(open(config_file).read())
 
+    # load data
     if config.get("data_file", False):
         load_data(config)
 

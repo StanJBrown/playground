@@ -92,12 +92,12 @@ class TreeTests(unittest.TestCase):
 
     def test_valid(self):
         # assert valid
-        res = self.tree.valid(self.config["input_nodes"])
+        res = self.tree.valid(self.config["input_variables"])
         self.assertTrue(res)
 
         # assert fail valid
         self.tree.input_nodes.pop()
-        res = self.tree.valid(self.config["input_nodes"])
+        res = self.tree.valid(self.config["input_variables"])
         self.assertFalse(res)
 
     def test_get_linked_node(self):
@@ -301,7 +301,7 @@ class TreeInitializerTests(unittest.TestCase):
             self.assertTrue(tree.branches > 0)
             self.assertEquals(tree.open_branches, 0)
             self.assertTrue(
-                len(tree.input_nodes) >= len(self.config["input_nodes"])
+                len(tree.input_nodes) >= len(self.config["input_variables"])
             )
 
     def test_grow_method(self):
@@ -335,7 +335,7 @@ class TreeInitializerTests(unittest.TestCase):
             self.assertTrue(tree.branches > 0)
             self.assertEquals(tree.open_branches, 0)
             self.assertTrue(
-                len(tree.input_nodes) >= len(self.config["input_nodes"])
+                len(tree.input_nodes) >= len(self.config["input_variables"])
             )
 
     def test_init(self):

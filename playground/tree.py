@@ -140,8 +140,7 @@ class Tree(object):
         # convert config input nodes from dict to list of TreeNodes
         check_list = []
         for node in config_input_nodes:
-            if node["type"] == TreeNodeType.INPUT:
-                check_list.append(node["name"])
+            check_list.append(node["name"])
 
         # convert tree input nodes
         tree_input_nodes = []
@@ -257,8 +256,8 @@ class TreeInitializer(object):
         return term_node
 
     def _gen_input_node(self, index):
-        node = self.config["input_nodes"][index]
-        input_node = TreeNode(node["type"], name=node.get("name", None))
+        node = self.config["input_variables"][index]
+        input_node = TreeNode(TreeNodeType.INPUT, name=node.get("name", None))
         return input_node
 
     def _build_tree(self, node, tree, depth, node_generator):
@@ -284,7 +283,7 @@ class TreeInitializer(object):
 
     def _add_input_nodes(self, tree):
         index = 0
-        inputs = len(self.config["input_nodes"])
+        inputs = len(self.config["input_variables"])
         term_nodes = sample(tree.term_nodes, inputs)
 
         for term_node in term_nodes:
@@ -294,7 +293,7 @@ class TreeInitializer(object):
 
             # increment index
             index += 1
-            if index == len(self.config["input_nodes"]) - 1:
+            if index == len(self.config["input_variables"]) - 1:
                 index = 0
 
             # increment inputs modified
@@ -324,7 +323,7 @@ class TreeInitializer(object):
             tree.update_program()
 
             # add input nodes
-            if len(tree.term_nodes) > len(self.config["input_nodes"]):
+            if len(tree.term_nodes) > len(self.config["input_variables"]):
                 self._add_input_nodes(tree)
                 return tree
 
@@ -363,7 +362,7 @@ class TreeInitializer(object):
             tree.update()
 
             # add input nodes
-            if len(tree.term_nodes) > len(self.config["input_nodes"]):
+            if len(tree.term_nodes) > len(self.config["input_variables"]):
                 self._add_input_nodes(tree)
                 return tree
 

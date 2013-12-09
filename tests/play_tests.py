@@ -84,7 +84,7 @@ class PlayTests(unittest.TestCase):
             self.config
         )
         end_time = time.time()
-        print("With cache: %2.2fsec\n" % (end_time - start_time))
+        print("GP run with cache: %2.2fsec\n" % (end_time - start_time))
 
         # without cache
         self.evaluator.use_cache = False
@@ -100,7 +100,8 @@ class PlayTests(unittest.TestCase):
             self.config
         )
         end_time = time.time()
-        print("Without cache: %2.2fsec\n" % (end_time - start_time))
+        print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
+
 
 if __name__ == '__main__':
     unittest.main()

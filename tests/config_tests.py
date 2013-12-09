@@ -53,7 +53,7 @@ class ConfigTests(unittest.TestCase):
         config._parse_header(self.csv_reader, self.config)
 
         # check index of x
-        input_node = self.config["input_nodes"][0]
+        input_node = self.config["input_variables"][0]
         self.assertEquals(input_node["data_index"], 0)
 
         # check index of y
@@ -67,7 +67,7 @@ class ConfigTests(unittest.TestCase):
         self.config["data"] = []
         variables = []
         variables.append(self.config["response_variable"])
-        variables.extend(self.config["input_nodes"])
+        variables.extend(self.config["input_variables"])
 
         # create data and variables (i.e. a data table in list form)
         self.config["data"] = {}

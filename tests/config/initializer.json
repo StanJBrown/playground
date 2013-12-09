@@ -77,13 +77,11 @@
         }
     ],
 
-    "input_nodes" : [
+    "input_variables" : [
         {
-            "type": "INPUT",
             "name": "x"
         },
         {
-            "type": "INPUT",
             "name": "y"
         }
     ]

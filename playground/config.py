@@ -53,7 +53,7 @@ def _parse_data(csv_reader, config):
         rownum += 1
 
 
-def load_data(config):
+def _load_data(config):
     # open data and csv reader
     data_file = open(config["data_file"], "rb")
     csv_reader = csv.reader(data_file)
@@ -70,6 +70,6 @@ def load_config(config_file):
 
     # load data
     if config.get("data_file", False):
-        load_data(config)
+        _load_data(config)
 
     return config

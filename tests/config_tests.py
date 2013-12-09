@@ -86,7 +86,7 @@ class ConfigTests(unittest.TestCase):
         self.assertEquals(self.config["data"], self.solution)
 
     def test_load_data(self):
-        config.load_data(self.config)
+        config._load_data(self.config)
         self.assertEquals(self.config["data"], self.solution)
 
 

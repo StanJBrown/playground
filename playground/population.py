@@ -34,5 +34,8 @@ class Population(object):
         self.individuals = [i for i in self.individuals if i not in bad_eggs]
 
     def evaluate_individual(self, individual):
-        if individual in self.individuals:
-            self.evaluator.evaluate(individual)
+        try:
+            if individual in self.individuals:
+                self.evaluator.evaluate(individual)
+        except EvaluationError:
+            self.individuals.remove(individual)

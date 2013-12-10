@@ -580,20 +580,6 @@ class TreeEvaluator(object):
         except KeyError:
             print node.name, row
 
-    def eval_func(self, variables, data):
-        node = variables.get("node", None)
-        response_data = variables.get("response_data", None)
-        tree_size = variables.get("tree_size", None)
-        rows = len(response_data)
-
-        sse = 0.0
-        score = 0.0
-        for i in range(rows):
-            sse += pow(node.value - response_data[i], 2)
-            score = sse + (tree_size * 0.1)
-
-        return score
-
     def eval_node(self, node, stack):
         try:
             if node.node_type == TreeNodeType.TERM:
@@ -650,11 +636,6 @@ class TreeEvaluator(object):
 
         except EvaluationError:
             raise
-
-    def eval_sub_tree(self, node, overall_tree_size):
-        sub_program = self.tree_parser.post_order_traverse(node)
-        score = self.eval_program(sub_program, overall_tree_size)
-        return score
 
     def evaluate(self, tree):
         try:

@@ -13,7 +13,6 @@ cmake_install.cmake
 cmake_uninstall.cmake
 install_manifest.txt
 
-*.dat
 *.log
 nohup.out
 examples/log_data

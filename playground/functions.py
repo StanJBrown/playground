@@ -30,6 +30,13 @@ def div_function(left, right):
         raise EvaluationError(e.message)
 
 
+def pow_function(left, right):
+    try:
+        return math.pow(left, right)
+    except:
+        raise EvaluationError("Opps!")
+
+
 def cos_function(value):
     return math.cos(value)
 
@@ -39,7 +46,21 @@ def sin_function(value):
 
 
 def rad_function(value):
-    return math.radians(value)
+    try:
+        return math.radians(value)
+    except:
+        raise EvaluationError("Opps!")
+
+
+def ln_function(value):
+    try:
+        return math.log(value)
+    except:
+        raise EvaluationError("Opps!")
+
+
+def fact_function(value):
+    return math.factorial(value)
 
 
 class FunctionRegistry(object):
@@ -51,12 +72,20 @@ class FunctionRegistry(object):
             self.register("SUB", sub_function)
             self.register("MUL", mul_function)
             self.register("DIV", div_function)
+
             self.register("COS", cos_function)
             self.register("SIN", sin_function)
             self.register("RAD", rad_function)
+            self.register("LN", ln_function)
 
     def register(self, function_name, function):
-        self.functions[function_name] = function
+        def tryFunc(*args):
+            try:
+                return function(*args)
+            except:
+                raise EvaluationError("Opps!")
+
+        self.functions[function_name] = tryFunc
 
     def unregister(self, function_name):
         del self.functions[function_name]

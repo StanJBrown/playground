@@ -510,52 +510,6 @@ class TreeEvaluatorTests(unittest.TestCase):
         self.assertTrue(res is not None)
         self.assertEquals(round(res, 4), 0.0)
 
-    def test_eval_sub_tree(self):
-        # create nodes
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=100.0)
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=10.0)
-        term_node_3 = TreeNode(TreeNodeType.TERM, value=20.0)
-        input_node = TreeNode(TreeNodeType.INPUT, name="x")
-
-        div_func = TreeNode(
-            TreeNodeType.BINARY_OP,
-            name="DIV",
-            left_branch=term_node_1,
-            right_branch=term_node_2
-        )
-
-        mul_func = TreeNode(
-            TreeNodeType.BINARY_OP,
-            name="MUL",
-            left_branch=term_node_3,
-            right_branch=input_node
-        )
-
-        root = TreeNode(
-            TreeNodeType.BINARY_OP,
-            name="ADD",
-            left_branch=div_func,
-            right_branch=mul_func
-        )
-
-        # create tree
-        tree = Tree()
-        tree.root = root
-        tree.update()
-
-        # program
-        print("\nPROGRAM STACK!")
-        for block in tree.program:
-            if block.name is not None:
-                print block.name
-            else:
-                print block.value
-        print ""
-
-        # evaluate tree
-        res = self.evaluator.eval_sub_tree(div_func, tree.size)
-        self.assertTrue(res is not None)
-
     def test_evaluate(self):
         population = self.tree_initializer.init()
         population.evaluator = self.evaluator

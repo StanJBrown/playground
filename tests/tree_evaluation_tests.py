@@ -107,18 +107,16 @@ class TreeEvaluatorTests(unittest.TestCase):
         print ""
 
         # evaluate tree
-        results = {}
         res = evaluator.eval_program(
             tree,
             tree.size,
             self.functions,
             self.config,
-            results
         )
 
         # assert
-        self.assertTrue(res)
-        self.assertEquals(round(results[str(id(tree))], 4), 0.0)
+        self.assertTrue(res is not None)
+        self.assertEquals(round(res, 4), 0.0)
 
     def test_evaluate(self):
         population = self.tree_initializer.init()

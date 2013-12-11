@@ -85,6 +85,7 @@ class NodeTests(unittest.TestCase):
         output = open("out", "r")
         processes = len(output.read().split("\n"))
         output.close()
+        os.remove("out")
 
         return processes
 

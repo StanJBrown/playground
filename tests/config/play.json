@@ -1,6 +1,6 @@
 {
     "max_population" : 50,
-    "max_generation" : 5,
+    "max_generation" : 1,
     "tree_init_method" : "GROW_METHOD",
     "max_depth" : 3,
 

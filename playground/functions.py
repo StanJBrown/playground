@@ -79,13 +79,7 @@ class FunctionRegistry(object):
             self.register("LN", ln_function)
 
     def register(self, function_name, function):
-        def tryFunc(*args):
-            try:
-                return function(*args)
-            except:
-                raise EvaluationError("Opps!")
-
-        self.functions[function_name] = tryFunc
+        self.functions[function_name] = function
 
     def unregister(self, function_name):
         del self.functions[function_name]

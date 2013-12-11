@@ -78,12 +78,10 @@ class PlayTests(unittest.TestCase):
 
     def test_play(self):
         population = self.tree_initializer.init()
-        pop_1 = copy.deepcopy(population)
-        pop_2 = copy.deepcopy(population)
 
         start_time = time.time()
-        p_1 = play.play(
-            pop_1,
+        play.play(
+            population,
             self.selection,
             self.crossover,
             self.mutation,
@@ -98,8 +96,8 @@ class PlayTests(unittest.TestCase):
         self.evaluator.matched_cache = 0
 
         start_time = time.time()
-        p_2 = play.play(
-            pop_2,
+        play.play(
+            population,
             self.selection,
             self.crossover,
             self.mutation,
@@ -108,36 +106,17 @@ class PlayTests(unittest.TestCase):
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 
-        match = False
-        for individual_1 in pop_1.individuals:
-            for individual_2 in pop_2.individuals:
-                match = individual_1.equals(individual_2)
-                if match:
-                    print "MATCH: ", str(individual_1), "--", str(individual_2)
-                    break
-            if match is False:
-                print "MISSMATCH: ", str(individual_1), "--", str(individual_2)
-                break
-        print ""
-
-        print "pop_1"
-        for i in p_1.individuals:
-            print str(i)
-
-        print "\n\npop_2"
-        for i in p_2.individuals:
-            print str(i)
-#
-#     def test_play_multi(self):
-#         play.play_multi(
-#             self.tree_initializer,
-#             self.functions,
-#             evaluate,
-#             self.selection,
-#             self.crossover,
-#             self.mutation,
-#             self.config
-#         )
+    def test_play_multicore(self):
+        population = self.tree_initializer.init()
+        play.play_multicore(
+            population,
+            self.functions,
+            evaluate,
+            self.selection,
+            self.crossover,
+            self.mutation,
+            self.config
+        )
 
 
 if __name__ == '__main__':

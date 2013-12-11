@@ -85,7 +85,7 @@ def play(population, selection, crossover, mutation, config, **kwargs):
     return population
 
 
-def play_multi(
+def play_multicore(
         population,
         functions,
         evaluator,
@@ -98,7 +98,7 @@ def play_multi(
     max_generation = config["max_generation"]
     tree_parser = TreeParser()
     manager = Manager()
-    nproc = 1
+    nproc = 10
 
     processes = []
     score_cache = manager.dict()

@@ -41,7 +41,7 @@ def eval_node(node, stack, functions, config):
         raise
 
 
-def eval_program(tree, tree_size, functions, config, results):
+def eval_program(tree, tree_size, functions, config):
     try:
         stack = []
         sse = 0.0  # squared sum error
@@ -66,12 +66,10 @@ def eval_program(tree, tree_size, functions, config, results):
             # reset stack
             del stack[:]
 
-        results[str(id(tree))] = score
-        return True
+        return score
 
     except EvaluationError:
-        results[str(id(tree))] = None
-        return False
+        return None
 
 
 def evaluate(trees, functions, config, cache, results):
@@ -83,11 +81,13 @@ def evaluate(trees, functions, config, cache, results):
         if evaluator_config["use_cache"]:
             for tree in trees:
                 if str(tree) not in cache:
-                    eval_program(tree, tree.size, functions, config, results)
-                    cache[str(tree)] = tree.score
+                    score = eval_program(tree, tree.size, functions, config)
+                    results[str(id(tree))] = score
+                    cache[str(tree)] = score
                     cached += 1
                 else:
-                    tree.score = cache[str(tree)]
+                    score = cache[str(tree)]
+                    results[str(id(tree))] = score
                     match_cached += 1
         else:
             for tree in trees:

@@ -37,10 +37,9 @@ if __name__ == '__main__':
     # run symbolic regression
     start_time = time.time()
     population = tree_initializer.init()
-    # for i in population.individuals:
-    #     print str(i)
+
     # play.play(population, selection, crossover, mutation, config)
-    play.play_multi(
+    play.play_multicore(
         population,
         functions,
         evaluate,
@@ -49,5 +48,10 @@ if __name__ == '__main__':
         mutation,
         config
     )
+
+    # for i in result.individuals:
+    #     print str(i), "score: ", i.score
+    # print "\n\n"
+
     end_time = time.time()
     print("GP run took: %2.2fsecs\n" % (end_time - start_time))

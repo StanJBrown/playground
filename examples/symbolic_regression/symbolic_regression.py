@@ -49,9 +49,5 @@ if __name__ == '__main__':
         config
     )
 
-    # for i in result.individuals:
-    #     print str(i), "score: ", i.score
-    # print "\n\n"
-
     end_time = time.time()
     print("GP run took: %2.2fsecs\n" % (end_time - start_time))

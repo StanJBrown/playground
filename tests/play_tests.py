@@ -91,7 +91,7 @@ class PlayTests(unittest.TestCase):
         print("GP run with cache: %2.2fsec\n" % (end_time - start_time))
 
         # without cache
-        self.evaluator.use_cache = True
+        self.evaluator.use_cache = False
         self.evaluator.cache = {}
         self.evaluator.matched_cache = 0
 

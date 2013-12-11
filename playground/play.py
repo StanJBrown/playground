@@ -2,6 +2,7 @@
 import math
 import copy
 import random
+import multiprocessing
 from multiprocessing import Process
 from multiprocessing import Manager
 
@@ -98,7 +99,7 @@ def play_multicore(
     max_generation = config["max_generation"]
     tree_parser = TreeParser()
     manager = Manager()
-    nproc = 10
+    nproc = multiprocessing.cpu_count()
 
     processes = []
     score_cache = manager.dict()

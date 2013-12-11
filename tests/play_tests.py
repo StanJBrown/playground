@@ -108,6 +108,8 @@ class PlayTests(unittest.TestCase):
 
     def test_play_multicore(self):
         population = self.tree_initializer.init()
+
+        start_time = time.time()
         play.play_multicore(
             population,
             self.functions,
@@ -117,6 +119,8 @@ class PlayTests(unittest.TestCase):
             self.mutation,
             self.config
         )
+        end_time = time.time()
+        print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 
 
 if __name__ == '__main__':

@@ -32,6 +32,18 @@ Programming process. It can currently perform the following selection methods.
             Newly selected population of individuals.
 
 
+    Constructor Arguments:
+
+        config (dict):
+            Configuration for the whole process.
+
+        **kwargs:
+
+            recorder (object):
+                Object that records the search process.
+
+
+
 ### roulette_wheel_selection(population)
 Performs roulette wheel selection on `population`.
 

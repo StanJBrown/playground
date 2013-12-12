@@ -22,12 +22,12 @@ denotes tree nodes:
 - Terminal node
 - Input node
 
-### Constants
+    Constants:
 
-    UNARY_OP
-    BINARY_OP
-    TERM
-    INPUT
+        UNARY_OP
+        BINARY_OP
+        TERM
+        INPUT
 
 
 
@@ -36,11 +36,11 @@ denotes tree nodes:
 resides inrespect to a function node (assuming the node in concern is indeed a
 value of the function node).
 
-### Constants
+    Constants:
 
-    VALUE
-    LEFT
-    RIGHT
+        VALUE
+        LEFT
+        RIGHT
 
 
 
@@ -48,37 +48,48 @@ value of the function node).
 `TreeNode` represents a node in a tree, be it a function, terminal or input node.
 
 
-### Attributes
+    Attributes:
 
-    node_type (str): type of node
-    name (str): name of node
-    value (object): value of node
-    left_branch (object): left value of function node
-    right_branch (object): right value of function node
-    value_branch (object): value of function node
+        node_type (str):
+            type of node
+
+        name (str):
+            name of node
+
+        value (object):
+            value of node
+
+        left_branch (object):
+            left value of function node
+
+        right_branch (object):
+            right value of function node
+
+        value_branch (object):
+            value of function node
 
 
-### Constructor Arguments
+    Constructor Arguments:
 
-    node_type (str):
-        node type
+        node_type (str):
+            node type
 
-    **kwargs:
+        **kwargs:
 
-        # function node specific
-        if node_type is TreeNodeType.UNARY_OP:
-            name (str) and value_branch (object) are expected.
+            # function node specific
+            if node_type is TreeNodeType.UNARY_OP:
+                name (str) and value_branch (object) are expected.
 
-        else if node_type is TreeNodeType.BINARY_OP:
-            name (str), left_branch (object) and right_branch (object) are
-            expected.
+            else if node_type is TreeNodeType.BINARY_OP:
+                name (str), left_branch (object) and right_branch (object) are
+                expected.
 
-        # terminal node specific
-        if node_type is TreeNodeType.TERM:
-            name (str) and value (object) are expected.
+            # terminal node specific
+            if node_type is TreeNodeType.TERM:
+                name (str) and value (object) are expected.
 
-        else node_type is TreeNodeType.INPUT:
-            name (str) is expected.
+            else node_type is TreeNodeType.INPUT:
+                name (str) is expected.
 
 
 ### has_value_node(node)
@@ -140,23 +151,40 @@ A boolean function that checks to see if `TreeNode` instance is equals to node.
 within a tree, as well as the size and depth, etc.
 
 
-### Attributes
+    Attributes
 
-    score (float): score of the tree
+        score (float):
+            score of the tree
 
-    root (TreeNode): root of the tree
-    depth (int): depth of the tree
-    size (int): size or total number of nodes in a tree
+        root (TreeNode):
+            root of the tree
 
-    branches (int): number of branches in a tree
-    open_branches (int): number of open branches in a tree
+        depth (int):
+            depth of the tree
 
-    program (list of TreeNode): tree in post-order form in a stack
-    func_nodes (list of TreeNode): list of function nodes
-    term_nodes (list of TreeNode): list of terminal nodes
-    input_nodes (list of TreeNode): list of input nodes
+        size (int):
+            size or total number of nodes in a tree
 
-    tree_parser (TreeParser): tree parser instance
+        branches (int):
+            number of branches in a tree
+
+        open_branches (int):
+            number of open branches in a tree
+
+        program (list of TreeNode):
+            tree in post-order form in a stack
+
+        func_nodes (list of TreeNode):
+            list of function nodes
+
+        term_nodes (list of TreeNode):
+            list of terminal nodes
+
+        input_nodes (list of TreeNode):
+            list of input nodes
+
+        tree_parser (TreeParser):
+            tree parser instance
 
 
 ### valid(config_input_nodes)
@@ -248,11 +276,16 @@ used in the Genetic Programming process. It supports tree intialization using th
 - Grow Method
 
 
-### Attributes
+    Attributes:
 
-    config (dict): configuration
-    tree_parser (TreeParser): tree parser instance
-    tree_evaluator (TreeEvaluator): tree evaluator instance
+        config (dict):
+            configuration
+
+        tree_parser (TreeParser):
+            tree parser instance
+
+        tree_evaluator (TreeEvaluator):
+            tree evaluator instance
 
 
 ### full_method()
@@ -363,11 +396,25 @@ Returns a string representation of the `Tree` in infix-order.
 `TreeEvaluator` evaluates a `Tree` object to determine its fitness score.
 
 
-### Attributes
+    Attributes
 
-    config (dict): configuration
-    functions (FunctionRegistry): FunctionRegistry instance
-    tree_parser (TreeParser): TreeParser instance
+        config (dict):
+            configuration
+
+        functions (FunctionRegistry):
+            FunctionRegistry instance
+
+        tree_parser (TreeParser):
+            TreeParser instance
+
+
+    Constructor Arguments:
+
+        config (dict):
+            configuration
+
+        function_registry (FunctionRegistry):
+            FunctionRegistry instance
 
 
 ### eval_node(node, stack)

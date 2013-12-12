@@ -3,6 +3,7 @@
 population during an Evolutionary Computational process.
 
     Classes:
+
         - Population
 
 
@@ -12,27 +13,38 @@ Computational process. It contains attributes such as generation number, best
 individuals, as well as the individuals itself in a generation of population.
 
 
-### Attributes
+    Attributes
 
-    config (dict): configuration for the population
-    evaluator (class): evaluator class to evaluate population/individuals
-    generation (int): integer representing the generation number of the population
-    best_top (int): best top individuals to keep
-    best_individuals (array of objects): array of best individual objects
-    individuals (array of objects): array of individuals in a population
+        config (dict):
+            configuration for the population
+
+        evaluator (class):
+            evaluator class to evaluate population/individuals
+
+        generation (int):
+            integer representing the generation number of the population
+
+        best_top (int):
+            best top individuals to keep
+
+        best_individuals (array of objects):
+            array of best individual objects
+
+        individuals (array of objects):
+            array of individuals in a population
 
 
-### Constructor Arguments
+    Constructor Arguments:
 
-    config (dict):
-        Configuration for population
+        config (dict):
+            Configuration for population
 
-    evaluator (class):
-        Evaluator for the population, can be `playground`'s built-in evaluator
-        or a custom one. The only requirement is that it must contain a method
-        called `evaluate(individual)` accepting 1 argument for an individual,
-        the method should set the `individual`'s own score attrubute in-place
-        (i.e.  `individual.score = 0.1`)
+        evaluator (class):
+            Evaluator for the population, can be `playground`'s built-in evaluator
+            or a custom one. The only requirement is that it must contain a method
+            called `evaluate(individual)` accepting 1 argument for an individual,
+            the method should set the `individual`'s own score attrubute in-place
+            (i.e.  `individual.score = 0.1`)
 
 
 ### sort_individuals()

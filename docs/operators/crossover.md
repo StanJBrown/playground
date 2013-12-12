@@ -38,6 +38,18 @@ on a Tree.
             Boolean to denote if trees have been crossovered.
 
 
+    Constructor Arguments:
+
+        config (dict):
+            Configuration for the whole process.
+
+        **kwargs:
+
+            recorder (object):
+                Object that records the search process.
+
+
+
 ### one_point_crossover(tree_1, tree_2, crossover_index=None)
 Performs one point crossover in-place on both trees, `tree_1`, `tree_2`. By
 default the crossover point is chosen at a random common region, the index is

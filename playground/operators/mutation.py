@@ -4,7 +4,7 @@ from random import sample
 
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
-from playground.tree import TreeInitializer
+from playground.tree import TreeGenerator
 from playground.recorder.record_type import RecordType
 
 
@@ -13,7 +13,7 @@ class GPTreeMutation(object):
         self.config = config
         self.recorder = kwargs.get("recorder", None)
 
-        self.tree_generator = TreeInitializer(self.config, None)
+        self.tree_generator = TreeGenerator(self.config, None)
 
         self.method = None
         self.index = None

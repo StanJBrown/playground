@@ -7,7 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 import playground.config as config
 import playground.play as play
-from playground.tree import TreeInitializer
+from playground.tree import TreeGenerator
 from playground.tree import TreeEvaluator
 from playground.tree_evaluation import evaluate
 from playground.functions import FunctionRegistry
@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     functions = FunctionRegistry()
     evaluator = TreeEvaluator(config, functions)
-    tree_initializer = TreeInitializer(config, evaluator)
+    tree_generator = TreeGenerator(config, evaluator)
 
     # genetic operators
     selection = Selection(config)
@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     # run symbolic regression
     start_time = time.time()
-    population = tree_initializer.init()
+    population = tree_generator.init()
 
     # play.play(population, selection, crossover, mutation, config)
     play.play_multicore(

@@ -11,7 +11,7 @@ from playground.tree import TreeNodeType
 from playground.tree import TreeNodeBranch
 from playground.tree import TreeParser
 from playground.tree import TreeEvaluator
-from playground.tree import TreeInitializer
+from playground.tree import TreeGenerator
 from playground.functions import FunctionRegistry
 
 # SETTINGS
@@ -233,19 +233,19 @@ class TreeTests(unittest.TestCase):
         self.assertEquals(str(self.tree), "(x + y)")
 
 
-class TreeInitializerTests(unittest.TestCase):
+class TreeGeneratorTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(tree_init_config)
 
         self.functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config, self.evaluator)
 
         self.tree_parser = TreeParser()
 
     def tearDown(self):
         del self.config
-        del self.tree_initializer
+        del self.tree_generator
         del self.tree_parser
 
     def test_tree_add_input_nodes(self):
@@ -267,14 +267,14 @@ class TreeInitializerTests(unittest.TestCase):
         tree.update_term_nodes()
 
         # add input nodes
-        self.tree_initializer._add_input_nodes(tree)
+        self.tree_generator._add_input_nodes(tree)
         self.assertTrue(len(tree.input_nodes) == 2)
 
     def test_full_method(self):
         tests = 1000
 
         for i in range(tests):
-            tree = self.tree_initializer.full_method()
+            tree = self.tree_generator.full_method()
 
             # # func nodes
             # print("FUNCTION NODES!")
@@ -308,7 +308,7 @@ class TreeInitializerTests(unittest.TestCase):
         tests = 1000
 
         for i in range(tests):
-            tree = self.tree_initializer.grow_method()
+            tree = self.tree_generator.grow_method()
 
             # # func nodes
             # print("FUNCTION NODES!")
@@ -339,7 +339,7 @@ class TreeInitializerTests(unittest.TestCase):
             )
 
     def test_init(self):
-        population = self.tree_initializer.init()
+        population = self.tree_generator.init()
         self.assertEquals(len(population.individuals), 10)
 
 
@@ -349,7 +349,7 @@ class TreeParserTests(unittest.TestCase):
 
         self.functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config, self.evaluator)
 
         self.tree_parser = TreeParser()
 
@@ -384,7 +384,7 @@ class TreeParserTests(unittest.TestCase):
 
     def tearDown(self):
         del self.config
-        del self.tree_initializer
+        del self.tree_generator
         del self.tree_parser
 
     def test_parse_tree(self):
@@ -417,11 +417,11 @@ class TreeEvaluatorTests(unittest.TestCase):
 
         self.functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config, self.evaluator)
 
     def tearDown(self):
         del self.config
-        del self.tree_initializer
+        del self.tree_generator
         del self.functions
         del self.evaluator
 
@@ -511,7 +511,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         self.assertEquals(round(res, 4), 0.0)
 
     def test_evaluate(self):
-        population = self.tree_initializer.init()
+        population = self.tree_generator.init()
         population.evaluator = self.evaluator
         population.evaluate_population()
 

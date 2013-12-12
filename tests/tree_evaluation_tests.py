@@ -8,7 +8,7 @@ import playground.config as config
 from playground.tree import Tree
 from playground.tree import TreeNode
 from playground.tree import TreeNodeType
-from playground.tree import TreeInitializer
+from playground.tree import TreeGenerator
 from playground.functions import FunctionRegistry
 import playground.tree_evaluation as evaluator
 
@@ -21,11 +21,11 @@ class TreeEvaluatorTests(unittest.TestCase):
         self.config = config.load_config(config_fp)
 
         self.functions = FunctionRegistry()
-        self.tree_initializer = TreeInitializer(self.config, None)
+        self.tree_generator = TreeGenerator(self.config, None)
 
     def tearDown(self):
         del self.config
-        del self.tree_initializer
+        del self.tree_generator
         del self.functions
 
     def test_gen_term_node(self):
@@ -119,9 +119,9 @@ class TreeEvaluatorTests(unittest.TestCase):
         self.assertEquals(round(res, 4), 0.0)
 
     def test_evaluate(self):
-        population = self.tree_initializer.init()
+        population = self.tree_generator.init()
         cache = {}
-        results = {}
+        results = []
 
         evaluator.evaluate(
             population.individuals,
@@ -130,18 +130,7 @@ class TreeEvaluatorTests(unittest.TestCase):
             cache,
             results
         )
-
-        # write results back to individuals
-        bad_eggs = 0
-        for individual in list(population.individuals):
-            exists_in_results = str(id(individual)) in results
-            not_none = results.get(str(id(individual)), None) is not None
-
-            if exists_in_results and not_none:
-                individual.score = results[str(id(individual))]
-            else:
-                population.individuals.remove(individual)
-                bad_eggs += 1
+        population.individuals = results
 
         # assert
         for individual in population.individuals:

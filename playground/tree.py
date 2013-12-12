@@ -225,7 +225,7 @@ class Tree(object):
         return self.tree_parser.parse_equation(self.root)
 
 
-class TreeInitializer(object):
+class TreeGenerator(object):
     def __init__(self, config, evaluator):
         self.config = config
         self.tree_parser = TreeParser()

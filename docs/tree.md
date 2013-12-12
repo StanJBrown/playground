@@ -8,7 +8,7 @@ evaluator.
         - TreeNodeBranch
         - TreeNode
         - Tree
-        - TreeInitializer
+        - TreeGenerator
         - TreeEvaluator
 
 
@@ -270,9 +270,9 @@ terminal and input nodes.
 
 
 
-## TreeInitializer(object)
-`TreeIntializer` is responsible for creating an initial population of `Tree`s
-used in the Genetic Programming process. It supports tree intialization using the:
+## TreeGenerator(object)
+`TreeGenerator` is responsible for creating an population of `Tree`s used in
+the Genetic Programming process. It supports tree intialization using the:
 
 - Full Method
 - Grow Method

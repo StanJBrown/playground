@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import playground.config as config
 import playground.play as play
-from playground.tree import TreeInitializer
+from playground.tree import TreeGenerator
 from playground.tree import TreeEvaluator
 from playground.functions import FunctionRegistry
 from playground.tree_evaluation import evaluate
@@ -30,7 +30,7 @@ class PlayTests(unittest.TestCase):
 
         self.functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config, self.evaluator)
 
         # self.db = DB(self.config)
         # self.db.setup_tables()
@@ -46,7 +46,7 @@ class PlayTests(unittest.TestCase):
         del self.config
 
         del self.evaluator
-        del self.tree_initializer
+        del self.tree_generator
         del self.db
 
         del self.selection
@@ -57,7 +57,7 @@ class PlayTests(unittest.TestCase):
         tests = 1
 
         for i in range(tests):
-            population = self.tree_initializer.init()
+            population = self.tree_generator.init()
             population.evaluate_population()
             population = self.selection.select(population)
 
@@ -77,7 +77,7 @@ class PlayTests(unittest.TestCase):
             self.assertEquals(population.generation, 0)
 
     def test_play(self):
-        population = self.tree_initializer.init()
+        population = self.tree_generator.init()
 
         start_time = time.time()
         play.play(
@@ -107,7 +107,7 @@ class PlayTests(unittest.TestCase):
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 
     def test_play_multicore(self):
-        population = self.tree_initializer.init()
+        population = self.tree_generator.init()
 
         start_time = time.time()
         play.play_multicore(

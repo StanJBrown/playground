@@ -26,7 +26,7 @@ on a Tree.
         recorder (object):
             Object that records the search process.
 
-        tree_generator (TreeInitializer):
+        tree_generator (TreeGenerator):
             Tree generator
 
         method (str):

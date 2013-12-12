@@ -5,7 +5,7 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import playground.config as config
-from playground.tree import TreeInitializer
+from playground.tree import TreeGenerator
 from playground.functions import FunctionRegistry
 from playground.tree import Tree
 from playground.tree import TreeNode
@@ -26,7 +26,7 @@ class MutatorTests(unittest.TestCase):
 
         self.functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config, self.evaluator)
 
         self.tree_parser = TreeParser()
         self.tree_mutation = GPTreeMutation(self.config)
@@ -59,11 +59,11 @@ class MutatorTests(unittest.TestCase):
         self.tree.update_program()
         self.tree.update_func_nodes()
         self.tree.update_term_nodes()
-        self.tree_initializer._add_input_nodes(self.tree)
+        self.tree_generator._add_input_nodes(self.tree)
 
     def tearDown(self):
         del self.config
-        del self.tree_initializer
+        del self.tree_generator
         del self.tree_parser
 
     def build_tree_str(self, tree):

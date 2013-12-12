@@ -8,7 +8,7 @@ import playground.config as config
 import playground.data_loader as data
 from playground.functions import FunctionRegistry
 from playground.evaluator import TreeEvaluator
-from playground.tree import TreeInitializer
+from playground.tree import TreeGenerator
 from playground.recorder.db import RecordType
 from playground.recorder.db import DB
 from playground.operators.selection import Selection
@@ -28,12 +28,12 @@ class DBTests(unittest.TestCase):
 
         self.functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config, self.evaluator)
 
         self.db = DB(self.config)
         self.db.setup_tables()
 
-        self.population = self.tree_initializer.init()
+        self.population = self.tree_generator.init()
         self.population.evaluate_population()
         self.population.sort_individuals()
 
@@ -47,7 +47,7 @@ class DBTests(unittest.TestCase):
         del self.config
         del self.functions
         del self.evaluator
-        del self.tree_initializer
+        del self.tree_generator
         del self.db
         del self.population
 

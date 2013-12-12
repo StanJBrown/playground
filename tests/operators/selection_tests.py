@@ -6,7 +6,7 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import playground.config as config
-from playground.tree import TreeInitializer
+from playground.tree import TreeGenerator
 from playground.tree import TreeEvaluator
 from playground.functions import FunctionRegistry
 from playground.operators.selection import Selection
@@ -22,10 +22,10 @@ class SelectionTests(unittest.TestCase):
 
         self.functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_initializer = TreeInitializer(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config, self.evaluator)
 
         self.selection = Selection(self.config)
-        self.population = self.tree_initializer.init()
+        self.population = self.tree_generator.init()
 
         # give population random scores
         for inidividual in self.population.individuals:

@@ -22,6 +22,7 @@ denotes tree nodes:
 - Terminal node
 - Input node
 
+
     Constants:
 
         UNARY_OP
@@ -45,7 +46,8 @@ value of the function node).
 
 
 ## TreeNode(object)
-`TreeNode` represents a node in a tree, be it a function, terminal or input node.
+`TreeNode` represents a node in a tree, be it a function, terminal or input
+node.
 
 
     Attributes:

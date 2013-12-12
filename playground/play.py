@@ -105,7 +105,7 @@ def play_multicore(
     score_cache = manager.dict()
     while generation < max_generation:
         # start proceses
-        results = manager.dict()
+        results = manager.list()
         chunksize = int(math.ceil(len(population.individuals) / float(nproc)))
         for i in range(nproc):
             chunk = population.individuals[chunksize * i:chunksize * (i + 1)]
@@ -120,18 +120,7 @@ def play_multicore(
         for p in processes:
             p.join()
         del processes[:]
-
-        # assign tree scores
-        bad_eggs = 0
-        for individual in list(population.individuals):
-            exists_in_results = str(id(individual)) in results
-            not_none = results.get(str(id(individual)), None) is not None
-
-            if exists_in_results and not_none:
-                individual.score = results[str(id(individual))]
-            else:
-                population.individuals.remove(individual)
-                bad_eggs += 1
+        population.individuals = [r for r in results]
 
         # display best individual
         population.sort_individuals()

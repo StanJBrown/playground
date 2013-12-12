@@ -73,25 +73,30 @@ def eval_program(tree, tree_size, functions, config):
 
 
 def evaluate(trees, functions, config, cache, results):
-    try:
-        evaluator_config = config["evaluator"]
-        match_cached = 0
-        cached = 0
+    evaluator_config = config["evaluator"]
+    match_cached = 0
+    cached = 0
 
-        if evaluator_config["use_cache"]:
-            for tree in trees:
-                if str(tree) not in cache:
-                    score = eval_program(tree, tree.size, functions, config)
-                    results[str(id(tree))] = score
-                    cache[str(tree)] = score
-                    cached += 1
-                else:
-                    score = cache[str(tree)]
-                    results[str(id(tree))] = score
-                    match_cached += 1
-        else:
-            for tree in trees:
-                eval_program(tree, tree.size, functions, config, results)
+    if evaluator_config["use_cache"]:
+        for tree in trees:
+            if str(tree) not in cache:
+                score = eval_program(tree, tree.size, functions, config)
 
-    except EvaluationError:
-        pass
+                if score is not None:
+                    tree.score = score
+                    results.append(tree)
+
+                cache[str(tree)] = score
+                cached += 1
+
+            else:
+                score = cache[str(tree)]
+
+                if score is not None:
+                    tree.score = score
+                    results.append(tree)
+
+                match_cached += 1
+    else:
+        for tree in trees:
+            eval_program(tree, tree.size, functions, config, results)

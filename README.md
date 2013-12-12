@@ -22,15 +22,16 @@ features:
 
 ## Requirements
 
-- Python (version 2.7 and higher)
+- Python (version 2.7 +)
+- sympy (version 0.7.3 +)
 
 
 ## Optional Requirements
 
 If you want evolution recording (such as fitness/evaluation score vs time):
 
-- PostgreSQL (version 9.3 and higher)
-- Psycopg (version 2.5 and higher)
+- PostgreSQL (version 9.3 +)
+- Psycopg (version 2.5 +)
 
 
 ## Licence

@@ -13,7 +13,7 @@ class GPTreeMutation(object):
         self.config = config
         self.recorder = kwargs.get("recorder", None)
 
-        self.tree_generator = TreeGenerator(self.config, None)
+        self.tree_generator = TreeGenerator(self.config)
 
         self.method = None
         self.index = None

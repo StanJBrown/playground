@@ -11,10 +11,9 @@ from playground.population import Population
 
 
 class TreeGenerator(object):
-    def __init__(self, config, evaluator):
+    def __init__(self, config):
         self.config = config
         self.tree_parser = TreeParser()
-        self.tree_evaluator = evaluator
 
     def _gen_random_func_node(self, tree):
         index = randint(0, len(self.config["function_nodes"]) - 1)
@@ -164,7 +163,7 @@ class TreeGenerator(object):
         return tree
 
     def init(self):
-        population = Population(self.config, self.tree_evaluator)
+        population = Population(self.config)
 
         if self.config["tree_init_method"] == "FULL_METHOD":
             for i in range(self.config["max_population"]):

@@ -11,7 +11,6 @@ from playground.gp_tree.tree import Tree
 from playground.gp_tree.tree_node import TreeNode
 from playground.gp_tree.tree_node import TreeNodeType
 from playground.gp_tree.tree_parser import TreeParser
-from playground.gp_tree.tree import TreeEvaluator
 from playground.gp_tree.tree_generator import TreeGenerator
 from playground.operators.crossover import GPTreeCrossover
 
@@ -26,8 +25,7 @@ class GPTreeCrossoverTests(unittest.TestCase):
         self.config = config.load_config(config_fp)
 
         self.functions = FunctionRegistry()
-        self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_generator = TreeGenerator(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config)
 
         self.crossover = GPTreeCrossover(self.config)
         self.tree_parser = TreeParser()

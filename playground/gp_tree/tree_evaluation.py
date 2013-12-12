@@ -72,8 +72,9 @@ def eval_program(tree, tree_size, functions, config):
         return None
 
 
-def evaluate(trees, functions, config, cache, results):
+def evaluate(trees, functions, config, results):
     evaluator_config = config["evaluator"]
+    cache = {}
     match_cached = 0
     cached = 0
 

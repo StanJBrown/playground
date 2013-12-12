@@ -8,7 +8,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import playground.config as config
 import playground.play as play
-from playground.gp_tree.tree import TreeEvaluator
 from playground.gp_tree.tree_generator import TreeGenerator
 from playground.gp_tree.tree_evaluation import evaluate
 from playground.functions import FunctionRegistry
@@ -26,10 +25,8 @@ class PlayTests(unittest.TestCase):
         random.seed(10)
 
         self.config = config.load_config(config_fp)
-
         self.functions = FunctionRegistry()
-        self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_generator = TreeGenerator(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config)
 
         # self.db = DB(self.config)
         # self.db.setup_tables()
@@ -44,7 +41,6 @@ class PlayTests(unittest.TestCase):
 
         del self.config
 
-        del self.evaluator
         del self.tree_generator
         del self.db
 
@@ -56,8 +52,11 @@ class PlayTests(unittest.TestCase):
         tests = 1
 
         for i in range(tests):
+            res = []
+
             population = self.tree_generator.init()
-            population.evaluate_population()
+            evaluate(population.individuals, self.functions, self.config, res)
+            population.individuals = res
             population = self.selection.select(population)
 
             # reproduce
@@ -72,15 +71,17 @@ class PlayTests(unittest.TestCase):
             max_pop = self.config["max_population"]
             self.assertEquals(len(population.individuals), max_pop)
             self.assertTrue(population.config is self.config)
-            self.assertTrue(population.evaluator is self.evaluator)
             self.assertEquals(population.generation, 0)
 
     def test_play(self):
         population = self.tree_generator.init()
 
+        # with cache
         start_time = time.time()
         play.play(
             population,
+            self.functions,
+            evaluate,
             self.selection,
             self.crossover,
             self.mutation,
@@ -90,13 +91,11 @@ class PlayTests(unittest.TestCase):
         print("GP run with cache: %2.2fsec\n" % (end_time - start_time))
 
         # without cache
-        self.evaluator.use_cache = False
-        self.evaluator.cache = {}
-        self.evaluator.matched_cache = 0
-
         start_time = time.time()
         play.play(
             population,
+            self.functions,
+            evaluate,
             self.selection,
             self.crossover,
             self.mutation,

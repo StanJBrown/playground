@@ -7,7 +7,6 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import playground.config as config
 from playground.gp_tree.tree_generator import TreeGenerator
-from playground.gp_tree.tree import TreeEvaluator
 from playground.functions import FunctionRegistry
 from playground.operators.selection import Selection
 
@@ -21,8 +20,7 @@ class SelectionTests(unittest.TestCase):
         self.config = config.load_config(config_fp)
 
         self.functions = FunctionRegistry()
-        self.evaluator = TreeEvaluator(self.config, self.functions)
-        self.tree_generator = TreeGenerator(self.config, self.evaluator)
+        self.tree_generator = TreeGenerator(self.config)
 
         self.selection = Selection(self.config)
         self.population = self.tree_generator.init()

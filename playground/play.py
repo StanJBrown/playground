@@ -52,24 +52,31 @@ def reproduce(population, crossover, mutation, config):
             population.individuals.pop()
 
 
-def play(population, selection, crossover, mutation, config, **kwargs):
+def play(
+        population,
+        functions,
+        evaluator,
+        selection,
+        crossover,
+        mutation,
+        config
+):
     generation = 0
     max_generation = config["max_generation"]
     goal_reached = False
     tree_parser = TreeParser()
 
     while generation < max_generation and goal_reached is not True:
-        population.evaluate_population()
-        population.sort_individuals()
+        results = []
+        evaluator(population.individuals, functions, config, results)
+        population.individuals = results
 
         # display best individual
+        population.sort_individuals()
         best_individual = population.best_individuals[0]
         print "generation: ", generation
         print "best_score: " + str(best_individual.score)
         print "tree_size: " + str(best_individual.size)
-        print "match_cached: " + str(population.evaluator.match_cached)
-        print "cache_size: " + str(len(population.evaluator.cache))
-        population.evaluator.match_cached = 0  # reset match cached
         print ""
 
         if best_individual.score < 20.0:
@@ -99,10 +106,9 @@ def play_multicore(
     max_generation = config["max_generation"]
     tree_parser = TreeParser()
     manager = Manager()
-    nproc = multiprocessing.cpu_count()
+    nproc = multiprocessing.cpu_count() * 2
 
     processes = []
-    score_cache = manager.dict()
     while generation < max_generation:
         # start proceses
         results = manager.list()
@@ -111,7 +117,7 @@ def play_multicore(
             chunk = population.individuals[chunksize * i:chunksize * (i + 1)]
             p = Process(
                 target=evaluator,
-                args=(chunk, functions, config, score_cache, results)
+                args=(chunk, functions, config, results)
             )
             processes.append(p)
             p.start()

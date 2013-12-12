@@ -21,7 +21,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         self.config = config.load_config(config_fp)
 
         self.functions = FunctionRegistry()
-        self.tree_generator = TreeGenerator(self.config, None)
+        self.tree_generator = TreeGenerator(self.config)
 
     def tearDown(self):
         del self.config
@@ -120,14 +120,12 @@ class TreeEvaluatorTests(unittest.TestCase):
 
     def test_evaluate(self):
         population = self.tree_generator.init()
-        cache = {}
         results = []
 
         evaluator.evaluate(
             population.individuals,
             self.functions,
             self.config,
-            cache,
             results
         )
         population.individuals = results

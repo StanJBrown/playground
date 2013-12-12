@@ -78,29 +78,31 @@ class PlayTests(unittest.TestCase):
 
         # with cache
         start_time = time.time()
-        play.play(
-            population,
-            self.functions,
-            evaluate,
-            self.selection,
-            self.crossover,
-            self.mutation,
-            self.config
-        )
+        details = {
+            "population": population,
+            "functions": self.functions,
+            "evaluate": evaluate,
+            "selection": self.selection,
+            "crossover": self.crossover,
+            "mutation": self.mutation,
+            "config": self.config
+        }
+        play.play(details)
         end_time = time.time()
         print("GP run with cache: %2.2fsec\n" % (end_time - start_time))
 
         # without cache
         start_time = time.time()
-        play.play(
-            population,
-            self.functions,
-            evaluate,
-            self.selection,
-            self.crossover,
-            self.mutation,
-            self.config
-        )
+        details = {
+            "population": population,
+            "functions": self.functions,
+            "evaluate": evaluate,
+            "selection": self.selection,
+            "crossover": self.crossover,
+            "mutation": self.mutation,
+            "config": self.config
+        }
+        play.play(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 
@@ -108,15 +110,16 @@ class PlayTests(unittest.TestCase):
         population = self.tree_generator.init()
 
         start_time = time.time()
-        play.play_multicore(
-            population,
-            self.functions,
-            evaluate,
-            self.selection,
-            self.crossover,
-            self.mutation,
-            self.config
-        )
+        details = {
+            "population": population,
+            "functions": self.functions,
+            "evaluate": evaluate,
+            "selection": self.selection,
+            "crossover": self.crossover,
+            "mutation": self.mutation,
+            "config": self.config
+        }
+        play.play_multicore(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import math
 import copy
+import time
 import random
 import multiprocessing
 from multiprocessing import Process
@@ -52,15 +53,15 @@ def reproduce(population, crossover, mutation, config):
             population.individuals.pop()
 
 
-def play(
-        population,
-        functions,
-        evaluator,
-        selection,
-        crossover,
-        mutation,
-        config
-):
+def play(details):
+    population = details.get("population", None)
+    functions = details.get("functions", None)
+    evaluate = details.get("evaluate", None)
+    selection = details.get("selection", None)
+    crossover = details.get("crossover", None)
+    mutation = details.get("mutation", None)
+    config = details.get("config", None)
+
     generation = 0
     max_generation = config["max_generation"]
     goal_reached = False
@@ -68,7 +69,7 @@ def play(
 
     while generation < max_generation and goal_reached is not True:
         results = []
-        evaluator(population.individuals, functions, config, results)
+        evaluate(population.individuals, functions, config, results)
         population.individuals = results
 
         # display best individual
@@ -93,15 +94,15 @@ def play(
     return population
 
 
-def play_multicore(
-        population,
-        functions,
-        evaluator,
-        selection,
-        crossover,
-        mutation,
-        config
-):
+def play_multicore(details):
+    population = details.get("population", None)
+    functions = details.get("functions", None)
+    evaluate = details.get("evaluate", None)
+    selection = details.get("selection", None)
+    crossover = details.get("crossover", None)
+    mutation = details.get("mutation", None)
+    config = details.get("config", None)
+
     generation = 0
     max_generation = config["max_generation"]
     tree_parser = TreeParser()
@@ -110,15 +111,14 @@ def play_multicore(
 
     processes = []
     while generation < max_generation:
+
         # start proceses
         results = manager.list()
         chunksize = int(math.ceil(len(population.individuals) / float(nproc)))
         for i in range(nproc):
             chunk = population.individuals[chunksize * i:chunksize * (i + 1)]
-            p = Process(
-                target=evaluator,
-                args=(chunk, functions, config, results)
-            )
+            args = (chunk, functions, config, results)
+            p = Process(target=evaluate, args=args)
             processes.append(p)
             p.start()
 

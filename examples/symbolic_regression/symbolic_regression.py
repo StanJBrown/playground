@@ -21,6 +21,7 @@ config_fp = "config.json"
 if __name__ == '__main__':
     # setup
     config = config.load_config(config_fp)
+    random.seed(10)  # seed random so results can be reproduced
 
     functions = FunctionRegistry()
     tree_generator = TreeGenerator(config)
@@ -30,22 +31,21 @@ if __name__ == '__main__':
     crossover = GPTreeCrossover(config)
     mutation = GPTreeMutation(config)
 
-    random.seed(10)  # seed random so results can be reproduced
-
     # run symbolic regression
-    start_time = time.time()
     population = tree_generator.init()
 
-    # play.play(population, selection, crossover, mutation, config)
-    play.play_multicore(
-        population,
-        functions,
-        evaluate,
-        selection,
-        crossover,
-        mutation,
-        config
-    )
-
+    start_time = time.time()
+    details = {
+        "population": population,
+        "functions": functions,
+        "evaluate": evaluate,
+        "selection": selection,
+        "crossover": crossover,
+        "mutation": mutation,
+        "config": config
+    }
+    # play.play(details)
+    play.play_multicore(details)
     end_time = time.time()
+
     print("GP run took: %2.2fsecs\n" % (end_time - start_time))

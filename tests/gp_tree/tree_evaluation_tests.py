@@ -1,6 +1,7 @@
 ##!/usr/bin/env python
 import os
 import sys
+import time
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -13,13 +14,13 @@ from playground.functions import FunctionRegistry
 import playground.gp_tree.tree_evaluation as evaluator
 
 # SETTINGS
-config_fp = os.path.join(os.path.dirname(__file__), "../config/evaluator.json")
+cwd = os.path.dirname(__file__)
+config_fp = os.path.join(cwd, "../config/evaluator.json")
 
 
 class TreeEvaluatorTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
-
         self.functions = FunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
 
@@ -36,7 +37,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         # asserts
         self.assertEquals(term_node.node_type, TreeNodeType.TERM)
         self.assertEquals(term_node.name, None)
-        self.assertEquals(term_node.value, 10.0)
+        self.assertEquals(term_node.value, 0.0)
 
     def test_eval_node(self):
         term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
@@ -122,12 +123,16 @@ class TreeEvaluatorTests(unittest.TestCase):
         population = self.tree_generator.init()
         results = []
 
+        start_time = time.time()
         evaluator.evaluate(
             population.individuals,
             self.functions,
             self.config,
             results
         )
+        end_time = time.time()
+        print("GP run took: %2.2fsecs\n" % (end_time - start_time))
+
         population.individuals = results
 
         # assert

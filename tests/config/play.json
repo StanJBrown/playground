@@ -1,8 +1,8 @@
 {
     "max_population" : 50,
-    "max_generation" : 1,
+    "max_generation" : 5,
     "tree_init_method" : "GROW_METHOD",
-    "max_depth" : 3,
+    "max_depth" : 4,
 
     "evaluator": {
         "use_cache" : true
@@ -10,12 +10,12 @@
 
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",
-        "tournament_size": 10
+        "tournament_size": 5
     },
 
     "crossover" : {
         "method" : "POINT_CROSSOVER",
-        "probability" : 0.6
+        "probability" : 0.8
     },
 
     "mutation" : {
@@ -26,7 +26,7 @@
             "SHRINK_MUTATION",
             "EXPAND_MUTATION"
         ],
-        "probability" : 0.8
+        "probability" : 0.9
     },
 
     "function_nodes" : [

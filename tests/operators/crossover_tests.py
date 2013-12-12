@@ -6,13 +6,13 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import playground.config as config
-from playground.tree import TreeGenerator
 from playground.functions import FunctionRegistry
-from playground.tree import Tree
-from playground.tree import TreeNode
-from playground.tree import TreeNodeType
-from playground.tree import TreeParser
-from playground.tree import TreeEvaluator
+from playground.gp_tree.tree import Tree
+from playground.gp_tree.tree_node import TreeNode
+from playground.gp_tree.tree_node import TreeNodeType
+from playground.gp_tree.tree_parser import TreeParser
+from playground.gp_tree.tree import TreeEvaluator
+from playground.gp_tree.tree_generator import TreeGenerator
 from playground.operators.crossover import GPTreeCrossover
 
 # SETTINGS

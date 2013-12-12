@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from playground.functions import EvaluationError
-from playground.tree import TreeNode
-from playground.tree import TreeNodeType
+from playground.gp_tree.tree_node import TreeNode
+from playground.gp_tree.tree_node import TreeNodeType
 
 
 def gen_term_node(node, row, config):

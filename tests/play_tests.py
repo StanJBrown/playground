@@ -2,17 +2,16 @@
 import sys
 import os
 import time
-import copy
 import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import playground.config as config
 import playground.play as play
-from playground.tree import TreeGenerator
-from playground.tree import TreeEvaluator
+from playground.gp_tree.tree import TreeEvaluator
+from playground.gp_tree.tree_generator import TreeGenerator
+from playground.gp_tree.tree_evaluation import evaluate
 from playground.functions import FunctionRegistry
-from playground.tree_evaluation import evaluate
 # from playground.recorder.db import DB
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover

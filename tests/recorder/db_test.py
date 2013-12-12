@@ -5,12 +5,11 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import playground.config as config
-import playground.data_loader as data
-from playground.functions import FunctionRegistry
-from playground.evaluator import TreeEvaluator
-from playground.tree import TreeGenerator
-from playground.recorder.db import RecordType
 from playground.recorder.db import DB
+from playground.recorder.db import RecordType
+from playground.functions import FunctionRegistry
+from playground.gp_tree.tree import TreeEvaluator
+from playground.gp_tree.tree_generator import TreeGenerator
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
 from playground.operators.mutation import GPTreeMutation
@@ -24,7 +23,6 @@ config_fp = os.path.normpath(
 class DBTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
-        data.load_data(self.config)
 
         self.functions = FunctionRegistry()
         self.evaluator = TreeEvaluator(self.config, self.functions)

@@ -2,18 +2,18 @@
 import os
 import sys
 import unittest
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 import playground.config as config
-from playground.tree import Tree
-from playground.tree import TreeNode
-from playground.tree import TreeNodeType
-from playground.tree import TreeGenerator
+from playground.gp_tree.tree import Tree
+from playground.gp_tree.tree_node import TreeNode
+from playground.gp_tree.tree_node import TreeNodeType
+from playground.gp_tree.tree_generator import TreeGenerator
 from playground.functions import FunctionRegistry
-import playground.tree_evaluation as evaluator
+import playground.gp_tree.tree_evaluation as evaluator
 
 # SETTINGS
-config_fp = os.path.join(os.path.dirname(__file__), "config/evaluator.json")
+config_fp = os.path.join(os.path.dirname(__file__), "../config/evaluator.json")
 
 
 class TreeEvaluatorTests(unittest.TestCase):

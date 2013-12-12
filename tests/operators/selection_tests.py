@@ -6,8 +6,8 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import playground.config as config
-from playground.tree import TreeGenerator
-from playground.tree import TreeEvaluator
+from playground.gp_tree.tree_generator import TreeGenerator
+from playground.gp_tree.tree import TreeEvaluator
 from playground.functions import FunctionRegistry
 from playground.operators.selection import Selection
 

@@ -8,7 +8,7 @@ from multiprocessing import Manager
 
 from sympy import simplify
 
-from playground.tree import TreeParser
+from playground.gp_tree.tree_parser import TreeParser
 
 
 def reproduce(population, crossover, mutation, config):

@@ -1,12 +1,12 @@
 # TODO
 
+- Generate Tree from string
+- Enable playground to become a dedicated evaluator
 - Add 2 more symbolic regression examples
-- Look at Cartesian GP
-- Look at Co-evolution and how to implement it
 
 ---
-
-- Enable playground to become a dedicated evaluator
+- Look at Cartesian GP
+- Look at Co-evolution and how to implement it
 
 
 # COMPLETED!

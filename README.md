@@ -2,22 +2,22 @@
 Playground is a Gentic Programming framework implemented in Python. Currently
 features:
 
-    - Genetic Programming in Trees
-    - Tree Genetic Operators:
-        - Selection
-            - Roulette wheel selection
-            - Tournament selection
-        - Crossover
-            - One point crossover
-        - Mutation
-            - Point mutation
-            - Hoist mutation
-            - Subtree mutation
-            - Shrink mutation
-            - Expand mutation
-    - Multicore Evaluation
-    - JSON config files
-    - Ability to record evolution process to database (PostgreSQL)
+- Genetic Programming in Trees
+- Tree Genetic Operators:
+    - Selection
+        - Roulette wheel selection
+        - Tournament selection
+    - Crossover
+        - One point crossover
+    - Mutation
+        - Point mutation
+        - Hoist mutation
+        - Subtree mutation
+        - Shrink mutation
+        - Expand mutation
+- Multicore Evaluation
+- JSON config files
+- Ability to record evolution process to database (PostgreSQL)
 
 
 ## Requirements

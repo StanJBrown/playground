@@ -3,6 +3,7 @@
 - Generate Tree from string
 - Enable playground to become a dedicated evaluator
 - Add 2 more symbolic regression examples
+- Write the tree evaluator in C as a python extension
 
 ---
 - Look at Cartesian GP

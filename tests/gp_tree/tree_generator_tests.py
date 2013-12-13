@@ -121,6 +121,28 @@ class TreeGeneratorTests(unittest.TestCase):
                 len(tree.input_nodes) >= len(self.config["input_variables"])
             )
 
+    def test_generate_tree_from_dict(self):
+        population = self.tree_generator.init()
+        tree = population.individuals[0]
+        tree_dict = self.tree_parser.tree_to_dict(tree, tree.root)
+        tree_generated = self.tree_generator.generate_tree_from_dict(tree_dict)
+
+        program_str = ""
+        for i in tree.program:
+            if i.name is not None:
+                program_str += i.name
+            else:
+                program_str += str(i.value)
+
+        generated_str = ""
+        for i in tree_generated.program:
+            if i.name is not None:
+                generated_str += i.name
+            else:
+                generated_str += str(i.value)
+
+        self.assertEquals(program_str, generated_str)
+
     def test_init(self):
         population = self.tree_generator.init()
         self.assertEquals(len(population.individuals), 10)

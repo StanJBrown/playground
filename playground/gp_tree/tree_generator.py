@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from random import sample
 from random import random
-from random import randint
 
 from playground.gp_tree.tree import Tree
 from playground.gp_tree.tree_node import TreeNode
@@ -15,9 +14,11 @@ class TreeGenerator(object):
         self.config = config
         self.tree_parser = TreeParser()
 
-    def _gen_random_func_node(self, tree):
-        index = randint(0, len(self.config["function_nodes"]) - 1)
-        node = self.config["function_nodes"][index]
+    def _gen_func_node(self, tree, random=True):
+        node = None
+        if random:
+            node = sample(self.config["function_nodes"], 1)[0]
+
         func_node = TreeNode(node["type"], name=node["name"])
 
         if node["type"] == TreeNodeType.BINARY_OP:
@@ -26,9 +27,10 @@ class TreeGenerator(object):
 
         return func_node
 
-    def _gen_random_term_node(self, tree):
-        index = randint(0, len(self.config["terminal_nodes"]) - 1)
-        node = self.config["terminal_nodes"][index]
+    def _gen_term_node(self, tree, random=True):
+        node = None
+        if random:
+            node = sample(self.config["terminal_nodes"], 1)[0]
 
         term_node = TreeNode(
             node["type"],
@@ -85,13 +87,13 @@ class TreeGenerator(object):
 
     def _full_method_node_gen(self, tree, depth):
         if depth + 1 == self.config["max_depth"]:
-                term_node = self._gen_random_term_node(tree)
+                term_node = self._gen_term_node(tree)
                 tree.term_nodes.append(term_node)
                 tree.size += 1
                 tree.depth = self.config["max_depth"]
                 return term_node
         else:
-                func_node = self._gen_random_func_node(tree)
+                func_node = self._gen_func_node(tree)
                 tree.func_nodes.append(func_node)
                 tree.size += 1
                 return func_node
@@ -100,7 +102,7 @@ class TreeGenerator(object):
         while True:
             # setup
             tree = Tree()
-            tree.root = self._gen_random_func_node(tree)
+            tree.root = self._gen_func_node(tree)
 
             # build tree
             self._build_tree(tree.root, tree, 0, self._full_method_node_gen)
@@ -115,7 +117,7 @@ class TreeGenerator(object):
 
     def _grow_method_node_gen(self, tree, depth):
         if depth + 1 == self.config["max_depth"]:
-            term_node = self._gen_random_term_node(tree)
+            term_node = self._gen_term_node(tree)
             tree.term_nodes.append(term_node)
             tree.size += 1
             tree.depth = self.config["max_depth"]
@@ -124,13 +126,13 @@ class TreeGenerator(object):
             prob = random()
             node = None
             if tree.open_branches == 1:
-                node = self._gen_random_func_node(tree)
+                node = self._gen_func_node(tree)
                 tree.func_nodes.append(node)
             elif prob < 0.5:
-                node = self._gen_random_func_node(tree)
+                node = self._gen_func_node(tree)
                 tree.func_nodes.append(node)
             else:
-                node = self._gen_random_term_node(tree)
+                node = self._gen_term_node(tree)
                 tree.term_nodes.append(node)
             tree.size += 1
             return node
@@ -139,7 +141,7 @@ class TreeGenerator(object):
         while True:
             # setup
             tree = Tree()
-            tree.root = self._gen_random_func_node(tree)
+            tree.root = self._gen_func_node(tree)
 
             # build tree
             self._build_tree(tree.root, tree, 0, self._grow_method_node_gen)
@@ -159,6 +161,42 @@ class TreeGenerator(object):
             tree = self.grow_method()
         else:
             raise RuntimeError("Tree init method not defined!")
+
+        return tree
+
+    def generate_tree_from_dict(self, tree_dict):
+        tree = Tree()
+
+        for node_dict in tree_dict["program"]:
+            n_type = node_dict["type"]
+            node = None
+
+            if n_type == TreeNodeType.INPUT:
+                name = node_dict["name"]
+                node = TreeNode(TreeNodeType.INPUT, name=name)
+                tree.program.append(node)
+
+            elif n_type == TreeNodeType.TERM:
+                node = None
+
+                if node_dict.get("name") is None:
+                    value = node_dict["value"]
+                    node = TreeNode(TreeNodeType.TERM, value=value)
+                    tree.program.append(node)
+                else:
+                    name = node_dict["name"]
+                    node = TreeNode(TreeNodeType.TERM, name=name)
+                    tree.program.append(node)
+
+            elif n_type == TreeNodeType.UNARY_OP:
+                name = node_dict["name"]
+                node = TreeNode(n_type, name=name)
+                tree.program.append(node)
+
+            elif n_type == TreeNodeType.BINARY_OP:
+                name = node_dict["name"]
+                node = TreeNode(n_type, name=name)
+                tree.program.append(node)
 
         return tree
 

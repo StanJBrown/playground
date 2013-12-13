@@ -164,3 +164,40 @@ class TreeParser(object):
         eq_str = eq_str.replace("SIN", "sin")
 
         return eq_str
+
+    def tree_to_dict(self, tree, node, results=None):
+        if results is None:
+            results = {
+                "id": str(id(tree)),
+                "program": []
+            }
+
+        # traverse tree
+        if node.is_terminal() or node.is_input():
+            if node.name is not None:
+                results["program"].append({
+                    "type": node.node_type,
+                    "name": node.name
+                })
+            else:
+                results["program"].append({
+                    "type": node.node_type,
+                    "value": node.value
+                })
+
+        elif node.node_type == TreeNodeType.UNARY_OP:
+            self.tree_to_dict(tree, node.value_branch, results)
+            results["program"].append({
+                "type": node.node_type,
+                "name": node.name
+            })
+
+        elif node.node_type == TreeNodeType.BINARY_OP:
+            self.tree_to_dict(tree, node.left_branch, results)
+            self.tree_to_dict(tree, node.right_branch, results)
+            results["program"].append({
+                "type": node.node_type,
+                "name": node.name
+            })
+
+        return results

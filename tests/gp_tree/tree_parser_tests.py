@@ -82,6 +82,24 @@ class TreeParserTests(unittest.TestCase):
         equation = self.tree_parser.parse_equation(self.tree.root)
         self.assertEquals(equation, "((cos(1.0)) + (sin(2.0)))")
 
+    def test_tree_to_dict(self):
+        solution = {
+            'id': '4299569872',
+            'program': [
+                {'type': 'TERM', 'value': 1.0},
+                {'type': 'UNARY_OP', 'name': 'COS'},
+                {'type': 'TERM', 'value': 2.0},
+                {'type': 'UNARY_OP', 'name': 'SIN'},
+                {'type': 'BINARY_OP', 'name': 'ADD'}
+            ]
+        }
+        results = self.tree_parser.tree_to_dict(self.tree, self.tree.root)
+
+        # remove id because id is different every time
+        results["id"] = None
+        solution["id"] = None
+        self.assertEquals(results, solution)
+
 
 if __name__ == '__main__':
     unittest.main()

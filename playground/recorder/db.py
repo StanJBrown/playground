@@ -4,13 +4,7 @@ import os
 import psycopg2 as db
 import psycopg2.extras as db_extras
 
-
-class RecordType(object):
-    POPULATION = "POPULATION"
-    TREE = "TREE"
-    SELECTION = "SELECTION"
-    CROSSOVER = "CROSSOVER"
-    MUTATION = "MUTATION"
+from playground.recorder import RecordType
 
 
 class DBAdaptor(object):

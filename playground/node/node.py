@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-# import json
+import json
 
 from flask import Flask
 from flask import request
@@ -10,7 +10,6 @@ from flask import render_template
 # GLOBAL VARS
 playnode = Flask(__name__)
 playnode_type = None
-playnode_state = None
 
 
 class PlayNodeType(object):
@@ -18,12 +17,12 @@ class PlayNodeType(object):
     GRAND_CENTRAL = "GRAND_CENTRAL"
 
 
-class PlayNode(object):
-    RUNNING = "RUNNING"
-    SLEEP = "SLEEP"
-    SHUTDOWN = "SHUTDOWN"
+class PlayNodeMessage(object):
     STATE = "STATE"
     OK = "OK"
+    SHUTDOWN = "SHUTDOWN"
+    SLEEP = "SLEEP"
+    UNDEFINED = "UNDEFINED"
 
 
 @playnode.route('/')
@@ -31,19 +30,19 @@ def index():
     return render_template('index.html', title="home")
 
 
-@playnode.route('/message/<msg>')
-def message(msg):
-    print "MESSAGE: ", msg
-    if msg == PlayNode.SHUTDOWN:
+@playnode.route('/message', methods=["POST"])
+def message():
+    raw_data = request.data
+    incomming_data = json.loads(raw_data)
+    response_data = {}
+
+    if incomming_data["message"] == PlayNodeMessage.SHUTDOWN:
+        response_data["message"] = PlayNodeMessage.OK
         shutdown()
+    else:
+        response_data["message"] = PlayNodeMessage.UNDEFINED
 
-    response = jsonify(message=msg)
-    return response
-
-
-@playnode.route('/state')
-def state():
-    response = jsonify(state=playnode_state)
+    response = jsonify(response_data)
     return response
 
 
@@ -66,7 +65,6 @@ if __name__ == '__main__':
         host = sys.argv[1]
         port = int(sys.argv[2])
         playnode_type = sys.argv[3]
-        playnode_state = PlayNode.RUNNING
 
         playnode.run(debug=True, host=host, port=port)
 

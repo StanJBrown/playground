@@ -2,7 +2,6 @@
 import os
 import sys
 import json
-import signal
 import httplib
 import time
 import unittest
@@ -11,11 +10,11 @@ from subprocess import Popen
 from subprocess import check_call
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
-from playground.node.node import PlayNode
 from playground.node.node import PlayNodeType
+from playground.node.node import PlayNodeMessage
 
 # SETTINGS
-node_script = "playground/node/node.py"
+n_script = "playground/node/node.py"
 
 
 def check_call_modify(command, output_file):
@@ -33,49 +32,39 @@ class PlayNodeTests(unittest.TestCase):
         self.processes = 0
 
         host = "localhost"
-        port = 8080
+        self.ports = ["8080", "8081", "8082"]
         ntype = PlayNodeType.EVALUATOR
 
         # start the playground nodes
-        self.node_1 = Popen(["python", node_script, host, str(port), ntype])
-        # self.node_2 = Popen(["python", fname, host, str(port + 1), listen])
-        # self.node_3 = Popen(["python", fname, host, str(port + 2), listen])
+        Popen(["python", n_script, host, self.ports[0], ntype])
+        Popen(["python", n_script, host, self.ports[1], ntype])
+        Popen(["python", n_script, host, self.ports[2], ntype])
 
         # sleep for 2 seconds while the servers are starting
         time.sleep(1)
 
     def tearDown(self):
         # shutdown all the playground nodes
-        os.kill(self.node_1.pid, signal.SIGKILL)
-        # os.kill(self.node_2.pid, signal.SIGKILL)
-        # os.kill(self.node_3.pid, signal.SIGKILL)
+        for port in self.ports:
+            print("Shuttung down server at port: %s" % port)
+            self.transmit("localhost", port, "GET", "shutdown")
 
-    # def transmit(self, raw_msg, host, port, path):
-    #     msg = json.dumps(raw_msg)
+    def transmit(self, host, port, req_type, path, data=None):
+        request = "/" + path
 
-        # print "Processes before START message!"
-        # processes_before = self.check_nodes()
+        # transmit
+        conn = httplib.HTTPConnection(host, port)
+        if data:
+            conn.request(req_type, request, data)
+        else:
+            conn.request(req_type, request)
 
-        # # send message
-        # conn = httplib.HTTPConnection(host, port)
-        # conn.request("GET", "/", path)
-        # response = conn.getresponse()
-        # msg = response.msg
-        # print "send[localhost:8080]: ", msg
+        # response
+        response = conn.getresponse()
+        data = response.read()
+        conn.close()
 
-        # # get result
-        # raw_data = s.recv(8192)
-        # result = json.loads(raw_data)
-        # time.sleep(1)
-        # print "recieve[localhost:8080]: ", result, "\n"
-        # print "Processes after message!"
-        # processes_after = self.check_nodes()
-        # print "\n\n"
-
-        # # clean up
-        # s.close()
-
-        # return (result, processes_before, processes_after)
+        return data
 
     def check_nodes(self):
         check_call(["isrunning", "python"])
@@ -93,20 +82,28 @@ class PlayNodeTests(unittest.TestCase):
         return processes
 
     def check_state(self, host, port, state):
-        conn = httplib.HTTPConnection(host, port)
-        conn.request("GET", "/state")
-        response = conn.getresponse()
-        data = json.loads(response.read())
-        conn.close()
+        data = self.transmit(host, port, "GET", "state")
+        data = json.dumps(data)
 
         if (data["state"] == state):
             return True
         else:
             return False
 
-    def test_state(self):
-        result = self.check_state("localhost", 8080, PlayNode.RUNNING)
-        self.assertTrue(result)
+    def test_message(self):
+        msg = json.dumps({"message": "Hello World"})
+        data = self.transmit("localhost", 8080, "POST", "message", msg)
+        data = json.loads(data)
+
+        self.assertEquals(data["message"], PlayNodeMessage.UNDEFINED)
+
+    def test_shutdown(self):
+        servers_before = self.check_nodes()
+        self.transmit("localhost", 8080, "GET", "shutdown")
+        servers_after = self.check_nodes()
+
+        self.ports.remove("8080")
+        self.assertTrue(servers_before > servers_after)
 
 
 if __name__ == '__main__':

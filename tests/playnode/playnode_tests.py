@@ -153,19 +153,24 @@ class PlayNodeTests(unittest.TestCase):
 
         # evaluating individuals
         data = json.dumps(data)
-        response = self.transmit("localhost", 8080, "POST", "evaluate", data)
+        host = "localhost"
+        port = 8080
+        req_type = "POST"
+        path = "evaluate_trees"
+        response = self.transmit(host, port, req_type, path, data)
         response = json.loads(response)
 
         # assert tests
         for score_solution in list(solution["results"]):
             for score_response in list(response["results"]):
-                if score_response["score"] == score_solution["score"]:
+                score_1 = round(score_response["score"], 5)
+                score_2 = round(score_solution["score"], 5)
+                if score_1 == score_2:
                     response["results"].remove(score_response)
                     solution["results"].remove(score_solution)
                     break
         self.assertEquals(len(response["results"]), 0)
         self.assertEquals(len(solution["results"]), 0)
-
 
     def test_shutdown(self):
         servers_before = self.check_nodes()

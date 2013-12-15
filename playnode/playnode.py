@@ -2,6 +2,10 @@
 import os
 import sys
 import json
+import math
+from multiprocessing import cpu_count
+from multiprocessing import Manager
+from multiprocessing import Process
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from flask import Flask
@@ -9,15 +13,16 @@ from flask import request
 from flask import jsonify
 from flask import render_template
 
-import playground.gp_tree.tree_evaluation as tree_evaluation
+from playground.gp_tree.tree_evaluation import evaluate
 from playground.gp_tree.tree_generator import TreeGenerator
 from playground.functions import FunctionRegistry
 
 # GLOBAL VARS
 app = Flask(__name__)
 playnode_type = None
-evaluate = tree_evaluation.evaluate
 functions = FunctionRegistry()
+evaluate = evaluate
+manager = Manager()
 
 
 class PlayNodeType(object):
@@ -26,10 +31,8 @@ class PlayNodeType(object):
 
 
 class PlayNodeMessage(object):
-    STATE = "STATE"
     OK = "OK"
     SHUTDOWN = "SHUTDOWN"
-    SLEEP = "SLEEP"
     UNDEFINED = "UNDEFINED"
 
 
@@ -53,8 +56,8 @@ def message():
     return response
 
 
-@app.route('/evaluate', methods=["POST"])
-def evaluate():
+@app.route('/evaluate_trees', methods=["POST"])
+def evaluate_trees():
     results = []
     response_data = {"results": []}
 
@@ -70,23 +73,41 @@ def evaluate():
         individuals.append(tree)
         individuals.remove(individual)
 
-    # evaluate individuals and create response
-    tree_evaluation.evaluate(individuals, functions, config, results)
+    # start proceses
+    processes = []
+    results = manager.list()
+    nproc = cpu_count() * 2
+    chunksize = int(math.ceil(len(individuals) / float(nproc)))
+    for i in range(nproc):
+        chunk = individuals[chunksize * i:chunksize * (i + 1)]
+        args = (chunk, functions, config, results)
+        p = Process(target=evaluate, args=args)
+        processes.append(p)
+        p.start()
+
+    # wait till processes finish
+    for p in processes:
+        p.join()
+    del processes[:]
+
+    # jsonify results
     for individual in results:
         result = {"id": individual.tree_id, "score": individual.score}
         response_data["results"].append(result)
-
     response = jsonify(response_data)
+
     return response
 
 
 @app.route('/shutdown')
 def shutdown():
-    shutdown_func = request.environ.get('werkzeug.server.shutdown')
-    if shutdown_func is None:
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
         raise RuntimeError('Not running with the Werkzeug Server')
-    shutdown_func()
-    return render_template('shutdown.html', title="shutdown")
+    func()
+
+    response_data = {"message": PlayNodeMessage.OK}
+    return jsonify(response_data)
 
 
 if __name__ == '__main__':

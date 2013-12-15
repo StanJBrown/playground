@@ -96,8 +96,6 @@ class TreeParserTests(unittest.TestCase):
             ]
         }
         results = self.tree_parser.tree_to_dict(self.tree, self.tree.root)
-
-        # remove id because id is different every time
         self.assertEquals(results["program"], solution["program"])
 
 

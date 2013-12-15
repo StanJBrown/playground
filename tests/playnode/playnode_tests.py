@@ -10,11 +10,11 @@ from subprocess import Popen
 from subprocess import check_call
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
-from playground.node.node import PlayNodeType
-from playground.node.node import PlayNodeMessage
+from playnode.playnode import PlayNodeType
+from playnode.playnode import PlayNodeMessage
 
 # SETTINGS
-n_script = "playground/node/node.py"
+n_script = "playnode/play/node.py"
 
 
 def check_call_modify(command, output_file):

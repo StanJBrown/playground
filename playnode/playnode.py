@@ -8,7 +8,7 @@ from flask import jsonify
 from flask import render_template
 
 # GLOBAL VARS
-playnode = Flask(__name__)
+app = Flask(__name__)
 playnode_type = None
 
 
@@ -25,12 +25,12 @@ class PlayNodeMessage(object):
     UNDEFINED = "UNDEFINED"
 
 
-@playnode.route('/')
+@app.route('/')
 def index():
     return render_template('index.html', title="home")
 
 
-@playnode.route('/message', methods=["POST"])
+@app.route('/message', methods=["POST"])
 def message():
     raw_data = request.data
     incomming_data = json.loads(raw_data)
@@ -46,12 +46,12 @@ def message():
     return response
 
 
-@playnode.route('/evaluate')
+@app.route('/evaluate')
 def evaluate():
     return render_template('evaluate.html', title="evaluate")
 
 
-@playnode.route('/shutdown')
+@app.route('/shutdown')
 def shutdown():
     shutdown_func = request.environ.get('werkzeug.server.shutdown')
     if shutdown_func is None:
@@ -66,7 +66,7 @@ if __name__ == '__main__':
         port = int(sys.argv[2])
         playnode_type = sys.argv[3]
 
-        playnode.run(debug=True, host=host, port=port)
+        app.run(debug=True, host=host, port=port)
 
     else:
         print "Not enough arguments"

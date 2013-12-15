@@ -187,17 +187,33 @@ class TreeParser(object):
 
         elif node.node_type == TreeNodeType.UNARY_OP:
             self.tree_to_dict(tree, node.value_branch, results)
-            results["program"].append({
-                "type": node.node_type,
-                "name": node.name
-            })
+
+            if node is tree.root:
+                results["program"].append({
+                    "root": True,
+                    "type": node.node_type,
+                    "name": node.name
+                })
+            else:
+                results["program"].append({
+                    "type": node.node_type,
+                    "name": node.name
+                })
 
         elif node.node_type == TreeNodeType.BINARY_OP:
             self.tree_to_dict(tree, node.left_branch, results)
             self.tree_to_dict(tree, node.right_branch, results)
-            results["program"].append({
-                "type": node.node_type,
-                "name": node.name
-            })
+
+            if node is tree.root:
+                results["program"].append({
+                    "root": True,
+                    "type": node.node_type,
+                    "name": node.name
+                })
+            else:
+                results["program"].append({
+                    "type": node.node_type,
+                    "name": node.name
+                })
 
         return results

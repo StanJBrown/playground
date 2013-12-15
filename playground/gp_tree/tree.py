@@ -6,6 +6,7 @@ from playground.gp_tree.tree_parser import TreeParser
 
 class Tree(object):
     def __init__(self):
+        self.tree_id = None
         self.score = None
 
         self.root = None

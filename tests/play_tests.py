@@ -17,13 +17,15 @@ from playground.operators.crossover import GPTreeCrossover
 from playground.operators.mutation import GPTreeMutation
 
 # SETTINGS
-config_fp = os.path.join(os.path.dirname(__file__), "config/play.json")
+cwd = os.path.dirname(__file__)
+config_fp = os.path.normpath(os.path.join(cwd, "config/play.json"))
 
 
 class PlayTests(unittest.TestCase):
     def setUp(self):
         random.seed(10)
 
+        print config_fp
         self.config = config.load_config(config_fp)
         self.functions = FunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)

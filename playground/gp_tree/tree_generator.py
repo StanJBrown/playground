@@ -166,7 +166,9 @@ class TreeGenerator(object):
 
     def generate_tree_from_dict(self, tree_dict):
         tree = Tree()
+        stack = []
 
+        tree.tree_id = tree_dict["id"]
         for node_dict in tree_dict["program"]:
             n_type = node_dict["type"]
             node = None
@@ -175,6 +177,7 @@ class TreeGenerator(object):
                 name = node_dict["name"]
                 node = TreeNode(TreeNodeType.INPUT, name=name)
                 tree.program.append(node)
+                stack.append(node)
 
             elif n_type == TreeNodeType.TERM:
                 node = None
@@ -183,20 +186,39 @@ class TreeGenerator(object):
                     value = node_dict["value"]
                     node = TreeNode(TreeNodeType.TERM, value=value)
                     tree.program.append(node)
+                    stack.append(node)
+
                 else:
                     name = node_dict["name"]
                     node = TreeNode(TreeNodeType.TERM, name=name)
                     tree.program.append(node)
+                    stack.append(node)
 
             elif n_type == TreeNodeType.UNARY_OP:
+                value = stack.pop()
                 name = node_dict["name"]
-                node = TreeNode(n_type, name=name)
+                node = TreeNode(n_type, name=name, value_branch=value)
                 tree.program.append(node)
+                stack.append(node)
+
+                if node_dict.get("root", False):
+                    tree.root = node
 
             elif n_type == TreeNodeType.BINARY_OP:
+                left = stack.pop()
+                right = stack.pop()
                 name = node_dict["name"]
-                node = TreeNode(n_type, name=name)
+                node = TreeNode(
+                    n_type,
+                    name=name,
+                    left_branch=left,
+                    right_branch=right
+                )
                 tree.program.append(node)
+                stack.append(node)
+
+                if node_dict.get("root", False):
+                    tree.root = node
 
         return tree
 

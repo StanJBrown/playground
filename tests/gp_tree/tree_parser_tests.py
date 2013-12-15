@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -19,6 +20,8 @@ tree_config = os.path.join(cwd, "../config/tree.json")
 
 class TreeParserTests(unittest.TestCase):
     def setUp(self):
+        random.seed(10)
+
         self.config = config.load_config(tree_config)
 
         self.functions = FunctionRegistry()
@@ -84,21 +87,18 @@ class TreeParserTests(unittest.TestCase):
 
     def test_tree_to_dict(self):
         solution = {
-            'id': '4299569872',
             'program': [
                 {'type': 'TERM', 'value': 1.0},
                 {'type': 'UNARY_OP', 'name': 'COS'},
                 {'type': 'TERM', 'value': 2.0},
                 {'type': 'UNARY_OP', 'name': 'SIN'},
-                {'type': 'BINARY_OP', 'name': 'ADD'}
+                {'type': 'BINARY_OP', 'root': True, 'name': 'ADD'}
             ]
         }
         results = self.tree_parser.tree_to_dict(self.tree, self.tree.root)
 
         # remove id because id is different every time
-        results["id"] = None
-        solution["id"] = None
-        self.assertEquals(results, solution)
+        self.assertEquals(results["program"], solution["program"])
 
 
 if __name__ == '__main__':

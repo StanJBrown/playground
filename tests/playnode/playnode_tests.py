@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import time
+import signal
 import random
 import httplib
 import unittest
@@ -39,22 +40,26 @@ class PlayNodeTests(unittest.TestCase):
         self.processes = 0
 
         host = "localhost"
-        self.ports = ["8080", "8081", "8082"]
         ntype = PlayNodeType.EVALUATOR
+        nodes = [
+            ["python", n_script, host, "8080", ntype],
+            ["python", n_script, host, "8081", ntype],
+            ["python", n_script, host, "8082", ntype]
+        ]
 
         # start the playground nodes
-        Popen(["python", n_script, host, self.ports[0], ntype])
-        Popen(["python", n_script, host, self.ports[1], ntype])
-        Popen(["python", n_script, host, self.ports[2], ntype])
+        self.node_1 = Popen(nodes[0], preexec_fn=os.setsid)
+        self.node_2 = Popen(nodes[1], preexec_fn=os.setsid)
+        self.node_3 = Popen(nodes[2], preexec_fn=os.setsid)
 
         # sleep for 2 seconds while the servers are starting
         time.sleep(1)
 
     def tearDown(self):
         # shutdown all the playground nodes
-        for port in self.ports:
-            print("Shutting down server at port: %s" % port)
-            self.transmit("localhost", port, "GET", "shutdown")
+        os.killpg(self.node_1.pid, signal.SIGTERM)
+        os.killpg(self.node_2.pid, signal.SIGTERM)
+        os.killpg(self.node_3.pid, signal.SIGTERM)
 
     def transmit(self, host, port, req_type, path, data=None):
         request = "/" + path
@@ -102,7 +107,7 @@ class PlayNodeTests(unittest.TestCase):
         data = self.transmit("localhost", 8080, "POST", "message", msg)
         data = json.loads(data)
 
-        self.assertEquals(data["message"], PlayNodeMessage.UNDEFINED)
+        self.assertEquals(data["message"], PlayNodeMessage.OK)
 
     def test_evaluate(self):
         random.seed(10)
@@ -171,14 +176,6 @@ class PlayNodeTests(unittest.TestCase):
                     break
         self.assertEquals(len(response["results"]), 0)
         self.assertEquals(len(solution["results"]), 0)
-
-    def test_shutdown(self):
-        servers_before = self.check_nodes()
-        self.transmit("localhost", 8080, "GET", "shutdown")
-        servers_after = self.check_nodes()
-
-        self.ports.remove("8080")
-        self.assertTrue(servers_before > servers_after)
 
 
 if __name__ == '__main__':

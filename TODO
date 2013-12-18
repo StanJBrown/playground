@@ -1,7 +1,7 @@
 # TODO
 
-- Generate Tree from string
-- Enable playground to become a dedicated evaluator
+- Transform the tree to string based to REAL based
+- Create a OpenCL experiement
 - Add 2 more symbolic regression examples
 - Write the tree evaluator in C as a python extension
 

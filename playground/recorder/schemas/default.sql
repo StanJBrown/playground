@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS trees
 
     population_id INT NOT NULL,
     generation INT NOT NULL,
-    score REAL NOT NULL,
+    score REAL,
 
     size INT NOT NULL,
     depth INT NOT NULL,

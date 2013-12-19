@@ -3,6 +3,10 @@
     "tree_init_method" : "FULL_METHOD",
     "max_depth" : 4,
 
+    "evaluator" : {
+        "use_cache": false
+    },
+
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",
         "tournament_size": 2
@@ -98,9 +102,8 @@
         }
     ],
 
-    "input_nodes" : [
+    "input_variables" : [
         {
-            "type": "INPUT",
             "name": "x"
         }
     ],

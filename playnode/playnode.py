@@ -71,22 +71,24 @@ def evaluate_trees():
             individuals.append(tree)
             individuals.remove(individual)
 
-        # start proceses
-        processes = []
-        results = manager.list()
-        nproc = cpu_count() * 2
-        chunksize = int(math.ceil(len(individuals) / float(nproc)))
-        for i in range(nproc):
-            chunk = individuals[chunksize * i:chunksize * (i + 1)]
-            args = (chunk, functions, config, results)
-            p = Process(target=evaluate, args=args)
-            processes.append(p)
-            p.start()
+        evaluate(individuals, functions, config, results)
 
-        # wait till processes finish
-        for p in processes:
-            p.join()
-        del processes[:]
+        # # start proceses
+        # processes = []
+        # results = manager.list()
+        # nproc = cpu_count()
+        # chunksize = int(math.ceil(len(individuals) / float(nproc)))
+        # for i in range(nproc):
+        #     chunk = individuals[chunksize * i:chunksize * (i + 1)]
+        #     args = (chunk, functions, config, results)
+        #     p = Process(target=evaluate, args=args)
+        #     processes.append(p)
+        #     p.start()
+
+        # # wait till processes finish
+        # for p in processes:
+        #     p.join()
+        # del processes[:]
 
         # jsonify results
         response_data["results"] = []
@@ -98,7 +100,7 @@ def evaluate_trees():
             response_data["results"].append(result)
         response = jsonify(response_data)
     else:
-        response_data = {"message": "ERROR!!"}
+        response_data = {"message": PlayNodeMessage.ERROR}
         response = jsonify(response_data)
 
     return response

@@ -110,3 +110,26 @@ class TreeNode(object):
             obj_str += "address: " + str(id(self))
 
         return obj_str
+#
+#     def __dict__(self):
+#         node_dict = {}
+#
+#         node_dict["node_type"] = self.node_type
+#
+#         # function node specific
+#         if self.node_type == TreeNodeType.UNARY_OP:
+#             node_dict["name"] = self.name
+#             node_dict["value_branch"] = self.value_branch.__dict__()
+#         elif self.node_type == TreeNodeType.BINARY_OP:
+#             node_dict["name"] = self.name
+#             node_dict["left_branch"] = self.left_branch.__dict__()
+#             node_dict["right_branch"] = self.right_branch.__dict__()
+#
+#         # terminal node specific
+#         if self.node_type == TreeNodeType.TERM:
+#             node_dict["name"] = self.name
+#             node_dict["value"] = self.value
+#         elif self.node_type == TreeNodeType.INPUT:
+#             node_dict["name"] = self.name
+#
+#         return node_dict

@@ -145,7 +145,7 @@ class PlayNodeTests(unittest.TestCase):
         tree_parser = TreeParser()
         population = TreeGenerator(config).init()
 
-        # create a JSON of trees
+        # create a dictionary of trees
         data = {"config": config, "individuals": []}
         for individual in population.individuals:
             tree_json = tree_parser.tree_to_dict(individual, individual.root)
@@ -165,6 +165,8 @@ class PlayNodeTests(unittest.TestCase):
         response = self.transmit(host, port, req_type, path, data)
         response = json.loads(response)
 
+        print response
+
         # assert tests
         for score_solution in list(solution["results"]):
             for score_response in list(response["results"]):
@@ -174,6 +176,7 @@ class PlayNodeTests(unittest.TestCase):
                     response["results"].remove(score_response)
                     solution["results"].remove(score_solution)
                     break
+
         self.assertEquals(len(response["results"]), 0)
         self.assertEquals(len(solution["results"]), 0)
 

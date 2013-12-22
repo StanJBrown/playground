@@ -6,8 +6,9 @@ before_script:
     - sudo apt-get install postgresql
     - sudo apt-get install postgresql-client
     - sudo apt-get install python
-    - sudo pip install sympy
-    - sudo pip install psycopg2
+    - sudo pip-2.7 install sympy
+    - sudo pip-2.7 install psycopg2
+    - sudo pip-2.7 install flask
 
 script:
     python tests/unittest_runner.py

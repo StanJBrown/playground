@@ -80,6 +80,7 @@ class DBTests(unittest.TestCase):
     def test_record_indivdiuals(self):
         generation = self.population.generation
         individual = self.population.individuals[0]
+
         self.db.record_individual(1, generation, individual)
         self.db.conn.commit()
 

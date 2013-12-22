@@ -1,10 +1,10 @@
 -- POPULATIONS
-CREATE TABLE IF NOT EXISTS populations 
+CREATE TABLE IF NOT EXISTS populations
 (
     population_id SERIAL,
 
     generation INT NOT NULL,
-    best_score REAL NOT NULL,
+    best_score DOUBLE PRECISION NOT NULL,
     best_individual TEXT NOT NULL,
 
     PRIMARY KEY (population_id)
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS trees
 
     population_id INT NOT NULL,
     generation INT NOT NULL,
-    score REAL,
+    score DOUBLE PRECISION,
 
     size INT NOT NULL,
     depth INT NOT NULL,
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS crossovers
     crossover_id SERIAL,
 
     method TEXT NOT NULL,
-    crossover_probability REAL NOT NULL,
-    random_probability REAL NOT NULL,
+    crossover_probability DOUBLE PRECISION NOT NULL,
+    random_probability DOUBLE PRECISION NOT NULL,
     crossovered BOOL NOT NULL,
 
     PRIMARY KEY (crossover_id)
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS mutations
     mutation_id SERIAL,
 
     method TEXT NOT NULL,
-    mutation_probability REAL NOT NULL,
-    random_probability REAL NOT NULL,
+    mutation_probability DOUBLE PRECISION NOT NULL,
+    random_probability DOUBLE PRECISION NOT NULL,
     mutated BOOL NOT NULL,
 
     PRIMARY KEY (mutation_id)

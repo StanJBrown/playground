@@ -181,10 +181,14 @@ class DB(object):
 
     def record_individual(self, population_id, generation, individual):
         try:
+            score = None
+            if individual.score is not None:
+                score = round(individual.score, 5)
+
             individual_dict = {
                 "population_id": population_id,
                 "generation": generation,
-                "score": individual.score,
+                "score": score,
 
                 "size": individual.size,
                 "depth": individual.depth,
@@ -208,10 +212,11 @@ class DB(object):
 
     def record_population(self, population):
         try:
+            score = round(population.best_individuals[0].score, 5)
             population_dict = {
                 "generation": population.generation,
                 "best_individual": str(population.best_individuals[0]),
-                "best_score": population.best_individuals[0].score
+                "best_score": score
             }
             keys, vals = self.dict_to_sql(population_dict)
             self.insert(self.populations, keys, vals)
@@ -237,10 +242,13 @@ class DB(object):
 
     def record_crossover(self, crossover):
         try:
+            c_prob = crossover.crossover_probability
+            r_prob = crossover.random_probability
+
             crossover_dict = {
                 "method": crossover.method,
-                "crossover_probability": crossover.crossover_probability,
-                "random_probability": crossover.random_probability,
+                "crossover_probability": round(c_prob, 5),
+                "random_probability": round(r_prob, 5),
                 "crossovered": crossover.crossovered
             }
             keys, vals = self.dict_to_sql(crossover_dict)
@@ -251,10 +259,13 @@ class DB(object):
 
     def record_mutation(self, mutation):
         try:
+            m_prob = mutation.mutation_probability
+            r_prob = mutation.random_probability
+
             mutation_dict = {
                 "method": mutation.method,
-                "mutation_probability": mutation.mutation_probability,
-                "random_probability": mutation.random_probability,
+                "mutation_probability": round(m_prob, 5),
+                "random_probability": round(r_prob, 5),
                 "mutated": mutation.mutated
             }
             keys, vals = self.dict_to_sql(mutation_dict)

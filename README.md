@@ -51,3 +51,7 @@ You should have received a copy of the GNU General Public License along with
 this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [1]: https://travis-ci.org/chutsu/evolve
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/chutsu/playground/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

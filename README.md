@@ -25,13 +25,15 @@ features:
 - Python (version 2.7 +)
 - sympy (version 0.7.3 +)
 
+## Install
+
 
 ## Optional Requirements
 
 If you want evolution recording (such as fitness/evaluation score vs time):
 
 - PostgreSQL (version 9.3 +)
-- Psycopg (version 2.5 +)
+- Psycopg2 (version 2.5 +)
 
 
 ## Licence
@@ -50,8 +52,8 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program.  If not, see <http://www.gnu.org/licenses/>.
 
-[1]: https://travis-ci.org/chutsu/evolve
 
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/chutsu/playground/trend.png)][2]
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/chutsu/playground/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+[1]: https://travis-ci.org/chutsu/playground
+[2]: https://bitdeli.com/free

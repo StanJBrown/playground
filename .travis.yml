@@ -5,7 +5,6 @@ before_script:
     - sudo apt-get update
     - sudo apt-get install postgresql
     - sudo apt-get install postgresql-client
-    - sudo adduser playground_user
     - sudo apt-get install python
     - sudo pip install sympy
     - sudo pip install psycopg2

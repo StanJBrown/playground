@@ -7,6 +7,8 @@ before_script:
     - sudo apt-get update
     - sudo apt-get install postgresql
     - sudo apt-get install postgresql-client
+    - createuser playground_user
+    - createdb -O playground_user playground
 
 script:
     python tests/unittest_runner.py

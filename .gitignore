@@ -16,3 +16,5 @@ install_manifest.txt
 *.log
 nohup.out
 pycallgraph.png
+.rope*
+run.sh

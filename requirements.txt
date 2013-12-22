@@ -1,0 +1,3 @@
+sympy
+psycopg2
+flask

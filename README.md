@@ -1,4 +1,4 @@
-# Playground
+# Playground [![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
 Playground is a Gentic Programming framework implemented in Python. Currently
 features:
 
@@ -52,8 +52,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/chutsu/playground/trend.png)][2]
+[![](https://d2weczhvl823v0.cloudfront.net/chutsu/playground/trend.png)][2]
 
 [1]: https://travis-ci.org/chutsu/playground
 [2]: https://bitdeli.com/free

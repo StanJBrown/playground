@@ -2,10 +2,6 @@
 import os
 import sys
 import json
-import math
-from multiprocessing import cpu_count
-from multiprocessing import Manager
-from multiprocessing import Process
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from flask import Flask
@@ -22,7 +18,6 @@ app = Flask(__name__)
 playnode_type = None
 functions = FunctionRegistry()
 evaluate = evaluate
-manager = Manager()
 
 
 class PlayNodeType(object):
@@ -72,23 +67,6 @@ def evaluate_trees():
             individuals.remove(individual)
 
         evaluate(individuals, functions, config, results)
-
-        # # start proceses
-        # processes = []
-        # results = manager.list()
-        # nproc = cpu_count()
-        # chunksize = int(math.ceil(len(individuals) / float(nproc)))
-        # for i in range(nproc):
-        #     chunk = individuals[chunksize * i:chunksize * (i + 1)]
-        #     args = (chunk, functions, config, results)
-        #     p = Process(target=evaluate, args=args)
-        #     processes.append(p)
-        #     p.start()
-
-        # # wait till processes finish
-        # for p in processes:
-        #     p.join()
-        # del processes[:]
 
         # jsonify results
         response_data["results"] = []

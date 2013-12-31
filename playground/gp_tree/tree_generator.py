@@ -34,7 +34,7 @@ class TreeGenerator(object):
             node = sample(self.config["terminal_nodes"], 1)[0]
 
         term_node = TreeNode(
-            node["type"],
+            TreeNodeType.TERM,
             name=node.get("name", None),
             value=node.get("value", None)
         )

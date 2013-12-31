@@ -21,65 +21,34 @@ class GPTreeMutation(object):
         self.random_probability = None
         self.mutated = False
 
-    def _gen_func_node(self, func_type, name):
-        func_node = TreeNode(
-            func_type,
-            name=name
-        )
-        return func_node
-
-    def _gen_term_node(self, name, value):
-        if name is not None:
-            term_node = TreeNode(
-                TreeNodeType.TERM,
-                name=name,
-                value=value
-            )
-        else:
-            term_node = TreeNode(
-                TreeNodeType.TERM,
-                value=value
-            )
-        return term_node
-
-    def _gen_input_node(self, name):
-        input_node = TreeNode(
-            TreeNodeType.INPUT,
-            name=name
-        )
-        return input_node
-
     def _gen_new_node(self, details):
-        if details.get("type") is None:  # it is an input node
-            return self._gen_input_node(details["name"])
-        elif details["type"] == TreeNodeType.UNARY_OP:
-            return self._gen_func_node(details["type"], details["name"])
+        if details["type"] == TreeNodeType.UNARY_OP:
+            return TreeNode(details["type"], name=details["name"])
+
         elif details["type"] == TreeNodeType.BINARY_OP:
-            return self._gen_func_node(details["type"], details["name"])
-        elif details["type"] == TreeNodeType.TERM:
+            return TreeNode(details["type"], name=details["name"])
+
+        elif details["type"] == TreeNodeType.INPUT:
+            return TreeNode(TreeNodeType.INPUT, name=details["name"])
+
+        elif details["type"] == TreeNodeType.TERM:  # it is a terminal node
             name = details.get("name", None)
             value = details.get("value", None)
-            return self._gen_term_node(name, value)
+            return TreeNode(TreeNodeType.TERM, name=name, value=value)
 
     def _get_new_node(self, node):
         # determine what kind of node it is
-        t = node.node_type
         nodes = []
-        if t == TreeNodeType.UNARY_OP:
+        if node.is_function():
             tmp = list(self.config["function_nodes"])
-            tmp = [n for n in tmp if n["type"] == TreeNodeType.UNARY_OP]
+            tmp = [n for n in tmp if n["type"] == node.node_type]
             nodes.extend(tmp)
-        if t == TreeNodeType.BINARY_OP:
-            tmp = list(self.config["function_nodes"])
-            tmp = [n for n in tmp if n["type"] == TreeNodeType.BINARY_OP]
-            nodes.extend(tmp)
-        elif t == TreeNodeType.TERM or t == TreeNodeType.INPUT:
+        elif node.is_terminal() or node.is_input():
             nodes.extend(self.config["terminal_nodes"])
             nodes.extend(self.config["input_variables"])
 
         # check the node and return
         while True:
-            # obtain a new node
             new_node_details = sample(nodes, 1)[0]
             new_node = self._gen_new_node(new_node_details)
 
@@ -122,7 +91,7 @@ class GPTreeMutation(object):
         tree.update()
 
     def shrink_mutation(self, tree, mutation_index=None):
-        # subtree exchanged against terminal
+        # replace subtree with terminal
         func_node = None
         if mutation_index is None:
             func_node = sample(tree.func_nodes, 1)[0]

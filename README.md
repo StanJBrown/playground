@@ -1,4 +1,4 @@
-# Playground [![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
+# playground [![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
 Playground is a Gentic Programming framework implemented in Python. Currently
 features:
 

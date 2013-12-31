@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from random import sample
 from random import random
+from random import randint
 
 from playground.gp_tree.tree import Tree
 from playground.gp_tree.tree_node import TreeNode
@@ -67,14 +68,19 @@ class TreeGenerator(object):
 
             self._build_tree(right_node, tree, depth + 1, node_generator)
 
-    def _add_input_nodes(self, tree):
-        index = 0
-        inputs = len(self.config["input_variables"])
-        term_nodes = sample(tree.term_nodes, inputs)
+    def _add_input_nodes(self, tree, mode="ALL"):
+        # determine mode
+        inputs = 0
+        if mode == "ALL":
+            inputs = len(self.config["input_variables"])
+        else:
+            inputs = randint(0, len(self.config["input_variables"]))
 
+        # add input nodes
+        index = 0
+        term_nodes = sample(tree.term_nodes, inputs)
         for term_node in term_nodes:
             input_node = self._gen_input_node(index)
-
             tree.replace_node(term_node, input_node)
 
             # increment index
@@ -98,7 +104,7 @@ class TreeGenerator(object):
                 tree.size += 1
                 return func_node
 
-    def full_method(self):
+    def full_method(self, input_nodes=True):
         while True:
             # setup
             tree = Tree()
@@ -109,9 +115,10 @@ class TreeGenerator(object):
             tree.update_program()
 
             # add input nodes
-            if len(tree.term_nodes) > len(self.config["input_variables"]):
-                self._add_input_nodes(tree)
-                return tree
+            if input_nodes:
+                if len(tree.term_nodes) > len(self.config["input_variables"]):
+                    self._add_input_nodes(tree)
+                    return tree
 
         return tree
 
@@ -137,7 +144,7 @@ class TreeGenerator(object):
             tree.size += 1
             return node
 
-    def grow_method(self):
+    def grow_method(self, input_nodes=True):
         while True:
             # setup
             tree = Tree()
@@ -148,9 +155,10 @@ class TreeGenerator(object):
             tree.update()
 
             # add input nodes
-            if len(tree.term_nodes) > len(self.config["input_variables"]):
-                self._add_input_nodes(tree)
-                return tree
+            if input_nodes:
+                if len(tree.term_nodes) > len(self.config["input_variables"]):
+                    self._add_input_nodes(tree)
+                    return tree
 
         return tree
 

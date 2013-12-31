@@ -45,9 +45,7 @@ class TreeGeneratorTests(unittest.TestCase):
         # create tree
         tree = Tree()
         tree.root = add_func
-        tree.update_program()
-        tree.update_func_nodes()
-        tree.update_term_nodes()
+        tree.update()
 
         # add input nodes
         self.tree_generator._add_input_nodes(tree)

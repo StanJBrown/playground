@@ -2,16 +2,9 @@
 
 
 class TreeNodeType(object):
-    UNARY_OP = "UNARY_OP"
-    BINARY_OP = "BINARY_OP"
+    FUNCTION = "FUNCTION"
     TERM = "TERM"
     INPUT = "INPUT"
-
-
-class TreeNodeBranch(object):
-    VALUE = "VALUE"
-    LEFT = "LEFT"
-    RIGHT = "RIGHT"
 
 
 class TreeNode(object):
@@ -19,40 +12,35 @@ class TreeNode(object):
         self.node_type = node_type
 
         # function node specific
-        if node_type == TreeNodeType.UNARY_OP:
+        if node_type == TreeNodeType.FUNCTION:
             self.name = kwargs.get("name", None)
-            self.value_branch = kwargs.get("value_branch", None)
-        elif node_type == TreeNodeType.BINARY_OP:
-            self.name = kwargs.get("name", None)
-            self.left_branch = kwargs.get("left_branch", None)
-            self.right_branch = kwargs.get("right_branch", None)
+            self.arity = kwargs.get("arity", None)
+            self.branches = kwargs.get("branches", None)
 
         # terminal node specific
         if node_type == TreeNodeType.TERM:
             self.name = kwargs.get("name", None)
             self.value = kwargs.get("value", None)
+
         elif node_type == TreeNodeType.INPUT:
             self.name = kwargs.get("name", None)
 
     def has_value_node(self, node):
-        if self.node_type == TreeNodeType.UNARY_OP:
-            if self.value_branch is node:
-                return TreeNodeBranch.VALUE
-            else:
-                return False
-        elif self.node_type == TreeNodeType.BINARY_OP:
-            if self.left_branch is node:
-                return TreeNodeBranch.LEFT
-            elif self.right_branch is node:
-                return TreeNodeBranch.RIGHT
-            else:
-                return False
+        if self.is_function():
+            index = 0
+            for value in self.branches:
+                if value is node:
+                    return index
+                else:
+                    index += 1
+
+            return False
+
         else:
             return False
 
     def is_function(self):
-        function_node_types = [TreeNodeType.UNARY_OP, TreeNodeType.BINARY_OP]
-        if self.node_type in function_node_types:
+        if self.node_type == TreeNodeType.FUNCTION:
             return True
         else:
             return False
@@ -71,19 +59,20 @@ class TreeNode(object):
 
     def equals(self, node):
         if self.node_type == node.node_type:
-            t = node.node_type
 
-            if t == TreeNodeType.UNARY_OP or t == TreeNodeType.BINARY_OP:
+            if node.is_function():
                 if self.name == node.name:
                     return True
                 else:
                     return False
-            elif t == TreeNodeType.TERM:
+
+            elif node.is_terminal():
                 if self.name == node.name and self.value == node.value:
                     return True
                 else:
                     return False
-            elif t == TreeNodeType.INPUT:
+
+            elif node.is_input():
                 if self.name == node.name:
                     return True
                 else:

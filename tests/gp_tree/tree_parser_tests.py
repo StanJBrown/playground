@@ -33,21 +33,23 @@ class TreeParserTests(unittest.TestCase):
         right_node = TreeNode(TreeNodeType.TERM, value=2.0)
 
         cos_func = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="COS",
-            value_branch=left_node,
+            arity=1,
+            branches=[left_node]
         )
         sin_func = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="SIN",
-            value_branch=right_node,
+            arity=1,
+            branches=[right_node]
         )
 
         add_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="ADD",
-            left_branch=cos_func,
-            right_branch=sin_func
+            arity=2,
+            branches=[cos_func, sin_func]
         )
 
         # create tree
@@ -89,10 +91,10 @@ class TreeParserTests(unittest.TestCase):
         solution = {
             'program': [
                 {'type': 'TERM', 'value': 1.0},
-                {'type': 'UNARY_OP', 'name': 'COS'},
+                {'arity': 1, 'type': 'FUNCTION', 'name': 'COS'},
                 {'type': 'TERM', 'value': 2.0},
-                {'type': 'UNARY_OP', 'name': 'SIN'},
-                {'type': 'BINARY_OP', 'root': True, 'name': 'ADD'}
+                {'arity': 1, 'type': 'FUNCTION', 'name': 'SIN'},
+                {'arity': 2, 'type': 'FUNCTION', 'root': True, 'name': 'ADD'}
             ]
         }
         results = self.tree_parser.tree_to_dict(self.tree, self.tree.root)

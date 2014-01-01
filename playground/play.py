@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import math
 import copy
-import time
 import random
 import multiprocessing
 from multiprocessing import Process
@@ -25,7 +24,7 @@ def reproduce(population, crossover, mutation, config):
     p_index = 0
     curr_pop = len(individuals)
     reproduce = max_pop - curr_pop
-    for i in range(0, reproduce + 2, 2):
+    for i in xrange(0, reproduce + 2, 2):
         # get 2 parents
         parents = individuals[p_index: p_index + 2]
         p_index += 2
@@ -35,7 +34,7 @@ def reproduce(population, crossover, mutation, config):
             p_index = 0
 
         # produce 4 children
-        for i in range(0, 2):
+        for i in xrange(0, 2):
             child_1 = copy.deepcopy(parents[0])
             child_2 = copy.deepcopy(parents[1])
 
@@ -49,7 +48,7 @@ def reproduce(population, crossover, mutation, config):
 
     # remove the extra at the end
     if len(population.individuals) > max_pop:
-        for i in range(0, len(population.individuals) - max_pop):
+        for i in xrange(0, len(population.individuals) - max_pop):
             population.individuals.pop()
 
 
@@ -115,7 +114,7 @@ def play_multicore(details):
         # start proceses
         results = manager.list()
         chunksize = int(math.ceil(len(population.individuals) / float(nproc)))
-        for i in range(nproc):
+        for i in xrange(nproc):
             chunk = population.individuals[chunksize * i:chunksize * (i + 1)]
             args = (chunk, functions, config, results)
             p = Process(target=evaluate, args=args)

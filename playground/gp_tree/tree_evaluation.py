@@ -13,28 +13,25 @@ def gen_term_node(node, row, config):
         print node.name, row
 
 
-def eval_node(node, stack, functions, config):
+def eval_node(node, stack, functions, config, data_row=None):
     try:
-        if node.node_type == TreeNodeType.TERM:
+        if node.is_terminal():
             stack.append(node)
 
-        elif node.node_type == TreeNodeType.UNARY_OP:
-            value = stack.pop()
+        if node.is_input():
+            term_node = gen_term_node(node, data_row, config)
+            stack.append(term_node)
 
+        elif node.is_function():
+            # get input values from stack
+            input_values = [stack.pop().value for i in xrange(node.arity)]
+
+            # execute function
             function = functions.get_function(node.name)
-            result_value = function(value.value)
+            result_value = function(*input_values)
             result = TreeNode(TreeNodeType.TERM, value=result_value)
 
-            stack.append(result)
-
-        elif node.node_type == TreeNodeType.BINARY_OP:
-            left = stack.pop()
-            right = stack.pop()
-
-            function = functions.get_function(node.name)
-            result_value = function(left.value, right.value)
-            result = TreeNode(TreeNodeType.TERM, value=result_value)
-
+            # push result back to stack
             stack.append(result)
 
     except EvaluationError:
@@ -50,13 +47,10 @@ def eval_program(tree, tree_size, functions, config):
         response_data = config["data"][response_var]
         rows = len(response_data)
 
-        for i in range(rows):
+        for i in xrange(rows):
+            # evaluate program
             for node in tree.program:
-                if node.node_type == TreeNodeType.INPUT:
-                    term_node = gen_term_node(node, i, config)
-                    eval_node(term_node, stack, functions, config)
-                else:
-                    eval_node(node, stack, functions, config)
+                eval_node(node, stack, functions, config, i)
 
             # calculate score
             node = stack.pop()

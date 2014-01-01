@@ -47,10 +47,10 @@ class TreeTests(unittest.TestCase):
         left_node = TreeNode(TreeNodeType.INPUT, name="x")
         right_node = TreeNode(TreeNodeType.INPUT, name="y")
         add_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="ADD",
-            left_branch=left_node,
-            right_branch=right_node
+            arity=2,
+            branches=[left_node, right_node]
         )
         self.tree.root = add_func
         self.tree.program = self.t_parser.post_order_traverse(self.tree.root)
@@ -71,10 +71,10 @@ class TreeTests(unittest.TestCase):
         node_x = TreeNode(TreeNodeType.INPUT, name="x")
         node_y = TreeNode(TreeNodeType.INPUT, name="y")
         add_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="ADD",
-            left_branch=node_x,
-            right_branch=node_y
+            arity=2,
+            branches=[node_x, node_y]
         )
 
         tree = Tree()
@@ -91,7 +91,7 @@ class TreeTests(unittest.TestCase):
         self.assertTrue(before_replace == before_replace)
         self.assertTrue(after_replace == after_replace)
         self.assertFalse(before_replace == after_replace)
-        self.assertTrue(add_func.left_branch is new_node)
+        self.assertTrue(add_func.branches[0] is new_node)
 
     def test_equal(self):
         # create nodes
@@ -102,54 +102,54 @@ class TreeTests(unittest.TestCase):
         right_node_2 = TreeNode(TreeNodeType.TERM, value=4.0)
 
         cos_func_1 = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="COS",
-            value_branch=left_node_1,
+            arity=1,
+            branches=[left_node_1]
         )
         sin_func_1 = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="SIN",
-            value_branch=right_node_1,
+            arity=1,
+            branches=[right_node_1]
         )
 
         cos_func_2 = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="COS",
-            value_branch=left_node_2,
+            arity=1,
+            branches=[left_node_2]
         )
         sin_func_2 = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="SIN",
-            value_branch=right_node_2,
+            arity=1,
+            branches=[right_node_2]
         )
 
         add_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="ADD",
-            left_branch=cos_func_1,
-            right_branch=sin_func_1
+            arity=2,
+            branches=[cos_func_1, sin_func_1]
         )
 
         sub_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="SUB",
-            left_branch=sin_func_2,
-            right_branch=cos_func_2
+            arity=2,
+            branches=[sin_func_2, cos_func_2]
         )
 
         # create tree_1
         tree_1 = Tree()
         tree_1.root = add_func
-        tree_1.update_program()
-        tree_1.update_func_nodes()
-        tree_1.update_term_nodes()
+        tree_1.update()
 
         # create tree_2
         tree_2 = Tree()
         tree_2.root = sub_func
-        tree_2.update_program()
-        tree_2.update_func_nodes()
-        tree_2.update_term_nodes()
+        tree_2.update()
 
         self.assertTrue(tree_1.equals(tree_1))
         self.assertFalse(tree_1.equals(tree_2))
@@ -162,10 +162,10 @@ class TreeTests(unittest.TestCase):
         left_node = TreeNode(TreeNodeType.INPUT, name="x")
         right_node = TreeNode(TreeNodeType.INPUT, name="y")
         add_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="ADD",
-            left_branch=left_node,
-            right_branch=right_node
+            arity=2,
+            branches=[left_node, right_node]
         )
         self.tree.root = add_func
         self.tree.program = self.t_parser.post_order_traverse(self.tree.root)

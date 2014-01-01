@@ -1,5 +1,5 @@
 {
-    "max_population": 1000,
+    "max_population": 100,
     "max_depth" : 4,
 
     "tree_init_method": "FULL_METHOD",
@@ -10,30 +10,37 @@
 
     "function_nodes" : [
         {
-            "type": "BINARY_OP",
-            "name": "ADD"
+            "type": "FUNCTION",
+            "name": "ADD",
+            "arity": 2
         },
         {
-            "type": "BINARY_OP",
-            "name": "SUB"
+            "type": "FUNCTION",
+            "name": "SUB",
+            "arity": 2
         },
         {
-            "type": "BINARY_OP",
-            "name": "MUL"
+            "type": "FUNCTION",
+            "name": "MUL",
+            "arity": 2
         },
         {
-            "type": "BINARY_OP",
-            "name": "DIV"
+            "type": "FUNCTION",
+            "name": "DIV",
+            "arity": 2
         },
         {
-            "type": "UNARY_OP",
-            "name": "COS"
+            "type": "FUNCTION",
+            "name": "COS",
+            "arity": 1
         },
         {
-            "type": "UNARY_OP",
-            "name": "SIN"
+            "type": "FUNCTION",
+            "name": "SIN",
+            "arity": 1
         }
     ],
+
     "terminal_nodes" : [
         {
             "type": "TERM",
@@ -83,6 +90,7 @@
 
     "input_variables" : [
         {
+            "type": "INPUT",
             "name": "x"
         }
     ],

@@ -5,27 +5,33 @@
 
     "function_nodes" : [
         {
-            "type": "BINARY_OP",
+            "type": "FUNCTION",
+            "arity": 2,
             "name": "ADD"
         },
         {
-            "type": "BINARY_OP",
+            "type": "FUNCTION",
+            "arity": 2,
             "name": "SUB"
         },
         {
-            "type": "BINARY_OP",
+            "type": "FUNCTION",
+            "arity": 2,
             "name": "MUL"
         },
         {
-            "type": "BINARY_OP",
+            "type": "FUNCTION",
+            "arity": 2,
             "name": "DIV"
         },
         {
-            "type": "UNARY_OP",
+            "type": "FUNCTION",
+            "arity": 1,
             "name": "COS"
         },
         {
-            "type": "UNARY_OP",
+            "type": "FUNCTION",
+            "arity": 1,
             "name": "SIN"
         }
     ],

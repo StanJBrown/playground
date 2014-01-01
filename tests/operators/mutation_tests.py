@@ -34,21 +34,24 @@ class MutatorTests(unittest.TestCase):
         right_node = TreeNode(TreeNodeType.INPUT, name="x")
 
         cos_func = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="COS",
-            value_branch=left_node,
+            arity=1,
+            branches=[left_node]
         )
+
         sin_func = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="SIN",
-            value_branch=right_node,
+            arity=1,
+            branches=[right_node]
         )
 
         add_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="ADD",
-            left_branch=cos_func,
-            right_branch=sin_func
+            arity=2,
+            branches=[cos_func, sin_func]
         )
 
         # create tree

@@ -20,18 +20,23 @@ class TreeGenerator(object):
         if random:
             node = sample(self.config["function_nodes"], 1)[0]
 
-        func_node = TreeNode(node["type"], name=node["name"])
-
-        if node["type"] == TreeNodeType.BINARY_OP:
-            tree.branches += 1
-            tree.open_branches += 1
+        func_node = TreeNode(
+            TreeNodeType.FUNCTION,
+            name=node["name"],
+            arity=node["arity"],
+            branches=[]
+        )
+        tree.branches += (func_node.arity - 1)
+        tree.open_branches += (func_node.arity - 1)
 
         return func_node
 
-    def _gen_term_node(self, tree, random=True):
+    def _gen_term_node(self, tree, random=True, index=None):
         node = None
         if random:
             node = sample(self.config["terminal_nodes"], 1)[0]
+        else:
+            node = self.config["terminal_nodes"][index]
 
         term_node = TreeNode(
             TreeNodeType.TERM,
@@ -48,25 +53,11 @@ class TreeGenerator(object):
         return input_node
 
     def _build_tree(self, node, tree, depth, node_generator):
-        if node.node_type == TreeNodeType.UNARY_OP:
-            # value
-            value_node = node_generator(tree, depth)
-            node.value_branch = value_node
-
-            self._build_tree(value_node, tree, depth + 1, node_generator)
-
-        elif node.node_type == TreeNodeType.BINARY_OP:
-            # left
-            left_node = node_generator(tree, depth)
-            node.left_branch = left_node
-
-            self._build_tree(left_node, tree, depth + 1, node_generator)
-
-            # right
-            right_node = node_generator(tree, depth)
-            node.right_branch = right_node
-
-            self._build_tree(right_node, tree, depth + 1, node_generator)
+        if node.is_function():
+            for i in xrange(node.arity):
+                value_node = node_generator(tree, depth)
+                node.branches.append(value_node)
+                self._build_tree(value_node, tree, depth + 1, node_generator)
 
     def _add_input_nodes(self, tree, mode="ALL"):
         # determine mode
@@ -182,46 +173,36 @@ class TreeGenerator(object):
             node = None
 
             if n_type == TreeNodeType.INPUT:
-                name = node_dict["name"]
-                node = TreeNode(TreeNodeType.INPUT, name=name)
+                node = TreeNode(
+                    TreeNodeType.INPUT,
+                    name=node_dict.get("name", None)
+                )
+
                 tree.program.append(node)
                 stack.append(node)
 
             elif n_type == TreeNodeType.TERM:
-                node = None
+                node = TreeNode(
+                    TreeNodeType.TERM,
+                    name=node_dict.get("name", None),
+                    value=node_dict.get("value", None)
+                )
 
-                if node_dict.get("name") is None:
-                    value = node_dict["value"]
-                    node = TreeNode(TreeNodeType.TERM, value=value)
-                    tree.program.append(node)
-                    stack.append(node)
-
-                else:
-                    name = node_dict["name"]
-                    node = TreeNode(TreeNodeType.TERM, name=name)
-                    tree.program.append(node)
-                    stack.append(node)
-
-            elif n_type == TreeNodeType.UNARY_OP:
-                value = stack.pop()
-                name = node_dict["name"]
-                node = TreeNode(n_type, name=name, value_branch=value)
                 tree.program.append(node)
                 stack.append(node)
 
-                if node_dict.get("root", False):
-                    tree.root = node
+            elif n_type == TreeNodeType.FUNCTION:
+                value_nodes = []
+                for i in xrange(node_dict["arity"]):
+                    value_nodes.append(stack.pop())
 
-            elif n_type == TreeNodeType.BINARY_OP:
-                left = stack.pop()
-                right = stack.pop()
-                name = node_dict["name"]
                 node = TreeNode(
-                    n_type,
-                    name=name,
-                    left_branch=left,
-                    right_branch=right
+                    TreeNodeType.FUNCTION,
+                    name=node_dict["name"],
+                    arity=node_dict["arity"],
+                    branches=value_nodes
                 )
+
                 tree.program.append(node)
                 stack.append(node)
 
@@ -234,11 +215,11 @@ class TreeGenerator(object):
         population = Population(self.config)
 
         if self.config["tree_init_method"] == "FULL_METHOD":
-            for i in range(self.config["max_population"]):
+            for i in xrange(self.config["max_population"]):
                 tree = self.full_method()
                 population.individuals.append(tree)
         elif self.config["tree_init_method"] == "GROW_METHOD":
-            for i in range(self.config["max_population"]):
+            for i in xrange(self.config["max_population"]):
                 tree = self.grow_method()
                 population.individuals.append(tree)
         else:

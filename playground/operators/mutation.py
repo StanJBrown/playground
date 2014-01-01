@@ -22,26 +22,33 @@ class GPTreeMutation(object):
         self.mutated = False
 
     def _gen_new_node(self, details):
-        if details["type"] == TreeNodeType.UNARY_OP:
-            return TreeNode(details["type"], name=details["name"])
-
-        elif details["type"] == TreeNodeType.BINARY_OP:
-            return TreeNode(details["type"], name=details["name"])
+        if details["type"] == TreeNodeType.FUNCTION:
+            return TreeNode(
+                TreeNodeType.FUNCTION,
+                name=details["name"],
+                arity=details["arity"],
+                branches=[]
+            )
 
         elif details["type"] == TreeNodeType.INPUT:
-            return TreeNode(TreeNodeType.INPUT, name=details["name"])
+            return TreeNode(
+                TreeNodeType.INPUT,
+                name=details["name"]
+            )
 
-        elif details["type"] == TreeNodeType.TERM:  # it is a terminal node
-            name = details.get("name", None)
-            value = details.get("value", None)
-            return TreeNode(TreeNodeType.TERM, name=name, value=value)
+        elif details["type"] == TreeNodeType.TERM:
+            return TreeNode(
+                TreeNodeType.TERM,
+                name=details.get("name", None),
+                value=details["value"]
+            )
 
     def _get_new_node(self, node):
         # determine what kind of node it is
         nodes = []
         if node.is_function():
             tmp = list(self.config["function_nodes"])
-            tmp = [n for n in tmp if n["type"] == node.node_type]
+            tmp = [n for n in tmp if n["arity"] == node.arity]
             nodes.extend(tmp)
         elif node.is_terminal() or node.is_input():
             nodes.extend(self.config["terminal_nodes"])

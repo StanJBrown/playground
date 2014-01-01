@@ -43,8 +43,8 @@ class TreeEvaluatorTests(unittest.TestCase):
         term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
         term_node_2 = TreeNode(TreeNodeType.TERM, value=90.0)
         term_node_3 = TreeNode(TreeNodeType.TERM, value=10.0)
-        unary_node = TreeNode(TreeNodeType.UNARY_OP, name="COS")
-        binary_node = TreeNode(TreeNodeType.BINARY_OP, name="ADD")
+        unary_node = TreeNode(TreeNodeType.FUNCTION, arity=1, name="COS")
+        binary_node = TreeNode(TreeNodeType.FUNCTION, arity=2, name="ADD")
 
         # evaluate term_node
         stack = []
@@ -73,30 +73,30 @@ class TreeEvaluatorTests(unittest.TestCase):
         input_node = TreeNode(TreeNodeType.INPUT, name="x")
 
         rad_func = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="RAD",
-            value_branch=input_node
+            arity=1,
+            branches=[input_node]
         )
 
         mul_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="MUL",
-            left_branch=rad_func,
-            right_branch=term_node
+            arity=2,
+            branches=[rad_func, term_node]
         )
 
         sin_func = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="SIN",
-            value_branch=mul_func
+            arity=1,
+            branches=[mul_func]
         )
 
         # create tree
         tree = Tree()
         tree.root = sin_func
-        tree.update_program()
-        tree.update_func_nodes()
-        tree.update_term_nodes()
+        tree.update()
 
         # program
         print("\nPROGRAM STACK!")
@@ -117,7 +117,7 @@ class TreeEvaluatorTests(unittest.TestCase):
 
         # assert
         self.assertTrue(res is not None)
-        self.assertEquals(round(res, 4), 0.0)
+        self.assertEquals(round(res, 4), 0.5)
 
     def test_evaluate(self):
         population = self.tree_generator.init()

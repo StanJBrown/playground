@@ -37,10 +37,10 @@ class TreeGeneratorTests(unittest.TestCase):
         left_node = TreeNode(TreeNodeType.TERM, value=1.0)
         right_node = TreeNode(TreeNodeType.TERM, value=2.0)
         add_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="ADD",
-            left_branch=left_node,
-            right_branch=right_node
+            arity=2,
+            branches=[left_node, right_node]
         )
         # create tree
         tree = Tree()
@@ -54,7 +54,7 @@ class TreeGeneratorTests(unittest.TestCase):
     def test_full_method(self):
         tests = 1000
 
-        for i in range(tests):
+        for i in xrange(tests):
             tree = self.tree_generator.full_method()
 
             # # func nodes
@@ -88,7 +88,7 @@ class TreeGeneratorTests(unittest.TestCase):
     def test_grow_method(self):
         tests = 1000
 
-        for i in range(tests):
+        for i in xrange(tests):
             tree = self.tree_generator.grow_method()
 
             # # func nodes

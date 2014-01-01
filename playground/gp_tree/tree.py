@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from playground.gp_tree.tree_node import TreeNodeType
-from playground.gp_tree.tree_node import TreeNodeBranch
 from playground.gp_tree.tree_parser import TreeParser
 
 
@@ -52,14 +50,8 @@ class Tree(object):
 
     def replace_node(self, target_node, replace_with, override_update=False):
         linked_node = self.get_linked_node(target_node)
-        branch = linked_node.has_value_node(target_node)
-
-        if branch == TreeNodeBranch.VALUE:
-            linked_node.value_branch = replace_with
-        elif branch == TreeNodeBranch.LEFT:
-            linked_node.left_branch = replace_with
-        elif branch == TreeNodeBranch.RIGHT:
-            linked_node.right_branch = replace_with
+        branch_index = linked_node.has_value_node(target_node)
+        linked_node.branches[branch_index] = replace_with
 
         if override_update is False:
             self.update()
@@ -84,21 +76,20 @@ class Tree(object):
     def update_func_nodes(self):
         del self.func_nodes[:]
         for node in self.program:
-            t = node.node_type
-            if t == TreeNodeType.UNARY_OP or t == TreeNodeType.BINARY_OP:
+            if node.is_function():
                 if node is not self.root:
                     self.func_nodes.append(node)
 
     def update_term_nodes(self):
         del self.term_nodes[:]
         for node in self.program:
-            if node.node_type == TreeNodeType.TERM:
+            if node.is_terminal():
                 self.term_nodes.append(node)
 
     def update_input_nodes(self):
         del self.input_nodes[:]
         for node in self.program:
-            if node.node_type == TreeNodeType.INPUT:
+            if node.is_input():
                 self.input_nodes.append(node)
 
     def update_tree_info(self):

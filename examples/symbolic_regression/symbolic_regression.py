@@ -18,7 +18,7 @@ from playground.operators.mutation import GPTreeMutation
 config_fp = "config.json"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # setup
     config = config.load_config(config_fp)
     random.seed(10)  # seed random so results can be reproduced

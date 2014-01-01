@@ -6,7 +6,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 from playground.gp_tree.tree_node import TreeNode
 from playground.gp_tree.tree_node import TreeNodeType
-from playground.gp_tree.tree_node import TreeNodeBranch
 
 
 class TreeNodeTests(unittest.TestCase):
@@ -18,19 +17,19 @@ class TreeNodeTests(unittest.TestCase):
         self.right_node_2 = TreeNode(TreeNodeType.TERM, value=2.0)
 
         self.binary_node = TreeNode(
-            TreeNodeType.BINARY_OP,
-            left_branch=self.left_node,
-            right_branch=self.right_node
+            TreeNodeType.FUNCTION,
+            arity=2,
+            branches=[self.left_node, self.right_node]
         )
 
     def test_has_value_node(self):
         # assert left branch
         res = self.binary_node.has_value_node(self.left_node)
-        self.assertEquals(res, TreeNodeBranch.LEFT)
+        self.assertEquals(res, 0)
 
         # assert right branch
         res = self.binary_node.has_value_node(self.right_node)
-        self.assertEqual(res, TreeNodeBranch.RIGHT)
+        self.assertEqual(res, 1)
 
         # assert fail left branch
         res = self.binary_node.has_value_node(self.left_node_2)
@@ -44,12 +43,12 @@ class TreeNodeTests(unittest.TestCase):
         term_node = TreeNode(TreeNodeType.TERM, value=2)
 
         # assert UNARY_OP node
-        unary_node = TreeNode(TreeNodeType.UNARY_OP, name="SIN")
+        unary_node = TreeNode(TreeNodeType.FUNCTION, name="SIN")
         self.assertTrue(unary_node.equals(unary_node))
         self.assertFalse(unary_node.equals(term_node))
 
         # assert BINARY_OP node
-        binary_node = TreeNode(TreeNodeType.UNARY_OP, name="ADD")
+        binary_node = TreeNode(TreeNodeType.FUNCTION, name="ADD")
         self.assertTrue(binary_node.equals(binary_node))
         self.assertFalse(binary_node.equals(term_node))
 

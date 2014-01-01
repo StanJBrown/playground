@@ -38,55 +38,55 @@ class GPTreeCrossoverTests(unittest.TestCase):
         right_node_2 = TreeNode(TreeNodeType.TERM, value=4.0)
 
         cos_func_1 = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="COS",
-            value_branch=left_node_1,
+            arity=1,
+            branches=[left_node_1]
         )
         sin_func_1 = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="SIN",
-            value_branch=right_node_1,
+            arity=1,
+            branches=[right_node_1]
         )
 
         cos_func_2 = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="COS",
-            value_branch=left_node_2,
+            arity=1,
+            branches=[left_node_2]
         )
         sin_func_2 = TreeNode(
-            TreeNodeType.UNARY_OP,
+            TreeNodeType.FUNCTION,
             name="SIN",
-            value_branch=right_node_2,
+            arity=1,
+            branches=[right_node_2]
         )
 
         add_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="ADD",
-            left_branch=cos_func_1,
-            right_branch=sin_func_1
+            arity=2,
+            branches=[cos_func_1, sin_func_1]
         )
 
         sub_func = TreeNode(
-            TreeNodeType.BINARY_OP,
+            TreeNodeType.FUNCTION,
             name="SUB",
-            left_branch=sin_func_2,
-            right_branch=cos_func_2
+            arity=2,
+            branches=[sin_func_2, cos_func_2]
         )
 
         # create tree_1
         self.tree_1 = Tree()
         self.tree_1.root = add_func
-        self.tree_1.update_program()
-        self.tree_1.update_func_nodes()
-        self.tree_1.update_term_nodes()
+        self.tree_1.update()
         self.tree_generator._add_input_nodes(self.tree_1)
 
         # create tree_2
         self.tree_2 = Tree()
         self.tree_2.root = sub_func
-        self.tree_2.update_program()
-        self.tree_2.update_func_nodes()
-        self.tree_2.update_term_nodes()
+        self.tree_2.update()
         self.tree_generator._add_input_nodes(self.tree_2)
 
     def tearDown(self):

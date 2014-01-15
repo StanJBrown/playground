@@ -33,8 +33,8 @@ Currently the best way is to clone the repo and install the dependencies:
     pip install -r requirements.txt  # installs dependencies for playground
     
 To see playground in action, checkout the `examples` folder, at the moment
-the best example is the [symbolic regression][4] 
-([what is symbolic regression?][3]) example:
+the best example is the [symbolic regression][4] example. 
+([what is symbolic regression?][3]):
 
     cd examples/symbolic_regression
     python symbolic_regression.py
@@ -75,3 +75,4 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 [1]: https://travis-ci.org/chutsu/playground
 [2]: https://bitdeli.com/free
 [3]: http://www.symbolicregression.com/?q=faq
+[4]: https://github.com/chutsu/playground/tree/master/examples/symbolic_regression

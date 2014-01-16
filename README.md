@@ -27,6 +27,24 @@ features:
 
 ## Install
 
+Currently the best way is to clone the repo and install the dependencies:
+
+    git clone git@github.com:chutsu/playground.git
+    pip install -r requirements.txt  # installs dependencies for playground
+    
+To see playground in action, checkout the `examples` folder, at the moment
+the best example is the [symbolic regression][4] example. 
+([what is symbolic regression?][3]):
+
+    cd examples/symbolic_regression
+    python symbolic_regression.py
+    
+The example uses data in `examples/symbolic_regression/sine.dat` to find the 
+answer (an equation), this is also an example of data-driven search.
+
+More examples to follow, it can solve alot of other problems, such as 
+evolving digital circuits, neural nets, etc ... :)
+    
 
 ## Optional Requirements
 
@@ -56,3 +74,5 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [1]: https://travis-ci.org/chutsu/playground
 [2]: https://bitdeli.com/free
+[3]: http://www.symbolicregression.com/?q=faq
+[4]: https://github.com/chutsu/playground/tree/master/examples/symbolic_regression

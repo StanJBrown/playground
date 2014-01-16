@@ -8,6 +8,7 @@ before_script:
     - sudo apt-get install postgresql
     - sudo apt-get install postgresql-client
     - createuser playground_user
+    - echo y
     - createdb -O playground_user playground
 
 script:

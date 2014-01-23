@@ -24,3 +24,13 @@ class Population(object):
         self.individuals = individuals
 
         self.best_individuals = self.individuals[0:self.best_top]
+
+    def to_dict(self):
+        self_dict = {
+            "generation": self.generation,
+            "best_individual": str(self.best_individuals[0]),
+            "best_score": self.best_individuals[0].score,
+            "individuals": [i.to_dict() for i in self.individuals]
+        }
+
+        return self_dict

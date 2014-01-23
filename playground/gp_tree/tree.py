@@ -101,3 +101,24 @@ class Tree(object):
 
     def __str__(self):
         return self.tree_parser.parse_equation(self.root)
+
+    def to_dict(self):
+        individual_dict = {
+            "score": self.score,
+
+            "size": self.size,
+            "depth": self.depth,
+            "branches": self.branches,
+
+            "func_nodes_len": len(self.func_nodes),
+            "term_nodes_len": len(self.term_nodes),
+            "input_nodes_len": len(self.input_nodes),
+
+            "func_nodes": [str(node) for node in self.func_nodes],
+            "term_nodes": [str(node) for node in self.term_nodes],
+            "input_nodes": [str(node) for node in self.input_nodes],
+
+            "program": str(self),
+            "dot_graph": str(self)
+        }
+        return individual_dict

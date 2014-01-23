@@ -12,15 +12,15 @@ from subprocess import Popen
 from subprocess import check_call
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
-from playnode.playnode import PlayNodeType
-from playnode.playnode import PlayNodeMessage
+from playground.playnode.node import PlayNodeType
+from playground.playnode.node import PlayNodeMessage
 
 import playground.config
 from playground.gp_tree.tree_generator import TreeGenerator
 from playground.gp_tree.tree_parser import TreeParser
 
 # SETTINGS
-n_script = "playnode/playnode.py"
+n_script = "playground/playnode/node.py"
 cwd = os.path.dirname(__file__)
 config_fp = os.path.normpath(os.path.join(cwd, "../config/playnode.json"))
 
@@ -35,7 +35,7 @@ def check_call_modify(command, output_file):
     return p.returncode
 
 
-class PlayNodeTests(unittest.TestCase):
+class NodeTests(unittest.TestCase):
     def setUp(self):
         self.processes = 0
 

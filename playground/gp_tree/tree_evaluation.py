@@ -66,12 +66,14 @@ def eval_program(tree, tree_size, functions, config):
         return None
 
 
-def evaluate(trees, functions, config, results):
+def evaluate(trees, functions, config, results, **kwargs):
+    recorder = kwarges.get("recorder", None)
     evaluator_config = config.get("evaluator", None)
     cache = {}
     match_cached = 0
     cached = 0
 
+    # evaluate trees
     if evaluator_config.get("use_cache"):
         for tree in trees:
             if str(tree) not in cache:
@@ -98,3 +100,19 @@ def evaluate(trees, functions, config, results):
             if score is not None:
                 tree.score = score
                 results.append(tree)
+
+    # record evaluation statistics
+    if recorder:
+        if evaluator_config.get("use_cache"):
+            eval_stats = {
+                "cache": cache,
+                "cache_size": cached,
+                "match_cached": match_cached,
+                "evaluated": (len(trees) - match_cached)
+            }
+        else:
+            eval_stats = {
+                "evaluated": len(trees)
+            }
+        recorder.record_evaluation(eval_stats)
+

@@ -14,7 +14,8 @@ class JSONStore(object):
             "population": None,
             "selection": None,
             "crossover": [],
-            "mutation": []
+            "mutation": [],
+            "evaluation": None
         }  # stores 1 generation of an EA run
 
     def setup_store(self):
@@ -51,6 +52,9 @@ class JSONStore(object):
     def record_mutation(self, mutation):
         self.generation_record["mutation"].append(mutation.to_dict())
 
+    def record_evaluation(self, evaluation):
+        self.generation_record["evaluation"] = evaluation
+
     def record_to_file(self):
         json_record = json.dumps(self.generation_record)
         # print json.dumps(self.generation_record, indent=4)
@@ -61,7 +65,8 @@ class JSONStore(object):
             "population": None,
             "selection": None,
             "crossover": [],
-            "mutation": []
+            "mutation": [],
+            "evaluation": None
         }  # stores 1 generation of an EA run
 
     def record(self, record_type, data):

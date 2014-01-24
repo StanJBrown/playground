@@ -18,7 +18,8 @@ features:
 - Multicore Evaluation
 - Multinode Evaluation (experimental)
 - JSON config files
-- Ability to record evolution process to database (PostgreSQL)
+- Ability to record evolution process to database (PostgreSQL or JSON flat
+  file)
 
 
 ## Requirements

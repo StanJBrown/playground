@@ -22,7 +22,6 @@ evaluate = evaluate
 
 class PlayNodeType(object):
     EVALUATOR = "EVALUATOR"
-    GRAND_CENTRAL = "GRAND_CENTRAL"
 
 
 class PlayNodeMessage(object):

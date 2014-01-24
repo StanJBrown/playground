@@ -39,6 +39,7 @@ class JSONStore(object):
 
     def record_selection(self, selection):
         self.record["selection"] = selection.to_dict()
+        print self.record["selection"]
 
     def record_crossover(self, crossover):
         self.record["crossover"] = crossover.to_dict()
@@ -48,18 +49,20 @@ class JSONStore(object):
 
     def record_to_file(self):
         json_record = json.dumps(self.record)
+        # print json.dumps(self.record, indent=4)
         self.store_file.write(json_record + "\n")
 
-    def record(self, record_type, store):
+    def record(self, record_type, data):
         try:
             if record_type == RecordType.POPULATION:
-                self.record_population(store)
+                self.record_population(data)
             elif record_type == RecordType.SELECTION:
-                self.record_selection(store)
+                # self.record_selection(data)
+                print "hello!!"
             elif record_type == RecordType.CROSSOVER:
-                self.record_crossover(store)
+                self.record_crossover(data)
             elif record_type == RecordType.MUTATION:
-                self.record_mutation(store)
+                self.record_mutation(data)
             else:
                 raise RuntimeError("Undefined record type!")
         except:

@@ -14,7 +14,7 @@ class Selection(object):
 
         self.method = None
         self.selected = 0
-        self.new_population = None
+        self.new_pop = None
 
     def _normalize_scores(self, population):
         # get total
@@ -27,7 +27,7 @@ class Selection(object):
             individual.score = individual.score / total_score
 
     def roulette_wheel_selection(self, population):
-        new_population = Population(self.config)
+        new_pop = Population(self.config)
 
         # normalize individuals
         self._normalize_scores(population)
@@ -44,14 +44,14 @@ class Selection(object):
                 cumulative_prob += individual.score
 
                 if cumulative_prob >= probability:
-                    new_population.individuals.append(individual)
+                    new_pop.individuals.append(individual)
                     self.selected += 1
                     break
 
-        return new_population
+        return new_pop
 
     def tournament_selection(self, population):
-        new_population = Population(self.config)
+        new_pop = Population(self.config)
 
         # select loop
         self.selected = 0
@@ -64,25 +64,37 @@ class Selection(object):
             # find best by sorting
             tournament.sort(key=operator.attrgetter('score'))
 
-            # insert winner into new_population
+            # insert winner into new_pop
             winner = tournament[0]
-            new_population.individuals.append(winner)
+            new_pop.individuals.append(winner)
             self.selected += 1
 
-        return new_population
+        return new_pop
 
     def select(self, population):
         self.method = self.config["selection"]["method"]
-        self.new_population = None
+        self.new_pop = None
 
         if self.method == "ROULETTE_SELECTION":
-            self.new_population = self.roulette_wheel_selection(population)
+            self.new_pop = self.roulette_wheel_selection(population)
         elif self.method == "TOURNAMENT_SELECTION":
-            self.new_population = self.tournament_selection(population)
+            self.new_pop = self.tournament_selection(population)
         else:
             raise RuntimeError("Undefined selection method!")
 
-        if self.new_population is not None and self.recorder is not None:
+        if self.new_pop is not None and self.recorder is not None:
             self.recorder.record(RecordType.SELECTION, self)
+            # self.recorder.record_selection(self)
 
-        return self.new_population
+        return self.new_pop
+
+    def to_dict(self):
+        self_dict = {
+            "method": self.method,
+            "selected": self.selected,
+            "selected_individuals": [
+                i.to_dict() for i in self.new_pop.individuals
+            ]
+        }
+
+        return self_dict

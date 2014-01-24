@@ -60,3 +60,14 @@ class GPTreeCrossover(object):
         # record
         if self.recorder is not None:
             self.recorder.record(RecordType.CROSSOVER, self)
+
+    def to_dict(self):
+        self_dict = {
+            "method": self.method,
+            "index": self.index,
+            "crossover_probability": self.crossover_probability,
+            "random_probability": self.random_probability,
+            "crossovered": self.crossovered
+        }
+
+        return self_dict

@@ -87,26 +87,26 @@ class JSONStoreTests(unittest.TestCase):
         self.assertNotEquals(record, {})
         self.assertEquals(record["population"]["generation"], 0)
 
-    def test_record_selection(self):
-        self.json_store.record_selection(self.population)
+    # def test_record_selection(self):
+    #     self.selection.select(self.population)
 
-        record = self.json_store.record
-        self.assertNotEquals(record, {})
-        self.assertEquals(record["population"]["selection"], 0)
+        # record = self.json_store.record
+        # self.assertNotEquals(record, {})
+        # self.assertEquals(record["population"]["selection"], 0)
 
-    def test_record_crossover(self):
-        self.json_store.record_selection(self.population)
+    # def test_record_crossover(self):
+    #     self.json_store.record_selection(self.population)
 
-        record = self.json_store.record
-        self.assertNotEquals(record, {})
-        self.assertEquals(record["population"]["selection"], 0)
+    #     record = self.json_store.record
+    #     self.assertNotEquals(record, {})
+    #     self.assertEquals(record["population"]["selection"], 0)
 
-    def test_record_mutation(self):
-        self.json_store.record_mutation(self.population)
+    # def test_record_mutation(self):
+    #     self.json_store.record_mutation(self.population)
 
-        record = self.json_store.record
-        self.assertNotEquals(record, {})
-        self.assertEquals(record["population"]["mutation"], 0)
+    #     record = self.json_store.record
+    #     self.assertNotEquals(record, {})
+    #     self.assertEquals(record["population"]["mutation"], 0)
 
     def test_record_to_file(self):
         # write record to file and close

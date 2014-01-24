@@ -15,6 +15,8 @@ class GPTreeCrossover(object):
         self.crossover_probability = None
         self.random_probability = None
         self.crossovered = False
+        self.before_crossover = None
+        self.after_crossover = None
 
     def _symetric_crossover_index(self, tree_1, tree_2):
         t_1_len = len(tree_1.func_nodes)
@@ -31,9 +33,9 @@ class GPTreeCrossover(object):
 
     def point_crossover(self, tree_1, tree_2, crossover_index=None):
         # get the nodes to swap
-        index = self._symetric_crossover_index(tree_1, tree_2)
-        func_node_1 = tree_1.func_nodes[index]
-        func_node_2 = tree_2.func_nodes[index]
+        self.index = self._symetric_crossover_index(tree_1, tree_2)
+        func_node_1 = tree_1.func_nodes[self.index]
+        func_node_2 = tree_2.func_nodes[self.index]
 
         # swap
         tree_1.replace_node(func_node_1, func_node_2)
@@ -44,6 +46,12 @@ class GPTreeCrossover(object):
         self.crossover_probability = self.config["crossover"]["probability"]
         self.random_probability = random()
         self.crossovered = False
+        self.before_crossover = []
+        self.after_crossover = []
+
+        # record before crossver
+        self.before_crossover.append(tree_1.to_dict())
+        self.before_crossover.append(tree_2.to_dict())
 
         # pre-checks
         if len(tree_1.func_nodes) < 1 or len(tree_2.func_nodes) < 1:
@@ -57,6 +65,10 @@ class GPTreeCrossover(object):
             else:
                 raise RuntimeError("Undefined crossover method!")
 
+        # record after crossver
+        self.after_crossover.append(tree_1.to_dict())
+        self.after_crossover.append(tree_2.to_dict())
+
         # record
         if self.recorder is not None:
             self.recorder.record(RecordType.CROSSOVER, self)
@@ -67,7 +79,9 @@ class GPTreeCrossover(object):
             "index": self.index,
             "crossover_probability": self.crossover_probability,
             "random_probability": self.random_probability,
-            "crossovered": self.crossovered
+            "crossovered": self.crossovered,
+            "before_crossover": self.before_crossover,
+            "after_crossover": self.after_crossover
         }
 
         return self_dict

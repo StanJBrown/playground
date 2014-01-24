@@ -10,7 +10,12 @@ class JSONStore(object):
         self.json_store_config = config["json_store"]
         self.store_file_path = self.json_store_config.get("store_file", None)
         self.store_file = None
-        self.record = {}  # stores 1 generation of an EA run
+        self.generation_record = {
+            "population": None,
+            "selection": None,
+            "crossover": [],
+            "mutation": []
+        }  # stores 1 generation of an EA run
 
     def setup_store(self):
         if self.store_file is None:
@@ -35,30 +40,36 @@ class JSONStore(object):
             os.remove(self.store_file_path)
 
     def record_population(self, population):
-        self.record["population"] = population.to_dict()
+        self.generation_record["population"] = population.to_dict()
 
     def record_selection(self, selection):
-        self.record["selection"] = selection.to_dict()
-        print self.record["selection"]
+        self.generation_record["selection"] = selection.to_dict()
 
     def record_crossover(self, crossover):
-        self.record["crossover"] = crossover.to_dict()
+        self.generation_record["crossover"].append(crossover.to_dict())
 
     def record_mutation(self, mutation):
-        self.record["mutation"] = mutation.to_dict()
+        self.generation_record["mutation"].append(mutation.to_dict())
 
     def record_to_file(self):
-        json_record = json.dumps(self.record)
-        # print json.dumps(self.record, indent=4)
+        json_record = json.dumps(self.generation_record)
+        # print json.dumps(self.generation_record, indent=4)
         self.store_file.write(json_record + "\n")
+
+        # reset generation record
+        self.generation_record = {
+            "population": None,
+            "selection": None,
+            "crossover": [],
+            "mutation": []
+        }  # stores 1 generation of an EA run
 
     def record(self, record_type, data):
         try:
             if record_type == RecordType.POPULATION:
                 self.record_population(data)
             elif record_type == RecordType.SELECTION:
-                # self.record_selection(data)
-                print "hello!!"
+                self.record_selection(data)
             elif record_type == RecordType.CROSSOVER:
                 self.record_crossover(data)
             elif record_type == RecordType.MUTATION:

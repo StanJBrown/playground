@@ -20,6 +20,8 @@ class GPTreeMutation(object):
         self.mutation_probability = None
         self.random_probability = None
         self.mutated = False
+        self.before_mutation = None
+        self.after_mutation = None
 
     def _gen_new_node(self, details):
         if details["type"] == TreeNodeType.FUNCTION:
@@ -141,17 +143,40 @@ class GPTreeMutation(object):
         self.mutation_probability = self.config["mutation"]["probability"]
         self.random_probability = random()
         self.mutated = False
+        self.before_mutation = None
+        self.after_mutation = None
 
+        # record before mutation
+        self.before_mutation = tree.to_dict()
+
+        # pre-checks before mutation
         if len(tree.term_nodes) < 1 or len(tree.input_nodes) < 1:
                 self.random_probability = 1.1
 
         if len(tree.func_nodes) < 1:
                 self.random_probability = 1.1
 
+        # mutate
         if self.mutation_probability >= self.random_probability:
             mutation_func = mutation_methods[self.method]
             mutation_func(tree)
             self.mutated = True
 
+        # record after mutation
+        self.after_mutation = tree.to_dict()
+
+        # record
         if self.recorder is not None:
             self.recorder.record(RecordType.MUTATION, self)
+
+    def to_dict(self):
+        self_dict = {
+            "method": self.method,
+            "mutation_probability": self.mutation_probability,
+            "random_probability": self.random_probability,
+            "mutated": self.mutated,
+            "before_mutation": self.before_mutation,
+            "after_mutation": self.after_mutation
+        }
+
+        return self_dict

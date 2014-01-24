@@ -3,6 +3,7 @@ import sys
 import os
 import json
 import random
+# import pprint
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -83,30 +84,37 @@ class JSONStoreTests(unittest.TestCase):
     def test_record_population(self):
         self.json_store.record_population(self.population)
 
-        record = self.json_store.record
+        record = self.json_store.generation_record
         self.assertNotEquals(record, {})
         self.assertEquals(record["population"]["generation"], 0)
 
-    # def test_record_selection(self):
-    #     self.selection.select(self.population)
+    def test_record_selection(self):
+        self.selection.select(self.population)
 
-        # record = self.json_store.record
-        # self.assertNotEquals(record, {})
-        # self.assertEquals(record["population"]["selection"], 0)
+        record = self.json_store.generation_record
+        self.assertNotEquals(record, {})
+        self.assertEquals(record["selection"]["selected"], 5)
 
-    # def test_record_crossover(self):
-    #     self.json_store.record_selection(self.population)
+    def test_record_crossover(self):
+        tree_1 = self.population.individuals[0]
+        tree_2 = self.population.individuals[1]
+        self.crossover.crossover(tree_1, tree_2)
 
-    #     record = self.json_store.record
-    #     self.assertNotEquals(record, {})
-    #     self.assertEquals(record["population"]["selection"], 0)
+        record = self.json_store.generation_record
+        self.assertNotEquals(record, {})
+        self.assertEquals(record["crossover"][0]["crossovered"], True)
+        self.assertEquals(record["crossover"][0]["index"], 1)
+        self.assertEquals(record["crossover"][0]["method"], "POINT_CROSSOVER")
 
-    # def test_record_mutation(self):
-    #     self.json_store.record_mutation(self.population)
+    def test_record_mutation(self):
+        tree = self.population.individuals[0]
+        self.mutation.mutate(tree)
 
-    #     record = self.json_store.record
-    #     self.assertNotEquals(record, {})
-    #     self.assertEquals(record["population"]["mutation"], 0)
+        record = self.json_store.generation_record
+        self.assertNotEquals(record, {})
+        self.assertEquals(record["mutation"][0]["method"], "SHRINK_MUTATION")
+        self.assertEquals(record["mutation"][0]["mutated"], True)
+        self.assertEquals(record["mutation"][0]["mutation_probability"], 0.8)
 
     def test_record_to_file(self):
         # write record to file and close

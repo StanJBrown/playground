@@ -16,6 +16,7 @@ features:
         - Shrink mutation
         - Expand mutation
 - Multicore Evaluation
+- Multinode Evaluation (experimental)
 - JSON config files
 - Ability to record evolution process to database (PostgreSQL)
 

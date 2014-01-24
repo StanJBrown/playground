@@ -67,7 +67,7 @@ def eval_program(tree, tree_size, functions, config):
 
 
 def evaluate(trees, functions, config, results, **kwargs):
-    recorder = kwarges.get("recorder", None)
+    recorder = kwargs.get("recorder", None)
     evaluator_config = config.get("evaluator", None)
     cache = {}
     match_cached = 0

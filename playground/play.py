@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import math
 import copy
-import json
+# import json
 import random
 import multiprocessing
 from multiprocessing import Process
@@ -150,56 +150,56 @@ def play_multicore(details):
     return population
 
 
-def play_multinode(details):
-    population = details.get("population", None)
-    # functions = details.get("functions", None)
-    # evaluate = details.get("evaluate", None)
-    selection = details.get("selection", None)
-    crossover = details.get("crossover", None)
-    mutation = details.get("mutation", None)
-    config = details.get("config", None)
-
-    generation = 0
-    max_generation = config["max_generation"]
-    tree_parser = TreeParser()
-
-    while generation < max_generation:
-        # create a dictionary of trees
-        data = {"config": config, "individuals": []}
-        for individual in population.individuals:
-            tree_json = tree_parser.tree_to_dict(individual, individual.root)
-            data["individuals"].append(tree_json)
-        data = json.dumps(data)
-
-        # evaluate individuals in population
-        results = []
-        for node in config.nodes:
-            results = transmit(
-                node.host,
-                node.port,
-                node.req_type,
-                node.path,
-                data
-            )
-        population.individuals = [r for r in results]
-
-        # display best individual
-        population.sort_individuals()
-        best_individual = population.best_individuals[0]
-        print "generation: ", generation
-        print "best_score: " + str(best_individual.score)
-        print "tree_size: " + str(best_individual.size)
-        print ""
-
-        if best_individual.score < 20.0:
-            eq = tree_parser.parse_equation(best_individual.root)
-            if best_individual.size < 50:
-                print simplify(eq)
-            print ""
-
-        # genetic genetic operators
-        population = selection.select(population)
-        reproduce(population, crossover, mutation, config)
-        generation += 1
-
-    return population
+# def play_multinode(details):
+#     population = details.get("population", None)
+#     # functions = details.get("functions", None)
+#     # evaluate = details.get("evaluate", None)
+#     selection = details.get("selection", None)
+#     crossover = details.get("crossover", None)
+#     mutation = details.get("mutation", None)
+#     config = details.get("config", None)
+#
+#     generation = 0
+#     max_generation = config["max_generation"]
+#     tree_parser = TreeParser()
+#
+#     while generation < max_generation:
+#         # create a dictionary of trees
+#         data = {"config": config, "individuals": []}
+#         for individual in population.individuals:
+#             tree_json = tree_parser.tree_to_dict(individual, individual.root)
+#             data["individuals"].append(tree_json)
+#         data = json.dumps(data)
+#
+#         # evaluate individuals in population
+#         results = []
+#         for node in config.nodes:
+#             results = transmit(
+#                 node.host,
+#                 node.port,
+#                 node.req_type,
+#                 node.path,
+#                 data
+#             )
+#         population.individuals = [r for r in results]
+#
+#         # display best individual
+#         population.sort_individuals()
+#         best_individual = population.best_individuals[0]
+#         print "generation: ", generation
+#         print "best_score: " + str(best_individual.score)
+#         print "tree_size: " + str(best_individual.size)
+#         print ""
+#
+#         if best_individual.score < 20.0:
+#             eq = tree_parser.parse_equation(best_individual.root)
+#             if best_individual.size < 50:
+#                 print simplify(eq)
+#             print ""
+#
+#         # genetic genetic operators
+#         population = selection.select(population)
+#         reproduce(population, crossover, mutation, config)
+#         generation += 1
+#
+#     return population

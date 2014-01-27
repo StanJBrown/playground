@@ -8,7 +8,7 @@ before_script:
     - sudo apt-get install postgresql
     - sudo apt-get install postgresql-client
     - sudo apt-get install expect
-    - echo y | createuser playground_user
+    - createuser -s playground_user
     - createdb -O playground_user playground
 
 script:

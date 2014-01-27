@@ -18,3 +18,4 @@ nohup.out
 pycallgraph.png
 .rope*
 run.sh
+ea_stats.json

@@ -4,7 +4,7 @@
     "max_depth" : 4,
 
     "evaluator" : {
-        "use_cache": false
+        "use_cache": true
     },
 
     "selection" : {

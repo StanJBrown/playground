@@ -3,7 +3,6 @@ import sys
 import os
 import json
 import random
-# import pprint
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -39,7 +38,8 @@ class JSONStoreTests(unittest.TestCase):
             self.population.individuals,
             self.functions,
             self.config,
-            results
+            results,
+            self.json_store
         )
         self.population.sort_individuals()
 
@@ -57,7 +57,7 @@ class JSONStoreTests(unittest.TestCase):
         del self.json_store
 
     def test_setup_store(self):
-        # assert tests
+        # assert
         file_exists = os.path.exists(self.config["json_store"]["store_file"])
         self.assertEquals(file_exists, True)
 
@@ -69,7 +69,7 @@ class JSONStoreTests(unittest.TestCase):
         # purge store file
         self.json_store.purge_store()
 
-        # assert tests
+        # assert
         store_file = open(self.config["json_store"]["store_file"], "r").read()
         self.assertEquals(len(store_file), 0)
 
@@ -77,7 +77,7 @@ class JSONStoreTests(unittest.TestCase):
         # delete store
         self.json_store.delete_store()
 
-        # assert tests
+        # assert
         file_exists = os.path.exists(self.config["json_store"]["store_file"])
         self.assertEquals(file_exists, False)
 
@@ -89,17 +89,21 @@ class JSONStoreTests(unittest.TestCase):
         self.assertEquals(record["population"]["generation"], 0)
 
     def test_record_selection(self):
+        # record selection
         self.selection.select(self.population)
 
+        # assert
         record = self.json_store.generation_record
         self.assertNotEquals(record, {})
         self.assertEquals(record["selection"]["selected"], 5)
 
     def test_record_crossover(self):
+        # record crossover
         tree_1 = self.population.individuals[0]
         tree_2 = self.population.individuals[1]
         self.crossover.crossover(tree_1, tree_2)
 
+        # assert
         record = self.json_store.generation_record
         self.assertNotEquals(record, {})
         self.assertEquals(record["crossover"][0]["crossovered"], True)
@@ -107,14 +111,31 @@ class JSONStoreTests(unittest.TestCase):
         self.assertEquals(record["crossover"][0]["method"], "POINT_CROSSOVER")
 
     def test_record_mutation(self):
+        # record mutation
         tree = self.population.individuals[0]
         self.mutation.mutate(tree)
 
+        # assert
         record = self.json_store.generation_record
         self.assertNotEquals(record, {})
         self.assertEquals(record["mutation"][0]["method"], "SHRINK_MUTATION")
-        self.assertEquals(record["mutation"][0]["mutated"], True)
         self.assertEquals(record["mutation"][0]["mutation_probability"], 0.8)
+
+    def test_record_evaulation(self):
+        # record evaluation
+        results = []
+        evaluate(
+            self.population.individuals,
+            self.functions,
+            self.config,
+            results,
+            recorder=self.json_store
+        )
+
+        # assert
+        record = self.json_store.generation_record
+        self.assertEquals(record["evaluation"][0]["cache_size"], 10)
+        self.assertEquals(record["evaluation"][0]["match_cached"], 0)
 
     def test_record_to_file(self):
         # write record to file and close

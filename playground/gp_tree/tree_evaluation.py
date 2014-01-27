@@ -66,53 +66,73 @@ def eval_program(tree, tree_size, functions, config):
         return None
 
 
-def evaluate(trees, functions, config, results, **kwargs):
-    recorder = kwargs.get("recorder", None)
+def record_eval(recorder, **kwargs):
+    use_cache = kwargs["use_cache"]
+    cache = kwargs.get("cache", None)
+    cache_size = kwargs.get("cache_size", None)
+    match_cached = kwargs.get("match_cached", None)
+    trees_evaluated = kwargs.get("trees_evaluated", None)
+    tree_nodes_evaluated = kwargs.get("tree_nodes_evaluated", None)
+
+    if use_cache:
+        eval_stats = {
+            "cache": cache,
+            "cache_size": cache_size,
+            "match_cached": match_cached,
+            "trees_evaluated": trees_evaluated,
+            "tree_nodes_evaluated": tree_nodes_evaluated
+        }
+    else:
+        eval_stats = {
+            "trees_evaluated": trees_evaluated,
+            "tree_nodes_evaluated": tree_nodes_evaluated
+        }
+    recorder.record_evaluation(eval_stats)
+
+
+def evaluate(trees, functions, config, results, recorder=None):
     evaluator_config = config.get("evaluator", None)
+    use_cache = evaluator_config.get("use_cache", False)
     cache = {}
+    cache_size = 0
     match_cached = 0
-    cached = 0
+    nodes_evaluated = 0
 
     # evaluate trees
-    if evaluator_config.get("use_cache"):
-        for tree in trees:
+    for tree in trees:
+        if use_cache:
             if str(tree) not in cache:
                 score = eval_program(tree, tree.size, functions, config)
-
                 if score is not None:
                     tree.score = score
                     results.append(tree)
-
                 cache[str(tree)] = score
-                cached += 1
+                cache_size += 1
+                nodes_evaluated += tree.size
 
             else:
                 score = cache[str(tree)]
-
                 if score is not None:
                     tree.score = score
                     results.append(tree)
-
                 match_cached += 1
-    else:
-        for tree in trees:
+                nodes_evaluated += tree.size
+
+        else:
             score = eval_program(tree, tree.size, functions, config)
             if score is not None:
                 tree.score = score
                 results.append(tree)
+                nodes_evaluated += tree.size
 
     # record evaluation statistics
     if recorder:
-        if evaluator_config.get("use_cache"):
-            eval_stats = {
-                "cache": cache,
-                "cache_size": cached,
-                "match_cached": match_cached,
-                "evaluated": (len(trees) - match_cached)
-            }
-        else:
-            eval_stats = {
-                "evaluated": len(trees)
-            }
-        recorder.record_evaluation(eval_stats)
-
+        record_eval(
+            recorder,
+            use_cache=use_cache,
+            cache=cache,
+            cache_size=cache_size,
+            match_cached=match_cached,
+            trees_evaluated=len(trees) - match_cached,
+            tree_nodes_evaluated=len(trees)
+        )

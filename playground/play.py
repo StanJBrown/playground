@@ -10,6 +10,7 @@ from multiprocessing import Manager
 from sympy import simplify
 
 from playground.gp_tree.tree_parser import TreeParser
+from playground.recorder.json_store import JSONStore
 
 
 def reproduce(population, crossover, mutation, config):
@@ -61,6 +62,7 @@ def play(details):
     crossover = details.get("crossover", None)
     mutation = details.get("mutation", None)
     config = details.get("config", None)
+    recorder = details.get("recorder", None)
 
     generation = 0
     max_generation = config["max_generation"]
@@ -69,7 +71,7 @@ def play(details):
 
     while generation < max_generation and goal_reached is not True:
         results = []
-        evaluate(population.individuals, functions, config, results)
+        evaluate(population.individuals, functions, config, results, recorder)
         population.individuals = results
 
         # display best individual
@@ -91,6 +93,10 @@ def play(details):
         reproduce(population, crossover, mutation, config)
         generation += 1
 
+        # record
+        if recorder and isinstance(recorder, JSONStore):
+            recorder.record_to_file()
+
     return population
 
 
@@ -102,6 +108,7 @@ def play_multicore(details):
     crossover = details.get("crossover", None)
     mutation = details.get("mutation", None)
     config = details.get("config", None)
+    recorder = details.get("recorder", None)
 
     generation = 0
     max_generation = config["max_generation"]
@@ -117,7 +124,7 @@ def play_multicore(details):
         chunksize = int(math.ceil(len(population.individuals) / float(nproc)))
         for i in xrange(nproc):
             chunk = population.individuals[chunksize * i:chunksize * (i + 1)]
-            args = (chunk, functions, config, results)
+            args = (chunk, functions, config, results, recorder)
             p = Process(target=evaluate, args=args)
             processes.append(p)
             p.start()
@@ -146,6 +153,12 @@ def play_multicore(details):
         population = selection.select(population)
         reproduce(population, crossover, mutation, config)
         generation += 1
+
+        # record
+        if recorder and isinstance(recorder, JSONStore):
+            # TODO: AGGREGATE different evaluation's before writing to file
+            # since different evaluators will have different `eval_stats`
+            recorder.record_to_file()
 
     return population
 

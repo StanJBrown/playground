@@ -125,6 +125,10 @@
 
     "response_variable" : {
         "name": "y"
+    },
+
+    "json_store" : {
+        "store_file": "ea_stats.json"
     }
 
 }

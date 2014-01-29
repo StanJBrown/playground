@@ -92,8 +92,11 @@ class Selection(object):
         self_dict = {
             "method": self.method,
             "selected": self.selected,
+            # "selected_individuals": [
+            #     # i.to_dict() for i in self.new_pop.individuals
+            # ]
             "selected_individuals": [
-                i.to_dict() for i in self.new_pop.individuals
+                i.to_dict()["id"] for i in self.new_pop.individuals
             ]
         }
 

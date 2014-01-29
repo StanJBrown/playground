@@ -2,6 +2,7 @@
 import sys
 import os
 import json
+import pprint
 import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
@@ -94,6 +95,7 @@ class JSONStoreTests(unittest.TestCase):
 
         # assert
         record = self.json_store.generation_record
+        # pprint.pprint(record)
         self.assertNotEquals(record, {})
         self.assertEquals(record["selection"]["selected"], 5)
 
@@ -105,6 +107,7 @@ class JSONStoreTests(unittest.TestCase):
 
         # assert
         record = self.json_store.generation_record
+        # pprint.pprint(record)
         self.assertNotEquals(record, {})
         self.assertEquals(record["crossover"][0]["crossovered"], True)
         self.assertEquals(record["crossover"][0]["index"], 1)
@@ -117,6 +120,7 @@ class JSONStoreTests(unittest.TestCase):
 
         # assert
         record = self.json_store.generation_record
+        # pprint.pprint(record)
         self.assertNotEquals(record, {})
         self.assertEquals(record["mutation"][0]["method"], "SHRINK_MUTATION")
         self.assertEquals(record["mutation"][0]["mutation_probability"], 0.8)
@@ -134,6 +138,7 @@ class JSONStoreTests(unittest.TestCase):
 
         # assert
         record = self.json_store.generation_record
+        pprint.pprint(record)
         self.assertEquals(record["evaluation"][0]["cache_size"], 10)
         self.assertEquals(record["evaluation"][0]["match_cached"], 0)
 

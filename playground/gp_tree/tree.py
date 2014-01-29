@@ -104,6 +104,7 @@ class Tree(object):
 
     def to_dict(self):
         individual_dict = {
+            "id": id(self),
             "score": self.score,
 
             "size": self.size,

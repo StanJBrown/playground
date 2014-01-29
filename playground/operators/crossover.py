@@ -50,8 +50,8 @@ class GPTreeCrossover(object):
         self.after_crossover = []
 
         # record before crossver
-        self.before_crossover.append(tree_1.to_dict())
-        self.before_crossover.append(tree_2.to_dict())
+        self.before_crossover.append(tree_1.to_dict()["program"])
+        self.before_crossover.append(tree_2.to_dict()["program"])
 
         # pre-checks
         if len(tree_1.func_nodes) < 1 or len(tree_2.func_nodes) < 1:
@@ -66,8 +66,8 @@ class GPTreeCrossover(object):
                 raise RuntimeError("Undefined crossover method!")
 
         # record after crossver
-        self.after_crossover.append(tree_1.to_dict())
-        self.after_crossover.append(tree_2.to_dict())
+        self.after_crossover.append(tree_1.to_dict()["program"])
+        self.after_crossover.append(tree_2.to_dict()["program"])
 
         # record
         if self.recorder is not None:

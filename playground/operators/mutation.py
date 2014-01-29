@@ -147,7 +147,7 @@ class GPTreeMutation(object):
         self.after_mutation = None
 
         # record before mutation
-        self.before_mutation = tree.to_dict()
+        self.before_mutation = tree.to_dict()["program"]
 
         # pre-checks before mutation
         if len(tree.term_nodes) < 1 or len(tree.input_nodes) < 1:
@@ -163,7 +163,7 @@ class GPTreeMutation(object):
             self.mutated = True
 
         # record after mutation
-        self.after_mutation = tree.to_dict()
+        self.after_mutation = tree.to_dict()["program"]
 
         # record
         if self.recorder is not None:

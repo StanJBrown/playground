@@ -1,8 +1,10 @@
 {
     "max_population": 100,
-    "max_depth" : 4,
 
-    "tree_init_method": "FULL_METHOD",
+    "tree_generation" : {
+        "method" : "FULL_METHOD",
+        "initial_max_depth" : 4
+    },
 
     "evaluator" : {
         "use_cache": true

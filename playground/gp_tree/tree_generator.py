@@ -13,6 +13,7 @@ from playground.population import Population
 class TreeGenerator(object):
     def __init__(self, config):
         self.config = config
+        self.tree_gen_config = config["tree_generation"]
         self.tree_parser = TreeParser()
 
     def _gen_func_node(self, tree, random=True):
@@ -83,11 +84,11 @@ class TreeGenerator(object):
             inputs -= 1
 
     def _full_method_node_gen(self, tree, depth):
-        if depth + 1 == self.config["max_depth"]:
+        if depth + 1 == self.tree_gen_config["initial_max_depth"]:
                 term_node = self._gen_term_node(tree)
                 tree.term_nodes.append(term_node)
                 tree.size += 1
-                tree.depth = self.config["max_depth"]
+                tree.depth = self.tree_gen_config["initial_max_depth"]
                 return term_node
         else:
                 func_node = self._gen_func_node(tree)
@@ -114,11 +115,11 @@ class TreeGenerator(object):
         return tree
 
     def _grow_method_node_gen(self, tree, depth):
-        if depth + 1 == self.config["max_depth"]:
+        if depth + 1 == self.tree_gen_config["initial_max_depth"]:
             term_node = self._gen_term_node(tree)
             tree.term_nodes.append(term_node)
             tree.size += 1
-            tree.depth = self.config["max_depth"]
+            tree.depth = self.tree_gen_config["initial_max_depth"]
             return term_node
         else:
             prob = random()
@@ -154,9 +155,9 @@ class TreeGenerator(object):
         return tree
 
     def generate_tree(self):
-        if self.config["tree_init_method"] == "FULL_METHOD":
+        if self.tree_gen_config["method"] == "FULL_METHOD":
             tree = self.full_method()
-        elif self.config["tree_init_method"] == "GROW_METHOD":
+        elif self.tree_gen_config["method"] == "GROW_METHOD":
             tree = self.grow_method()
         else:
             raise RuntimeError("Tree init method not defined!")
@@ -214,11 +215,11 @@ class TreeGenerator(object):
     def init(self):
         population = Population(self.config)
 
-        if self.config["tree_init_method"] == "FULL_METHOD":
+        if self.tree_gen_config["method"] == "FULL_METHOD":
             for i in xrange(self.config["max_population"]):
                 tree = self.full_method()
                 population.individuals.append(tree)
-        elif self.config["tree_init_method"] == "GROW_METHOD":
+        elif self.tree_gen_config["method"] == "GROW_METHOD":
             for i in xrange(self.config["max_population"]):
                 tree = self.grow_method()
                 population.individuals.append(tree)

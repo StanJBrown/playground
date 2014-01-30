@@ -1,6 +1,8 @@
 {
-    "max_depth" : 4,
-    "tree_init_method": "GROW_METHOD",
+    "tree_generation" : {
+        "method" : "GROW_METHOD",
+        "initial_max_depth" : 4
+    },
 
     "mutation" : {
         "methods": [

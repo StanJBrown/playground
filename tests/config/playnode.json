@@ -1,8 +1,11 @@
 {
     "max_population" : 10,
     "max_generation" : 5,
-    "tree_init_method" : "GROW_METHOD",
-    "max_depth" : 3,
+
+    "tree_generation" : {
+        "method" : "GROW_METHOD",
+        "initial_max_depth" : 3
+    },
 
     "evaluator": {
         "use_cache" : true

@@ -5,6 +5,7 @@ from playground.recorder.record_type import RecordType
 
 
 class JSONStore(object):
+
     def __init__(self, config):
         self.config = config
         self.json_store_config = config["json_store"]

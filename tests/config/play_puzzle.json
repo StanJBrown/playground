@@ -1,8 +1,11 @@
 {
     "max_population" : 5000,
     "max_generation" : 1000,
-    "tree_init_method" : "GROW_METHOD",
-    "max_depth" : 3,
+
+    "tree_generation" : {
+        "method" : "GROW_METHOD",
+        "initial_max_depth" : 3
+    },
 
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",

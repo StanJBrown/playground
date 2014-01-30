@@ -1,5 +1,7 @@
 {
-    "max_depth" : 4,
+    "tree_generation" : {
+        "initial_max_depth" : 4
+    },
 
     "crossover" : {
         "method": "POINT_CROSSOVER",

@@ -77,8 +77,9 @@ class TreeGeneratorTests(unittest.TestCase):
             # self.tree_parser.print_tree(tree.root)
 
             # asserts
-            self.assertEquals(tree.depth, self.config["max_depth"])
-            self.assertTrue(tree.size > self.config["max_depth"])
+            init_max = self.config["tree_generation"]["initial_max_depth"]
+            self.assertEquals(tree.depth, init_max)
+            self.assertTrue(tree.size > init_max)
             self.assertTrue(tree.branches > 0)
             self.assertEquals(tree.open_branches, 0)
             self.assertTrue(
@@ -111,8 +112,9 @@ class TreeGeneratorTests(unittest.TestCase):
             # self.tree_parser.print_tree(tree.root)
 
             # asserts
-            self.assertEquals(tree.depth, self.config["max_depth"])
-            self.assertTrue(tree.size > self.config["max_depth"])
+            init_max = self.config["tree_generation"]["initial_max_depth"]
+            self.assertEquals(tree.depth, init_max)
+            self.assertTrue(tree.size > init_max)
             self.assertTrue(tree.branches > 0)
             self.assertEquals(tree.open_branches, 0)
             self.assertTrue(

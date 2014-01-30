@@ -1,8 +1,10 @@
 {
     "max_population" : 10,
-    "max_depth" : 4,
 
-    "tree_init_method" : "FULL_METHOD",
+    "tree_generation" : {
+        "method" : "FULL_METHOD",
+        "initial_max_depth" : 3
+    },
 
     "selection" : {
             "method" : "ROULETTE_SELECTION"

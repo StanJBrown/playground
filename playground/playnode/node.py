@@ -9,8 +9,8 @@ from flask import request
 from flask import jsonify
 from flask import render_template
 
-from playground.gp_tree.tree_evaluation import evaluate
-from playground.gp_tree.tree_generator import TreeGenerator
+from playground.gp.tree.tree_evaluation import evaluate
+from playground.gp.tree.tree_generator import TreeGenerator
 from playground.functions import FunctionRegistry
 
 # GLOBAL VARS
@@ -22,6 +22,7 @@ evaluate = evaluate
 
 class PlayNodeType(object):
     EVALUATOR = "EVALUATOR"
+    MONITOR = "MONITOR"
 
 
 class PlayNodeMessage(object):

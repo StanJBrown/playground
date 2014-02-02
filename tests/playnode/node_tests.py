@@ -16,8 +16,8 @@ from playground.playnode.node import PlayNodeType
 from playground.playnode.node import PlayNodeMessage
 
 import playground.config
-from playground.gp_tree.tree_generator import TreeGenerator
-from playground.gp_tree.tree_parser import TreeParser
+from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree.tree_parser import TreeParser
 
 # SETTINGS
 n_script = "playground/playnode/node.py"

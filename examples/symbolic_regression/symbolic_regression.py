@@ -7,8 +7,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 import playground.config as config
 import playground.play as play
-from playground.gp_tree.tree_generator import TreeGenerator
-from playground.gp_tree.tree_evaluation import evaluate
+from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree.tree_evaluation import evaluate
 from playground.functions import FunctionRegistry
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover

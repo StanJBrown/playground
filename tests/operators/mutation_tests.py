@@ -5,12 +5,12 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import playground.config as config
-from playground.gp_tree.tree_generator import TreeGenerator
+from playground.gp.tree.tree_generator import TreeGenerator
 from playground.functions import FunctionRegistry
-from playground.gp_tree.tree import Tree
-from playground.gp_tree.tree_node import TreeNode
-from playground.gp_tree.tree_node import TreeNodeType
-from playground.gp_tree.tree_parser import TreeParser
+from playground.gp.tree.tree import Tree
+from playground.gp.tree.tree_node import TreeNode
+from playground.gp.tree.tree_node import TreeNodeType
+from playground.gp.tree.tree_parser import TreeParser
 from playground.operators.mutation import GPTreeMutation
 
 # SETTINGS

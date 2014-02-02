@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from playground.gp_tree.tree_parser import TreeParser
+from playground.gp.tree.tree_parser import TreeParser
 
 
 class Tree(object):

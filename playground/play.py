@@ -9,7 +9,7 @@ from multiprocessing import Manager
 
 from sympy import simplify
 
-from playground.gp_tree.tree_parser import TreeParser
+from playground.gp.tree.tree_parser import TreeParser
 from playground.recorder.json_store import JSONStore
 
 

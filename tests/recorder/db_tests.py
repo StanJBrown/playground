@@ -8,8 +8,8 @@ import playground.config as config
 from playground.recorder.db import DB
 from playground.recorder.record_type import RecordType
 from playground.functions import FunctionRegistry
-from playground.gp_tree.tree_evaluation import evaluate
-from playground.gp_tree.tree_generator import TreeGenerator
+from playground.gp.tree.tree_evaluation import evaluate
+from playground.gp.tree.tree_generator import TreeGenerator
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
 from playground.operators.mutation import GPTreeMutation

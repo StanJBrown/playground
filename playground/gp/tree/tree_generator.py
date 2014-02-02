@@ -3,10 +3,10 @@ from random import sample
 from random import random
 from random import randint
 
-from playground.gp_tree.tree import Tree
-from playground.gp_tree.tree_node import TreeNode
-from playground.gp_tree.tree_node import TreeNodeType
-from playground.gp_tree.tree_parser import TreeParser
+from playground.gp.tree.tree import Tree
+from playground.gp.tree.tree_node import TreeNode
+from playground.gp.tree.tree_node import TreeNodeType
+from playground.gp.tree.tree_parser import TreeParser
 from playground.population import Population
 
 

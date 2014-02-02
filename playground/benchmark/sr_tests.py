@@ -46,6 +46,36 @@ def generate_random_matrix(bounds, points, decimal_places=2):
     return matrix
 
 
+def generate_series_matrix(bounds, points, decimal_places=2):
+    points_generated = 0
+    matrix = []
+    columns = len(bounds)
+
+    # calculate the steps
+    for i in range(columns):
+        step = bounds[i]["upper"] - bounds[i]["lower"]
+        step = step / float(points)
+        bounds[i]["step"] = round(step, decimal_places)
+
+    while (points_generated != points):
+
+        tmp = []
+        for i in range(columns):
+            if bounds[i].get("last_number") is not None:
+                num = round(bounds[i]["last_number"], decimal_places)
+                num += round(bounds[i]["step"], decimal_places)
+                bounds[i]["last_number"] = round(num, decimal_places)
+            else:
+                num = bounds[i]["lower"]
+                bounds[i]["last_number"] = round(num, decimal_places)
+            tmp.append(num)
+
+        matrix.append(tmp)
+        points_generated += 1
+
+    return matrix
+
+
 def evaluate_test_function(equation, var_values):
     data = []
     points = len(var_values)
@@ -63,6 +93,35 @@ def evaluate_test_function(equation, var_values):
         data.append(line)
 
     return data
+
+
+def arabas_et_al_test_functions(data_file="arabas_et_al-f"):
+    t_funcs = [
+        "-v[0] * math.sin(10.0 * math.pi * v[0]) + 1.0",
+        "int(8.0 * v[0]) / 8.0",
+        "v[0] * math.copysign(1, v[0])",
+        " ".join(
+            """
+            0.5 + (math.sin(math.sqrt(v[0] ** 2 + v[1] **2) - 0.5) ** 2)
+            / (1 + 0.001 * (v[0] ** 2 + v[1] ** 2)) **2
+            """.split()
+        )
+    ]
+
+    bounds = [
+        [{"lower": -2.0, "upper": 1.0}],
+        [{"lower": 0.0, "upper": 1.0}],
+        [{"lower": -1.0, "upper": 2.0}],
+        [{"lower": -100.0, "upper": 100.0}, {"lower": -100.0, "upper": 100.0}],
+    ]
+
+    points = [200, 50, 50, 50]
+
+    for i in range(len(t_funcs)):
+        fp = "{0}{1}{2}".format(data_file, i + 1, data_file_extension)
+        matrix = generate_series_matrix(bounds[i], points[i])
+        data = evaluate_test_function(t_funcs[i], matrix)
+        write_test_data(fp, data)
 
 
 def nguyen_et_al_test_functions(data_file="nguyen_et_al-f"):

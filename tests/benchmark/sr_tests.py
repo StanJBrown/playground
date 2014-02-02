@@ -38,9 +38,31 @@ class SRTests(unittest.TestCase):
         self.assertEquals(len(matrix), points)
         # test for unique point set
         test_matrix = list(matrix)
+        print matrix
         for i in matrix:
             point_set = test_matrix.pop()
             self.assertFalse(point_set in test_matrix)
+
+    def test_generate_series_matrix(self):
+        # generate series matrix
+        bounds = [
+            {"lower": 0, "upper": 10},
+            {"lower": 0, "upper": 10}
+        ]
+        points = 5
+        matrix = sym_reg.generate_series_matrix(bounds, points)
+
+        # assert
+        solution = [[0, 0], [2, 2], [4, 4], [6, 6], [8, 8]]
+        self.assertEquals(matrix, solution)
+
+        # bounds = [
+        #     {"lower": -1, "upper": 1},
+        #     {"lower": -1, "upper": 1}
+        # ]
+        # points = 10
+        # matrix = sym_reg.generate_series_matrix(bounds, points)
+        # print matrix
 
     def test_evaluate_test_function(self):
         # evaluate test function
@@ -51,21 +73,25 @@ class SRTests(unittest.TestCase):
         # assert
         self.assertEquals(result, ["1, 2"])
 
-    def test_nguyen_et_al_test_functions(self):
-        sym_reg.nguyen_et_al_test_functions()
+    def test_arabas_et_al_test_functions(self):
+        sym_reg.arabas_et_al_test_functions()
 
-        for i in range(10):
-            data_fp = "nguyen_et_al-f{0}{1}".format(i + 1, ".dat")
-            data_file = open(data_fp, "rb")
-            data = data_file.read()
-            data_file.close()
 
-            print data
-            print
-            print
+    # def test_nguyen_et_al_test_functions(self):
+    #     sym_reg.nguyen_et_al_test_functions()
 
-            self.assertTrue(len(data) > 0)
-            os.remove(data_fp)
+    #     for i in range(10):
+    #         data_fp = "nguyen_et_al-f{0}{1}".format(i + 1, ".dat")
+    #         data_file = open(data_fp, "rb")
+    #         data = data_file.read()
+    #         data_file.close()
+
+    #         print data
+    #         print
+    #         print
+
+    #         self.assertTrue(len(data) > 0)
+    #         os.remove(data_fp)
 
 if __name__ == '__main__':
     unittest.main()

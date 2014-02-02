@@ -57,9 +57,9 @@ class NodeTests(unittest.TestCase):
 
     def tearDown(self):
         # shutdown all the playground nodes
-        os.killpg(self.node_1.pid, signal.SIGTERM)
-        os.killpg(self.node_2.pid, signal.SIGTERM)
-        os.killpg(self.node_3.pid, signal.SIGTERM)
+        os.kill(self.node_1.pid, signal.SIGTERM)
+        os.kill(self.node_2.pid, signal.SIGTERM)
+        os.kill(self.node_3.pid, signal.SIGTERM)
 
     def transmit(self, host, port, req_type, path, data=None):
         request = "/" + path

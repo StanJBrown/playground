@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import signal
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 from flask import Flask
@@ -16,6 +17,9 @@ from playground.functions import FunctionRegistry
 # GLOBAL VARS
 app = Flask(__name__)
 playnode_type = None
+host = None
+port = None
+pid = str(os.getpid())
 functions = FunctionRegistry()
 evaluate = evaluate
 
@@ -30,6 +34,12 @@ class PlayNodeMessage(object):
     SHUTDOWN = "SHUTDOWN"
     UNDEFINED = "UNDEFINED"
     ERROR = "ERROR"
+
+
+def terminate_handler(signal, frame):
+    pidfile = "/tmp/playground-{0}-{1}.pid".format(host, port)
+    os.unlink(pidfile)
+    sys.exit(0)
 
 
 @app.route('/')
@@ -91,8 +101,23 @@ if __name__ == '__main__':
         port = int(sys.argv[2])
         playnode_type = sys.argv[3]
 
+        # check if process is already running
+        pidfile = "/tmp/playground-{0}-{1}.pid".format(host, port)
+        if os.path.isfile(pidfile):
+            print("{0} already exists, exiting".format(pidfile))
+            sys.exit()
+        else:
+            file(pidfile, 'w').write(pid)
+
+        # register signal handler
+        signal.signal(signal.SIGTERM, terminate_handler)
+
         # run app
-        app.run(debug=True, host=host, port=port)
+        # app.run(debug=True, host=host, port=port)
+        app.run(use_reloader=False, host=host, port=port)
+
+        # unlink pidfile
+        os.unlink(pidfile)
 
     else:
         print "Not enough arguments"

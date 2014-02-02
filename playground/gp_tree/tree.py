@@ -103,7 +103,7 @@ class Tree(object):
         return self.tree_parser.parse_equation(self.root)
 
     def to_dict(self):
-        individual_dict = {
+        self_dict = {
             "id": id(self),
             "score": self.score,
 
@@ -122,4 +122,4 @@ class Tree(object):
             "program": str(self),
             "dot_graph": str(self)
         }
-        return individual_dict
+        return self_dict

@@ -18,7 +18,7 @@ def eval_node(node, stack, functions, config, data_row=None):
         if node.is_terminal():
             stack.append(node)
 
-        if node.is_input():
+        elif node.is_input():
             term_node = gen_term_node(node, data_row, config)
             stack.append(term_node)
 

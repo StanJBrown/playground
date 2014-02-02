@@ -33,6 +33,12 @@ class PlayNodeMessage(object):
     ERROR = "ERROR"
 
 
+def usage():
+    print "Error! Insufficient command line arguments!"
+    print "usage:"
+    print "\tnode [localhost] [port] [type]"
+
+
 def init():
     # check if process is already running
     pid = str(os.getpid())
@@ -117,4 +123,4 @@ if __name__ == '__main__':
         init()
         app.run(use_reloader=False, host=host, port=port)
     else:
-        print "Not enough arguments"
+        usage()

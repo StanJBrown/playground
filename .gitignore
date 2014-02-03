@@ -20,3 +20,5 @@ pycallgraph.png
 *.dat
 run.sh
 ea_stats.json
+dist
+playground.egg*

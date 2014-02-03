@@ -1,11 +1,23 @@
 # TODO
 
-- Transform the tree to string based to REAL based
-- Create a OpenCL experiement
+- Complete GrandCentral
+- Complete Benchmarker
+- Run parameter sweep
+
+- Implement Racing Algorithm
+- Run Racing algorithm benchmark
+
+----
+
+- Implement GA
+- Implement Meta-GA
+- Run Meta-GA benchmark
+
 - Add 2 more symbolic regression examples
 - Write the tree evaluator in C as a python extension
 
 ---
+
 - Look at Cartesian GP
 - Look at Co-evolution and how to implement it
 

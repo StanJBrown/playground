@@ -47,8 +47,7 @@ class GrandCentralTests(unittest.TestCase):
         self.assertFalse(os.path.isfile(pidfile))
 
     def test_start_nodes(self):
-        # start node
-        self.grand_central.nodes = self.nodes
+        # start nodes
         self.grand_central.start_nodes()
 
         # assert
@@ -60,8 +59,7 @@ class GrandCentralTests(unittest.TestCase):
             self.assertTrue(os.path.isfile(pidfile))
 
     def test_stop_nodes(self):
-        # start node
-        self.grand_central.nodes = self.nodes
+        # start and nodes
         self.grand_central.start_nodes()
         self.grand_central.stop_nodes()
 
@@ -72,6 +70,26 @@ class GrandCentralTests(unittest.TestCase):
                 node["port"]
             )
             self.assertFalse(os.path.isfile(pidfile))
+
+    def test_query_node(self):
+        # start and query node
+        # self.grand_central.start_nodes()
+        # self.grand_central.query_node(
+        #     self.nodes[0],
+        # )
+
+        # assert
+        pass
+
+    def test_transfer_file(self):
+        # start nodes and transfer file
+        target = config_fp
+        destination = "/tmp/config_file_test"
+        self.grand_central.start_nodes()
+        self.grand_central.transfer_file(self.nodes[0], target, destination)
+
+        self.assertTrue(os.path.isfile(destination))
+        os.unlink(destination)
 
 
 if __name__ == '__main__':

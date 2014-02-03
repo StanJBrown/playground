@@ -62,7 +62,7 @@ class NodeTests(unittest.TestCase):
         os.kill(self.node_3.pid, signal.SIGTERM)
 
     def transmit(self, host, port, req_type, path, data=None):
-        request = "/" + path
+        request = "/".join(path.split("/"))
 
         # transmit
         conn = httplib.HTTPConnection(host, port)

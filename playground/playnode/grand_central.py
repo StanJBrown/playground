@@ -66,14 +66,14 @@ class GrandCentral(object):
             self.stop_node(node)
 
     def query_node(self, node, req_type, path, data=None):
-        request = "/" + path
-
-        # transmit
         conn = httplib.HTTPConnection(node["host"], node["port"])
+        request = "/".join(path.split("/"))
+        data = None
+
         if data:
             conn.request(req_type, request, data)
-        else:
-            conn.request(req_type, request)
+        # else:
+        #     conn.request(req_type, request)
 
         # response
         response = conn.getresponse()
@@ -81,6 +81,12 @@ class GrandCentral(object):
         conn.close()
 
         return data
+
+    def transfer_file(self, node, source, destination):
+        self._ssh_connect(node)
+        sftp = self.ssh.open_sftp()
+        sftp.put(source, destination)
+        self.ssh.close()
 
     def check_node(self, node):
         pass

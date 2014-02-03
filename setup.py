@@ -7,5 +7,15 @@ setup(
     description="Genetic Programming Framework",
     author="Chris Choi",
     author_email="chutsu@gmail.com",
-    packages=["playground", "playnode"]
+    packages=[
+        "playground",
+        "playground.benchmark",
+        "playground.ga",
+        "playground.gp",
+        "playground.gp.tree",
+        "playground.gp.cartesian",
+        "playground.operators",
+        "playground.playnode",
+        "playground.recorder"
+    ]
 )

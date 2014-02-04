@@ -17,6 +17,7 @@ features:
         - Expand mutation
 - Multicore Evaluation
 - Multinode Evaluation (experimental)
+- Centralized Node control and monitoring
 - JSON config files
 - Ability to record evolution process to database (PostgreSQL or JSON flat
   file)

@@ -23,6 +23,7 @@ evaluate = evaluate
 
 class PlayNodeType(object):
     EVALUATOR = "EVALUATOR"
+    EXECUTOR = "EXECUTOR"
     MONITOR = "MONITOR"
 
 
@@ -74,6 +75,18 @@ def message():
 
     response = jsonify(response_data)
     return response
+
+@app.route('/execute', methods=["POST"])
+def execute():
+    response_data = {"message": PlayNodeMessage.OK}
+
+
+
+
+
+    response = jsonify(response_data)
+    return response
+
 
 
 @app.route('/evaluate_trees', methods=["POST"])

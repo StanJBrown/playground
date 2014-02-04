@@ -13,7 +13,7 @@ from subprocess import check_call
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 from playground.playnode.node import PlayNodeType
-from playground.playnode.node import PlayNodeMessage
+from playground.playnode.node import PlayNodeStatus
 
 import playground.config
 from playground.gp.tree.tree_generator import TreeGenerator
@@ -107,7 +107,7 @@ class NodeTests(unittest.TestCase):
         data = self.transmit("localhost", 8080, "POST", "message", msg)
         data = json.loads(data)
 
-        self.assertEquals(data["message"], PlayNodeMessage.OK)
+        self.assertEquals(data["message"], PlayNodeStatus.OK)
 
     def test_evaluate(self):
         random.seed(10)

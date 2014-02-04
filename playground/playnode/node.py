@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import signal
+import subprocess
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 from flask import Flask
@@ -27,8 +28,9 @@ class PlayNodeType(object):
     MONITOR = "MONITOR"
 
 
-class PlayNodeMessage(object):
+class PlayNodeStatus(object):
     OK = "OK"
+    BUSY = "BUSY"
     SHUTDOWN = "SHUTDOWN"
     UNDEFINED = "UNDEFINED"
     ERROR = "ERROR"
@@ -41,6 +43,8 @@ def usage():
 
 
 def init():
+    # playnode_status = PlayNodeStatus.OK
+
     # check if process is already running
     pid = str(os.getpid())
     pidfile = "/tmp/playground-{0}-{1}.pid".format(host, port)
@@ -71,22 +75,36 @@ def message():
     response_data = {}
     # incomming_data = json.loads(request.data)
 
-    response_data["message"] = PlayNodeMessage.OK
+    response_data["message"] = PlayNodeStatus.OK
 
     response = jsonify(response_data)
     return response
+
 
 @app.route('/execute', methods=["POST"])
 def execute():
-    response_data = {"message": PlayNodeMessage.OK}
+    incomming_data = json.loads(request.data)
+    response_data = {"message": PlayNodeStatus.OK}
 
+    target_script = incomming_data["target_script"]
+    python_interpreter = incomming_data.get("python_interpreter", "CPYTHON")
 
+    if python_interpreter == "CPYTHON":
+        subprocess.Popen(["python", target_script])
 
+    elif python_interpreter == "PYPY":
+        subprocess.Popen(["pypy", target_script])
 
+    else:
+        response_data = {
+            "message": PlayNodeStatus.ERROR,
+            "error_msg": "Invalid python interpreter type [{0}]".format(
+                python_interpreter
+            )
+        }
 
     response = jsonify(response_data)
     return response
-
 
 
 @app.route('/evaluate_trees', methods=["POST"])
@@ -119,7 +137,7 @@ def evaluate_trees():
             response_data["results"].append(result)
         response = jsonify(response_data)
     else:
-        response_data = {"message": PlayNodeMessage.ERROR}
+        response_data = {"message": PlayNodeStatus.ERROR}
         response = jsonify(response_data)
 
     return response

@@ -131,7 +131,7 @@
     },
 
     "json_store" : {
-        "store_file": "ea_stats.json"
+        "store_file": "/tmp/ea_stats.json"
     }
 
 }

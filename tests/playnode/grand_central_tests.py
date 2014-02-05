@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 import playground.config
 from playground.playnode.grand_central import GrandCentral
+# from playground.playnode.node import PlayNodeStatus
 
 # SETTINGS
 cwd = os.path.dirname(__file__)
@@ -21,75 +22,103 @@ class GrandCentralTests(unittest.TestCase):
     def tearDown(self):
         self.grand_central.stop_nodes()
 
-    def test_start_node(self):
-        # start node
-        self.grand_central.start_node(self.nodes[0])
+    # def test_start_node(self):
+    #     # start node
+    #     self.grand_central.start_node(self.nodes[0])
 
-        # assert
-        pidfile = "/tmp/playground-{0}-{1}.pid".format(
-            self.nodes[0]["host"],
-            self.nodes[0]["port"]
-        )
-        self.assertTrue(os.path.isfile(pidfile))
+    #     # assert
+    #     pidfile = "/tmp/playground-{0}-{1}.pid".format(
+    #         self.nodes[0]["host"],
+    #         self.nodes[0]["port"]
+    #     )
+    #     self.assertTrue(os.path.isfile(pidfile))
 
-    def test_stop_node(self):
-        # start node
-        self.grand_central.start_node(self.nodes[0])
+    # def test_stop_node(self):
+    #     # start node
+    #     self.grand_central.start_node(self.nodes[0])
 
-        # stop node
-        self.grand_central.stop_node(self.nodes[0])
+    #     # stop node
+    #     self.grand_central.stop_node(self.nodes[0])
 
-        # assert
-        pidfile = "/tmp/playground-{0}-{1}.pid".format(
-            self.nodes[0]["host"],
-            self.nodes[0]["port"]
-        )
-        self.assertFalse(os.path.isfile(pidfile))
+    #     # assert
+    #     pidfile = "/tmp/playground-{0}-{1}.pid".format(
+    #         self.nodes[0]["host"],
+    #         self.nodes[0]["port"]
+    #     )
+    #     self.assertFalse(os.path.isfile(pidfile))
 
-    def test_start_nodes(self):
-        # start nodes
-        self.grand_central.start_nodes()
+    # def test_start_nodes(self):
+    #     # start nodes
+    #     self.grand_central.start_nodes()
 
-        # assert
-        for node in self.nodes:
-            pidfile = "/tmp/playground-{0}-{1}.pid".format(
-                node["host"],
-                node["port"]
-            )
-            self.assertTrue(os.path.isfile(pidfile))
+    #     # assert
+    #     for node in self.nodes:
+    #         pidfile = "/tmp/playground-{0}-{1}.pid".format(
+    #             node["host"],
+    #             node["port"]
+    #         )
+    #         self.assertTrue(os.path.isfile(pidfile))
 
-    def test_stop_nodes(self):
-        # start and nodes
-        self.grand_central.start_nodes()
-        self.grand_central.stop_nodes()
+    # def test_stop_nodes(self):
+    #     # start and nodes
+    #     self.grand_central.start_nodes()
+    #     self.grand_central.stop_nodes()
 
-        # assert
-        for node in self.nodes:
-            pidfile = "/tmp/playground-{0}-{1}.pid".format(
-                node["host"],
-                node["port"]
-            )
-            self.assertFalse(os.path.isfile(pidfile))
+    #     # assert
+    #     for node in self.nodes:
+    #         pidfile = "/tmp/playground-{0}-{1}.pid".format(
+    #             node["host"],
+    #             node["port"]
+    #         )
+    #         self.assertFalse(os.path.isfile(pidfile))
 
-    def test_query_node(self):
-        # start and query node
-        # self.grand_central.start_nodes()
-        # self.grand_central.query_node(
+    def test_remote_play(self):
+        # self.grand_central.remote_play(
         #     self.nodes[0],
-        # )
+        cwd = os.getcwd()
+        target_file = "examples/symbolic_regression/symbolic_regression.py"
+        target = os.path.join(os.path.realpath(cwd), target_file)
 
-        # assert
-        pass
+        self.grand_central.remote_play(
+            self.nodes[0],
+            target,
+            [],
+            python_interpreter="PYPY"
+        )
 
-    def test_transfer_file(self):
-        # start nodes and transfer file
-        target = config_fp
-        destination = "/tmp/config_file_test"
-        self.grand_central.start_nodes()
-        self.grand_central.transfer_file(self.nodes[0], target, destination)
 
-        self.assertTrue(os.path.isfile(destination))
-        os.unlink(destination)
+    # def test_query_node(self):
+    #     # start and query node
+    #     self.grand_central.start_nodes()
+    #     response = self.grand_central.query_node(
+    #         self.nodes[0],
+    #         "GET",
+    #         "/status"
+    #     )
+
+    #     # assert
+    #     self.assertEquals(response["status"], PlayNodeStatus.OK)
+
+    # def test_transfer_file(self):
+    #     # start nodes and transfer file
+    #     target = config_fp
+    #     destination = "/tmp/config_file_test"
+    #     self.grand_central.start_nodes()
+    #     self.grand_central.transfer_file(self.nodes[0], target, destination)
+
+    #     self.assertTrue(os.path.isfile(destination))
+    #     os.unlink(destination)
+
+    # def test_check_node(self):
+    #     # start nodes and check node
+    #     self.grand_central.start_nodes()
+    #     status = self.grand_central.check_node(self.nodes[0])
+
+    #     # assert
+    #     self.assertTrue(status)
+
+    # def test_play(self):
+    #     pass
 
 
 if __name__ == '__main__':

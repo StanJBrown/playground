@@ -3,7 +3,6 @@ import os
 import sys
 import json
 import signal
-import subprocess
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 from flask import Flask
@@ -17,7 +16,6 @@ from playground.functions import FunctionRegistry
 
 # GLOBAL VARS
 app = Flask(__name__)
-playnode_type = None
 functions = FunctionRegistry()
 evaluate = evaluate
 
@@ -42,26 +40,42 @@ def usage():
     print "\tnode [localhost] [port] [type]"
 
 
-def init():
-    # playnode_status = PlayNodeStatus.OK
-
+def init(host, port):
     # check if process is already running
     pid = str(os.getpid())
-    pidfile = "/tmp/playground-{0}-{1}.pid".format(host, port)
-    if os.path.isfile(pidfile):
-        print("{0} already exists, exiting".format(pidfile))
+    pid_fp = "/tmp/playground-{0}-{1}.pid".format(host, port)
+    if os.path.isfile(pid_fp):
+        print("{0} already exists, exiting".format(pid_fp))
         sys.exit()
     else:
-        file(pidfile, 'w').write(pid)
+        pid_content = json.dumps({"pid": pid, "status": PlayNodeStatus.OK})
+        pidfile = file(pid_fp, 'w')
+        pidfile.write(pid_content)
+        pidfile.close()
 
     # register signal handler
     signal.signal(signal.SIGTERM, terminate_handler)
     signal.signal(signal.SIGINT, terminate_handler)
 
 
+def change_status(new_status):
+    pid_fp = "/tmp/playground-{0}-{1}.pid".format(host, port)
+    pidfile = file(pid_fp, 'r+')
+
+    # read dict
+    pid_dict = json.loads(pidfile.read())
+    pidfile.seek(0)
+    pidfile.truncate()
+
+    # modify dict and write new status
+    pid_dict["status"] = new_status
+    pidfile.write(pid_dict)
+    pidfile.close()
+
+
 def terminate_handler(signal, frame):
-    pidfile = "/tmp/playground-{0}-{1}.pid".format(host, port)
-    os.unlink(pidfile)
+    pid_fp = "/tmp/playground-{0}-{1}.pid".format(host, port)
+    os.unlink(pid_fp)
     sys.exit(0)
 
 
@@ -70,53 +84,35 @@ def index():
     return render_template('index.html', title="home")
 
 
+@app.route('/status')
+def status():
+    pid_fp = "/tmp/playground-{0}-{1}.pid".format(host, port)
+    pidfile = file(pid_fp, 'r+')
+    pid_dict = json.loads(pidfile.read())
+    pidfile.close()
+
+    # read dict
+    return jsonify({"status": pid_dict["status"]})
+
+
 @app.route('/message', methods=["POST"])
 def message():
-    response_data = {}
-    # incomming_data = json.loads(request.data)
-
-    response_data["message"] = PlayNodeStatus.OK
-
-    response = jsonify(response_data)
-    return response
+    response = {}
+    # incomming = json.loads(request.data)
+    response["status"] = PlayNodeStatus.OK
+    return jsonify(response)
 
 
-@app.route('/execute', methods=["POST"])
-def execute():
-    incomming_data = json.loads(request.data)
-    response_data = {"message": PlayNodeStatus.OK}
-
-    target_script = incomming_data["target_script"]
-    python_interpreter = incomming_data.get("python_interpreter", "CPYTHON")
-
-    if python_interpreter == "CPYTHON":
-        subprocess.Popen(["python", target_script])
-
-    elif python_interpreter == "PYPY":
-        subprocess.Popen(["pypy", target_script])
-
-    else:
-        response_data = {
-            "message": PlayNodeStatus.ERROR,
-            "error_msg": "Invalid python interpreter type [{0}]".format(
-                python_interpreter
-            )
-        }
-
-    response = jsonify(response_data)
-    return response
-
-
-@app.route('/evaluate_trees', methods=["POST"])
+@app.route('/evaluate', methods=["POST"])
 def evaluate_trees():
     results = []
-    response_data = {}
+    response = {}
 
     # parse incomming data
     if request.data is not None:
-        incomming_data = json.loads(request.data)
-        config = incomming_data["config"]
-        individuals = incomming_data["individuals"]
+        incomming = json.loads(request.data)
+        config = incomming["config"]
+        individuals = incomming["individuals"]
 
         # convert dict to trees
         tree_parser = TreeGenerator(config)
@@ -128,19 +124,18 @@ def evaluate_trees():
         evaluate(individuals, functions, config, results)
 
         # jsonify results
-        response_data["results"] = []
+        response["results"] = []
         for individual in results:
             result = {
                 "id": individual.tree_id,
                 "score": individual.score,
             }
-            response_data["results"].append(result)
-        response = jsonify(response_data)
-    else:
-        response_data = {"message": PlayNodeStatus.ERROR}
-        response = jsonify(response_data)
+            response["results"].append(result)
 
-    return response
+    else:
+        response = {"status": PlayNodeStatus.ERROR}
+
+    return jsonify(response)
 
 
 if __name__ == '__main__':
@@ -151,7 +146,7 @@ if __name__ == '__main__':
         playnode_type = sys.argv[3]
 
         # run app
-        init()
-        app.run(use_reloader=False, host=host, port=port)
+        init(host, port)
+        app.run(debug=True, use_reloader=False, host=host, port=port)
     else:
         usage()

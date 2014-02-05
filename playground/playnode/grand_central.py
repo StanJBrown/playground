@@ -1,12 +1,15 @@
 #!/bin/bash
+import platform
 import httplib
 
 import paramiko
 
+from playground.playnode.node import PlayNodeStatus
+
 
 class GrandCentral(object):
     def __init__(self, config, **kwargs):
-        self.os = config.get("OS", "MAC")
+        self.os = platform.system()
         self.nodes = config.get("playnodes", None)
         self.username = kwargs.get("username", None)
         self.password = kwargs.get("password", None)
@@ -28,17 +31,17 @@ class GrandCentral(object):
     def _ssh_send(self, node, cmd, output=False):
         self._ssh_connect(node)
 
-        if self.os == "MAC":
+        if self.os == "Darwin":  # Mac
             cmd = "source ~/.bash_profile; " + cmd
-        elif self.os == "LINUX":
+        elif self.os == "Linux":
             cmd = "source ~/.bashrc; " + cmd
         else:
-            raise RuntimeError("Invalid OS type [{0}]!".format(self.os))
+            raise RuntimeError("Unrecogised OS type [{0}]!".format(self.os))
 
         ssh_stdin, ssh_stdout, ssh_stderr = self.ssh.exec_command(cmd)
         if output:
-            print("STDOUT: " + ssh_stdout.read())
-            print("STDERR: " + ssh_stderr.read())
+            return ssh_stdout.read()
+
         self.ssh.close()
 
     def start_node(self, node):
@@ -65,6 +68,37 @@ class GrandCentral(object):
         for node in self.nodes:
             self.stop_node(node)
 
+    def remote_check_file(self, node, target):
+        cmd = "[ -f {0} ] && echo '1' || echo '0'".format(target)
+        file_status = int(self._ssh_send(node, cmd, True))
+
+        if file_status == 0:
+            err = "File [{0}] not found in remote node [{1}]".format(
+                target,
+                node["host"],
+            )
+            raise RuntimeError(err)
+        else:
+            return True
+
+    def remote_play(self, node, target, args, dest=None, **kwargs):
+        python_interpreter = kwargs.get("python_interpreter", "CPYTHON")
+
+        # precheck
+        if dest:
+            self.remote_check_file(node, dest)
+        elif dest is None:
+            self.remote_check_file(node, target)
+
+        if python_interpreter == "CPYTHON":
+            cmd = ["python", target]
+        elif python_interpreter == "PYPY":
+            cmd = ["pypy", target]
+        cmd.extend(args)
+        cmd = " ".join(cmd)
+
+        self._ssh_send(node, cmd)
+
     def query_node(self, node, req_type, path, data=None):
         conn = httplib.HTTPConnection(node["host"], node["port"])
         request = "/".join(path.split("/"))
@@ -72,8 +106,8 @@ class GrandCentral(object):
 
         if data:
             conn.request(req_type, request, data)
-        # else:
-        #     conn.request(req_type, request)
+        else:
+            conn.request(req_type, request)
 
         # response
         response = conn.getresponse()
@@ -89,4 +123,8 @@ class GrandCentral(object):
         self.ssh.close()
 
     def check_node(self, node):
-        pass
+        response = self.query_node(node, "GET", "/status")
+        if response["status"] == PlayNodeStatus.OK:
+            return True
+        else:
+            return False

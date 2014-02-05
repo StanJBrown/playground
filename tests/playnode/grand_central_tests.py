@@ -85,6 +85,7 @@ class GrandCentralTests(unittest.TestCase):
     def test_query_node(self):
         # start and query node
         self.grand_central.start_nodes()
+        time.sleep(1)  # sleep before other op
         response = self.grand_central.query_node(
             self.nodes[0],
             "GET",
@@ -99,6 +100,7 @@ class GrandCentralTests(unittest.TestCase):
         target = config_fp
         destination = "/tmp/config_file_test"
         self.grand_central.start_nodes()
+        time.sleep(1)  # sleep before other op
         self.grand_central.transfer_file(self.nodes[0], target, destination)
 
         self.assertTrue(os.path.isfile(destination))
@@ -107,6 +109,7 @@ class GrandCentralTests(unittest.TestCase):
     def test_check_node(self):
         # start nodes and check node
         self.grand_central.start_nodes()
+        time.sleep(1)  # sleep before other op
         status = self.grand_central.check_node(self.nodes[0])
 
         # assert

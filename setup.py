@@ -8,5 +8,14 @@ setup(
     description="Evoluationary Algorithms Library",
     author="Chris Choi",
     author_email="chutsu@gmail.com",
-    packages=find_packages()
+    packages=find_packages(),
+    data_files=[
+        (
+            'examples/symbolic_regression',
+            [
+                'examples/symbolic_regression/config.json',
+                'examples/symbolic_regression/sine.dat'
+            ]
+        )
+    ]
 )

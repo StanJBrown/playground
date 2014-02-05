@@ -7,6 +7,9 @@ before_script:
     - sudo apt-get update
     - sudo apt-get install postgresql
     - sudo apt-get install postgresql-client
+    - mkdir ~/.ssh
+    - ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''
+    - echo `cat ~/.ssh/id_rsa.pub` > ~/.ssh/authorized_keys
     - createuser -s playground_user
     - createdb -O playground_user playground
 

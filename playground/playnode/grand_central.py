@@ -18,6 +18,7 @@ class GrandCentral(object):
 
         self.ssh = paramiko.SSHClient()
         self.ssh.load_system_host_keys()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     def _ssh_connect(self, node):
         if self.username is None:

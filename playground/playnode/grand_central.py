@@ -1,5 +1,6 @@
 #!/bin/bash
 import json
+import time
 import httplib
 import platform
 
@@ -57,7 +58,9 @@ class GrandCentral(object):
         # obtain instance pid and update node dictionary
         pidfile = self.pidfile_format.format(node["host"], node["port"])
         cmd = "cat {0}".format(pidfile)
-        result = json.loads(self._ssh_send(node, cmd, True)["stdout"])
+        time.sleep(1)  # sleep before you get the pid
+        response = self._ssh_send(node, cmd, True)
+        result = json.loads(response["stdout"])
         node["pid"] = result["pid"]
 
     def stop_node(self, node):

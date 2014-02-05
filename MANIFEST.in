@@ -1,2 +1,2 @@
 include README.md
-recursive-include examples * *.json *.dat
+recursive-include examples * *.json

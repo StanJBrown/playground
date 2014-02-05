@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import time
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -36,6 +37,7 @@ class GrandCentralTests(unittest.TestCase):
 
         # stop node
         self.grand_central.stop_node(self.nodes[0])
+        time.sleep(1)  # sleep before you check
 
         # assert
         pidfile = "/tmp/playground-{0}-{1}.pid".format(

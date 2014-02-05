@@ -4,21 +4,6 @@
             "type": "EVALUATOR",
             "host": "localhost",
             "port": 8080
-        },
-        {
-            "type": "EVALUATOR",
-            "host": "localhost",
-            "port": 8081
-        },
-        {
-            "type": "EVALUATOR",
-            "host": "localhost",
-            "port": 8082
-        },
-        {
-            "type": "EVALUATOR",
-            "host": "localhost",
-            "port": 8083
         }
     ]
 }

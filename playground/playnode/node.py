@@ -22,7 +22,6 @@ evaluate = evaluate
 
 class PlayNodeType(object):
     EVALUATOR = "EVALUATOR"
-    EXECUTOR = "EXECUTOR"
     MONITOR = "MONITOR"
 
 
@@ -74,6 +73,7 @@ def change_status(new_status):
 
 
 def terminate_handler(signal, frame):
+    print "Terminating down server ... "
     pid_fp = "/tmp/playground-{0}-{1}.pid".format(host, port)
     os.unlink(pid_fp)
     sys.exit(0)
@@ -93,14 +93,6 @@ def status():
 
     # read dict
     return jsonify({"status": pid_dict["status"]})
-
-
-@app.route('/message', methods=["POST"])
-def message():
-    response = {}
-    # incomming = json.loads(request.data)
-    response["status"] = PlayNodeStatus.OK
-    return jsonify(response)
 
 
 @app.route('/evaluate', methods=["POST"])

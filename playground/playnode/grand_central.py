@@ -1,6 +1,7 @@
 #!/bin/bash
-import platform
+import json
 import httplib
+import platform
 
 import paramiko
 
@@ -13,7 +14,7 @@ class GrandCentral(object):
         self.nodes = config.get("playnodes", None)
         self.username = kwargs.get("username", None)
         self.password = kwargs.get("password", None)
-        self.pidfile = "/tmp/playnode_instances.pid"
+        self.pidfile_format = "/tmp/playground-{0}-{1}.pid"
 
         self.ssh = paramiko.SSHClient()
         self.ssh.load_system_host_keys()
@@ -39,12 +40,12 @@ class GrandCentral(object):
             raise RuntimeError("Unrecogised OS type [{0}]!".format(self.os))
 
         ssh_stdin, ssh_stdout, ssh_stderr = self.ssh.exec_command(cmd)
-        if output:
-            return ssh_stdout.read()
-
         self.ssh.close()
+        if output:
+            return {"stdout": ssh_stdout.read(), "stderr": ssh_stderr.read()}
 
     def start_node(self, node):
+        # start node
         cmd = "python -m playground.playnode.node {0} {1} {2}".format(
             node["host"],
             node["port"],
@@ -52,13 +53,16 @@ class GrandCentral(object):
         )
         self._ssh_send(node, cmd)
 
-    def stop_node(self, node):
-        host = node["host"]
-        port = node["port"]
+        # obtain instance pid and update node dictionary
+        pidfile = self.pidfile_format.format(node["host"], node["port"])
+        cmd = "cat {0}".format(pidfile)
+        result = json.loads(self._ssh_send(node, cmd, True)["stdout"])
+        node["pid"] = result["pid"]
 
-        pidfile = "/tmp/playground-{0}-{1}.pid".format(host, port)
-        cmd = "kill `cat {0}`".format(pidfile)
+    def stop_node(self, node):
+        cmd = "kill {0}".format(node["pid"])
         self._ssh_send(node, cmd)
+        node["pid"] = None
 
     def start_nodes(self):
         for node in self.nodes:
@@ -70,7 +74,7 @@ class GrandCentral(object):
 
     def remote_check_file(self, node, target):
         cmd = "[ -f {0} ] && echo '1' || echo '0'".format(target)
-        file_status = int(self._ssh_send(node, cmd, True))
+        file_status = int(self._ssh_send(node, cmd, True)["stdout"])
 
         if file_status == 0:
             err = "File [{0}] not found in remote node [{1}]".format(
@@ -114,7 +118,7 @@ class GrandCentral(object):
         data = response.read()
         conn.close()
 
-        return data
+        return json.loads(data)
 
     def transfer_file(self, node, source, destination):
         self._ssh_connect(node)

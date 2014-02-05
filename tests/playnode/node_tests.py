@@ -104,16 +104,8 @@ class NodeTests(unittest.TestCase):
 
     def test_status(self):
         response = self.transmit("localhost", 8080, "GET", "status")
-        # data = json.loads(response)
-        print response
-        # self.assertEquals(data["status"], PlayNodeStatus.OK)
-
-    def test_message(self):
-        msg = json.dumps({"message": "Hello World"})
-        data = self.transmit("localhost", 8080, "POST", "message", msg)
-        data = json.loads(data)
-
-        self.assertEquals(data["status"], PlayNodeStatus.OK)
+        response = json.loads(response)
+        self.assertEquals(response["status"], PlayNodeStatus.OK)
 
     def test_evaluate(self):
         random.seed(10)
@@ -155,8 +147,6 @@ class NodeTests(unittest.TestCase):
         path = "evaluate"
         response = self.transmit(host, port, req_type, path, data)
         response = json.loads(response)
-
-        print response
 
         # assert tests
         for score_solution in list(solution["results"]):

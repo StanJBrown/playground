@@ -12,6 +12,9 @@ before_script:
     - createuser -s playground_user
     - createdb -O playground_user playground
 
+install:
+    - python setup.py install
+
 script:
     python tests/unittest_runner.py
 

@@ -7,8 +7,7 @@ virtualenv:
       system_site_packages: true
 
 before_install:
-    - git clone git@github.com:chutsu/playground.git
-    - cd playground; python setup.py install; cd -
+    - python setup.py install
 
 before_script:
     - sudo apt-get update

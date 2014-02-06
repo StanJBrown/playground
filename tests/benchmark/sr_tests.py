@@ -76,22 +76,29 @@ class SRTests(unittest.TestCase):
     def test_arabas_et_al_test_functions(self):
         sym_reg.arabas_et_al_test_functions()
 
+        for i in range(4):
+            data_fp = "arabas_et_al-f{0}{1}".format(i + 1, ".dat")
+            data_file = open(data_fp, "rb")
+            data = data_file.read()
+            data_file.close()
+            self.assertTrue(len(data) > 0)
+            os.unlink(data_fp)
 
-    # def test_nguyen_et_al_test_functions(self):
-    #     sym_reg.nguyen_et_al_test_functions()
+    def test_nguyen_et_al_test_functions(self):
+        sym_reg.nguyen_et_al_test_functions()
 
-    #     for i in range(10):
-    #         data_fp = "nguyen_et_al-f{0}{1}".format(i + 1, ".dat")
-    #         data_file = open(data_fp, "rb")
-    #         data = data_file.read()
-    #         data_file.close()
+        for i in range(10):
+            data_fp = "nguyen_et_al-f{0}{1}".format(i + 1, ".dat")
+            data_file = open(data_fp, "rb")
+            data = data_file.read()
+            data_file.close()
 
-    #         print data
-    #         print
-    #         print
+            print data
+            print
+            print
 
-    #         self.assertTrue(len(data) > 0)
-    #         os.remove(data_fp)
+            self.assertTrue(len(data) > 0)
+            os.remove(data_fp)
 
 if __name__ == '__main__':
     unittest.main()

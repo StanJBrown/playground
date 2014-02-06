@@ -1,4 +1,5 @@
 #!/bin/bash
+import os
 import json
 import time
 import httplib
@@ -11,6 +12,7 @@ from playground.playnode.node import PlayNodeStatus
 
 class GrandCentral(object):
     def __init__(self, config, **kwargs):
+        self.script_path = os.path.realpath(os.path.dirname(__file__))
         self.os = platform.system()
         self.nodes = config.get("playnodes", None)
         self.username = kwargs.get("username", None)
@@ -48,11 +50,13 @@ class GrandCentral(object):
 
     def start_node(self, node):
         # start node
-        cmd = "python -m playground.playnode.node {0} {1} {2}".format(
+        cmd = "python {0}/node.py {1} {2} {3}".format(
+            self.script_path,
             node["host"],
             node["port"],
             node["type"]
         )
+        print cmd
         self._ssh_send(node, cmd)
 
         # obtain instance pid and update node dictionary

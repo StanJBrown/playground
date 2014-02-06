@@ -16,10 +16,10 @@ setup(
                 'examples/symbolic_regression/config.json',
                 'examples/symbolic_regression/sine.dat'
             ],
-            'playground/recorder/schemas',
+            'playground/recorder',
             [
-                'default.sql',
-                'purge_default.sql'
+                'recorder/schemas/default.sql',
+                'recorder/schemas/purge_default.sql'
             ]
         )
     ]

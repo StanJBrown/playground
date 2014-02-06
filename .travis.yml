@@ -7,6 +7,9 @@ virtualenv:
       system_site_packages: true
 
 install:
+    # deactivate virtualenv
+    - source ~/virtualenv/python2.7_with_system_site_packages/bin/deactivate
+
     # update and install postgresql
     - sudo apt-get update
     - sudo apt-get install postgresql

@@ -6,21 +6,28 @@ python:
 virtualenv:
       system_site_packages: true
 
-before_install:
-    - python setup.py install
-
-before_script:
+install:
+    # update and install postgresql
     - sudo apt-get update
     - sudo apt-get install postgresql
     - sudo apt-get install postgresql-client
-    - ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''
-    - echo `cat ~/.ssh/id_rsa.pub` > ~/.ssh/authorized_keys
+
+    # create postgresql user and database
     - createuser -s playground_user
     - createdb -O playground_user playground
 
-install:
+
+    # create ssh keys and write them to authorized_keys
+    - ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''
+    - echo `cat ~/.ssh/id_rsa.pub` > ~/.ssh/authorized_keys
+
+    # install playground to system site packages
+    - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
+    - pip install -r requirements.txt --install-option="--prefix=$PYTHONPATH"
+    - python setup.py install --prefix $PYTHONPATH
+
+    # virtualenv playground requirements
     - pip install -r requirements.txt
-    - python setup.py install
 
 script:
     python tests/unittest_runner.py

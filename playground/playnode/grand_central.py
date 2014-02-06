@@ -58,8 +58,23 @@ class GrandCentral(object):
         # obtain instance pid and update node dictionary
         pidfile = self.pidfile_format.format(node["host"], node["port"])
         cmd = "cat {0}".format(pidfile)
-        time.sleep(1)  # sleep before you get the pid
+
+        # try
+        limit = 5
+        counter = 0
         response = self._ssh_send(node, cmd, True)
+        while (response["stdout"] == ""):
+            time.sleep(1)  # sleep before you get the pid
+            if counter == limit:
+                err = "Failed to get pid for node [{0}:{1}]!".format(
+                    node["host"],
+                    node["port"]
+                )
+                raise RuntimeError(err)
+            else:
+                response = self._ssh_send(node, cmd, True)
+                counter += 1
+
         print "STDOUT: ", response["stdout"]
         print "STDERR: ", response["stderr"]
         result = json.loads(response["stdout"])

@@ -13,6 +13,7 @@ before_script:
     - createdb -O playground_user playground
 
 install:
+    - pip install -r requirements.txt
     - python setup.py install
 
 script:

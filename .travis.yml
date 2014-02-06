@@ -21,7 +21,7 @@ install:
     - echo `cat ~/.ssh/id_rsa.pub` > ~/.ssh/authorized_keys
 
     # install playground to system site packages
-    - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
+    - export PYTHONPATH=/usr/local/lib/python2.7/site-packages/:$PYTHONPATH
     - python setup.py install --prefix $PYTHONPATH
 
     # virtualenv playground requirements

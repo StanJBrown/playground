@@ -21,7 +21,8 @@ install:
     - echo `cat ~/.ssh/id_rsa.pub` > ~/.ssh/authorized_keys
 
     # install playground to system site packages
-    - export $PYTHONPATH >> ~/.bash_profile
+    - export "export PYTHONPATH=$PYTHONPATH" >> ~/.bash_profile
+    - cat ~/.bash_profile
     - pip install -r requirements.txt
     - python setup.py install
 

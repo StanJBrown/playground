@@ -91,6 +91,8 @@ class GrandCentralTests(unittest.TestCase):
             "GET",
             "/status"
         )
+        time.sleep(1)
+        self.grand_central.stop_nodes()
 
         # assert
         self.assertEquals(response["status"], PlayNodeStatus.OK)
@@ -102,6 +104,8 @@ class GrandCentralTests(unittest.TestCase):
         self.grand_central.start_nodes()
         time.sleep(1)  # sleep before other op
         self.grand_central.transfer_file(self.nodes[0], target, destination)
+        time.sleep(1)  # sleep
+        self.grand_central.stop_nodes()
 
         self.assertTrue(os.path.isfile(destination))
         os.unlink(destination)
@@ -109,8 +113,10 @@ class GrandCentralTests(unittest.TestCase):
     def test_check_node(self):
         # start nodes and check node
         self.grand_central.start_nodes()
-        time.sleep(1)  # sleep before other op
+        time.sleep(1)  # sleep
         status = self.grand_central.check_node(self.nodes[0])
+        time.sleep(1)  # sleep
+        self.grand_central.stop_nodes()
 
         # assert
         self.assertTrue(status)

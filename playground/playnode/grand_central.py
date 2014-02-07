@@ -3,9 +3,8 @@ import os
 import json
 import time
 import httplib
-import platform
-
-import paramiko
+import subprocess
+from subprocess import PIPE
 
 from playground.playnode.node import PlayNodeStatus
 
@@ -13,58 +12,29 @@ from playground.playnode.node import PlayNodeStatus
 class GrandCentral(object):
     def __init__(self, config, **kwargs):
         self.script_path = os.path.realpath(os.path.dirname(__file__))
-        self.os = platform.system()
         self.nodes = config.get("playnodes", None)
-        self.username = kwargs.get("username", None)
-        self.password = kwargs.get("password", None)
         self.pidfile_format = "/tmp/playground-{0}-{1}.pid"
-
-        self.ssh = paramiko.SSHClient()
-        self.ssh.load_system_host_keys()
-        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-    def _ssh_connect(self, node):
-        if self.username is None:
-            self.ssh.connect(node["host"])
-        else:
-            self.ssh.connect(
-                node["host"],
-                username=self.username,
-                password=self.password
-            )
+        self.ssh = None
 
     def _ssh_send(self, node, cmd, output=False):
-        self._ssh_connect(node)
+        ssh_cmd = ["ssh"]
 
-        if self.os == "Darwin":  # Mac
-            cmd = "source ~/.bash_profile; " + cmd
-        elif self.os == "Linux":
-            cmd = "source ~/.bashrc; " + cmd
-        else:
-            raise RuntimeError("Unrecogised OS type [{0}]!".format(self.os))
+        ssh_cmd.append(node["host"])
+        ssh_cmd.append("'" + cmd + "'")
 
-        ssh_stdin, ssh_stdout, ssh_stderr = self.ssh.exec_command(cmd)
-        self.ssh.close()
         if output:
-            return {"stdout": ssh_stdout.read(), "stderr": ssh_stderr.read()}
+            process = subprocess.Popen(ssh_cmd, stdout=PIPE, stderr=PIPE)
+            out, err = process.communicate()
+            return {"stdout": out, "stderr": err}
+        else:
+            subprocess.Popen(ssh_cmd)
 
-    def start_node(self, node):
-        # start node
-        cmd = "python {0}/node.py {1} {2} {3}".format(
-            self.script_path,
-            node["host"],
-            node["port"],
-            node["type"]
-        )
-        print cmd
-        self._ssh_send(node, cmd)
-
+    def _obtain_pid(self, node, limit=1):
         # obtain instance pid and update node dictionary
         pidfile = self.pidfile_format.format(node["host"], node["port"])
         cmd = "cat {0}".format(pidfile)
 
         # try
-        limit = 5
         counter = 0
         response = self._ssh_send(node, cmd, True)
         while (response["stdout"] == ""):
@@ -79,10 +49,19 @@ class GrandCentral(object):
                 response = self._ssh_send(node, cmd, True)
                 counter += 1
 
-        print "STDOUT: ", response["stdout"]
-        print "STDERR: ", response["stderr"]
         result = json.loads(response["stdout"])
-        node["pid"] = result["pid"]
+        return result["pid"]
+
+    def start_node(self, node):
+        # start node
+        cmd = "python {0}/node.py {1} {2} {3}".format(
+            self.script_path,
+            node["host"],
+            node["port"],
+            node["type"]
+        )
+        print self._ssh_send(node, cmd, True)
+        node["pid"] = self._obtain_pid(node)
 
     def stop_node(self, node):
         cmd = "kill {0}".format(node["pid"])

@@ -39,11 +39,12 @@ class SSHTests(unittest.TestCase):
     def test_test_connection(self):
         # pass test
         result = ssh.test_connection("localhost", {})
-        self.assertTrue(result)
+        self.assertTrue(result[0])
 
         # fail test
         result = ssh.test_connection("randomhost", {})
-        self.assertFalse(result)
+        self.assertFalse(result[0])
+        self.assertTrue(len(result[1]) > 0)
 
     def test_test_connections(self):
         nodes = ["localhost"]

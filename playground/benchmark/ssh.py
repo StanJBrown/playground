@@ -104,15 +104,15 @@ def test_connection(node, credentials):
         )
 
         ssh.close()
-        return True
+        return (True, None)
 
     except (
         BadHostKeyException,
         AuthenticationException,
         SSHException,
         socket.error
-    ):
-        return False
+    ) as e:
+        return (False, str(e))
 
 
 def test_connections(nodes, credentials):
@@ -133,11 +133,16 @@ def test_connections(nodes, credentials):
         while(retry != 3):
             try:
                 result = worker[1].get()
-                if result:
+                online = result[0]
+                exception = result[1]
+
+                if online:
                     online_nodes.append(node)
                 else:
-                    offline_nodes.append(node)
+                    res = {"node": node, "exception": exception}
+                    offline_nodes.append(res)
                 break
+
             except Exception:
                 retry += 1
                 time.sleep(1)
@@ -285,8 +290,10 @@ if __name__ == "__main__":
     nodes = []
     workers = []
 
-    # ssh details
-    username = "cc218"
+    # ssh credentials
+    credentials = {
+        "username": "cc218"
+    }
 
     # build nodes list
     for i in range(70):
@@ -294,7 +301,7 @@ if __name__ == "__main__":
         nodes.append(node)
 
     # query online offline nodes
-    online_nodes, offline_nodes = test_connections(nodes, username)
+    online_nodes, offline_nodes = test_connections(nodes, credentials)
     print "ONLINE NODES: ", len(online_nodes)
     print "OFFLINE NODES: ", len(offline_nodes)
 

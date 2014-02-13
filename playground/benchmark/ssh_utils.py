@@ -36,6 +36,7 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
         ssh.close()
 
         result = {
+            "target": node,
             "stdout": stdout.read(),
             "stderr": stderr.read(),
             "exit_status": exit_status
@@ -49,6 +50,7 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
         socket.error
     ):
         result = {
+            "target": node,
             "stdout": None,
             "stderr": None,
             "exit_status": -1
@@ -169,18 +171,40 @@ def deploy_public_key(nodes, pubkey_path, **kwargs):
         ssh.close()
 
 
-def get_netadaptor_details(ifconfig_output):
-    ifconfig_dump = ifconfig_output.split()
-
-    inet = None
+def parse_netadaptor_details(ifconfig_dump):
+    ifconfig_dump = ifconfig_dump.split()
+    ip = None
     mac_addr = None
     for i in range(len(ifconfig_dump)):
         if ifconfig_dump[i] == "inet":
-            inet = ifconfig_dump[i + 1]
+            ip = ifconfig_dump[i + 1]
         elif ifconfig_dump[i] == "ether":
             mac_addr = ifconfig_dump[i + 1]
 
-    return {"mac_addr": mac_addr, "inet": inet}
+    return {"mac_addr": mac_addr, "ip": ip}
+
+
+def get_netadaptor_details(nodes, username, password, **kwargs):
+    node_net_details = []
+    results = ssh_send_batch_cmd(nodes, "ifconfig", username, password, **kwargs)
+
+    for result in results:
+        node = result["output"]["target"]
+        ifconfig_dump = result["ouput"]["stdout"]
+        details = parse_netadaptor_details(ifconfig_dump)
+
+        node_net_details.append(
+            {
+                "node": node,
+                "ip": details["ip"],
+                "mac_addr": details["mac_addr"]
+            }
+        )
+
+    return node_net_details
+
+
+
 
 
 def remote_check_file(node, target, **kwargs):
@@ -251,28 +275,25 @@ if __name__ == "__main__":
     username = "cc218"
 
     # build nodes list
-    for i in range(20):
+    for i in range(70):
         node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(i).zfill(3))
         nodes.append(node)
-    # node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(15).zfill(3))
-    # node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(15).zfill(3))
-    # nodes.append(node)
 
+    # query online offline nodes
     online_nodes, offline_nodes = test_connections(nodes, username)
-    print "ONLINE: ", online_nodes
+    print "ONLINE NODES: ", len(online_nodes)
+    print "OFFLINE NODES: ", len(offline_nodes)
 
     # send_wol_packet("34:15:9e:22:7e:08")
     # remote_sleep_mac(node, username)
 
-    cmd = "finger"
-    results = ssh_batch_send_cmd(online_nodes, cmd, username)
-    for result in results:
-        print result["node"]
-        print result["output"]["stdout"]
-        print result["output"]
+    # cmd = "finger"
+    # results = ssh_batch_send_cmd(online_nodes, cmd, username)
+    # for result in results:
+    #     print result["node"]
+    #     print result["output"]["stdout"]
+    #     print result["output"]
 
-        # netdetails = get_netadaptor_details(result["output"]["stdout"])
-        # print netdetails["mac_addr"]
 
     # 34:15:9e:22:7e:08
 

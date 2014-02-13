@@ -12,7 +12,7 @@ from paramiko import AuthenticationException
 from paramiko import SSHException
 
 
-def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
+def send_cmd(node, cmd, credentials):
     ssh = paramiko.SSHClient()
     ssh.load_system_host_keys()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -25,9 +25,9 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
     try:
         ssh.connect(
             node,
-            username=username,
-            password=password,
-            timeout=kwargs.get("timeout", 2.0),
+            username=credentials.get("username", None),
+            password=credentials.get("password", None),
+            timeout=credentials.get("timeout", 2.0),
             pkey=private_key
         )
 
@@ -38,7 +38,8 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
         result = {
             "stdout": stdout.read(),
             "stderr": stderr.read(),
-            "exit_status": exit_status
+            "exit_status": exit_status,
+            "exception": None
         }
         return result
 
@@ -47,22 +48,24 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
         AuthenticationException,
         SSHException,
         socket.error
-    ):
+    ) as e:
         result = {
             "stdout": None,
             "stderr": None,
-            "exit_status": -1
+            "exit_status": -1,
+            "exception": str(e)
         }
         return result
 
 
-def ssh_batch_send_cmd(nodes, cmd, username, password=None):
-    pool = Pool(processes=100)
+def batch_send_cmd(nodes, cmd, credentials):
     results = []
+    workers = []
+    pool = Pool(processes=100)
 
     # send command async
-    for node in online_nodes:
-        worker = pool.apply_async(ssh_send_cmd, (node, cmd, username))
+    for node in nodes:
+        worker = pool.apply_async(send_cmd, (node, cmd, credentials))
         workers.append((node, worker))
 
     # for every process get the results (with retry)
@@ -81,7 +84,7 @@ def ssh_batch_send_cmd(nodes, cmd, username, password=None):
     return results
 
 
-def test_connection(node, username, password=None, **kwargs):
+def test_connection(node, credentials):
     ssh = paramiko.SSHClient()
     ssh.load_system_host_keys()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -94,9 +97,9 @@ def test_connection(node, username, password=None, **kwargs):
     try:
         ssh.connect(
             node,
-            username=username,
-            password=password,
-            timeout=kwargs.get("timeout", 2.0),
+            username=credentials.get("username", None),
+            password=credentials.get("password", None),
+            timeout=credentials.get("timeout", 2.0),
             pkey=private_key
         )
 
@@ -112,17 +115,18 @@ def test_connection(node, username, password=None, **kwargs):
         return False
 
 
-def test_connections(nodes, username, password=None):
-    # concurrently test connection
-    pool = Pool(processes=100)
-    for node in nodes:
-        worker = pool.apply_async(test_connection, (node, username, password))
-        workers.append((node, worker))
-
-    # get results
+def test_connections(nodes, credentials):
+    workers = []
     online_nodes = []
     offline_nodes = []
 
+    # concurrently test connection
+    pool = Pool(processes=100)
+    for node in nodes:
+        worker = pool.apply_async(test_connection, (node, credentials))
+        workers.append((node, worker))
+
+    # get results
     for worker in workers:
         node = worker[0]
         retry = 0
@@ -145,7 +149,7 @@ def test_connections(nodes, username, password=None):
     return (online_nodes, offline_nodes)
 
 
-def deploy_public_key(nodes, pubkey_path, **kwargs):
+def deploy_public_key(nodes, pubkey_path, credentials):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
@@ -155,15 +159,15 @@ def deploy_public_key(nodes, pubkey_path, **kwargs):
     pubkey_file.close()
 
     # authorized keys file path
-    authkeys = kwargs.get("remote_authkeys_fp", "~/.ssh/authorized_keys")
+    authkeys = credentials.get("remote_authkeys_fp", "~/.ssh/authorized_keys")
 
     # add local public key to remote node's authorized_keys file
     for node in nodes:
         ssh.connect(
             node,
-            username=kwargs.get("username", None),
-            password=kwargs.get("password", None),
-            timeout=kwargs.get("timeout", 2.0)
+            username=credentials.get("username", None),
+            password=credentials.get("password", None),
+            timeout=credentials.get("timeout", 2.0)
         )
 
         # append local public key
@@ -186,16 +190,16 @@ def parse_netadaptor_details(ifconfig_dump):
     return {"mac_addr": mac_addr, "ip": ip}
 
 
-def get_netadaptor_details(nodes, username, password=None, **kwargs):
+def get_netadaptor_details(nodes, credentials):
     node_net_details = []
 
     # run `ifconfig` on nodes and get the ifconfig dump
     cmd = "ifconfig"
-    results = ssh_batch_send_cmd(nodes, cmd, username, password, **kwargs)
+    results = batch_send_cmd(nodes, cmd, credentials)
 
     # loop through every ifconfig dump and return result
     for result in results:
-        node = result["output"]["target"]
+        node = result["node"]
         ifconfig_dump = result["output"]["stdout"]
         details = parse_netadaptor_details(ifconfig_dump)
 
@@ -210,47 +214,25 @@ def get_netadaptor_details(nodes, username, password=None, **kwargs):
     return node_net_details
 
 
-def record_netadaptor_details(file_path, nodes, username, password=None):
+def remote_check_file(node, target, credentials):
+    cmd = "[ -f {0} ] && echo '1' || echo '0'".format(target)
+    result = send_cmd(node, cmd, credentials)
+
+    if int(result["stdout"].strip()) == 0:
+        return False
+    else:
+        return True
+
+
+def record_netadaptor_details(file_path, nodes, credentials):
     # get all net adaptor details from nodes
-    net_adaptors = get_netadaptor_details(nodes, username)
+    net_adaptors = get_netadaptor_details(nodes, credentials)
 
     # write out details to file in json format
     net_adaptor_file = open(file_path, "wb")
     net_adaptors_json = json.dumps({"nodes": net_adaptors})
     net_adaptor_file.write(net_adaptors_json + "\n")
     net_adaptor_file.close()
-
-
-def remote_check_file(node, target, **kwargs):
-    cmd = "[ -f {0} ] && echo '1' || echo '0'".format(target)
-    stdin, stdout, stderr = ssh_send_cmd(node, cmd, kwargs)
-
-    if int(stdout) == 0:
-        err = "File [{0}] not found in remote node [{1}]".format(
-            target,
-            node["host"],
-        )
-        raise RuntimeError(err)
-    else:
-        return True
-
-
-def remote_play(node, target, args, **kwargs):
-    python_interpreter = kwargs.get("python_interpreter", "CPYTHON")
-
-    # precheck
-    dest = kwargs.get("dest", None)
-    if dest:
-        remote_check_file(node, dest)
-    else:
-        remote_check_file(node, target)
-
-    if python_interpreter == "CPYTHON":
-        cmd = ["python", target]
-    elif python_interpreter == "PYPY":
-        cmd = ["pypy", target]
-    cmd.extend(args)
-    cmd = " ".join(cmd)
 
 
 def send_wol_packet(dst_mac_addr):
@@ -271,15 +253,32 @@ def send_wol_packet(dst_mac_addr):
     scks.close()
 
 
-def remote_sleep_mac(node, username, password=None, **kwargs):
+def remote_sleep_mac(node, credentials):
     cmd = "pmset sleepnow && exit"
-    result = ssh_send_cmd(node, cmd, username, password, **kwargs)
+    result = send_cmd(node, cmd, credentials)
 
-    print result
-    if result["exit_status"] == 0:
+    if int(result["stdout"].trim()) == 0:
         return True
     else:
         return False
+
+
+def remote_play(node, target, args, credentials, **kwargs):
+    python_interpreter = kwargs.get("python_interpreter", "CPYTHON")
+
+    # precheck
+    dest = kwargs.get("dest", None)
+    if dest:
+        remote_check_file(node, dest)
+    else:
+        remote_check_file(node, target)
+
+    if python_interpreter == "CPYTHON":
+        cmd = ["python", target]
+    elif python_interpreter == "PYPY":
+        cmd = ["pypy", target]
+    cmd.extend(args)
+    cmd = " ".join(cmd)
 
 
 if __name__ == "__main__":
@@ -302,16 +301,8 @@ if __name__ == "__main__":
     # send_wol_packet("34:15:9e:22:7e:08")
     # remote_sleep_mac(node, username)
 
-    cmd = "finger"
-    results = ssh_batch_send_cmd(online_nodes, cmd, username)
-    for result in results:
-        print result["node"]
-        print result["output"]["stdout"]
-        # print result["output"]
-
-
-    # 34:15:9e:22:7e:08
-
-    # cmd = "pmset sleepnow"
-    # results = ssh_batch_send_cmd(online_nodes, cmd, username)
-    # print results
+    # cmd = "finger"
+    # results = batch_send_cmd(online_nodes, cmd, username)
+    # for result in results:
+    #     print result["node"]
+    #     print result["output"]["stdout"]

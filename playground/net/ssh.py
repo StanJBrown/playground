@@ -262,10 +262,48 @@ def remote_sleep_mac(node, credentials):
     cmd = "pmset sleepnow && exit"
     result = send_cmd(node, cmd, credentials)
 
-    if int(result["stdout"].trim()) == 0:
+    if int(result["stdout"].strip()) == 0:
         return True
     else:
         return False
+
+
+def remote_sleep_macs(nodes, credentials):
+    workers = []
+    sleep_nodes = []
+    fail_nodes = []
+
+    # concurrently test connection
+    pool = Pool(processes=100)
+    for node in nodes:
+        worker = pool.apply_async(remote_sleep_mac, (node, credentials))
+        workers.append((node, worker))
+
+    # get results
+    for worker in workers:
+        node = worker[0]
+        retry = 0
+        while(retry != 3):
+            try:
+                result = worker[1].get()
+                sleep = result[0]
+
+                if sleep:
+                    sleep_nodes.append(node)
+                else:
+                    res = {"node": node, "exception": "Failed to sleep mac!"}
+                    fail_nodes.append(res)
+                break
+
+            except Exception:
+                retry += 1
+                time.sleep(1)
+
+        if retry == 3:
+            fail_nodes.append(node)
+    del workers[:]
+
+    return (sleep_nodes, fail_nodes)
 
 
 def remote_play(node, target, args, credentials, **kwargs):
@@ -296,7 +334,7 @@ if __name__ == "__main__":
     }
 
     # build nodes list
-    for i in range(70):
+    for i in [62, 63]:
         node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(i).zfill(3))
         nodes.append(node)
 
@@ -306,10 +344,14 @@ if __name__ == "__main__":
     print "OFFLINE NODES: ", len(offline_nodes)
 
     # send_wol_packet("34:15:9e:22:7e:08")
-    # remote_sleep_mac(node, username)
+    print remote_sleep_mac(online_nodes[0], credentials)
+    # sleep_nodes, failed_nodes = remote_sleep_macs(online_nodes, credentials)
+    # print "SLEEP NODES: ", len(sleep_nodes)
+    # print "FAILED NODES: ", len(failed_nodes)
 
-    # cmd = "finger"
-    # results = batch_send_cmd(online_nodes, cmd, username)
+
+    # cmd = "ls"
+    # results = batch_send_cmd(online_nodes, cmd, credentials)
     # for result in results:
     #     print result["node"]
     #     print result["output"]["stdout"]

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import os
 import time
+import json
 import socket
 import struct
-# import socket
 from multiprocessing import Pool
 
 import paramiko
@@ -36,7 +36,6 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
         ssh.close()
 
         result = {
-            "target": node,
             "stdout": stdout.read(),
             "stderr": stderr.read(),
             "exit_status": exit_status
@@ -50,7 +49,6 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
         socket.error
     ):
         result = {
-            "target": node,
             "stdout": None,
             "stderr": None,
             "exit_status": -1
@@ -58,14 +56,16 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
         return result
 
 
-def ssh_batch_send_cmd(nodes, cmd, username, password=None, **kargs):
+def ssh_batch_send_cmd(nodes, cmd, username, password=None):
     pool = Pool(processes=100)
     results = []
 
+    # send command async
     for node in online_nodes:
         worker = pool.apply_async(ssh_send_cmd, (node, cmd, username))
         workers.append((node, worker))
 
+    # for every process get the results (with retry)
     for worker in workers:
         retry = 0
         node = worker[0]
@@ -172,9 +172,11 @@ def deploy_public_key(nodes, pubkey_path, **kwargs):
 
 
 def parse_netadaptor_details(ifconfig_dump):
-    ifconfig_dump = ifconfig_dump.split()
     ip = None
     mac_addr = None
+    ifconfig_dump = ifconfig_dump.split()
+
+    # find inet and ether keywords and scrape the details
     for i in range(len(ifconfig_dump)):
         if ifconfig_dump[i] == "inet":
             ip = ifconfig_dump[i + 1]
@@ -184,13 +186,17 @@ def parse_netadaptor_details(ifconfig_dump):
     return {"mac_addr": mac_addr, "ip": ip}
 
 
-def get_netadaptor_details(nodes, username, password, **kwargs):
+def get_netadaptor_details(nodes, username, password=None, **kwargs):
     node_net_details = []
-    results = ssh_send_batch_cmd(nodes, "ifconfig", username, password, **kwargs)
 
+    # run `ifconfig` on nodes and get the ifconfig dump
+    cmd = "ifconfig"
+    results = ssh_batch_send_cmd(nodes, cmd, username, password, **kwargs)
+
+    # loop through every ifconfig dump and return result
     for result in results:
         node = result["output"]["target"]
-        ifconfig_dump = result["ouput"]["stdout"]
+        ifconfig_dump = result["output"]["stdout"]
         details = parse_netadaptor_details(ifconfig_dump)
 
         node_net_details.append(
@@ -204,7 +210,15 @@ def get_netadaptor_details(nodes, username, password, **kwargs):
     return node_net_details
 
 
+def record_netadaptor_details(file_path, nodes, username, password=None):
+    # get all net adaptor details from nodes
+    net_adaptors = get_netadaptor_details(nodes, username)
 
+    # write out details to file in json format
+    net_adaptor_file = open(file_path, "wb")
+    net_adaptors_json = json.dumps({"nodes": net_adaptors})
+    net_adaptor_file.write(net_adaptors_json + "\n")
+    net_adaptor_file.close()
 
 
 def remote_check_file(node, target, **kwargs):
@@ -221,13 +235,14 @@ def remote_check_file(node, target, **kwargs):
         return True
 
 
-def remote_play(node, target, args, dest=None, **kwargs):
+def remote_play(node, target, args, **kwargs):
     python_interpreter = kwargs.get("python_interpreter", "CPYTHON")
 
     # precheck
+    dest = kwargs.get("dest", None)
     if dest:
         remote_check_file(node, dest)
-    elif dest is None:
+    else:
         remote_check_file(node, target)
 
     if python_interpreter == "CPYTHON":
@@ -287,12 +302,12 @@ if __name__ == "__main__":
     # send_wol_packet("34:15:9e:22:7e:08")
     # remote_sleep_mac(node, username)
 
-    # cmd = "finger"
-    # results = ssh_batch_send_cmd(online_nodes, cmd, username)
-    # for result in results:
-    #     print result["node"]
-    #     print result["output"]["stdout"]
-    #     print result["output"]
+    cmd = "finger"
+    results = ssh_batch_send_cmd(online_nodes, cmd, username)
+    for result in results:
+        print result["node"]
+        print result["output"]["stdout"]
+        # print result["output"]
 
 
     # 34:15:9e:22:7e:08

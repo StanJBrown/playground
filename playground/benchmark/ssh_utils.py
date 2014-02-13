@@ -3,7 +3,7 @@ import os
 import time
 import socket
 import struct
-import socket
+# import socket
 from multiprocessing import Pool
 
 import paramiko
@@ -49,8 +49,8 @@ def ssh_send_cmd(node, cmd, username, password=None, **kwargs):
         socket.error
     ):
         result = {
-            "stdout": stdout.read(),
-            "stderr": stderr.read(),
+            "stdout": None,
+            "stderr": None,
             "exit_status": -1
         }
         return result
@@ -173,14 +173,14 @@ def get_netadaptor_details(ifconfig_output):
     ifconfig_dump = ifconfig_output.split()
 
     inet = None
-    ether = None
+    mac_addr = None
     for i in range(len(ifconfig_dump)):
         if ifconfig_dump[i] == "inet":
             inet = ifconfig_dump[i + 1]
         elif ifconfig_dump[i] == "ether":
-            ether = ifconfig_dump[i + 1]
+            mac_addr = ifconfig_dump[i + 1]
 
-    return {"ether": ether, "inet": inet}
+    return {"mac_addr": mac_addr, "inet": inet}
 
 
 def remote_check_file(node, target, **kwargs):
@@ -214,7 +214,7 @@ def remote_play(node, target, args, dest=None, **kwargs):
     cmd = " ".join(cmd)
 
 
-def send_magic_packet(dst_mac_addr):
+def send_wol_packet(dst_mac_addr):
     addr_byte = dst_mac_addr.split(':')
     hw_addr = struct.pack(
         'BBBBBB',
@@ -232,35 +232,47 @@ def send_magic_packet(dst_mac_addr):
     scks.close()
 
 
+def remote_sleep_mac(node, username, password=None, **kwargs):
+    cmd = "pmset sleepnow && exit"
+    result = ssh_send_cmd(node, cmd, username, password, **kwargs)
+
+    print result
+    if result["exit_status"] == 0:
+        return True
+    else:
+        return False
+
+
 if __name__ == "__main__":
     nodes = []
     workers = []
 
     # ssh details
-    username = ""
+    username = "cc218"
 
     # build nodes list
-    # for i in range(100):
-        # node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(i).zfill(3))
-    #     nodes.append(node)
+    for i in range(20):
+        node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(i).zfill(3))
+        nodes.append(node)
     # node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(15).zfill(3))
-    node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(61).zfill(3))
-    nodes.append(node)
+    # node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(15).zfill(3))
+    # nodes.append(node)
 
     online_nodes, offline_nodes = test_connections(nodes, username)
     print "ONLINE: ", online_nodes
 
-    send_magic_packet("34:15:9e:22:7e:08")
+    # send_wol_packet("34:15:9e:22:7e:08")
+    # remote_sleep_mac(node, username)
 
-    # cmd = "osascript -e 'tell application \"Finder\" to sleep'"
-    # results = ssh_batch_send_cmd(online_nodes, cmd, username)
-    # for result in results:
-    #     print result["node"]
-    #     print result["output"]["stdout"]
-    #     print result["output"]
+    cmd = "finger"
+    results = ssh_batch_send_cmd(online_nodes, cmd, username)
+    for result in results:
+        print result["node"]
+        print result["output"]["stdout"]
+        print result["output"]
 
         # netdetails = get_netadaptor_details(result["output"]["stdout"])
-        # print netdetails["ether"]
+        # print netdetails["mac_addr"]
 
     # 34:15:9e:22:7e:08
 

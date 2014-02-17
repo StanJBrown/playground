@@ -20,7 +20,7 @@ from playground.recorder.json_store import JSONStore
 # SETTINGS
 record_exception = False
 script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-config_fp = os.path.join(script_path, "config.json")
+config_fp = os.path.join(script_path, "sine_config.json")
 
 
 if __name__ == "__main__":
@@ -41,21 +41,22 @@ if __name__ == "__main__":
         population = tree_generator.init()
 
         start_time = time.time()
-        details = {
-            "evolution_strategy": {"lambda": 4},
-            "population": population,
-            "functions": functions,
-            "evaluate": evaluate,
-            "selection": selection,
-            "crossover": crossover,
-            "mutation": mutation,
-            "config": config,
-            "recorder": json_store
-        }
+        details = play.play_details(
+            population=population,
+            functions=functions,
+            evaluate=evaluate,
+            selection=selection,
+            crossover=crossover,
+            mutation=mutation,
+            print_func=print_func,
+            stop_func=default_stop_func,
+            config=config,
+            recorder=json_store
+        )
 
-        play.play(details, default_stop_func, print_func)
+        play.play(details)
         # play.play_multicore(details)
-        # play.play_evolution_strategy(details, default_stop_func, print_func)
+        # play.play_evolution_strategy(details)
 
         end_time = time.time()
 

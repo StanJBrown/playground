@@ -28,13 +28,13 @@ def play_details(**kwargs):
     )
 
     return PlayDetails(
-        kwargs.get("population"),
+        kwargs["population"],
         kwargs.get("functions", None),
-        kwargs.get("evaluate"),
-        kwargs.get("selection"),
+        kwargs["evaluate"],
+        kwargs["selection"],
         kwargs.get("crossover", None),
-        kwargs.get("mutation"),
-        kwargs.get("config"),
+        kwargs["mutation"],
+        kwargs["config"],
         kwargs.get("stop_func", None),
         kwargs.get("print_func", None),
         kwargs.get("recorder", None),

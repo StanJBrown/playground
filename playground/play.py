@@ -31,7 +31,7 @@ def play_details(**kwargs):
         kwargs["population"],
         kwargs.get("functions", None),
         kwargs["evaluate"],
-        kwargs["selection"],
+        kwargs.get("selection", None),
         kwargs.get("crossover", None),
         kwargs["mutation"],
         kwargs["config"],

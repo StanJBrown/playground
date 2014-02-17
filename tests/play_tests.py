@@ -10,8 +10,9 @@ import playground.config as config
 import playground.play as play
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
+from playground.gp.tree.tree_evaluation import default_stop_func
+from playground.gp.tree.tree_evaluation import print_func
 from playground.functions import FunctionRegistry
-# from playground.recorder.db import DB
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
 from playground.operators.mutation import GPTreeMutation
@@ -25,7 +26,6 @@ class PlayTests(unittest.TestCase):
     def setUp(self):
         random.seed(10)
 
-        print config_fp
         self.config = config.load_config(config_fp)
         self.functions = FunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
@@ -89,7 +89,7 @@ class PlayTests(unittest.TestCase):
             "mutation": self.mutation,
             "config": self.config
         }
-        play.play(details)
+        play.play(details, print_func)
         end_time = time.time()
         print("GP run with cache: %2.2fsec\n" % (end_time - start_time))
 
@@ -104,9 +104,12 @@ class PlayTests(unittest.TestCase):
             "mutation": self.mutation,
             "config": self.config
         }
-        play.play(details)
+        play.play(details, print_func)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
+
+        # assert
+        self.assertTrue(len(population.individuals) > 0)
 
     def test_play_multicore(self):
         population = self.tree_generator.init()
@@ -121,9 +124,31 @@ class PlayTests(unittest.TestCase):
             "mutation": self.mutation,
             "config": self.config
         }
-        play.play_multicore(details)
+        play.play_multicore(details, print_func)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
+
+        # assert
+        self.assertTrue(len(population.individuals) > 0)
+
+    def test_play_evolution_strategy(self):
+        population = self.tree_generator.init()
+
+        start_time = time.time()
+        details = {
+            "evolution_strategy": {"lambda": 4},
+            "population": population,
+            "functions": self.functions,
+            "evaluate": evaluate,
+            "mutation": self.mutation,
+            "config": self.config
+        }
+        play.play_evolution_strategy(details, default_stop_func, print_func)
+        end_time = time.time()
+        print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
+
+        # assert
+        self.assertEquals(len(population.individuals), 4)
 
 
 if __name__ == '__main__':

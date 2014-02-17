@@ -14,7 +14,7 @@ setup(
             'examples/symbolic_regression',
             [
                 'examples/symbolic_regression/config.json',
-                'examples/symbolic_regression/sine.dat'
+                'examples/symbolic_regression/training_data/sine.dat'
             ],
             'playground/recorder',
             [

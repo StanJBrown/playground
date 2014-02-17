@@ -7,9 +7,6 @@ import multiprocessing
 from multiprocessing import Process
 from multiprocessing import Manager
 
-from sympy import simplify
-
-from playground.gp.tree.tree_parser import TreeParser
 from playground.recorder.json_store import JSONStore
 
 
@@ -54,39 +51,28 @@ def reproduce(population, crossover, mutation, config):
             population.individuals.pop()
 
 
-def play(details):
-    population = details.get("population", None)
-    functions = details.get("functions", None)
-    evaluate = details.get("evaluate", None)
-    selection = details.get("selection", None)
-    crossover = details.get("crossover", None)
-    mutation = details.get("mutation", None)
-    config = details.get("config", None)
+def play(details, print_func=None):
+    population = details["population"]
+    functions = details["functions"]
+    evaluate = details["evaluate"]
+    selection = details["selection"]
+    crossover = details["crossover"]
+    mutation = details["mutation"]
+    config = details["config"]
     recorder = details.get("recorder", None)
 
     generation = 0
     max_generation = config["max_generation"]
     goal_reached = False
-    tree_parser = TreeParser()
 
     while generation < max_generation and goal_reached is not True:
         results = []
         evaluate(population.individuals, functions, config, results, recorder)
         population.individuals = results
 
-        # display best individual
-        population.sort_individuals()
-        best_individual = population.best_individuals[0]
-        print "generation: ", generation
-        print "best_score: " + str(best_individual.score)
-        print "tree_size: " + str(best_individual.size)
-        print ""
-
-        if best_individual.score < 20.0:
-            eq = tree_parser.parse_equation(best_individual.root)
-            if best_individual.size < 50:
-                print simplify(eq)
-            print ""
+        # print function
+        if print_func:
+            print_func(population, generation)
 
         # genetic genetic operators
         population = selection.select(population)
@@ -100,19 +86,18 @@ def play(details):
     return population
 
 
-def play_multicore(details):
-    population = details.get("population", None)
-    functions = details.get("functions", None)
-    evaluate = details.get("evaluate", None)
-    selection = details.get("selection", None)
-    crossover = details.get("crossover", None)
-    mutation = details.get("mutation", None)
-    config = details.get("config", None)
+def play_multicore(details, print_func=None):
+    population = details["population"]
+    functions = details["functions"]
+    evaluate = details["evaluate"]
+    selection = details["selection"]
+    crossover = details["crossover"]
+    mutation = details["mutation"]
+    config = details["config"]
     recorder = details.get("recorder", None)
 
     generation = 0
     max_generation = config["max_generation"]
-    tree_parser = TreeParser()
     manager = Manager()
     nproc = multiprocessing.cpu_count() * 2
 
@@ -135,19 +120,9 @@ def play_multicore(details):
         del processes[:]
         population.individuals = [r for r in results]
 
-        # display best individual
-        population.sort_individuals()
-        best_individual = population.best_individuals[0]
-        print "generation: ", generation
-        print "best_score: " + str(best_individual.score)
-        print "tree_size: " + str(best_individual.size)
-        print ""
-
-        if best_individual.score < 20.0:
-            eq = tree_parser.parse_equation(best_individual.root)
-            if best_individual.size < 50:
-                print simplify(eq)
-            print ""
+        # print function
+        if print_func:
+            print_func(population, generation)
 
         # genetic genetic operators
         population = selection.select(population)
@@ -156,63 +131,62 @@ def play_multicore(details):
 
         # record
         if recorder and isinstance(recorder, JSONStore):
-            # TODO: AGGREGATE different evaluation's before writing to file
-            # since different evaluators will have different `eval_stats`
             recorder.record_to_file()
 
     return population
 
 
-# def play_multinode(details):
-#     population = details.get("population", None)
-#     # functions = details.get("functions", None)
-#     # evaluate = details.get("evaluate", None)
-#     selection = details.get("selection", None)
-#     crossover = details.get("crossover", None)
-#     mutation = details.get("mutation", None)
-#     config = details.get("config", None)
-#
-#     generation = 0
-#     max_generation = config["max_generation"]
-#     tree_parser = TreeParser()
-#
-#     while generation < max_generation:
-#         # create a dictionary of trees
-#         data = {"config": config, "individuals": []}
-#         for individual in population.individuals:
-#             tree_json = tree_parser.tree_to_dict(individual, individual.root)
-#             data["individuals"].append(tree_json)
-#         data = json.dumps(data)
-#
-#         # evaluate individuals in population
-#         results = []
-#         for node in config.nodes:
-#             results = transmit(
-#                 node.host,
-#                 node.port,
-#                 node.req_type,
-#                 node.path,
-#                 data
-#             )
-#         population.individuals = [r for r in results]
-#
-#         # display best individual
-#         population.sort_individuals()
-#         best_individual = population.best_individuals[0]
-#         print "generation: ", generation
-#         print "best_score: " + str(best_individual.score)
-#         print "tree_size: " + str(best_individual.size)
-#         print ""
-#
-#         if best_individual.score < 20.0:
-#             eq = tree_parser.parse_equation(best_individual.root)
-#             if best_individual.size < 50:
-#                 print simplify(eq)
-#             print ""
-#
-#         # genetic genetic operators
-#         population = selection.select(population)
-#         reproduce(population, crossover, mutation, config)
-#         generation += 1
-#
-#     return population
+def play_evolution_strategy(details, stop_func, print_func=None):
+    # strategy details
+    children = details["evolution_strategy"]["lambda"]
+    population = details["population"]
+    functions = details["functions"]
+    evaluate = details["evaluate"]
+    mutation = details["mutation"]
+    config = details["config"]
+    recorder = details.get("recorder", None)
+
+    # evolution details
+    generation = 0
+    best = None
+    general_stats = {
+        "generation": generation,
+        "stale_counter": 0,
+        "best": best
+    }
+
+    while stop_func(general_stats, config) is False:
+        # evaluate population
+        results = []
+        evaluate(population.individuals, functions, config, results, recorder)
+        population.individuals = results
+
+        # print function
+        if print_func:
+            print_func(population, generation)
+
+        # obtain the best, and destroy current population
+        curr_best = population.find_best_individuals()[0]
+        del population.individuals[:]
+
+        # reproduce
+        if best is None or curr_best <= best:
+            best = curr_best
+            general_stats["stale_counter"] = 0
+        else:
+            general_stats["stale_counter"] += 1
+
+        for i in xrange(children):
+            child = copy.deepcopy(best)
+            mutation.mutate(child)
+            population.individuals.append(child)
+
+        # increment generation counter
+        generation += 1
+        general_stats["generation"] += 1
+
+        # record
+        if recorder and isinstance(recorder, JSONStore):
+            recorder.record_to_file()
+
+    return population

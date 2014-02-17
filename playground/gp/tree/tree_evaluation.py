@@ -1,7 +1,38 @@
 #!/usr/bin/env python
+from sympy import simplify
+
 from playground.functions import EvaluationError
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
+from playground.gp.tree.tree_parser import TreeParser
+
+
+def print_func(population, generation):
+    # display best individual
+    tree_parser = TreeParser()
+    best = population.find_best_individuals()[0]
+    print "generation: ", generation
+    print "best_score: " + str(best.score)
+    print "tree_size: " + str(best.size)
+    print ""
+
+    if best.score < 20.0:
+        eq = tree_parser.parse_equation(best.root)
+        if best.size < 50:
+            print simplify(eq)
+        print ""
+
+
+def default_stop_func(general_stats, config):
+    max_gen = config["max_generation"]
+    stale_limit = config.get("stale_limit", 30)
+
+    if general_stats["generation"] >= max_gen:
+        return True
+    elif general_stats["stale_counter"] >= stale_limit:
+        return True
+
+    return False
 
 
 def gen_term_node(node, row, config):

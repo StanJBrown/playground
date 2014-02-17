@@ -25,7 +25,7 @@ if __name__ == "__main__":
     try:
         # setup
         random.seed(10)  # seed random so results can be reproduced
-        config = config.load_config(config_fp)
+        config = config.load_config(config_fp, script_path)
         json_store = JSONStore(config)
         functions = FunctionRegistry()
         tree_generator = TreeGenerator(config)

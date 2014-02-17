@@ -1,6 +1,6 @@
 {
-    "max_population" : 5000,
-    "max_generation" : 5,
+    "max_population" : 500,
+    "max_generation" : 1000,
 
     "tree_generation": {
         "method" : "GROW_METHOD",
@@ -13,7 +13,7 @@
 
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",
-        "tournament_size": 500
+        "tournament_size": 5
     },
 
     "crossover" : {
@@ -29,7 +29,7 @@
             "SHRINK_MUTATION",
             "EXPAND_MUTATION"
         ],
-        "probability" : 0.9
+        "probability" : 0.5
     },
 
     "function_nodes" : [
@@ -117,17 +117,17 @@
         }
     ],
 
-    "data_file" : "sine.dat",
+    "data_file" : "training_data/nguyen_et_al-f1.dat",
 
     "input_variables" : [
         {
             "type": "INPUT",
-            "name": "x"
+            "name": "var1"
         }
     ],
 
     "response_variable" : {
-        "name": "y"
+        "name": "answer"
     },
 
     "json_store" : {

@@ -1,5 +1,5 @@
 {
-    "max_population" : 50,
+    "max_population" : 10,
     "max_generation" : 5,
 
     "tree_generation" : {
@@ -29,7 +29,7 @@
             "SHRINK_MUTATION",
             "EXPAND_MUTATION"
         ],
-        "probability" : 0.9
+        "probability" : 1.0
     },
 
     "function_nodes" : [

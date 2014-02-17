@@ -9,6 +9,8 @@ import playground.config as config
 import playground.play as play
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
+from playground.gp.tree.tree_evaluation import default_stop_func
+from playground.gp.tree.tree_evaluation import print_func
 from playground.functions import FunctionRegistry
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
@@ -40,6 +42,7 @@ if __name__ == "__main__":
 
         start_time = time.time()
         details = {
+            "evolution_strategy": {"lambda": 4},
             "population": population,
             "functions": functions,
             "evaluate": evaluate,
@@ -50,8 +53,10 @@ if __name__ == "__main__":
             "recorder": json_store
         }
 
-        play.play(details)
+        play.play(details, default_stop_func, print_func)
         # play.play_multicore(details)
+        # play.play_evolution_strategy(details, default_stop_func, print_func)
+
         end_time = time.time()
 
         print("GP run took: %2.2fsecs\n" % (end_time - start_time))

@@ -1,6 +1,6 @@
 {
     "max_population" : 500,
-    "max_generation" : 1000,
+    "max_generation" : 100,
 
     "tree_generation": {
         "method" : "GROW_METHOD",
@@ -29,7 +29,7 @@
             "SHRINK_MUTATION",
             "EXPAND_MUTATION"
         ],
-        "probability" : 0.5
+        "probability" : 1.0
     },
 
     "function_nodes" : [

@@ -25,17 +25,15 @@ class Population(object):
         individuals.extend(no_score)
 
         self.individuals = individuals
-        self.best_individuals = self.individuals[0:self.best_top]
 
     def find_best_individuals(self, reverse=False):
         individuals = [i for i in self.individuals if i.score is not None]
-
         individuals.sort(key=operator.attrgetter('score'), reverse=reverse)
         self.best_individuals = individuals[0:self.best_top]
-
         return self.best_individuals
 
     def to_dict(self):
+        self.find_best_individuals()
         self_dict = {
             "generation": self.generation,
             "best_individual": str(self.best_individuals[0]),

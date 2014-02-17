@@ -51,7 +51,24 @@ def reproduce(population, crossover, mutation, config):
             population.individuals.pop()
 
 
-def play(details, print_func=None):
+def update_generation_stats(stats, population):
+    # obtain the best individual and set stale counter
+    stats["generation_best"] = population.find_best_individuals()[0]
+
+    if stats["current_best"] is None:
+        stats["current_best"] = copy.deepcopy(stats["generation_best"])
+
+    elif stats["generation_best"].score <= stats["current_best"].score:
+        stats["current_best"] = stats["generation_best"]
+        stats["stale_counter"] = 1  # reset stale counter
+
+    else:
+        stats["stale_counter"] += 1
+
+    stats["generation"] += 1
+
+
+def play(details, stop_func, print_func=None):
     population = details["population"]
     functions = details["functions"]
     evaluate = details["evaluate"]
@@ -61,23 +78,28 @@ def play(details, print_func=None):
     config = details["config"]
     recorder = details.get("recorder", None)
 
-    generation = 0
-    max_generation = config["max_generation"]
-    goal_reached = False
+    # evolution details
+    stats = {"generation": 0, "stale_counter": 0, "current_best": None}
 
-    while generation < max_generation and goal_reached is not True:
-        results = []
-        evaluate(population.individuals, functions, config, results, recorder)
-        population.individuals = results
+    # evaluate population
+    results = []
+    evaluate(population.individuals, functions, config, results, recorder)
+    population.individuals = results
 
+    while stop_func(population, stats, config) is False:
         # print function
         if print_func:
-            print_func(population, generation)
+            print_func(population, stats["generation"])
 
         # genetic genetic operators
         population = selection.select(population)
         reproduce(population, crossover, mutation, config)
-        generation += 1
+        update_generation_stats(stats, population)
+
+        # evaluate population
+        results = []
+        evaluate(population.individuals, functions, config, results, recorder)
+        population.individuals = results
 
         # record
         if recorder and isinstance(recorder, JSONStore):
@@ -86,7 +108,7 @@ def play(details, print_func=None):
     return population
 
 
-def play_multicore(details, print_func=None):
+def play_multicore(details, stop_func, print_func=None):
     population = details["population"]
     functions = details["functions"]
     evaluate = details["evaluate"]
@@ -96,15 +118,29 @@ def play_multicore(details, print_func=None):
     config = details["config"]
     recorder = details.get("recorder", None)
 
-    generation = 0
-    max_generation = config["max_generation"]
     manager = Manager()
     nproc = multiprocessing.cpu_count() * 2
 
-    processes = []
-    while generation < max_generation:
+    # evolution details
+    stats = {"generation": 0, "stale_counter": 0, "current_best": None}
 
-        # start proceses
+    # evaluate population
+    results = []
+    evaluate(population.individuals, functions, config, results, recorder)
+    population.individuals = results
+
+    processes = []
+    while stop_func(population, stats, config) is False:
+        # print function
+        if print_func:
+            print_func(population, stats["generation"])
+
+        # genetic genetic operators
+        population = selection.select(population)
+        reproduce(population, crossover, mutation, config)
+        update_generation_stats(stats, population)
+
+        # evaluate population - start multiple proceses
         results = manager.list()
         chunksize = int(math.ceil(len(population.individuals) / float(nproc)))
         for i in xrange(nproc):
@@ -119,15 +155,6 @@ def play_multicore(details, print_func=None):
             p.join()
         del processes[:]
         population.individuals = [r for r in results]
-
-        # print function
-        if print_func:
-            print_func(population, generation)
-
-        # genetic genetic operators
-        population = selection.select(population)
-        reproduce(population, crossover, mutation, config)
-        generation += 1
 
         # record
         if recorder and isinstance(recorder, JSONStore):
@@ -147,43 +174,32 @@ def play_evolution_strategy(details, stop_func, print_func=None):
     recorder = details.get("recorder", None)
 
     # evolution details
-    generation = 0
-    best = None
-    general_stats = {
-        "generation": generation,
-        "stale_counter": 0,
-        "best": best
-    }
+    results = []
+    stats = {"generation": 0, "stale_counter": 0, "current_best": None}
 
-    while stop_func(general_stats, config) is False:
+    # evaluate population
+    evaluate(population.individuals, functions, config, results, recorder)
+    population.individuals = results
+
+    while stop_func(population, stats, config) is False:
+        # print function
+        if print_func:
+            print_func(population, stats["generation"])
+
+        # obtain the best, and destroy current population
+        update_generation_stats(stats, population)
+        del population.individuals[:]
+
+        # reproduce
+        for i in xrange(children):
+            child = copy.deepcopy(stats["current_best"])
+            mutation.mutate(child)
+            population.individuals.append(child)
+
         # evaluate population
         results = []
         evaluate(population.individuals, functions, config, results, recorder)
         population.individuals = results
-
-        # print function
-        if print_func:
-            print_func(population, generation)
-
-        # obtain the best, and destroy current population
-        curr_best = population.find_best_individuals()[0]
-        del population.individuals[:]
-
-        # reproduce
-        if best is None or curr_best <= best:
-            best = curr_best
-            general_stats["stale_counter"] = 0
-        else:
-            general_stats["stale_counter"] += 1
-
-        for i in xrange(children):
-            child = copy.deepcopy(best)
-            mutation.mutate(child)
-            population.individuals.append(child)
-
-        # increment generation counter
-        generation += 1
-        general_stats["generation"] += 1
 
         # record
         if recorder and isinstance(recorder, JSONStore):

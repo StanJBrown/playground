@@ -89,7 +89,7 @@ class PlayTests(unittest.TestCase):
             "mutation": self.mutation,
             "config": self.config
         }
-        play.play(details, print_func)
+        play.play(details, default_stop_func, print_func)
         end_time = time.time()
         print("GP run with cache: %2.2fsec\n" % (end_time - start_time))
 
@@ -104,7 +104,7 @@ class PlayTests(unittest.TestCase):
             "mutation": self.mutation,
             "config": self.config
         }
-        play.play(details, print_func)
+        play.play(details, default_stop_func, print_func)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 
@@ -124,7 +124,7 @@ class PlayTests(unittest.TestCase):
             "mutation": self.mutation,
             "config": self.config
         }
-        play.play_multicore(details, print_func)
+        play.play_multicore(details, default_stop_func, print_func)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 

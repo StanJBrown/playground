@@ -11,26 +11,30 @@ def print_func(population, generation):
     # display best individual
     tree_parser = TreeParser()
     best = population.find_best_individuals()[0]
-    print "generation: ", generation
-    print "best_score: " + str(best.score)
-    print "tree_size: " + str(best.size)
-    print ""
+    print "generation:", generation
+    print "best_score:", str(best.score)
+    print "tree_size:", str(best.size)
 
     if best.score < 20.0:
         eq = tree_parser.parse_equation(best.root)
         if best.size < 50:
-            print simplify(eq)
-        print ""
+            print "best:", simplify(eq)
+    print ""
 
 
-def default_stop_func(general_stats, config):
+def default_stop_func(popualtion, general_stats, config):
     max_gen = config["max_generation"]
-    stale_limit = config.get("stale_limit", 30)
+    stale_limit = config.get("stale_limit", 10)
 
     if general_stats["generation"] >= max_gen:
         return True
+
     elif general_stats["stale_counter"] >= stale_limit:
         return True
+
+    elif config.get("stop_score", None):
+        if config["stop_score"] <= general_stats["best"].score:
+            return True
 
     return False
 

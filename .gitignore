@@ -17,7 +17,6 @@ install_manifest.txt
 nohup.out
 pycallgraph.png
 .rope*
-*.dat
 run.sh
 ea_stats.json
 dist

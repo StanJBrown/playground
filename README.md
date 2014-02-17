@@ -1,8 +1,9 @@
 # playground [![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
-Playground is a Gentic Programming framework implemented in Python. Currently
+Playground is an Evolutionary Algorithm library implemented in Python. Currently
 features:
 
 - Genetic Programming in Trees
+- Genetic algorithm and Evolution Strategy style loops
 - Tree Genetic Operators:
     - Selection
         - Roulette wheel selection
@@ -18,15 +19,15 @@ features:
 - Multicore Evaluation
 - Multinode Evaluation (experimental)
 - Centralized Node control and monitoring
-- JSON config files
-- Ability to record evolution process to database (PostgreSQL or JSON flat
-  file)
+- Config files using JSON
+- Ability to record evolution process a JSON flat file
 
 
 ## Requirements
 
 - Python (version 2.7 +)
 - sympy (version 0.7.3 +)
+
 
 ## Install
 
@@ -49,14 +50,6 @@ answer (an equation), this is also an example of data-driven search.
 
 More examples to follow, it can solve alot of other problems, such as
 evolving digital circuits, neural nets, etc ... :)
-
-
-## Optional Requirements
-
-If you want evolution recording (such as fitness/evaluation score vs time):
-
-- PostgreSQL (version 9.3 +)
-- Psycopg2 (version 2.5 +)
 
 
 ## Licence

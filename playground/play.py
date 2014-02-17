@@ -1,13 +1,44 @@
 #!/usr/bin/env python
 import math
 import copy
-# import json
+import collections
 import random
 import multiprocessing
 from multiprocessing import Process
 from multiprocessing import Manager
 
 from playground.recorder.json_store import JSONStore
+
+
+def play_details(**kwargs):
+    PlayDetails = collections.namedtuple(
+        "PlayDetails",
+        [
+            "population",
+            "functions",
+            "evaluate",
+            "selection",
+            "crossover",
+            "mutation",
+            "config",
+            "stop_func",
+            "print_func",
+            "recorder",
+        ]
+    )
+
+    return PlayDetails(
+        kwargs.get("population"),
+        kwargs.get("functions", None),
+        kwargs.get("evaluate"),
+        kwargs.get("selection"),
+        kwargs.get("crossover", None),
+        kwargs.get("mutation"),
+        kwargs.get("config"),
+        kwargs.get("stop_func", None),
+        kwargs.get("print_func", None),
+        kwargs.get("recorder", None),
+    )
 
 
 def reproduce(population, crossover, mutation, config):
@@ -68,85 +99,87 @@ def update_generation_stats(stats, population):
     stats["generation"] += 1
 
 
-def play(details, stop_func, print_func=None):
-    population = details["population"]
-    functions = details["functions"]
-    evaluate = details["evaluate"]
-    selection = details["selection"]
-    crossover = details["crossover"]
-    mutation = details["mutation"]
-    config = details["config"]
-    recorder = details.get("recorder", None)
-
-    # evolution details
+def play(play):
+    population = play.population
     stats = {"generation": 0, "stale_counter": 0, "current_best": None}
 
     # evaluate population
     results = []
-    evaluate(population.individuals, functions, config, results, recorder)
+    play.evaluate(
+        population.individuals,
+        play.functions,
+        play.config,
+        results,
+        play.recorder
+    )
     population.individuals = results
 
-    while stop_func(population, stats, config) is False:
+    while play.stop_func(population, stats, play.config) is False:
         # print function
-        if print_func:
-            print_func(population, stats["generation"])
+        if play.print_func:
+            play.print_func(population, stats["generation"])
 
         # genetic genetic operators
-        population = selection.select(population)
-        reproduce(population, crossover, mutation, config)
+        population = play.selection.select(population)
+        reproduce(population, play.crossover, play.mutation, play.config)
         update_generation_stats(stats, population)
 
         # evaluate population
         results = []
-        evaluate(population.individuals, functions, config, results, recorder)
+        play.evaluate(
+            population.individuals,
+            play.functions,
+            play.config,
+            results,
+            play.recorder
+        )
         population.individuals = results
 
         # record
-        if recorder and isinstance(recorder, JSONStore):
-            recorder.record_to_file()
+        if play.recorder and isinstance(play.recorder, JSONStore):
+            play.recorder.record_to_file()
 
     return population
 
 
-def play_multicore(details, stop_func, print_func=None):
-    population = details["population"]
-    functions = details["functions"]
-    evaluate = details["evaluate"]
-    selection = details["selection"]
-    crossover = details["crossover"]
-    mutation = details["mutation"]
-    config = details["config"]
-    recorder = details.get("recorder", None)
-
+def play_multicore(play):
+    population = play.population
     manager = Manager()
-    nproc = multiprocessing.cpu_count() * 2
-
-    # evolution details
+    nproc = float(multiprocessing.cpu_count() * 2)
     stats = {"generation": 0, "stale_counter": 0, "current_best": None}
 
     # evaluate population
     results = []
-    evaluate(population.individuals, functions, config, results, recorder)
+    play.evaluate(
+        population.individuals,
+        play.functions,
+        play.config,
+        results,
+        play.recorder
+    )
     population.individuals = results
 
     processes = []
-    while stop_func(population, stats, config) is False:
+    while play.stop_func(population, stats, play.config) is False:
         # print function
-        if print_func:
-            print_func(population, stats["generation"])
+        if play.print_func:
+            play.print_func(population, stats["generation"])
 
         # genetic genetic operators
-        population = selection.select(population)
-        reproduce(population, crossover, mutation, config)
+        population = play.selection.select(population)
+        reproduce(population, play.crossover, play.mutation, play.config)
         update_generation_stats(stats, population)
 
         # evaluate population - start multiple proceses
         results = manager.list()
-        chunksize = int(math.ceil(len(population.individuals) / float(nproc)))
-        for i in xrange(nproc):
-            chunk = population.individuals[chunksize * i:chunksize * (i + 1)]
-            args = (chunk, functions, config, results, recorder)
-            p = Process(target=evaluate, args=args)
+        chunk_sz = int(math.ceil(len(population.individuals) / nproc))
+        for i in xrange(int(nproc)):
+            start = chunk_sz * i
+            end = chunk_sz * (i + 1)
+            chunk = population.individuals[start:end]
+            args = (chunk, play.functions, play.config, results, play.recorder)
+
+            p = Process(target=play.evaluate, args=args)
             processes.append(p)
             p.start()
 
@@ -157,52 +190,55 @@ def play_multicore(details, stop_func, print_func=None):
         population.individuals = [r for r in results]
 
         # record
-        if recorder and isinstance(recorder, JSONStore):
-            recorder.record_to_file()
+        if play.recorder and isinstance(play.recorder, JSONStore):
+            play.recorder.record_to_file()
 
     return population
 
 
-def play_evolution_strategy(details, stop_func, print_func=None):
-    # strategy details
-    children = details["evolution_strategy"]["lambda"]
-    population = details["population"]
-    functions = details["functions"]
-    evaluate = details["evaluate"]
-    mutation = details["mutation"]
-    config = details["config"]
-    recorder = details.get("recorder", None)
-
-    # evolution details
-    results = []
+def play_evolution_strategy(play):
+    population = play.population
     stats = {"generation": 0, "stale_counter": 0, "current_best": None}
 
     # evaluate population
-    evaluate(population.individuals, functions, config, results, recorder)
+    results = []
+    play.evaluate(
+        population.individuals,
+        play.functions,
+        play.config,
+        results,
+        play.recorder
+    )
     population.individuals = results
 
-    while stop_func(population, stats, config) is False:
+    while play.stop_func(population, stats, play.config) is False:
         # print function
-        if print_func:
-            print_func(population, stats["generation"])
+        if play.print_func:
+            play.print_func(population, stats["generation"])
 
         # obtain the best, and destroy current population
         update_generation_stats(stats, population)
         del population.individuals[:]
 
         # reproduce
-        for i in xrange(children):
+        for i in xrange(play.config["max_population"]):
             child = copy.deepcopy(stats["current_best"])
-            mutation.mutate(child)
+            play.mutation.mutate(child)
             population.individuals.append(child)
 
         # evaluate population
         results = []
-        evaluate(population.individuals, functions, config, results, recorder)
+        play.evaluate(
+            population.individuals,
+            play.functions,
+            play.config,
+            results,
+            play.recorder
+        )
         population.individuals = results
 
         # record
-        if recorder and isinstance(recorder, JSONStore):
-            recorder.record_to_file()
+        if play.recorder and isinstance(play.recorder, JSONStore):
+            play.recorder.record_to_file()
 
     return population

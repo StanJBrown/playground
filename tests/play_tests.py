@@ -80,31 +80,37 @@ class PlayTests(unittest.TestCase):
 
         # with cache
         start_time = time.time()
-        details = {
-            "population": population,
-            "functions": self.functions,
-            "evaluate": evaluate,
-            "selection": self.selection,
-            "crossover": self.crossover,
-            "mutation": self.mutation,
-            "config": self.config
-        }
-        play.play(details, default_stop_func, print_func)
+        details = play.play_details(
+            population=population,
+            functions=self.functions,
+            evaluate=evaluate,
+            selection=self.selection,
+            crossover=self.crossover,
+            mutation=self.mutation,
+            stop_func=default_stop_func,
+            print_func=print_func,
+            config=self.config,
+            recorder=None
+        )
+        play.play(details)
         end_time = time.time()
         print("GP run with cache: %2.2fsec\n" % (end_time - start_time))
 
         # without cache
         start_time = time.time()
-        details = {
-            "population": population,
-            "functions": self.functions,
-            "evaluate": evaluate,
-            "selection": self.selection,
-            "crossover": self.crossover,
-            "mutation": self.mutation,
-            "config": self.config
-        }
-        play.play(details, default_stop_func, print_func)
+        details = play.play_details(
+            population=population,
+            functions=self.functions,
+            evaluate=evaluate,
+            selection=self.selection,
+            crossover=self.crossover,
+            mutation=self.mutation,
+            stop_func=default_stop_func,
+            print_func=print_func,
+            config=self.config,
+            recorder=None
+        )
+        play.play(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 
@@ -115,16 +121,19 @@ class PlayTests(unittest.TestCase):
         population = self.tree_generator.init()
 
         start_time = time.time()
-        details = {
-            "population": population,
-            "functions": self.functions,
-            "evaluate": evaluate,
-            "selection": self.selection,
-            "crossover": self.crossover,
-            "mutation": self.mutation,
-            "config": self.config
-        }
-        play.play_multicore(details, default_stop_func, print_func)
+        details = play.play_details(
+            population=population,
+            functions=self.functions,
+            evaluate=evaluate,
+            selection=self.selection,
+            crossover=self.crossover,
+            mutation=self.mutation,
+            stop_func=default_stop_func,
+            print_func=print_func,
+            config=self.config,
+            recorder=None
+        )
+        play.play_multicore(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 
@@ -133,17 +142,19 @@ class PlayTests(unittest.TestCase):
 
     def test_play_evolution_strategy(self):
         population = self.tree_generator.init()
+        self.config["max_population"] = 4
 
         start_time = time.time()
-        details = {
-            "evolution_strategy": {"lambda": 4},
-            "population": population,
-            "functions": self.functions,
-            "evaluate": evaluate,
-            "mutation": self.mutation,
-            "config": self.config
-        }
-        play.play_evolution_strategy(details, default_stop_func, print_func)
+        details = play.play_details(
+            population=population,
+            functions=self.functions,
+            evaluate=evaluate,
+            mutation=self.mutation,
+            stop_func=default_stop_func,
+            print_func=print_func,
+            config=self.config
+        )
+        play.play_evolution_strategy(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 

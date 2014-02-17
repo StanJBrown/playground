@@ -4,6 +4,7 @@ import time
 import json
 import socket
 import struct
+import pprint
 from multiprocessing import Pool
 
 import paramiko
@@ -183,14 +184,19 @@ def deploy_public_key(nodes, pubkey_path, credentials):
 def parse_netadaptor_details(ifconfig_dump):
     ip = None
     mac_addr = None
+    net_adaptor = None
     ifconfig_dump = ifconfig_dump.split()
 
     # find inet and ether keywords and scrape the details
     for i in range(len(ifconfig_dump)):
-        if ifconfig_dump[i] == "inet":
-            ip = ifconfig_dump[i + 1]
-        elif ifconfig_dump[i] == "ether":
+        if ifconfig_dump[i] == "en0:":
+            net_adaptor = "en0"
+
+        if ifconfig_dump[i] == "ether" and net_adaptor == "en0":
             mac_addr = ifconfig_dump[i + 1]
+        elif ifconfig_dump[i] == "inet" and net_adaptor == "en0":
+            ip = ifconfig_dump[i + 1]
+            break
 
     return {"mac_addr": mac_addr, "ip": ip}
 
@@ -256,6 +262,11 @@ def send_wol_packet(dst_mac_addr):
     scks.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     scks.sendto(macpck, ('<broadcast>', 9))
     scks.close()
+
+
+def send_wol_packets(net_adaptor_details):
+    for node in net_adaptor_details["nodes"]:
+        send_wol_packet(node["mac_addr"])
 
 
 def remote_sleep_mac(node, credentials):
@@ -334,7 +345,7 @@ if __name__ == "__main__":
     }
 
     # build nodes list
-    for i in [62, 63]:
+    for i in range(73):
         node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(i).zfill(3))
         nodes.append(node)
 
@@ -343,12 +354,15 @@ if __name__ == "__main__":
     print "ONLINE NODES: ", len(online_nodes)
     print "OFFLINE NODES: ", len(offline_nodes)
 
-    # send_wol_packet("34:15:9e:22:7e:08")
-    print remote_sleep_mac(online_nodes[0], credentials)
+    pprint.pprint(offline_nodes[0])
+
+    send_wol_packet("34:15:9e:22:5a:b2")
+    # print remote_sleep_mac(online_nodes[0], credentials)
     # sleep_nodes, failed_nodes = remote_sleep_macs(online_nodes, credentials)
     # print "SLEEP NODES: ", len(sleep_nodes)
     # print "FAILED NODES: ", len(failed_nodes)
 
+    # record_netadaptor_details("net_adaptors.json", online_nodes, credentials)
 
     # cmd = "ls"
     # results = batch_send_cmd(online_nodes, cmd, credentials)

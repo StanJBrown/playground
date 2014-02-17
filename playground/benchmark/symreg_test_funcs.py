@@ -1,10 +1,8 @@
 #!/usr/bin/env python
+import os
 import math
 import random
 import parser
-
-# GLOBAL VARS
-data_file_extension = ".dat"
 
 
 def write_test_data(fp, data):
@@ -95,7 +93,12 @@ def evaluate_test_function(equation, var_values):
     return data
 
 
-def arabas_et_al_test_functions(data_file="arabas_et_al-f"):
+def arabas_et_al_test_functions(dest, pattern="arabas_et_al-f", fext=".dat"):
+    # Arabas, J., Michalewicz, Z. & Mulawka, J., 1994. GAVaPS-a genetic
+    # algorithm with varying population size. Proceedings of the First IEEE
+    # Conference on Evolutionary Computation. IEEE World Congress on
+    # Computational Intelligence.
+
     t_funcs = [
         "-v[0] * math.sin(10.0 * math.pi * v[0]) + 1.0",
         "int(8.0 * v[0]) / 8.0",
@@ -118,13 +121,19 @@ def arabas_et_al_test_functions(data_file="arabas_et_al-f"):
     points = [200, 50, 50, 50]
 
     for i in range(len(t_funcs)):
-        fp = "{0}{1}{2}".format(data_file, i + 1, data_file_extension)
+        dest_path = os.path.join(dest, pattern)
+        fp = "{0}{1}{2}".format(dest_path, i + 1, fext)
+
         matrix = generate_series_matrix(bounds[i], points[i])
         data = evaluate_test_function(t_funcs[i], matrix)
         write_test_data(fp, data)
 
 
-def nguyen_et_al_test_functions(data_file="nguyen_et_al-f"):
+def nguyen_et_al_test_functions(dest, pattern="nguyen_et_al-f", fext=".dat"):
+    # Uy, N.Q. et al., 2011. Semantically-based crossover in genetic
+    # programming: application to real-valued symbolic regression. Genetic
+    # Programming and Evolvable Machines, 12(2), p.91-119.
+
     t_funcs = [
         "v[0] ** 3 + v[0] ** 2 + v[0]",
         "v[0] ** 4 + v[0] ** 3 + v[0] ** 2 + v[0]",
@@ -154,7 +163,34 @@ def nguyen_et_al_test_functions(data_file="nguyen_et_al-f"):
     points = [20, 20, 20, 20, 20, 20, 20, 20, 100, 100]
 
     for i in range(len(t_funcs)):
-        fp = "{0}{1}{2}".format(data_file, i + 1, data_file_extension)
+        dest_path = os.path.join(dest, pattern)
+        fp = "{0}{1}{2}".format(dest_path, i + 1, fext)
+
         matrix = generate_random_matrix(bounds[i], points[i])
         data = evaluate_test_function(t_funcs[i], matrix)
         write_test_data(fp, data)
+
+
+# def de_jong_test_functions(data_file="de_jong-f"):
+#     t_funcs = [
+#         "v[0] ** 2 + v[0] ** 2 + v[0] ** 2",
+#         "(v[0] ** 2) * 30",
+#         "100 * (v[0] ** 2 - v[1]) ** 2 + (1 - x[0]) ** 2"
+#         "30 + (v[0] * 5)"
+#     ]
+#
+#     bounds = [
+#         [{"lower": -5.12, "upper": 5.12}],
+#         [{"lower": -5.12, "upper": 5.12}],
+#         [{"lower": -2.048, "upper": 2.048}],
+#         [{"lower": -5.12, "upper": 5.12}],
+#         [{"lower": -65.536, "upper": 65.536}]
+#     ]
+
+    # points = [200, 50, 50, 50]
+
+    # for i in range(len(t_funcs)):
+    #     fp = "{0}{1}{2}".format(data_file, i + 1, data_file_extension)
+    #     matrix = generate_series_matrix(bounds[i], points[i])
+    #     data = evaluate_test_function(t_funcs[i], matrix)
+    #     write_test_data(fp, data)

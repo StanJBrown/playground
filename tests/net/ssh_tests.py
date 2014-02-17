@@ -4,7 +4,7 @@ import sys
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
-import playground.benchmark.ssh as ssh
+import playground.net.ssh as ssh
 
 # SETTINGS
 cwd = os.path.dirname(__file__)

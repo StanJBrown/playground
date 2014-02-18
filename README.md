@@ -42,7 +42,8 @@ the best example is the [symbolic regression][4] example.
 
     cd examples/symbolic_regression
     python symbolic_regression.py
-    # alternatively you can run the example with PyPy, it might be faster :)
+
+    # alternatively you can run the example with PyPy, it is faster :)
     pypy symbolic_regression.py
 
 The example uses data in `examples/symbolic_regression/sine.dat` to find the

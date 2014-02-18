@@ -169,6 +169,16 @@ def plot_evaluation_stats(generations, **kwargs):
     plt.plot(gens, stats["matched_cache"])
     plt.plot(gens, stats["trees_evaluated"])
 
+    # axis
+    max_y = max(
+        [
+            max(stats["cache_size"]),
+            max(stats["matched_cache"]),
+            max(stats["trees_evaluated"])
+        ]
+    )
+    plt.ylim([0, max_y + (max_y * 0.1)])
+
     # graph labels
     plt.title("Evauation Statistics", fontdict=font)
     plt.xlabel("Generation", fontdict=font)
@@ -215,7 +225,7 @@ def plot_summary(generations):
 
 if __name__ == "__main__":
     data_dir = "/tmp/data"
-    data_file = "np_sweep_500_0.1_0.1-0.dat"
+    data_file = "np_sweep_10_0.1_0.2-0.dat"
     data_path = os.path.join(data_dir, data_file)
 
     generations = parse_data_file(data_path)

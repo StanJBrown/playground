@@ -54,10 +54,11 @@ def _parse_data(csv_reader, config):
         rownum += 1
 
 
-def _load_data(config, abs_dir=None):
+def load_data(config, abs_dir=None):
     # open data and csv reader
     if abs_dir:
         config["data_file"] = os.path.join(abs_dir, config["data_file"])
+
     data_file = open(config["data_file"], "rb")
     csv_reader = csv.reader(data_file)
 
@@ -76,7 +77,7 @@ def load_config(config_file, abs_dir=None):
 
     # load data
     if config.get("data_file", False):
-        _load_data(config, abs_dir)
+        load_data(config, abs_dir)
 
     # keep abs_dir in config
     if abs_dir:

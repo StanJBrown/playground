@@ -96,16 +96,11 @@ def parse_evaluation_stats(generations):
 
 def plot_generation_best_scores(generations, **kwargs):
     font = {
-        "family": "serif",
+        "family": "san_serif",
         "color": "black",
-        "weight": "normal",
-        "size": 14
+        "weight": "bold",
+        "size": 12
     }
-
-    # graph labels
-    plt.title("Generation Best Score vs Generations", fontdict=font)
-    plt.xlabel("Generation", fontdict=font)
-    plt.ylabel("Generation Best Score", fontdict=font)
 
     # graph data
     best_scores = parse_generation_best_scores(generations)
@@ -113,6 +108,11 @@ def plot_generation_best_scores(generations, **kwargs):
 
     # plot graph
     plt.plot(gens, best_scores)
+
+    # graph labels
+    plt.title("Generation Best Score vs Generations", fontdict=font)
+    plt.xlabel("Generation", fontdict=font)
+    plt.ylabel("Generation Best Score", fontdict=font)
 
     if kwargs.get("show_graph", False):
         # show graph
@@ -125,16 +125,11 @@ def plot_generation_best_scores(generations, **kwargs):
 
 def plot_all_time_best_scores(generations, **kwargs):
     font = {
-        "family": "serif",
+        "family": "san_serif",
         "color": "black",
-        "weight": "normal",
-        "size": 14
+        "weight": "bold",
+        "size": 12
     }
-
-    # graph labels
-    plt.title("Best Score vs Generations", fontdict=font)
-    plt.xlabel("Generation", fontdict=font)
-    plt.ylabel("Best Score", fontdict=font)
 
     # graph data
     best_scores = parse_all_time_best_scores(generations)
@@ -142,6 +137,11 @@ def plot_all_time_best_scores(generations, **kwargs):
 
     # plot graph
     plt.plot(gens, best_scores)
+
+    # graph labels
+    plt.title("Best Score vs Generations", fontdict=font)
+    plt.xlabel("Generation", fontdict=font)
+    plt.ylabel("Best Score", fontdict=font)
 
     if kwargs.get("show_graph", False):
         # show graph
@@ -154,10 +154,10 @@ def plot_all_time_best_scores(generations, **kwargs):
 
 def plot_evaluation_stats(generations, **kwargs):
     font = {
-        "family": "serif",
+        "family": "san_serif",
         "color": "black",
-        "weight": "normal",
-        "size": 14
+        "weight": "bold",
+        "size": 12
     }
 
     # graph data
@@ -165,7 +165,6 @@ def plot_evaluation_stats(generations, **kwargs):
     gens = range(0, len(stats["cache_size"]))
 
     # plot graph
-    print stats["cache_size"]
     plt.plot(gens, stats["cache_size"])
     plt.plot(gens, stats["matched_cache"])
     plt.plot(gens, stats["trees_evaluated"])
@@ -173,7 +172,11 @@ def plot_evaluation_stats(generations, **kwargs):
     # graph labels
     plt.title("Evauation Statistics", fontdict=font)
     plt.xlabel("Generation", fontdict=font)
-    plt.legend(["cache size", "matched cache", "evaluated"], loc="upper left")
+    plt.legend(
+        ["cache size", "matched cache", "evaluated"],
+        loc='upper right',
+        prop={'size': 8}
+    )
 
     if kwargs.get("show_graph", False):
         # show graph
@@ -184,12 +187,41 @@ def plot_evaluation_stats(generations, **kwargs):
         plt.savefig(kwargs.get("fig_path", "graph.png"))
 
 
+def plot_summary(generations):
+    plt.figure(figsize=(7, 10))
+
+    # generation best scores
+    plt.subplot(311)
+    plot_generation_best_scores(generations)
+
+    # all time best scores
+    plt.subplot(312)
+    plot_all_time_best_scores(generations)
+
+    # evaluation stats
+    plt.subplot(313)
+    plot_evaluation_stats(generations)
+
+    plt.subplots_adjust(
+        left=None,
+        bottom=None,
+        right=None,
+        top=None,
+        wspace=None,
+        hspace=0.6
+    )
+    plt.show()
+
+
 if __name__ == "__main__":
     data_dir = "/tmp/data"
-    data_file = "np_sweep_400_0.1_0.1-0.dat"
+    data_file = "np_sweep_500_0.1_0.1-0.dat"
     data_path = os.path.join(data_dir, data_file)
 
     generations = parse_data_file(data_path)
-    # plot_evaluation_stats(generations, show_graph=True)
+
+    # plot_evaluation_stats(generations)
     # plot_all_time_best_scores(generations, show_graph=True)
     # plot_generation_best_scores(generations, show_graph=True)
+
+    plot_summary(generations)

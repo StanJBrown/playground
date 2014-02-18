@@ -12,7 +12,6 @@ from playground.config import load_config
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
-# from playground.gp.tree.tree_evaluation import print_func
 from playground.functions import FunctionRegistry
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
@@ -62,7 +61,6 @@ def benchmark_loop_gp_tree(config):
             crossover=crossover,
             mutation=mutation,
             stop_func=default_stop_func,
-            # print_func=print_func,
             config=config,
             recorder=json_store
         )
@@ -108,20 +106,21 @@ if __name__ == "__main__":
             "range": [
                 # 10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
                 # 10, 20
+                500
             ]
         },
 
         "crossover_probability": {
             "range": [
                 # 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
-                # 0.1, 0.2
+                0.1, 0.2
             ]
         },
 
         "mutation_probability": {
             "range": [
                 # 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
-                # 0.1, 0.2
+                0.1, 0.2
             ]
         },
 

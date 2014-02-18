@@ -125,11 +125,9 @@ def record_eval(recorder, **kwargs):
     recorder.record_evaluation(eval_stats)
 
 
-def evaluate(trees, functions, config, results, recorder=None):
+def evaluate(trees, functions, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
-    cache = {}
-    cache_size = 0
     match_cached = 0
     nodes_evaluated = 0
 
@@ -142,7 +140,6 @@ def evaluate(trees, functions, config, results, recorder=None):
                     tree.score = score
                     results.append(tree)
                 cache[str(tree)] = score
-                cache_size += 1
                 nodes_evaluated += tree.size
 
             else:
@@ -166,7 +163,7 @@ def evaluate(trees, functions, config, results, recorder=None):
             recorder,
             use_cache=use_cache,
             cache=cache,
-            cache_size=cache_size,
+            cache_size=len(cache),
             match_cached=match_cached,
             trees_evaluated=len(trees) - match_cached,
             tree_nodes_evaluated=len(trees)

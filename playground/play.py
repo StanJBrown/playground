@@ -105,11 +105,13 @@ def play(play):
 
     # evaluate population
     results = []
+    cache = {}
     play.evaluate(
         population.individuals,
         play.functions,
         play.config,
         results,
+        cache,
         play.recorder
     )
     population.individuals = results
@@ -136,6 +138,7 @@ def play(play):
             play.functions,
             play.config,
             results,
+            cache,
             play.recorder
         )
         population.individuals = results
@@ -151,11 +154,13 @@ def play_multicore(play):
 
     # evaluate population
     results = []
+    cache = {}
     play.evaluate(
         population.individuals,
         play.functions,
         play.config,
         results,
+        cache,
         play.recorder
     )
     population.individuals = results
@@ -178,12 +183,20 @@ def play_multicore(play):
 
         # evaluate population - start multiple proceses
         results = manager.list()
+        cache = manager.dict()
         chunk_sz = int(math.ceil(len(population.individuals) / nproc))
         for i in xrange(int(nproc)):
             start = chunk_sz * i
             end = chunk_sz * (i + 1)
             chunk = population.individuals[start:end]
-            args = (chunk, play.functions, play.config, results, play.recorder)
+            args = (
+                chunk,
+                play.functions,
+                play.config,
+                results,
+                cache,
+                play.recorder
+            )
 
             p = Process(target=play.evaluate, args=args)
             processes.append(p)
@@ -204,11 +217,13 @@ def play_evolution_strategy(play):
 
     # evaluate population
     results = []
+    cache = {}
     play.evaluate(
         population.individuals,
         play.functions,
         play.config,
         results,
+        cache,
         play.recorder
     )
     population.individuals = results
@@ -237,6 +252,7 @@ def play_evolution_strategy(play):
             play.functions,
             play.config,
             results,
+            cache,
             play.recorder
         )
         population.individuals = results

@@ -35,11 +35,13 @@ class JSONStoreTests(unittest.TestCase):
 
         self.population = self.tree_generator.init()
         results = []
+        cache = {}
         evaluate(
             self.population.individuals,
             self.functions,
             self.config,
             results,
+            cache,
             self.json_store
         )
         self.population.sort_individuals()

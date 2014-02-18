@@ -60,7 +60,6 @@ class JSONStore(object):
 
     def record_to_file(self):
         json_record = json.dumps(self.generation_record)
-        # print json.dumps(self.generation_record, indent=4)
         self.store_file.write(json_record + "\n")
 
         # reset generation record

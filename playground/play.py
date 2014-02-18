@@ -89,7 +89,7 @@ def update_generation_stats(stats, population):
     if stats["current_best"] is None:
         stats["current_best"] = copy.deepcopy(stats["generation_best"])
 
-    elif stats["generation_best"].score <= stats["current_best"].score:
+    elif stats["generation_best"].score < stats["current_best"].score:
         stats["current_best"] = stats["generation_best"]
         stats["stale_counter"] = 1  # reset stale counter
 
@@ -115,14 +115,19 @@ def play(play):
     population.individuals = results
 
     while play.stop_func(population, stats, play.config) is False:
-        # print function
+        # update stats and print function
+        update_generation_stats(stats, population)
         if play.print_func:
             play.print_func(population, stats["generation"])
 
         # genetic genetic operators
         population = play.selection.select(population)
         reproduce(population, play.crossover, play.mutation, play.config)
-        update_generation_stats(stats, population)
+
+        # record
+        if play.recorder and isinstance(play.recorder, JSONStore):
+            play.recorder.record_population(population)
+            play.recorder.record_to_file()
 
         # evaluate population
         results = []
@@ -134,10 +139,6 @@ def play(play):
             play.recorder
         )
         population.individuals = results
-
-        # record
-        if play.recorder and isinstance(play.recorder, JSONStore):
-            play.recorder.record_to_file()
 
     return population
 
@@ -162,13 +163,18 @@ def play_multicore(play):
     processes = []
     while play.stop_func(population, stats, play.config) is False:
         # print function
+        update_generation_stats(stats, population)
         if play.print_func:
             play.print_func(population, stats["generation"])
 
         # genetic genetic operators
         population = play.selection.select(population)
         reproduce(population, play.crossover, play.mutation, play.config)
-        update_generation_stats(stats, population)
+
+        # record
+        if play.recorder and isinstance(play.recorder, JSONStore):
+            play.recorder.record_population(population)
+            play.recorder.record_to_file()
 
         # evaluate population - start multiple proceses
         results = manager.list()
@@ -188,10 +194,6 @@ def play_multicore(play):
             p.join()
         del processes[:]
         population.individuals = [r for r in results]
-
-        # record
-        if play.recorder and isinstance(play.recorder, JSONStore):
-            play.recorder.record_to_file()
 
     return population
 
@@ -213,18 +215,20 @@ def play_evolution_strategy(play):
 
     while play.stop_func(population, stats, play.config) is False:
         # print function
+        update_generation_stats(stats, population)
         if play.print_func:
             play.print_func(population, stats["generation"])
 
-        # obtain the best, and destroy current population
-        update_generation_stats(stats, population)
-        del population.individuals[:]
-
         # reproduce
+        del population.individuals[:]  # because we already have the best
         for i in xrange(play.config["max_population"]):
             child = copy.deepcopy(stats["current_best"])
             play.mutation.mutate(child)
             population.individuals.append(child)
+
+        # record
+        if play.recorder and isinstance(play.recorder, JSONStore):
+            play.recorder.record_to_file()
 
         # evaluate population
         results = []
@@ -236,9 +240,5 @@ def play_evolution_strategy(play):
             play.recorder
         )
         population.individuals = results
-
-        # record
-        if play.recorder and isinstance(play.recorder, JSONStore):
-            play.recorder.record_to_file()
 
     return population

@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 
-class BitString(object):
+class BitStr(object):
     def __init__(self):
         self.bit_string_id = None
         self.score = None
 
-        self.genome = None
+        self.genome = []
         self.length = 0
 
     def valid(self):
-        pass
+        raise RuntimeError("Not Implemented yet!")
 
     def equals(self, target):
         if target.genome == self.genome:

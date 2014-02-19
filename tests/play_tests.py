@@ -162,5 +162,5 @@ class PlayTests(unittest.TestCase):
         self.assertEquals(len(population.individuals), 4)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

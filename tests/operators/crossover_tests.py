@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import os
+import random
 # import copy
 import unittest
 
@@ -14,15 +15,18 @@ from playground.gp.tree.tree_parser import TreeParser
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.operators.crossover import GPTreeCrossover
 
+from playground.ga.bitstr_generator import BitStrGenerator
+from playground.operators.crossover import GABitStrCrossover
+
 # SETTINGS
-config_fp = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "../config/crossover.json")
-)
+script_path = os.path.dirname(__file__)
+config_file = "../config/crossover.json"
+config_path = os.path.normpath(os.path.join(script_path, config_file))
 
 
 class GPTreeCrossoverTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_fp)
+        self.config = config.load_config(config_path)
 
         self.functions = FunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
@@ -176,6 +180,73 @@ class GPTreeCrossoverTests(unittest.TestCase):
 
         self.assertFalse(self.tree_equals(tree_1_before, tree_1_after))
         self.assertFalse(self.tree_equals(tree_2_before, tree_2_after))
+
+
+class GABitStrCrossoverTests(unittest.TestCase):
+    def setUp(self):
+        self.config = {
+            "max_population": 10,
+
+            "bitstring_generation": {
+                "genome_length": 10
+            },
+
+            "codons": [
+                "0000",
+                "0001",
+                "0010",
+                "0011",
+                "0100",
+                "0101",
+                "0110",
+                "0111",
+                "1000",
+                "1001",
+                "1011",
+                "1111"
+            ]
+        }
+        generator = BitStrGenerator(self.config)
+        self.bitstr_1 = generator.generate_random_bitstr()
+        self.bitstr_2 = generator.generate_random_bitstr()
+        self.crossover = GABitStrCrossover(self.config)
+
+    def test_uniform_random_index(self):
+        i = self.crossover.uniform_random_index(self.bitstr_1, self.bitstr_2)
+
+        self.assertTrue(i is not None)
+        self.assertTrue(i < self.bitstr_1.length)
+        self.assertTrue(i < self.bitstr_2.length)
+
+    def test_one_point_crossover(self):
+        bitstr_1_before = list(self.bitstr_1.genome)
+        bitstr_2_before = list(self.bitstr_2.genome)
+        index = random.randint(0, self.bitstr_1.length)
+
+        print "BITSTR 1 [BEFORE]:", self.bitstr_1.genome
+        print "BITSTR 2 [BEFORE]:", self.bitstr_2.genome
+        print "INDEX:", index
+
+        self.crossover.one_point_crossover(self.bitstr_1, self.bitstr_2, index)
+
+        bitstr_1_after = list(self.bitstr_1.genome)
+        bitstr_2_after = list(self.bitstr_2.genome)
+
+        print "BITSTR 1 [AFTER]:", self.bitstr_1.genome
+        print "BITSTR 2 [AFTER]:", self.bitstr_2.genome
+
+        # assert
+        self.assertFalse(bitstr_1_before == bitstr_1_after)
+        self.assertFalse(bitstr_2_before == bitstr_2_after)
+
+        # change it back to its original form
+        bstr_1_half = list(bitstr_1_after[0:index])
+        bstr_2_half = list(bitstr_2_after[0:index])
+        bitstr_1_after[0:index] = bstr_2_half
+        bitstr_2_after[0:index] = bstr_1_half
+
+        self.assertTrue(bitstr_1_before == bitstr_1_after)
+        self.assertTrue(bitstr_2_before == bitstr_2_after)
 
 
 if __name__ == '__main__':

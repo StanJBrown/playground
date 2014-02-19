@@ -18,14 +18,14 @@ from playground.operators.crossover import GPTreeCrossover
 from playground.operators.mutation import GPTreeMutation
 
 # SETTINGS
-config_fp = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "../config/json_store.json")
-)
+script_path = os.path.dirname(__file__)
+config_file = "../config/json_store.json"
+config_path = os.path.normpath(os.path.join(script_path, config_file))
 
 
 class JSONStoreTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_fp)
+        self.config = config.load_config(config_path)
 
         self.functions = FunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)

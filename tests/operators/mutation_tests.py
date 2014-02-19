@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import sys
 import os
+import sys
+import random
 import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
@@ -11,17 +12,19 @@ from playground.gp.tree.tree import Tree
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_parser import TreeParser
+from playground.ga.bitstr_generator import BitStrGenerator
 from playground.operators.mutation import GPTreeMutation
+from playground.operators.mutation import GABitStrMutation
 
 # SETTINGS
-config_fp = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "../config/mutation.json")
-)
+script_path = os.path.dirname(__file__)
+config_file = "../config/mutation.json"
+config_path = os.path.normpath(os.path.join(script_path, config_file))
 
 
 class MutatorTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_fp)
+        self.config = config.load_config(config_path)
 
         self.functions = FunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
@@ -189,6 +192,49 @@ class MutatorTests(unittest.TestCase):
     #     self.assertTrue(self.tree_equals(tree_after, tree_after))
     #     self.assertFalse(self.tree_equals(tree_before, tree_after))
 
+
+class GABitStrMutationTests(unittest.TestCase):
+    def setUp(self):
+        self.config = {
+            "max_population": 10,
+
+            "bitstring_generation": {
+                "genome_length": 10
+            },
+
+            "codons": [
+                "0000",
+                "0001",
+                "0010",
+                "0011",
+                "0100",
+                "0101",
+                "0110",
+                "0111",
+                "1000",
+                "1001",
+                "1011",
+                "1111"
+            ]
+        }
+        generator = BitStrGenerator(self.config)
+        self.bitstr = generator.generate_random_bitstr()
+        self.mutation = GABitStrMutation(self.config)
+
+    def test_point_mutation(self):
+        index = random.randint(0, len(self.bitstr.genome) - 1)
+
+        bitstr_before = list(self.bitstr.genome)
+        print "BEFORE MUTATION:", bitstr_before
+        print "MUTATION INDEX:", index
+
+        self.mutation.point_mutation(self.bitstr, index)
+
+        bitstr_after = list(self.bitstr.genome)
+        print "AFTER MUTATION:", bitstr_after
+
+        # assert
+        self.assertFalse(bitstr_before == bitstr_after)
 
 if __name__ == '__main__':
     unittest.main()

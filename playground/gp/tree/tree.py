@@ -119,7 +119,6 @@ class Tree(object):
             "term_nodes": [str(node) for node in self.term_nodes],
             "input_nodes": [str(node) for node in self.input_nodes],
 
-            "program": str(self),
-            "dot_graph": str(self)
+            "program": str(self)
         }
         return self_dict

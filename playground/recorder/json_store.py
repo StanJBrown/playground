@@ -4,12 +4,17 @@ import json
 from playground.recorder.record_type import RecordType
 
 
+class RecordLevel(object):
+    MIN = 1
+
+
 class JSONStore(object):
 
     def __init__(self, config):
         self.config = config
-        self.json_store_config = config["json_store"]
-        self.store_file_path = self.json_store_config.get("store_file", None)
+        self.record_config = config["json_store"]
+        self.store_file_path = self.record_config.get("store_file", None)
+        self.level = self.record_config.get("record_level", RecordLevel.MIN)
         self.store_file = None
         self.generation_record = {
             "population": None,
@@ -44,19 +49,44 @@ class JSONStore(object):
             os.remove(self.store_file_path)
 
     def record_population(self, population):
-        self.generation_record["population"] = population.to_dict()
+        pop_dict = population.to_dict()
+
+        if self.level is RecordLevel.MIN:
+            pop_dict.pop("individuals")
+
+        self.generation_record["population"] = pop_dict
 
     def record_selection(self, selection):
-        self.generation_record["selection"] = selection.to_dict()
+        select_dict = selection.to_dict()
+
+        if self.level is RecordLevel.MIN:
+            select_dict.pop("selected_individuals")
+
+        self.generation_record["selection"] = select_dict
 
     def record_crossover(self, crossover):
-        self.generation_record["crossover"].append(crossover.to_dict())
+        crossover_dict = crossover.to_dict()
+
+        if self.level is RecordLevel.MIN:
+            crossover_dict.pop("before_crossover")
+            crossover_dict.pop("after_crossover")
+
+        self.generation_record["crossover"].append(crossover_dict)
 
     def record_mutation(self, mutation):
-        self.generation_record["mutation"].append(mutation.to_dict())
+        mutation_dict = mutation.to_dict()
+
+        if self.level is RecordLevel.MIN:
+            mutation_dict.pop("before_mutation")
+            mutation_dict.pop("after_mutation")
+
+        self.generation_record["mutation"].append(mutation_dict)
 
     def record_evaluation(self, evaluation_stats):
-        self.generation_record["evaluation"].append(evaluation_stats)
+        if self.level is RecordLevel.MIN:
+            evaluation_stats.pop("cache")
+
+        self.generation_record["evaluation"] = evaluation_stats
 
     def record_to_file(self):
         json_record = json.dumps(self.generation_record)

@@ -141,8 +141,8 @@ class JSONStoreTests(unittest.TestCase):
         # assert
         record = self.json_store.generation_record
         pprint.pprint(record)
-        self.assertEquals(record["evaluation"][0]["cache_size"], 10)
-        self.assertEquals(record["evaluation"][0]["match_cached"], 0)
+        self.assertEquals(record["evaluation"]["cache_size"], 10)
+        self.assertEquals(record["evaluation"]["match_cached"], 0)
 
     def test_record_to_file(self):
         # write record to file and close

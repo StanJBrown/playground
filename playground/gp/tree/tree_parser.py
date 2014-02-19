@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from playground.gp.tree.tree_node import TreeNodeType
 
 
 class TreeParser(object):

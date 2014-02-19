@@ -5,6 +5,7 @@ from random import sample
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_generator import TreeGenerator
+from playground.ga.bitstr_generator import BitStrGenerator
 from playground.recorder.record_type import RecordType
 
 
@@ -12,9 +13,9 @@ class GPTreeMutation(object):
     def __init__(self, config, **kwargs):
         self.config = config
         self.recorder = kwargs.get("recorder", None)
-
         self.tree_generator = TreeGenerator(self.config)
 
+        # mutation stats
         self.method = None
         self.index = None
         self.mutation_probability = None
@@ -164,6 +165,73 @@ class GPTreeMutation(object):
 
         # record after mutation
         self.after_mutation = tree.to_dict()["program"]
+
+        # record
+        if self.recorder is not None:
+            self.recorder.record(RecordType.MUTATION, self)
+
+    def to_dict(self):
+        self_dict = {
+            "method": self.method,
+            "mutation_probability": self.mutation_probability,
+            "random_probability": self.random_probability,
+            "mutated": self.mutated,
+            "before_mutation": self.before_mutation,
+            "after_mutation": self.after_mutation
+        }
+
+        return self_dict
+
+
+class GABitStrMutation(object):
+    def __init__(self, config, **kwargs):
+        self.config = config
+        self.recorder = kwargs.get("recorder", None)
+        self.generator = BitStrGenerator(self.config)
+
+        # mutation stats
+        self.method = None
+        self.index = None
+        self.mutation_probability = None
+        self.random_probability = None
+        self.mutated = False
+        self.before_mutation = None
+        self.after_mutation = None
+
+    def point_mutation(self, bitstr, index=None):
+        # mutate node
+        if index is None:
+            index = random.randint(0, len(bitstr.genome) - 1)
+            self.index = index
+        else:
+            self.index = index
+
+        new_codon = self.generator.generate_random_codon()
+        bitstr.genome[index] = new_codon
+
+    def mutation(self, bitstr):
+        mutation_methods = {
+            "POINT_MUTATION": self.point_mutation,
+        }
+
+        self.method = sample(self.config["mutation"]["methods"], 1)[0]
+        self.mutation_probability = self.config["mutation"]["probability"]
+        self.random_probability = random()
+        self.mutated = False
+        self.before_mutation = None
+        self.after_mutation = None
+
+        # record before mutation
+        self.before_mutation = "".join(bitstr.genome)
+
+        # mutate
+        if self.mutation_probability >= self.random_probability:
+            mutation_func = mutation_methods[self.method]
+            mutation_func(bitstr)
+            self.mutated = True
+
+        # record after mutation
+        self.after_mutation = "".join(bitstr.genome)
 
         # record
         if self.recorder is not None:

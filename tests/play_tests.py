@@ -12,7 +12,7 @@ from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
 from playground.gp.tree.tree_evaluation import print_func
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
 from playground.operators.mutation import GPTreeMutation
@@ -27,7 +27,7 @@ class PlayTests(unittest.TestCase):
         random.seed(10)
 
         self.config = config.load_config(config_fp)
-        self.functions = FunctionRegistry()
+        self.functions = GPFunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
 
         # self.db = DB(self.config)

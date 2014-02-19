@@ -403,8 +403,8 @@ Returns a string representation of the `Tree` in infix-order.
         config (dict):
             configuration
 
-        functions (FunctionRegistry):
-            FunctionRegistry instance
+        functions (GPFunctionRegistry):
+            GPFunctionRegistry instance
 
         tree_parser (TreeParser):
             TreeParser instance
@@ -415,8 +415,8 @@ Returns a string representation of the `Tree` in infix-order.
         config (dict):
             configuration
 
-        function_registry (FunctionRegistry):
-            FunctionRegistry instance
+        function_registry (GPFunctionRegistry):
+            GPFunctionRegistry instance
 
 
 ### eval_node(node, stack)

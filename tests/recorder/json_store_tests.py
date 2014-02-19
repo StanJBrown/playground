@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import playground.config as config
 from playground.recorder.json_store import JSONStore
 # from playground.recorder.record_type import RecordType
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.operators.selection import Selection
@@ -27,7 +27,7 @@ class JSONStoreTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_path)
 
-        self.functions = FunctionRegistry()
+        self.functions = GPFunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
 
         self.json_store = JSONStore(self.config)

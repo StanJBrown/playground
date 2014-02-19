@@ -5,16 +5,18 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import playground.config as config
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 
 # SETTINGS
-config_fp = os.path.join(os.path.dirname(__file__), "config/initializer.json")
+script_path = os.path.dirname(__file__)
+config_file = "../config/initializer.json"
+config_fp = os.path.join(script_path, config_file)
 
 
 class FunctionsTests(unittest.TestCase):
     def setUp(self):
         self.config_file = config.load_config(config_fp)
-        self.function = FunctionRegistry()
+        self.function = GPFunctionRegistry()
 
     def tearDown(self):
         del self.config_file

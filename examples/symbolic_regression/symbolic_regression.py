@@ -11,7 +11,7 @@ from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
 from playground.gp.tree.tree_evaluation import print_func
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
 from playground.operators.mutation import GPTreeMutation
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         random.seed(10)  # seed random so results can be reproduced
         config = config.load_config(config_fp, script_path)
         json_store = JSONStore(config)
-        functions = FunctionRegistry()
+        functions = GPFunctionRegistry()
         tree_generator = TreeGenerator(config)
 
         # genetic operators

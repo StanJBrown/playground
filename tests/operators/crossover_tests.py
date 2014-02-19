@@ -7,7 +7,7 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 import playground.config as config
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 from playground.gp.tree.tree import Tree
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
@@ -28,7 +28,7 @@ class GPTreeCrossoverTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_path)
 
-        self.functions = FunctionRegistry()
+        self.functions = GPFunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
 
         self.crossover = GPTreeCrossover(self.config)

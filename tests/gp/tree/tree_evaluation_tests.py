@@ -10,7 +10,7 @@ from playground.gp.tree.tree import Tree
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_generator import TreeGenerator
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 import playground.gp.tree.tree_evaluation as evaluator
 
 # SETTINGS
@@ -21,7 +21,7 @@ config_fp = os.path.join(cwd, "../../config/evaluator.json")
 class TreeEvaluatorTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_fp)
-        self.functions = FunctionRegistry()
+        self.functions = GPFunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
 
     def tearDown(self):

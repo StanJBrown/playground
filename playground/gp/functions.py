@@ -63,7 +63,7 @@ def fact_function(value):
     return math.factorial(value)
 
 
-class FunctionRegistry(object):
+class GPFunctionRegistry(object):
     def __init__(self, override_defaults=False):
         self.functions = {}
 

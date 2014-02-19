@@ -12,11 +12,11 @@ from flask import render_template
 
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_generator import TreeGenerator
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 
 # GLOBAL VARS
 app = Flask(__name__)
-functions = FunctionRegistry()
+functions = GPFunctionRegistry()
 evaluate = evaluate
 
 

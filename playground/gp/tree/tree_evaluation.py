@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from sympy import simplify
 
-from playground.functions import EvaluationError
+from playground.gp.functions import EvaluationError
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_parser import TreeParser

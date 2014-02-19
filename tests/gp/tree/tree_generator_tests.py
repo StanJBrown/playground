@@ -10,7 +10,7 @@ from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_parser import TreeParser
 from playground.gp.tree.tree_generator import TreeGenerator
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 
 # SETTINGS
 cwd = os.path.dirname(__file__)
@@ -21,7 +21,7 @@ class TreeGeneratorTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(tree_init_config)
 
-        self.functions = FunctionRegistry()
+        self.functions = GPFunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
 
         self.tree_parser = TreeParser()

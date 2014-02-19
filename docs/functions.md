@@ -16,11 +16,11 @@
 
     Class:
         - EvaluationError
-        - FunctionRegistry
+        - GPFunctionRegistry
 
 
-## FunctionRegistry(object)
-`FunctionRegistry` acts as an interface to register and obtain functions for
+## GPFunctionRegistry(object)
+`GPFunctionRegistry` acts as an interface to register and obtain functions for
 Genetic Programming.
 
     Attributes:
@@ -32,7 +32,7 @@ Genetic Programming.
     Constructor Arguments:
 
         override_defaults (bool):
-            By default the `FunctionRegistry` class adds a set of default
+            By default the `GPFunctionRegistry` class adds a set of default
             functions to be added into the registry, namely:
 
             - add_function(left, right)

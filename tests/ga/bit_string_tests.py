@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import unittest
 
-from playground.ga.bitstr_generator import BitStrGenerator
+from playground.ga.bit_string_generator import BitStringGenerator
 
 
 class BitStringTests(unittest.TestCase):
@@ -28,7 +28,7 @@ class BitStringTests(unittest.TestCase):
                 "1111"
             ]
         }
-        generator = BitStrGenerator(self.config)
+        generator = BitStringGenerator(self.config)
         self.bitstr_1 = generator.generate_random_bitstr()
         self.bitstr_2 = generator.generate_random_bitstr()
 

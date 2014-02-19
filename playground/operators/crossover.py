@@ -87,7 +87,7 @@ class GPTreeCrossover(object):
         return self_dict
 
 
-class GABitStrCrossover(object):
+class GABitStringCrossover(object):
     def __init__(self, config, **kwargs):
         self.config = config
         self.recorder = kwargs.get("recorder", None)

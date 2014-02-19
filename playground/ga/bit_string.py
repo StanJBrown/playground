@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-class BitStr(object):
+class BitString(object):
     def __init__(self):
         self.bit_string_id = None
         self.score = None

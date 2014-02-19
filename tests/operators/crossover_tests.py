@@ -14,9 +14,8 @@ from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_parser import TreeParser
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.operators.crossover import GPTreeCrossover
-
-from playground.ga.bitstr_generator import BitStrGenerator
-from playground.operators.crossover import GABitStrCrossover
+from playground.ga.bit_string_generator import BitStringGenerator
+from playground.operators.crossover import GABitStringCrossover
 
 # SETTINGS
 script_path = os.path.dirname(__file__)
@@ -182,7 +181,7 @@ class GPTreeCrossoverTests(unittest.TestCase):
         self.assertFalse(self.tree_equals(tree_2_before, tree_2_after))
 
 
-class GABitStrCrossoverTests(unittest.TestCase):
+class GABitStringCrossoverTests(unittest.TestCase):
     def setUp(self):
         self.config = {
             "max_population": 10,
@@ -206,10 +205,10 @@ class GABitStrCrossoverTests(unittest.TestCase):
                 "1111"
             ]
         }
-        generator = BitStrGenerator(self.config)
+        generator = BitStringGenerator(self.config)
         self.bitstr_1 = generator.generate_random_bitstr()
         self.bitstr_2 = generator.generate_random_bitstr()
-        self.crossover = GABitStrCrossover(self.config)
+        self.crossover = GABitStringCrossover(self.config)
 
     def test_uniform_random_index(self):
         i = self.crossover.uniform_random_index(self.bitstr_1, self.bitstr_2)

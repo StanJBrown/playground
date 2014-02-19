@@ -5,7 +5,7 @@ from random import sample
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_generator import TreeGenerator
-from playground.ga.bitstr_generator import BitStrGenerator
+from playground.ga.bit_string_generator import BitStringGenerator
 from playground.recorder.record_type import RecordType
 
 
@@ -183,11 +183,11 @@ class GPTreeMutation(object):
         return self_dict
 
 
-class GABitStrMutation(object):
+class GABitStringMutation(object):
     def __init__(self, config, **kwargs):
         self.config = config
         self.recorder = kwargs.get("recorder", None)
-        self.generator = BitStrGenerator(self.config)
+        self.generator = BitStringGenerator(self.config)
 
         # mutation stats
         self.method = None

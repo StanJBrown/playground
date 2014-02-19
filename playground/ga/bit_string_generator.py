@@ -5,7 +5,7 @@ from playground.ga.bit_string import BitString
 from playground.population import Population
 
 
-class BitStrGenerator(object):
+class BitStringGenerator(object):
     def __init__(self, config):
         self.config = config
         self.bitstr_config = self.config["bitstring_generation"]

@@ -12,9 +12,9 @@ from playground.gp.tree.tree import Tree
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_parser import TreeParser
-from playground.ga.bitstr_generator import BitStrGenerator
+from playground.ga.bit_string_generator import BitStringGenerator
 from playground.operators.mutation import GPTreeMutation
-from playground.operators.mutation import GABitStrMutation
+from playground.operators.mutation import GABitStringMutation
 
 # SETTINGS
 script_path = os.path.dirname(__file__)
@@ -217,9 +217,9 @@ class GABitStrMutationTests(unittest.TestCase):
                 "1111"
             ]
         }
-        generator = BitStrGenerator(self.config)
+        generator = BitStringGenerator(self.config)
         self.bitstr = generator.generate_random_bitstr()
-        self.mutation = GABitStrMutation(self.config)
+        self.mutation = GABitStringMutation(self.config)
 
     def test_point_mutation(self):
         index = random.randint(0, len(self.bitstr.genome) - 1)

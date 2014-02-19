@@ -3,7 +3,7 @@ Playground is an Evolutionary Algorithm library implemented in Python. Currently
 features:
 
 - Genetic Programming in Trees
-- Genetic algorithm and Evolution Strategy style loops
+- Genetic Algorithm and Evolution Strategy style loops
 - Tree Genetic Operators:
     - Selection
         - Roulette wheel selection

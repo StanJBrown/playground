@@ -12,7 +12,7 @@ from playground.config import load_config
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
-from playground.functions import FunctionRegistry
+from playground.gp.functions import GPFunctionRegistry
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
 from playground.operators.mutation import GPTreeMutation
@@ -22,11 +22,13 @@ from playground.parameter_setter.tuner import naive_parameter_sweep
 # SETTINGS
 record_exception = False
 script_path = os.path.dirname(os.path.realpath(__file__))
-config_fp = os.path.join(script_path, "config", "config.json")
+config_fp = os.path.join(script_path, "config", "template_config.json")
 
 
-def benchmark_naive_parameter_sweep(config):
-    naive_parameter_sweep(config, benchmark_loop_gp_tree)
+def benchmark_naive_parameter_sweep(config, training_files):
+    for data_file in training_files:
+        config["data_file"] = data_file
+        naive_parameter_sweep(config, benchmark_loop_gp_tree)
 
 
 def benchmark_loop_gp_tree(config):
@@ -41,7 +43,7 @@ def benchmark_loop_gp_tree(config):
         # setup
         random.seed(config["random_seed"])  # VERY IMPORTANT!
         json_store = JSONStore(config)
-        functions = FunctionRegistry()
+        functions = GPFunctionRegistry()
         tree_generator = TreeGenerator(config)
 
         # genetic operators
@@ -98,6 +100,10 @@ def benchmark_loop_gp_tree(config):
 if __name__ == "__main__":
     config = load_config(config_fp, script_path)
 
+    training_data = [
+        "training_data/arabas_et_al-f1.dat",
+    ]
+
     param_config = {
         "play_config": config,
         "iterations": 1,
@@ -105,26 +111,28 @@ if __name__ == "__main__":
         "population_size": {
             "range": [
                 # 10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
-                # 10, 20
                 500
+                # 10
             ]
         },
 
         "crossover_probability": {
             "range": [
                 # 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
-                0.1, 0.2
+                # 0.1, 0.2
+                0.8
             ]
         },
 
         "mutation_probability": {
             "range": [
                 # 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
-                0.1, 0.2
+                # 0.1, 0.2
+                0.2
             ]
         },
 
         "record_dir": "/tmp/data"
     }
 
-    benchmark_naive_parameter_sweep(param_config)
+    benchmark_naive_parameter_sweep(param_config, training_data)

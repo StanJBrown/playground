@@ -10,7 +10,7 @@ class BitString(object):
         self.length = 0
 
     def valid(self):
-        raise RuntimeError("Not Implemented yet!")
+        raise RuntimeError("Not Implemented!")
 
     def equals(self, target):
         if target.genome == self.genome:

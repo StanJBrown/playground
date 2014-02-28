@@ -4,6 +4,7 @@ import sys
 import time
 import json
 import random
+from datetime import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 # import playground.config as config
@@ -25,20 +26,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 config_fp = os.path.join(script_path, "config", "template_config.json")
 
 
-def benchmark_naive_parameter_sweep(config, training_files):
-    for data_file in training_files:
-        config["data_file"] = data_file
-        naive_parameter_sweep(config, benchmark_loop_gp_tree)
-
-
 def benchmark_loop_gp_tree(config):
-    print(
-        "RUN -> pop size: {0} crossover prob: {1} mutation prob: {2}".format(
-            config["max_population"],
-            config["crossover"]["probability"],
-            config["mutation"]["probability"]
-        )
-    ),
     try:
         # setup
         random.seed(config["random_seed"])  # VERY IMPORTANT!
@@ -51,10 +39,10 @@ def benchmark_loop_gp_tree(config):
         crossover = GPTreeCrossover(config, recorder=json_store)
         mutation = GPTreeMutation(config, recorder=json_store)
 
-        # run symbolic regression
+        # setup the initial random population
         population = tree_generator.init()
 
-        start_time = time.time()
+        # create play details
         details = play.play_details(
             population=population,
             functions=functions,
@@ -67,42 +55,56 @@ def benchmark_loop_gp_tree(config):
             recorder=json_store
         )
 
+        # run symbolic regression
+        start_time = time.time()
         play.play(details)
         end_time = time.time()
+        time_taken = end_time - start_time
 
+        # print msg
         print(
-            "pop size: {0} crossover prob: {1} mutation prob: {2}".format(
-                config["max_population"],
-                config["crossover"]["probability"],
-                config["mutation"]["probability"]
-            )
-        ),
-        print(" [run took: %2.2fsecs]" % (end_time - start_time))
-
-    except Exception as err_msg:
-        print err_msg
-
-        # write exception out
-        err = open(
-            "/tmp/play-{0}-{1}-{2}-{3}.err".format(
+            "DONE -> pop: {0} cross_prob: {1} mut_prob: {2} [{3}s]".format(
                 config["max_population"],
                 config["crossover"]["probability"],
                 config["mutation"]["probability"],
-                config["random_seed"],
-            ),
-            "w+"
+                round(time_taken, 2)
+            )
         )
-        err.write(str(err_msg) + "\n\n")
-        err.write(json.dumps(config))
-        err.close()
+
+        # log on completion
+        if config.get("log_path", False):
+            msg = {
+                "timestamp": time.mktime(datetime.now().timetuple()),
+                "status": "DONE",
+                "config": config,
+                "runtime": time_taken
+            }
+            log_file = open(config["log_path"], "a+")
+            log_file.write(json.dumps(msg) + "\n")
+            log_file.close()
+
+    except Exception as err_msg:
+        import traceback
+        traceback.print_exc()
+        print err_msg
+
+        # log exception
+        if config.get("log_path", False):
+            msg = {
+                "timestamp": time.mktime(datetime.now().timetuple()),
+                "status": "ERROR",
+                "config": config,
+                "error": err_msg
+            }
+            log_file = open(config["log_path"], "a+")
+            log_file.write(json.dumps(msg) + "\n")
+            log_file.close()
+
+    return config
 
 
 if __name__ == "__main__":
     config = load_config(config_fp, script_path)
-
-    training_data = [
-        "training_data/arabas_et_al-f1.dat",
-    ]
 
     param_config = {
         "play_config": config,
@@ -111,8 +113,8 @@ if __name__ == "__main__":
         "population_size": {
             "range": [
                 # 10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
-                500
-                # 10
+                # 500
+                100
             ]
         },
 
@@ -132,7 +134,12 @@ if __name__ == "__main__":
             ]
         },
 
-        "record_dir": "/tmp/data"
+        "training_data": [
+            "training_data/arabas_et_al-f1.dat",
+        ],
+
+        "record_dir": "/tmp/data",
+        "log_path": "/tmp/benchmark_navive_parameter_sweep.log"
     }
 
-    benchmark_naive_parameter_sweep(param_config, training_data)
+    naive_parameter_sweep(param_config, benchmark_loop_gp_tree)

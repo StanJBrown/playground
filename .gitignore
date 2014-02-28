@@ -21,3 +21,4 @@ run.sh
 ea_stats.json
 dist
 playground.egg*
+net_adaptors.json

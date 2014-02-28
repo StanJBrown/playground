@@ -48,7 +48,7 @@ def init(host, port):
         sys.exit()
     else:
         pid_content = json.dumps({"pid": pid, "status": PlayNodeStatus.OK})
-        pidfile = file(pid_fp, 'w')
+        pidfile = file(pid_fp, "w")
         pidfile.write(pid_content)
         pidfile.close()
 
@@ -59,7 +59,7 @@ def init(host, port):
 
 def change_status(new_status):
     pid_fp = "/tmp/playground-{0}-{1}.pid".format(host, port)
-    pidfile = file(pid_fp, 'r+')
+    pidfile = file(pid_fp, "r+")
 
     # read dict
     pid_dict = json.loads(pidfile.read())
@@ -79,15 +79,15 @@ def terminate_handler(signal, frame):
     sys.exit(0)
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html', title="home")
+    return render_template("index.html", title="home")
 
 
-@app.route('/status')
+@app.route("/status")
 def status():
     pid_fp = "/tmp/playground-{0}-{1}.pid".format(host, port)
-    pidfile = file(pid_fp, 'r+')
+    pidfile = file(pid_fp, "r+")
     pid_dict = json.loads(pidfile.read())
     pidfile.close()
 
@@ -95,7 +95,7 @@ def status():
     return jsonify({"status": pid_dict["status"]})
 
 
-@app.route('/evaluate', methods=["POST"])
+@app.route("/evaluate", methods=["POST"])
 def evaluate_trees():
     results = []
     response = {}
@@ -130,7 +130,30 @@ def evaluate_trees():
     return jsonify(response)
 
 
-if __name__ == '__main__':
+@app.route("/monitor")
+def monitor():
+    return render_template("monitor.html", title="monitor")
+
+
+@app.route("/monitor", methods=["POST"])
+def monitor_add_data():
+    response = {}
+    if request.data is not None:
+        incomming = json.loads(request.data)
+        response["status"] = "OK"
+
+    else:
+        response["status"] = "ERROR"
+
+    return jsonify(response)
+
+
+@app.route("/monitor_data")
+def monitor_get_data():
+    pass
+
+
+if __name__ == "__main__":
     if len(sys.argv) == 4:
         # parse command line arguments
         host = sys.argv[1]

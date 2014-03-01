@@ -9,10 +9,6 @@ from matplotlib import pyplot as plt
 
 
 def detect(roi, detect_type, debug=False):
-    # define color ranges in HSV format
-    # lower_yellow = np.array([20, 100, 100])
-    # upper_yellow = np.array([30, 255, 255])
-
     colour_types = {
         "PROTEIN": {  # RED
             "lower_bound": np.array([0, 100, 0]),

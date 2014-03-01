@@ -91,3 +91,7 @@ def naive_parameter_sweep(details, loop_func=None, debug=False):
 
     else:
         pprint.pprint(params)
+
+
+def racing_algorithm_sweep(details, loop_func=None, debug=False):
+    pass

@@ -38,19 +38,17 @@ def pixel_get_hsv(video_frame):
     sat = hsv[1]
     val = hsv[2]
 
+    print hue, sat, val
+
     return (hue, sat, val)
 
 
-def update_hsv_gui(hsv):
+def update_hsv_gui(hsv, hsv_range=50):
     hue, sat, val = hsv
-    hsv_range = 20
-
     hue_min = hue - hsv_range if hue - hsv_range > 0 else 0
     hue_max = hue + hsv_range if hue + hsv_range < 255 else 255
-
     sat_min = sat - hsv_range if sat - hsv_range > 0 else 0
     sat_max = sat + hsv_range if sat + hsv_range < 255 else 255
-
     val_min = val - hsv_range if val - hsv_range > 0 else 0
     val_max = val + hsv_range if val + hsv_range < 255 else 255
 
@@ -169,9 +167,8 @@ def hsv_callback(val):
     pass
 
 
-def cleanup(capture, video_writer):
+def cleanup(capture):
     capture.release()
-    video_writer.release()
     cv2.destroyAllWindows()
 
 
@@ -198,7 +195,7 @@ if __name__ == "__main__":
 
     # video recorder config
     # fourcc = cv2.cv.CV_FOURCC(*'IYUV')
-    video_writer = cv2.VideoWriter("output.avi", -1, 20, (width, height))
+    # video_writer = cv2.VideoWriter("output.avi", -1, 20, (width, height))
 
     # create gui
     create_hsv_gui(hsv_vals)
@@ -212,14 +209,13 @@ if __name__ == "__main__":
 
         if ret:
             if key == 27 or key == ord('q'):
-                cleanup(capture, video_writer)
+                cleanup(capture)
+                break
             elif key == ord('d'):
                 detection_area = not detection_area
             elif key == ord('h'):
                 get_hsv = not get_hsv
             else:
-                # video_writer.write(frame)
-
                 # draw detection area
                 if detection_area:
                     draw_detection_area(frame)
@@ -247,7 +243,7 @@ if __name__ == "__main__":
                 thres_frame = cv2.inRange(hsv_frame, lbound, ubound)
 
                 cv2.imshow('Video Stream', frame)
-                # cv2.imshow('Detection', frame)
+                cv2.imshow('Detection', thres_frame)
                 cv2.imshow('Morph', morph_op(frame, thres_frame))
                 # img = show_adaptive_gaussian_threshold(frame)
                 # find_circles(frame)

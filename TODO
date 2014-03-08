@@ -1,13 +1,15 @@
 # TODO
+#
+- Implement Editing
 
 - Run parameter sweep
 
 - Implement Racing Algorithm
 - Run Racing algorithm benchmark
 
+
 ----
 
-- Implement GA
 - Implement Meta-GA
 - Run Meta-GA benchmark
 

@@ -10,10 +10,13 @@ def hsv_callback(val):
 def create_hsv_gui(hsv_vals):
     window = "hsv"
     cv2.namedWindow(window)
+
     cv2.createTrackbar("Hue Min", window, hsv_vals[0], 255, hsv_callback)
     cv2.createTrackbar("Hue Max", window, hsv_vals[3], 255, hsv_callback)
+
     cv2.createTrackbar("Sat Min", window, hsv_vals[1], 255, hsv_callback)
     cv2.createTrackbar("Sat Max", window, hsv_vals[4], 255, hsv_callback)
+
     cv2.createTrackbar("Val Min", window, hsv_vals[2], 255, hsv_callback)
     cv2.createTrackbar("Val Max", window, hsv_vals[5], 255, hsv_callback)
 
@@ -45,27 +48,23 @@ def pixel_get_hsv(video_frame):
     return (hue, sat, val)
 
 
-def update_hsv_gui(hsv, hue_range=50):
+def update_hsv_gui(hsv, hue_range=10):
     hue, sat, val = hsv
     hue_min = hue - hue_range if hue - hue_range > 0 else 0
     hue_max = hue + hue_range if hue + hue_range < 255 else 255
-    sat_min = 100
+    sat_min = sat
     sat_max = 255
-    val_min = 100
+    val_min = val
     val_max = 255
 
     cv2.setTrackbarPos("Hue Min", "hsv", hue_min)
-    cv2.setTrackbarPos("Sat Min", "hsv", sat_min)
-    cv2.setTrackbarPos("Val Min", "hsv", val_min)
-
     cv2.setTrackbarPos("Hue Max", "hsv", hue_max)
+
+    cv2.setTrackbarPos("Sat Min", "hsv", sat_min)
     cv2.setTrackbarPos("Sat Max", "hsv", sat_max)
+
+    cv2.setTrackbarPos("Val Min", "hsv", val_min)
     cv2.setTrackbarPos("Val Max", "hsv", val_max)
-
-
-def draw_on_tracked_obj(x, y, frame):
-    cv2.circle(frame, (x, y), 20, (0, 255, 0), 2)
-    cv2.putText(frame, "Tracking!", (0, 0), 1, 1, (0, 255, 0), 2)
 
 
 def detect(orig_frame, thres_frame, contour_area=300):

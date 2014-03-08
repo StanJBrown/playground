@@ -11,15 +11,24 @@ class EvaluationError(Exception):
 
 
 def add_function(left, right):
-    return left + right
+    try:
+        return left + right
+    except:
+        raise EvaluationError("Opps!")
 
 
 def sub_function(left, right):
-    return left - right
+    try:
+        return left - right
+    except:
+        raise EvaluationError("Opps!")
 
 
 def mul_function(left, right):
-    return left * right
+    try:
+        return left * right
+    except:
+        raise EvaluationError("Opps!")
 
 
 def div_function(left, right):
@@ -38,11 +47,17 @@ def pow_function(left, right):
 
 
 def cos_function(value):
-    return math.cos(value)
+    try:
+        return math.cos(value)
+    except:
+        raise EvaluationError("Opps!")
 
 
 def sin_function(value):
-    return math.sin(value)
+    try:
+        return math.sin(value)
+    except:
+        raise EvaluationError("Opps!")
 
 
 def rad_function(value):
@@ -55,6 +70,13 @@ def rad_function(value):
 def ln_function(value):
     try:
         return math.log(value)
+    except:
+        raise EvaluationError("Opps!")
+
+
+def exp_function(value):
+    try:
+        return math.exp(value)
     except:
         raise EvaluationError("Opps!")
 
@@ -72,11 +94,13 @@ class GPFunctionRegistry(object):
             self.register("SUB", sub_function)
             self.register("MUL", mul_function)
             self.register("DIV", div_function)
+            self.register("POW", pow_function)
 
             self.register("COS", cos_function)
             self.register("SIN", sin_function)
             self.register("RAD", rad_function)
             self.register("LN", ln_function)
+            self.register("EXP", exp_function)
 
     def register(self, function_name, function):
         self.functions[function_name] = function

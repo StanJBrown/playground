@@ -130,8 +130,9 @@
         "name": "answer"
     },
 
-    "json_store" : {
-        "store_file": null
+    "recorder" : {
+        "store_file": "/tmp/test.json",
+        "compress": true
     }
 
 }

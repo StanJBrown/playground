@@ -1,6 +1,6 @@
 {
-    "max_population" : 5000,
-    "max_generation" : 6,
+    "max_population" : 1000,
+    "max_generation" : 100,
 
     "tree_generation": {
         "method" : "GROW_METHOD",
@@ -18,7 +18,7 @@
 
     "crossover" : {
         "method" : "POINT_CROSSOVER",
-        "probability" : 0.8
+        "probability" : 0.7
     },
 
     "mutation" : {
@@ -29,7 +29,7 @@
             "SHRINK_MUTATION",
             "EXPAND_MUTATION"
         ],
-        "probability" : 0.9
+        "probability" : 0.2
     },
 
     "function_nodes" : [
@@ -55,18 +55,28 @@
         },
         {
             "type": "FUNCTION",
-            "name": "COS",
+            "name": "SIN",
             "arity": 1
         },
         {
             "type": "FUNCTION",
-            "name": "SIN",
+            "name": "COS",
             "arity": 1
         },
         {
             "type": "FUNCTION",
             "name": "RAD",
             "arity": 1
+        },
+        {
+            "type": "FUNCTION",
+            "name": "EXP",
+            "arity": 1
+        },
+        {
+            "type": "FUNCTION",
+            "name": "POW",
+            "arity": 2
         }
     ],
 
@@ -117,20 +127,20 @@
         }
     ],
 
-    "data_file" : "training_data/sine.dat",
+    "data_file" : "strassen500.txt",
 
     "input_variables" : [
         {
             "type": "INPUT",
-            "name": "x"
+            "name": "y"
         }
     ],
 
     "response_variable" : {
-        "name": "y"
+        "name": "x"
     },
 
-    "json_store" : {
+    "recorder" : {
         "store_file": "/tmp/ea_stats.json"
     }
 

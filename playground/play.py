@@ -37,7 +37,7 @@ def play_details(**kwargs):
         kwargs["config"],
         kwargs.get("stop_func", None),
         kwargs.get("print_func", None),
-        kwargs.get("recorder", None),
+        kwargs.get("recorder", None)
     )
 
 
@@ -143,6 +143,7 @@ def play(play):
         )
         population.individuals = results
 
+    play.recorder.finalize()
     return population
 
 

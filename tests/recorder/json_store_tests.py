@@ -61,7 +61,7 @@ class JSONStoreTests(unittest.TestCase):
 
     def test_setup_store(self):
         # assert
-        file_exists = os.path.exists(self.config["json_store"]["store_file"])
+        file_exists = os.path.exists(self.config["recorder"]["store_file"])
         self.assertEquals(file_exists, True)
 
     def test_purge_store(self):
@@ -73,7 +73,7 @@ class JSONStoreTests(unittest.TestCase):
         self.json_store.purge_store()
 
         # assert
-        store_file = open(self.config["json_store"]["store_file"], "r").read()
+        store_file = open(self.config["recorder"]["store_file"], "r").read()
         self.assertEquals(len(store_file), 0)
 
     def test_delete_store(self):
@@ -81,7 +81,7 @@ class JSONStoreTests(unittest.TestCase):
         self.json_store.delete_store()
 
         # assert
-        file_exists = os.path.exists(self.config["json_store"]["store_file"])
+        file_exists = os.path.exists(self.config["recorder"]["store_file"])
         self.assertEquals(file_exists, False)
 
     def test_record_population(self):
@@ -151,7 +151,7 @@ class JSONStoreTests(unittest.TestCase):
         self.json_store.store_file.close()
 
         # open up the file and restore json to dict
-        store_file = open(self.config["json_store"]["store_file"], "r").read()
+        store_file = open(self.config["recorder"]["store_file"], "r").read()
         data = json.loads(store_file)
 
         # assert tests

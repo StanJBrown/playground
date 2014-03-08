@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
         end_time = time.time()
 
-        print("GP run took: %2.2fsecs\n" % (end_time - start_time))
+        print "GP run took: %2.2fsecs\n" % (end_time - start_time)
 
     except Exception as err:
         print err

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import json
+import zipfile
 from playground.recorder.record_type import RecordType
 
 
@@ -9,10 +10,9 @@ class RecordLevel(object):
 
 
 class JSONStore(object):
-
     def __init__(self, config):
         self.config = config
-        self.record_config = config["json_store"]
+        self.record_config = config["recorder"]
         self.store_file_path = self.record_config.get("store_file", None)
         self.level = self.record_config.get("record_level", RecordLevel.MIN)
         self.store_file = None
@@ -115,3 +115,22 @@ class JSONStore(object):
                 raise RuntimeError("Undefined record type!")
         except:
             raise
+
+    def replace_file_ext(self, path, target_ext="zip"):
+        file_path = path.split(".")
+        file_path[-1] = target_ext
+        file_path = ".".join(file_path)
+
+        return file_path
+
+    def finalize(self):
+        # compress the store file
+        if self.record_config.get("compress", False):
+            # compress store file
+            zip_file = self.replace_file_ext(self.store_file_path)
+            zf = zipfile.ZipFile(zip_file, mode="w")
+            zf.write(self.store_file_path)
+            zf.close()
+
+            # remove uncompressed store file
+            os.remove(self.store_file_path)

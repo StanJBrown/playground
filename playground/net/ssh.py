@@ -4,7 +4,7 @@ import time
 import json
 import socket
 import struct
-import pprint
+# import pprint
 from multiprocessing import Pool
 
 import paramiko
@@ -354,9 +354,18 @@ if __name__ == "__main__":
     print "ONLINE NODES: ", len(online_nodes)
     print "OFFLINE NODES: ", len(offline_nodes)
 
-    pprint.pprint(offline_nodes[0])
+    # pprint.pprint(offline_nodes[0])
 
-    send_wol_packet("34:15:9e:22:5a:b2")
+    # cmd = "afplay hahahrawrrahaha.mp3"
+    cmd = "osascript -e 'set volume 3' && afplay hahahrawrrahaha.mp3"
+    results = batch_send_cmd(online_nodes, cmd, credentials)
+    for result in results:
+        print result["node"]
+        print result["output"]["stdout"]
+        print result["output"]
+
+
+    # send_wol_packet("34:15:9e:22:5a:b2")
     # print remote_sleep_mac(online_nodes[0], credentials)
     # sleep_nodes, failed_nodes = remote_sleep_macs(online_nodes, credentials)
     # print "SLEEP NODES: ", len(sleep_nodes)

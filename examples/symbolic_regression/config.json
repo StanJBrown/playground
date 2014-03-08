@@ -130,7 +130,7 @@
         "name": "answer"
     },
 
-    "json_store" : {
+    "recorder" : {
         "store_file": "/tmp/ea_stats.json"
     }
 

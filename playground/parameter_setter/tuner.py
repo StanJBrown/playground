@@ -63,10 +63,10 @@ def naive_parameter_sweep(details, loop_func=None, debug=False):
                 # record file and dir
                 if details["record_dir"]:
                     path = os.path.join(details["record_dir"], record_file)
-                    param["json_store"]["store_file"] = path
+                    param["recorder"]["store_file"] = path
 
                 else:
-                    param["json_store"]["store_file"] = record_file
+                    param["recorder"]["store_file"] = record_file
 
                 params.append(param)
 

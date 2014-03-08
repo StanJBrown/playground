@@ -124,7 +124,7 @@
     },
 
 
-    "json_store" : {
+    "recorder" : {
         "store_file": "json_store_test.json"
     }
 }

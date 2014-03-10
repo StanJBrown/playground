@@ -134,13 +134,6 @@ class TreeParser(object):
         else:
             raise RuntimeError("arity of > 2 has not been implemented!")
 
-        eq_str = eq_str.replace("ADD", "+")
-        eq_str = eq_str.replace("SUB", "-")
-        eq_str = eq_str.replace("MUL", "*")
-        eq_str = eq_str.replace("DIV", "/")
-        eq_str = eq_str.replace("COS", "cos")
-        eq_str = eq_str.replace("SIN", "sin")
-
         return eq_str
 
     def tree_to_dict(self, tree, node, results=None):

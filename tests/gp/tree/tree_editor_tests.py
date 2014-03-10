@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
 import playground.gp.tree.tree_editor as editor
 from playground.gp.functions import GPFunctionRegistry
+from playground.gp.tree.tree import Tree
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
 
@@ -47,6 +48,58 @@ class TreeEditorTests(unittest.TestCase):
 
             print node
 
+    def test_analyze_children_terminals_only(self):
+        term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
+        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        func_node = TreeNode(
+            TreeNodeType.FUNCTION,
+            name="ADD",
+            arity=2,
+            branches=[term_node_1, term_node_2]
+        )
+
+        result = editor.analyze_children(func_node)
+        self.assertEquals(result, (True, False, False, True))
+
+    def test_analyze_children_inputs_and_terminals(self):
+        term_node_1 = TreeNode(TreeNodeType.INPUT, name="x")
+        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        func_node = TreeNode(
+            TreeNodeType.FUNCTION,
+            name="ADD",
+            arity=2,
+            branches=[term_node_1, term_node_2]
+        )
+
+        result = editor.analyze_children(func_node)
+        self.assertEquals(result, (False, True, False, False))
+
+    def test_analyze_children_inputs_only(self):
+        term_node_1 = TreeNode(TreeNodeType.INPUT, name="x")
+        term_node_2 = TreeNode(TreeNodeType.INPUT, name="y")
+        func_node = TreeNode(
+            TreeNodeType.FUNCTION,
+            name="ADD",
+            arity=2,
+            branches=[term_node_1, term_node_2]
+        )
+
+        result = editor.analyze_children(func_node)
+        self.assertEquals(result, (False, False, True, False))
+
+    def test_analyze_children_contains_zero(self):
+        term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
+        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        func_node = TreeNode(
+            TreeNodeType.FUNCTION,
+            name="ADD",
+            arity=2,
+            branches=[term_node_1, term_node_2]
+        )
+
+        result = editor.analyze_children(func_node)
+        self.assertEquals(result, (True, False, False, True))
+
     def test_edit_tree_zero_only(self):
         # TEST CONTAINS ZERO
         term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
@@ -59,21 +112,14 @@ class TreeEditorTests(unittest.TestCase):
         )
 
         print "BEFORE:", func_node
-        editor.edit_tree(func_node, self.functions)
+        tree = Tree()
+        tree.root = func_node
+        tree.depth = 3
+        editor.edit_tree(tree, tree.root, self.functions)
         print "AFTER:", func_node
         print
 
         self.assertEquals(func_node.value, 1.0)
-
-        print "BEFORE:"
-        self.print_tree(self.tree)
-        print
-
-        editor.edit_tree(self.tree, self.functions)
-
-        print "AFTER:"
-        self.print_tree(self.tree)
-        print
 
     def test_edit_tree_terminals_only(self):
         # TEST TERMINALS ONLY
@@ -87,7 +133,10 @@ class TreeEditorTests(unittest.TestCase):
         )
 
         print "BEFORE:", func_node
-        editor.edit_tree(func_node, self.functions)
+        tree = Tree()
+        tree.root = func_node
+        tree.depth = 3
+        editor.edit_tree(tree, tree.root, self.functions)
         print "AFTER:", func_node
         print
 
@@ -105,8 +154,12 @@ class TreeEditorTests(unittest.TestCase):
         )
 
         print "BEFORE:", func_node
-        editor.edit_tree(func_node, self.functions)
+        tree = Tree()
+        tree.root = func_node
+        tree.depth = 3
+        editor.edit_tree(tree, tree.root, self.functions)
         print "AFTER:", func_node
+        print
 
     def test_edit_tree_prune(self):
         # TEST PRUNE
@@ -120,7 +173,11 @@ class TreeEditorTests(unittest.TestCase):
         )
 
         print "BEFORE:", func_node
-        editor.edit_tree(func_node, self.functions)
+        tree = Tree()
+        tree.root = func_node
+        tree.depth = 3
+        editor.edit_tree(tree, tree.root, self.functions)
+        print "AFTER:", func_node
         print
 
         self.assertEquals(func_node.node_type, TreeNodeType.TERM)

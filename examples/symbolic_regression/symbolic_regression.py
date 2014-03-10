@@ -3,6 +3,7 @@ import sys
 import os
 import time
 import random
+import traceback
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 import playground.config as config
@@ -11,6 +12,7 @@ from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
 from playground.gp.tree.tree_evaluation import print_func
+from playground.gp.tree.tree_editor import edit_trees
 from playground.gp.functions import GPFunctionRegistry
 from playground.operators.selection import Selection
 from playground.operators.crossover import GPTreeCrossover
@@ -51,6 +53,7 @@ if __name__ == "__main__":
             print_func=print_func,
             stop_func=default_stop_func,
             config=config,
+            tree_editor=edit_trees,
             recorder=json_store
         )
 
@@ -64,6 +67,7 @@ if __name__ == "__main__":
 
     except Exception as err:
         print err
+        print traceback.print_exc()
 
         # write exception out
         if record_exception:

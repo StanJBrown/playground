@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from sympy import simplify
+# from sympy import simplify
 
 from playground.gp.functions import EvaluationError
 from playground.gp.tree.tree_node import TreeNode
@@ -15,11 +15,13 @@ def print_func(population, generation):
     print "best_score:", str(best.score)
     print "tree_size:", str(best.size)
 
-    if best.score < 20.0:
-        eq = tree_parser.parse_equation(best.root)
-        if best.size < 50:
-            print "best:", simplify(eq)
-    print ""
+    # if best.score < 20.0:
+    #     eq = tree_parser.parse_equation(best.root)
+    #     if best.size < 50:
+    #         print "best:", simplify(eq)
+    # print ""
+    print "best:", tree_parser.parse_equation(best.root)
+    print
 
 
 def default_stop_func(popualtion, general_stats, config):

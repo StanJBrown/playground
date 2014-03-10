@@ -23,6 +23,7 @@ def play_details(**kwargs):
             "config",
             "stop_func",
             "print_func",
+            "tree_editor",
             "recorder",
         ]
     )
@@ -37,6 +38,7 @@ def play_details(**kwargs):
         kwargs["config"],
         kwargs.get("stop_func", None),
         kwargs.get("print_func", None),
+        kwargs.get("tree_editor", None),
         kwargs.get("recorder", None)
     )
 
@@ -142,6 +144,12 @@ def play(play):
             play.recorder
         )
         population.individuals = results
+
+        # edit population
+        if play.config.get("tree_editor", False):
+            every = play.config["tree_editor"]["every"]
+            if stats["generation"] != 0 and stats["generation"] % every == 0:
+                play.tree_editor(population, play.functions)
 
     play.recorder.finalize()
     return population

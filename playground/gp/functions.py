@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import math
+import decimal
 
 
 class EvaluationError(Exception):
@@ -10,28 +11,28 @@ class EvaluationError(Exception):
         return repr(self.message)
 
 
-def add_function(left, right):
+def add_function(right, left):
     try:
         return left + right
     except:
         raise EvaluationError("Opps!")
 
 
-def sub_function(left, right):
+def sub_function(right, left):
     try:
         return left - right
     except:
         raise EvaluationError("Opps!")
 
 
-def mul_function(left, right):
+def mul_function(right, left):
     try:
         return left * right
     except:
         raise EvaluationError("Opps!")
 
 
-def div_function(left, right):
+def div_function(right, left):
     try:
         result = left / right
         return result
@@ -39,7 +40,7 @@ def div_function(left, right):
         raise EvaluationError(e.message)
 
 
-def pow_function(left, right):
+def pow_function(right, left):
     try:
         return math.pow(left, right)
     except:
@@ -69,7 +70,14 @@ def rad_function(value):
 
 def ln_function(value):
     try:
-        return math.log(value)
+        return float(decimal.Decimal(value).ln())
+    except:
+        raise EvaluationError("Opps!")
+
+
+def log_function(value):
+    try:
+        return math.log(value, 10)
     except:
         raise EvaluationError("Opps!")
 
@@ -95,6 +103,7 @@ class GPFunctionRegistry(object):
             self.register("MUL", mul_function)
             self.register("DIV", div_function)
             self.register("POW", pow_function)
+            self.register("LOG", ln_function)
 
             self.register("COS", cos_function)
             self.register("SIN", sin_function)

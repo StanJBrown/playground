@@ -7,6 +7,8 @@ import multiprocessing
 from multiprocessing import Process
 from multiprocessing import Manager
 
+import matplotlib.pyplot as plt
+
 from playground.recorder.json_store import JSONStore
 
 
@@ -118,6 +120,14 @@ def play(play):
     )
     population.individuals = results
 
+    # plot solution
+    x = play.config["data"]["x"]
+    y = play.config["data"]["y"]
+    fig = plt.figure(1)
+    ax = fig.add_subplot(1, 1, 1)
+    ax.plot(x, y)
+    plt.show(block=False)
+
     while play.stop_func(population, stats, play.config) is False:
         # update stats and print function
         update_generation_stats(stats, population)
@@ -135,7 +145,7 @@ def play(play):
 
         # evaluate population
         results = []
-        play.evaluate(
+        tree_results = play.evaluate(
             population.individuals,
             play.functions,
             play.config,
@@ -145,10 +155,19 @@ def play(play):
         )
         population.individuals = results
 
+        # plot current best
+        if tree_results is not None:
+            if len(ax.lines) > 1:
+                ax.lines.pop()
+            ax.plot(x, tree_results)
+            plt.draw()
+            plt.show(block=False)
+
         # edit population
         if play.config.get("tree_editor", False):
             every = play.config["tree_editor"]["every"]
             if stats["generation"] != 0 and stats["generation"] % every == 0:
+                print "\nEDIT TREES!\n"
                 play.tree_editor(population, play.functions)
 
     play.recorder.finalize()
@@ -217,6 +236,7 @@ def play_multicore(play):
         del processes[:]
         population.individuals = [r for r in results]
 
+    play.recorder.finalize()
     return population
 
 
@@ -266,4 +286,12 @@ def play_evolution_strategy(play):
         )
         population.individuals = results
 
+        # edit population
+        if play.config.get("tree_editor", False):
+            every = play.config["tree_editor"]["every"]
+            if stats["generation"] != 0 and stats["generation"] % every == 0:
+                print "\nEDIT TREES!\n"
+                play.tree_editor(population, play.functions)
+
+    play.recorder.finalize()
     return population

@@ -78,11 +78,12 @@ def eval_node(node, stack, functions, config, data_row=None):
 def eval_program(tree, tree_size, functions, config):
     try:
         stack = []
-        sse = 0.0  # squared sum error
+        sse = 0.0  # sum squared error
         score = 0.0
         response_var = config["response_variable"]["name"]
         response_data = config["data"][response_var]
         rows = len(response_data)
+        result = []
 
         for i in xrange(rows):
             # evaluate program
@@ -91,16 +92,20 @@ def eval_program(tree, tree_size, functions, config):
 
             # calculate score
             node = stack.pop()
-            sse += pow(node.value - response_data[i], 2)
-            score = sse + (tree_size * 0.1)
+            result.append(node.value)
+            sse += pow(response_data[i] - node.value, 2)
+            score = sse + (tree_size * 10)
 
             # reset stack
             del stack[:]
 
-        return score
+        return score, result
 
     except EvaluationError:
-        return None
+        return None, None
+
+    except OverflowError:
+        return None, None
 
 
 def record_eval(recorder, **kwargs):
@@ -133,27 +138,38 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
     match_cached = 0
     nodes_evaluated = 0
 
+    best_score = None
+    best_result = None
+
     # evaluate trees
     for tree in trees:
         if use_cache:
             if str(tree) not in cache:
-                score = eval_program(tree, tree.size, functions, config)
+                score, res = eval_program(tree, tree.size, functions, config)
+
                 if score is not None:
                     tree.score = score
                     results.append(tree)
+
+                    if score < best_score or best_score is None:
+                        best_score = score
+                        best_result = res
+
                 cache[str(tree)] = score
                 nodes_evaluated += tree.size
 
             else:
                 score = cache[str(tree)]
+
                 if score is not None:
                     tree.score = score
                     results.append(tree)
+
                 match_cached += 1
                 nodes_evaluated += tree.size
 
         else:
-            score = eval_program(tree, tree.size, functions, config)
+            score, res = eval_program(tree, tree.size, functions, config)
             if score is not None:
                 tree.score = score
                 results.append(tree)
@@ -170,3 +186,5 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             trees_evaluated=len(trees) - match_cached,
             tree_nodes_evaluated=len(trees)
         )
+
+    return best_result

@@ -170,7 +170,9 @@ def play(play):
                 print "\nEDIT TREES!\n"
                 play.tree_editor(population, play.functions)
 
-    play.recorder.finalize()
+    # finalize recording
+    if play.recorder is not None:
+        play.recorder.finalize()
     return population
 
 
@@ -236,7 +238,9 @@ def play_multicore(play):
         del processes[:]
         population.individuals = [r for r in results]
 
-    play.recorder.finalize()
+    # finalize recording
+    if play.recorder is not None:
+        play.recorder.finalize()
     return population
 
 
@@ -293,5 +297,7 @@ def play_evolution_strategy(play):
                 print "\nEDIT TREES!\n"
                 play.tree_editor(population, play.functions)
 
-    play.recorder.finalize()
+    # finalize recording
+    if play.recorder is not None:
+        play.recorder.finalize()
     return population

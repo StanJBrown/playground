@@ -85,7 +85,7 @@ class TreeParserTests(unittest.TestCase):
     def test_parse_equation(self):
         # self.tree_parser.print_tree(tree.root)
         equation = self.tree_parser.parse_equation(self.tree.root)
-        self.assertEquals(equation, "((cos(1.0)) + (sin(2.0)))")
+        self.assertEquals(equation, "((COS(1.0)) ADD (SIN(2.0)))")
 
     def test_tree_to_dict(self):
         solution = {

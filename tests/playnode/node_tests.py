@@ -112,14 +112,13 @@ class NodeTests(unittest.TestCase):
         solution = {
             "results":
             [
-                {"score": 15772136.12176585},
+                {"score": 15726642.002161335},
                 {"score": 359.25843589015597},
-                {"score": 26143.96584493737},
-                {"score": 16037486.969560817},
-                {"score": 14055183243.355433},
-                {"score": 3665.4193106433404},
-                {"score": 185.83838425682123},
-                {"score": 23439.33097274221}
+                {"score": 92155571.22132382},
+                {"score": 26186.46142920347},
+                {"score": 15649304.847552022},
+                {"score": 188.86069156360125},
+                {"score": 23439.33097274221},
             ]
         }
 
@@ -162,5 +161,5 @@ class NodeTests(unittest.TestCase):
         self.assertEquals(len(solution["results"]), 0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -28,15 +28,15 @@ class FunctionsTests(unittest.TestCase):
 
         sub = self.function.get_function("SUB")
         result = sub(2, 1)
-        self.assertEquals(result, 1)
+        self.assertEquals(result, -1)
 
         mul = self.function.get_function("MUL")
         result = mul(2, 1)
         self.assertEquals(result, 2)
 
         div = self.function.get_function("DIV")
-        result = div(4, 2)
-        self.assertEquals(result, 2)
+        result = div(4.0, 2.0)
+        self.assertEquals(result, 0.5)
 
         cos = self.function.get_function("COS")
         result = cos(0)

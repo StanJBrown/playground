@@ -171,7 +171,7 @@ class TreeTests(unittest.TestCase):
         self.tree.program = self.t_parser.post_order_traverse(self.tree.root)
 
         # assert
-        self.assertEquals(str(self.tree), "(x + y)")
+        self.assertEquals(str(self.tree), "(x ADD y)")
 
 
 if __name__ == '__main__':

@@ -117,7 +117,7 @@ class TreeEvaluatorTests(unittest.TestCase):
 
         # assert
         self.assertTrue(res is not None)
-        self.assertEquals(round(res, 4), 0.5)
+        self.assertEquals(res[1][0], 0.0)
 
     def test_evaluate(self):
         population = self.tree_generator.init()

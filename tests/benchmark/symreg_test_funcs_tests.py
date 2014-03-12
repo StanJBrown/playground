@@ -8,7 +8,6 @@ import playground.benchmark.symreg_test_funcs as sym_reg
 
 
 class SymRegTests(unittest.TestCase):
-
     def test_write_test_data(self):
         # write test data
         fp = "test.dat"
@@ -74,7 +73,8 @@ class SymRegTests(unittest.TestCase):
         self.assertEquals(result, ["1, 2"])
 
     def test_arabas_et_al_test_functions(self):
-        sym_reg.arabas_et_al_test_functions()
+        dest = "."
+        sym_reg.arabas_et_al_test_functions(dest)
 
         for i in range(4):
             data_fp = "arabas_et_al-f{0}{1}".format(i + 1, ".dat")
@@ -82,10 +82,11 @@ class SymRegTests(unittest.TestCase):
             data = data_file.read()
             data_file.close()
             self.assertTrue(len(data) > 0)
-            os.unlink(data_fp)
+            os.unlink(os.path.join(dest, data_fp))
 
     def test_nguyen_et_al_test_functions(self):
-        sym_reg.nguyen_et_al_test_functions()
+        dest = "."
+        sym_reg.nguyen_et_al_test_functions(dest)
 
         for i in range(10):
             data_fp = "nguyen_et_al-f{0}{1}".format(i + 1, ".dat")
@@ -98,7 +99,7 @@ class SymRegTests(unittest.TestCase):
             print
 
             self.assertTrue(len(data) > 0)
-            os.remove(data_fp)
+            os.remove(os.path.join(dest, data_fp))
 
 if __name__ == '__main__':
     unittest.main()

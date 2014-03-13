@@ -7,6 +7,7 @@ from playground.recorder.record_type import RecordType
 
 class RecordLevel(object):
     MIN = 1
+    MAX = 2
 
 
 class JSONStore(object):

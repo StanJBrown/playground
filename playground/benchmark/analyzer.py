@@ -86,10 +86,12 @@ def parse_evaluation_stats(generations):
         "trees_evaluated": trees_evaluated
     }
 
+    import pprint
+    pprint.pprint(generations[0]["population"])
     for g in generations:
-        cache_size.append(g["evaluation"][0]["cache_size"])
-        matched_cache.append(g["evaluation"][0]["match_cached"])
-        trees_evaluated.append(g["evaluation"][0]["trees_evaluated"])
+        cache_size.append(g["evaluation"]["cache_size"])
+        matched_cache.append(g["evaluation"]["match_cached"])
+        trees_evaluated.append(g["evaluation"]["trees_evaluated"])
 
     return result
 
@@ -224,9 +226,10 @@ def plot_summary(generations):
 
 
 if __name__ == "__main__":
-    data_dir = "/tmp/data"
-    data_file = "np_sweep_10_0.1_0.2-0.dat"
-    data_path = os.path.join(data_dir, data_file)
+    # data_dir = "/tmp/data"
+    # data_file = "np_sweep_10_0.1_0.2-0.dat"
+    # data_path = os.path.join(data_dir, data_file)
+    data_path = "/tmp/ea_stats.json"
 
     generations = parse_data_file(data_path)
 

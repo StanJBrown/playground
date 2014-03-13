@@ -14,79 +14,79 @@ class EvaluationError(Exception):
 def add_function(right, left):
     try:
         return left + right
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def sub_function(right, left):
     try:
         return left - right
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def mul_function(right, left):
     try:
         return left * right
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def div_function(right, left):
     try:
         result = left / right
         return result
-    except ZeroDivisionError as e:
-        raise EvaluationError(e.message)
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def pow_function(right, left):
     try:
         return math.pow(left, right)
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def cos_function(value):
     try:
         return math.cos(value)
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def sin_function(value):
     try:
         return math.sin(value)
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def rad_function(value):
     try:
         return math.radians(value)
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def ln_function(value):
     try:
         return float(decimal.Decimal(value).ln())
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def log_function(value):
     try:
         return math.log(value, 10)
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def exp_function(value):
     try:
         return math.exp(value)
-    except:
-        raise EvaluationError("Opps!")
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
 
 
 def fact_function(value):

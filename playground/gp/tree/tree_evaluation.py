@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# from sympy import simplify
+from sympy import simplify
 
 from playground.gp.functions import EvaluationError
 from playground.gp.tree.tree_node import TreeNode
@@ -15,12 +15,21 @@ def print_func(population, generation):
     print "best_score:", str(best.score)
     print "tree_size:", str(best.size)
 
-    # if best.score < 20.0:
-    #     eq = tree_parser.parse_equation(best.root)
-    #     if best.size < 50:
-    #         print "best:", simplify(eq)
-    # print ""
     print "best:", tree_parser.parse_equation(best.root)
+    if best.score < 20.0:
+        eq = tree_parser.parse_equation(best.root)
+        if best.size < 50:
+            eq = eq.replace("ADD", "+")
+            eq = eq.replace("SUB", "-")
+            eq = eq.replace("MUL", "*")
+            eq = eq.replace("DIV", "/")
+            eq = eq.replace("POW", "**")
+            eq = eq.replace("SIN", "sin")
+            eq = eq.replace("COS", "cos")
+            eq = eq.replace("RAD", "rad")
+            eq = eq.replace("LN", "ln")
+            eq = eq.replace("LOG", "log")
+            print "EQ SIMPLIFIED:", simplify(eq)
     print
 
 
@@ -78,7 +87,7 @@ def eval_node(node, stack, functions, config, data_row=None):
 def eval_program(tree, tree_size, functions, config):
     try:
         stack = []
-        sse = 0.0  # sum squared error
+        err = 0.0  # sum squared error
         score = 0.0
         response_var = config["response_variable"]["name"]
         response_data = config["data"][response_var]
@@ -93,18 +102,27 @@ def eval_program(tree, tree_size, functions, config):
             # calculate score
             node = stack.pop()
             result.append(node.value)
-            sse += pow(response_data[i] - node.value, 2)
-            score = sse + (tree_size * 10)
+            err += abs(response_data[i] - node.value)
 
             # reset stack
             del stack[:]
 
+        score = (err / rows) + (tree_size * 0.1)
         return score, result
 
     except EvaluationError:
+        # print "FAILED TO EVAL[EVALERR]:", tree
         return None, None
 
     except OverflowError:
+        # print "FAILED TO EVAL[OVERFLOW]:", tree
+
+        # import traceback
+        # traceback.print_exc()
+
+        # import sys
+        # sys.exit(-1)
+
         return None, None
 
 
@@ -135,45 +153,38 @@ def record_eval(recorder, **kwargs):
 def evaluate(trees, functions, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
-    match_cached = 0
     nodes_evaluated = 0
+    match_cached = 0
 
     best_score = None
     best_result = None
 
     # evaluate trees
     for tree in trees:
+        score = None
+        res = None
+
+        # use cahce?
         if use_cache:
             if str(tree) not in cache:
                 score, res = eval_program(tree, tree.size, functions, config)
-
-                if score is not None:
-                    tree.score = score
-                    results.append(tree)
-
-                    if score < best_score or best_score is None:
-                        best_score = score
-                        best_result = res
-
-                cache[str(tree)] = score
                 nodes_evaluated += tree.size
-
             else:
                 score = cache[str(tree)]
-
-                if score is not None:
-                    tree.score = score
-                    results.append(tree)
-
-                match_cached += 1
-                nodes_evaluated += tree.size
-
         else:
             score, res = eval_program(tree, tree.size, functions, config)
-            if score is not None:
-                tree.score = score
-                results.append(tree)
-                nodes_evaluated += tree.size
+            nodes_evaluated += tree.size
+
+        # check result
+        if score is not None:
+            tree.score = score
+            results.append(tree)
+
+            if score < best_score or best_score is None:
+                best_score = score
+                best_result = res
+
+        cache[str(tree)] = score
 
     # record evaluation statistics
     if recorder:

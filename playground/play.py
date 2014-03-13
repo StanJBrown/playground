@@ -7,7 +7,7 @@ import multiprocessing
 from multiprocessing import Process
 from multiprocessing import Manager
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 from playground.recorder.json_store import JSONStore
 
@@ -121,12 +121,12 @@ def play(play):
     population.individuals = results
 
     # plot solution
-    x = play.config["data"]["x"]
-    y = play.config["data"]["y"]
-    fig = plt.figure(1)
-    ax = fig.add_subplot(1, 1, 1)
-    ax.plot(x, y)
-    plt.show(block=False)
+    # x = play.config["data"]["x"]
+    # y = play.config["data"]["y"]
+    # fig = plt.figure(1)
+    # ax = fig.add_subplot(1, 1, 1)
+    # ax.plot(x, y)
+    # plt.show(block=False)
 
     while play.stop_func(population, stats, play.config) is False:
         # update stats and print function
@@ -145,7 +145,7 @@ def play(play):
 
         # evaluate population
         results = []
-        tree_results = play.evaluate(
+        play.evaluate(
             population.individuals,
             play.functions,
             play.config,
@@ -155,20 +155,20 @@ def play(play):
         )
         population.individuals = results
 
-        # plot current best
-        if tree_results is not None:
-            if len(ax.lines) > 1:
-                ax.lines.pop()
-            ax.plot(x, tree_results)
-            plt.draw()
-            plt.show(block=False)
+        # # plot current best
+        # if tree_results is not None:
+        #     if len(ax.lines) > 1:
+        #         ax.lines.pop()
+        #     ax.plot(x, tree_results)
+        #     plt.draw()
+        #     plt.show(block=False)
 
         # edit population
-        if play.config.get("tree_editor", False):
-            every = play.config["tree_editor"]["every"]
-            if stats["generation"] != 0 and stats["generation"] % every == 0:
-                print "\nEDIT TREES!\n"
-                play.tree_editor(population, play.functions)
+        # if play.config.get("tree_editor", False):
+        #     every = play.config["tree_editor"]["every"]
+        #     if stats["generation"] != 0 and stats["generation"] % every == 0:
+        #         print "\nEDIT TREES!\n"
+        #         play.tree_editor(population, play.functions)
 
     # finalize recording
     if play.recorder is not None:

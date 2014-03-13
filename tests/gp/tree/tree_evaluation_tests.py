@@ -72,25 +72,25 @@ class TreeEvaluatorTests(unittest.TestCase):
         term_node = TreeNode(TreeNodeType.TERM, value=100.0)
         input_node = TreeNode(TreeNodeType.INPUT, name="x")
 
-        rad_func = TreeNode(
-            TreeNodeType.FUNCTION,
-            name="RAD",
-            arity=1,
-            branches=[input_node]
-        )
-
         mul_func = TreeNode(
             TreeNodeType.FUNCTION,
             name="MUL",
             arity=2,
-            branches=[rad_func, term_node]
+            branches=[input_node, term_node]
+        )
+
+        rad_func = TreeNode(
+            TreeNodeType.FUNCTION,
+            name="RAD",
+            arity=1,
+            branches=[mul_func]
         )
 
         sin_func = TreeNode(
             TreeNodeType.FUNCTION,
             name="SIN",
             arity=1,
-            branches=[mul_func]
+            branches=[rad_func]
         )
 
         # create tree
@@ -117,6 +117,7 @@ class TreeEvaluatorTests(unittest.TestCase):
 
         # assert
         self.assertTrue(res is not None)
+        self.assertEquals(round(res[0], 4), 0.5)
         self.assertEquals(res[1][0], 0.0)
 
     def test_evaluate(self):

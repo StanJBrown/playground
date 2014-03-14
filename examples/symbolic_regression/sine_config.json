@@ -1,6 +1,6 @@
 {
-    "max_population" : 1000,
-    "max_generation" : 100,
+    "max_population" : 500,
+    "max_generation" : 30,
 
     "tree_generation": {
         "method" : "GROW_METHOD",
@@ -13,7 +13,7 @@
 
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",
-        "tournament_size": 500
+        "tournament_size": 50
     },
 
     "crossover" : {
@@ -29,7 +29,7 @@
             "SHRINK_MUTATION",
             "EXPAND_MUTATION"
         ],
-        "probability" : 0.2
+        "probability" : 0.9
     },
 
     "function_nodes" : [
@@ -55,6 +55,16 @@
         },
         {
             "type": "FUNCTION",
+            "name": "EXP",
+            "arity": 1
+        },
+        {
+            "type": "FUNCTION",
+            "name": "LN",
+            "arity": 1
+        },
+        {
+            "type": "FUNCTION",
             "name": "SIN",
             "arity": 1
         },
@@ -66,11 +76,6 @@
         {
             "type": "FUNCTION",
             "name": "RAD",
-            "arity": 1
-        },
-        {
-            "type": "FUNCTION",
-            "name": "EXP",
             "arity": 1
         },
         {
@@ -124,24 +129,32 @@
         {
             "type": "TERM",
             "value": 10.0
+        },
+        {
+            "type": "TERM",
+            "value": 3.141592653589793238462643383279502884197169399
         }
     ],
 
-    "data_file" : "strassen500.txt",
+    "data_file" : "training_data/sine.dat",
 
     "input_variables" : [
         {
             "type": "INPUT",
-            "name": "y"
+            "name": "x"
         }
     ],
 
     "response_variable" : {
-        "name": "x"
+        "name": "y"
+    },
+
+    "tree_editor" : {
+        "every": 5
     },
 
     "recorder" : {
-        "store_file": "/tmp/ea_stats.json"
+        "store_file": "/tmp/ea_stats.json",
+        "record_level": 2
     }
-
 }

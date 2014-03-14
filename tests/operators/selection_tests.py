@@ -51,7 +51,15 @@ class SelectionTests(unittest.TestCase):
         new_pop = self.selection.tournament_selection(self.population)
 
         old_pop_size = len(self.population.individuals)
+        print "OLD:"
+        for individual in self.population.individuals:
+            print individual, individual.score
+        print '\n\n'
+
         new_pop_size = len(new_pop.individuals)
+        print "NEW:"
+        for individual in new_pop.individuals:
+            print individual, individual.score
 
         self.assertFalse(old_pop_size == new_pop_size)
         self.assertEquals(new_pop_size, old_pop_size / 2)

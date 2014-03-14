@@ -62,7 +62,6 @@ if __name__ == "__main__":
         # play.play_evolution_strategy(details)
 
         end_time = time.time()
-
         print "GP run took: %2.2fsecs\n" % (end_time - start_time)
 
     except Exception as err:

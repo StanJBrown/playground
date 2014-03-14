@@ -77,11 +77,12 @@ class TreeTests(unittest.TestCase):
             branches=[node_x, node_y]
         )
 
+        # build tree
         tree = Tree()
         tree.root = add_func
         tree.update_program()
 
-        # replace node
+        # replace input node
         new_node = TreeNode(TreeNodeType.INPUT, name="z")
         before_replace = list(tree.program)
         tree.replace_node(node_x, new_node)

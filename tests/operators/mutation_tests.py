@@ -87,10 +87,10 @@ class MutatorTests(unittest.TestCase):
         else:
             return False
 
-    def test_point_mutation(self):
+    def mutated(self, tree, mutation_func):
         print "POINT MUATION!"
         tree_before = self.build_tree_str(self.tree)
-        self.tree_mutation.point_mutation(self.tree)
+        mutation_func(tree)
         tree_after = self.build_tree_str(self.tree)
 
         print("Before Mutation")
@@ -102,22 +102,14 @@ class MutatorTests(unittest.TestCase):
         self.assertTrue(self.tree_equals(tree_before, tree_before))
         self.assertTrue(self.tree_equals(tree_after, tree_after))
         self.assertFalse(self.tree_equals(tree_before, tree_after))
+
+    def test_point_mutation(self):
+        print "POINT MUATION!"
+        self.mutated(self.tree, self.tree_mutation.point_mutation)
 
     def test_hoist_mutation(self):
         print "HOIST MUATION!"
-        tree_before = self.build_tree_str(self.tree)
-        self.tree_mutation.hoist_mutation(self.tree, 3)
-        tree_after = self.build_tree_str(self.tree)
-
-        print("Before Mutation")
-        print(tree_before)
-
-        print("\nAfter Mutation")
-        print(tree_after)
-
-        self.assertTrue(self.tree_equals(tree_before, tree_before))
-        self.assertTrue(self.tree_equals(tree_after, tree_after))
-        self.assertFalse(self.tree_equals(tree_before, tree_after))
+        self.mutated(self.tree, self.tree_mutation.hoist_mutation)
 
         self.assertEquals(self.tree.size, 2)
         self.assertEquals(self.tree.depth, 1)
@@ -176,21 +168,21 @@ class MutatorTests(unittest.TestCase):
         self.assertTrue(self.tree_equals(tree_after, tree_after))
         self.assertFalse(self.tree_equals(tree_before, tree_after))
 
-    # def test_mutate(self):
-    #     print "MUTATE!"
-    #     tree_before = self.build_tree_str(self.tree)
-    #     self.tree_mutation.mutate(self.tree)
-    #     tree_after = self.build_tree_str(self.tree)
+    def test_mutate(self):
+        print "MUTATE!"
+        tree_before = self.build_tree_str(self.tree)
+        self.tree_mutation.mutate(self.tree)
+        tree_after = self.build_tree_str(self.tree)
 
-    #     print("Before Mutation")
-    #     print(tree_before)
+        print("Before Mutation")
+        print(tree_before)
 
-    #     print("\nAfter Mutation")
-    #     print(tree_after)
+        print("\nAfter Mutation")
+        print(tree_after)
 
-    #     self.assertTrue(self.tree_equals(tree_before, tree_before))
-    #     self.assertTrue(self.tree_equals(tree_after, tree_after))
-    #     self.assertFalse(self.tree_equals(tree_before, tree_after))
+        self.assertTrue(self.tree_equals(tree_before, tree_before))
+        self.assertTrue(self.tree_equals(tree_after, tree_after))
+        self.assertFalse(self.tree_equals(tree_before, tree_after))
 
 
 class GABitStrMutationTests(unittest.TestCase):

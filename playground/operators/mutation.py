@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from random import random
 from random import sample
+from random import uniform
 
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
@@ -73,62 +74,75 @@ class GPTreeMutation(object):
         if node.is_function():
             node.name = new_node["name"]
         elif node.is_terminal() or node.is_input():
-            node.node_type = new_node.get("type", TreeNodeType.INPUT)
+            node.node_type = new_node.get("type")
             node.name = new_node.get("name", None)
             node.value = new_node.get("value", None)
 
     def hoist_mutation(self, tree, mutation_index=None):
         # new indivdiaul generated from subtree
-        new_root = None
+        node = None
         if mutation_index is None:
-            new_root = sample(tree.func_nodes, 1)[0]
+            node = sample(tree.program, 1)[0]
         else:
-            new_root = tree.program[mutation_index]
+            node = tree.program[mutation_index]
 
-        tree.root = new_root
+        tree.root = node
         tree.update()
 
     def subtree_mutation(self, tree, mutation_index=None):
         # subtree exchanged against external random subtree
-        func_node = None
+        node = None
         if mutation_index is None:
-            func_node = sample(tree.func_nodes, 1)[0]
+            node = sample(tree.program, 1)[0]
+            while node is tree.root:
+                node = sample(tree.program, 1)[0]
         else:
-            func_node = tree.program[mutation_index]
+            node = tree.program[mutation_index]
 
         sub_tree = self.tree_generator.generate_tree()
-        tree.replace_node(func_node, sub_tree.root)
+        tree.replace_node(node, sub_tree.root)
         tree.update()
 
     def shrink_mutation(self, tree, mutation_index=None):
         # replace subtree with terminal
-        func_node = None
-        if mutation_index is None:
-            func_node = sample(tree.func_nodes, 1)[0]
-        else:
-            func_node = tree.program[mutation_index]
+        if len(tree.func_nodes):
+            node = None
+            if mutation_index is None:
+                node = sample(tree.func_nodes, 1)[0]
+                while node is tree.root:
+                    node = sample(tree.func_nodes, 1)[0]
+            else:
+                node = tree.program[mutation_index]
 
-        term_node = None
-        if len(tree.term_nodes) > 0:
-            node_details = self._get_new_node(sample(tree.term_nodes, 1)[0])
-            term_node = self._gen_new_node(node_details)
-        else:
-            node_details = self._get_new_node(sample(tree.input_nodes, 1)[0])
-            term_node = self._gen_new_node(node_details)
+            candidate_nodes = tree.term_nodes
+            candidate_nodes.extend(tree.input_nodes)
+            new_node_detail = sample(candidate_nodes, 1)[0]
+            node_details = self._get_new_node(new_node_detail)
+            new_node = self._gen_new_node(node_details)
 
-        tree.replace_node(func_node, term_node)
-        tree.update()
+            tree.replace_node(node, new_node)
+            tree.update()
 
     def expansion_mutation(self, tree, mutation_index=None):
         # terminal exchanged against external random subtree
-        term_node = None
+        node = None
         if mutation_index is None:
-            term_node = sample(tree.term_nodes, 1)[0]
+            prob = random()
+
+            if prob > 0.5 and len(tree.term_nodes) > 0:
+                node = sample(tree.term_nodes, 1)[0]
+            elif prob < 0.5 and len(tree.input_nodes) > 0:
+                node = sample(tree.input_nodes, 1)[0]
+            elif len(tree.term_nodes) > 0:
+                node = sample(tree.term_nodes, 1)[0]
+            elif len(tree.input_nodes) > 0:
+                node = sample(tree.input_nodes, 1)[0]
+
         else:
-            term_node = tree.program[mutation_index]
+            node = tree.program[mutation_index]
 
         sub_tree = self.tree_generator.generate_tree()
-        tree.replace_node(term_node, sub_tree.root)
+        tree.replace_node(node, sub_tree.root)
         tree.update()
 
     def mutate(self, tree):
@@ -151,11 +165,11 @@ class GPTreeMutation(object):
         self.before_mutation = tree.to_dict()["program"]
 
         # pre-checks before mutation
-        if len(tree.term_nodes) < 1 or len(tree.input_nodes) < 1:
-                self.random_probability = 1.1
+        # if len(tree.term_nodes) < 1 or len(tree.input_nodes) < 1:
+        #         self.random_probability = 1.1
 
-        if len(tree.func_nodes) < 1:
-                self.random_probability = 1.1
+        # if len(tree.func_nodes) < 1:
+        #         self.random_probability = 1.1
 
         # mutate
         if self.mutation_probability >= self.random_probability:

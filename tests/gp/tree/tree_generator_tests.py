@@ -56,6 +56,7 @@ class TreeGeneratorTests(unittest.TestCase):
 
         for i in xrange(tests):
             tree = self.tree_generator.full_method()
+            print tree
 
             # # func nodes
             # print("FUNCTION NODES!")

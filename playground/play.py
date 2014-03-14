@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import math
 import copy
-import collections
+import time
 import random
+import collections
 import multiprocessing
 from multiprocessing import Process
 from multiprocessing import Manager
@@ -120,23 +121,21 @@ def play(play):
     )
     population.individuals = results
 
-    # plot solution
-    # x = play.config["data"]["x"]
-    # y = play.config["data"]["y"]
-    # fig = plt.figure(1)
-    # ax = fig.add_subplot(1, 1, 1)
-    # ax.plot(x, y)
-    # plt.show(block=False)
-
     while play.stop_func(population, stats, play.config) is False:
         # update stats and print function
         update_generation_stats(stats, population)
         if play.print_func:
             play.print_func(population, stats["generation"])
 
+        # for i in population.individuals:
+        #     print i, i.score
+
         # genetic genetic operators
+        start_time = time.time()
         population = play.selection.select(population)
         reproduce(population, play.crossover, play.mutation, play.config)
+        end_time = time.time()
+        print "select and reproduce took: %2.2fsec" % (end_time - start_time)
 
         # record
         if play.recorder and isinstance(play.recorder, JSONStore):
@@ -144,6 +143,7 @@ def play(play):
             play.recorder.record_to_file()
 
         # evaluate population
+        start_time = time.time()
         results = []
         play.evaluate(
             population.individuals,
@@ -154,21 +154,15 @@ def play(play):
             play.recorder
         )
         population.individuals = results
-
-        # # plot current best
-        # if tree_results is not None:
-        #     if len(ax.lines) > 1:
-        #         ax.lines.pop()
-        #     ax.plot(x, tree_results)
-        #     plt.draw()
-        #     plt.show(block=False)
+        end_time = time.time()
+        print "evaluation took: %2.2fsec\n" % (end_time - start_time)
 
         # edit population
-        # if play.config.get("tree_editor", False):
-        #     every = play.config["tree_editor"]["every"]
-        #     if stats["generation"] != 0 and stats["generation"] % every == 0:
-        #         print "\nEDIT TREES!\n"
-        #         play.tree_editor(population, play.functions)
+        if play.config.get("tree_editor", False):
+            every = play.config["tree_editor"]["every"]
+            if stats["generation"] != 0 and stats["generation"] % every == 0:
+                print "\nEDIT TREES!\n"
+                play.tree_editor(population, play.functions)
 
     # finalize recording
     if play.recorder is not None:

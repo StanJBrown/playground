@@ -87,7 +87,7 @@ def eval_node(node, stack, functions, config, data_row=None):
 def eval_program(tree, tree_size, functions, config):
     try:
         stack = []
-        err = 0.0  # sum squared error
+        err = 0.0  # mean absolute error
         score = 0.0
         response_var = config["response_variable"]["name"]
         response_data = config["data"][response_var]
@@ -102,27 +102,18 @@ def eval_program(tree, tree_size, functions, config):
             # calculate score
             node = stack.pop()
             result.append(node.value)
-            err += abs(response_data[i] - node.value)
+            err += pow(abs(response_data[i] - node.value), 2)
 
             # reset stack
             del stack[:]
 
-        score = (err / rows) + (tree_size * 0.1)
+        score = err + (tree_size * 0.1)
         return score, result
 
     except EvaluationError:
-        # print "FAILED TO EVAL[EVALERR]:", tree
         return None, None
 
     except OverflowError:
-        # print "FAILED TO EVAL[OVERFLOW]:", tree
-
-        # import traceback
-        # traceback.print_exc()
-
-        # import sys
-        # sys.exit(-1)
-
         return None, None
 
 
@@ -159,6 +150,9 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
     best_score = None
     best_result = None
 
+    # remove trees of size 2
+    trees = [t for t in trees if t.size > 2 and len(t.input_nodes) > 0]
+
     # evaluate trees
     for tree in trees:
         score = None
@@ -167,12 +161,22 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
         # use cahce?
         if use_cache:
             if str(tree) not in cache:
-                score, res = eval_program(tree, tree.size, functions, config)
+                score, res = eval_program(
+                    tree,
+                    tree.size,
+                    functions,
+                    config
+                )
                 nodes_evaluated += tree.size
             else:
                 score = cache[str(tree)]
+
         else:
-            score, res = eval_program(tree, tree.size, functions, config)
+            score, res = eval_program(
+                tree,
+                tree.size,
+                functions,
+                config)
             nodes_evaluated += tree.size
 
         # check result

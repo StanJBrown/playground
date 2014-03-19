@@ -87,10 +87,10 @@ class MutatorTests(unittest.TestCase):
         else:
             return False
 
-    def mutated(self, tree, mutation_func):
+    def mutated(self, tree, mutation_func, mutation_index=None):
         print "POINT MUATION!"
         tree_before = self.build_tree_str(self.tree)
-        mutation_func(tree)
+        mutation_func(tree, mutation_index)
         tree_after = self.build_tree_str(self.tree)
 
         print("Before Mutation")
@@ -109,16 +109,7 @@ class MutatorTests(unittest.TestCase):
 
     def test_hoist_mutation(self):
         print "HOIST MUATION!"
-        self.mutated(self.tree, self.tree_mutation.hoist_mutation)
-
-        self.assertEquals(self.tree.size, 2)
-        self.assertEquals(self.tree.depth, 1)
-        self.assertEquals(self.tree.branches, 1)
-        self.assertEquals(self.tree.open_branches, 0)
-
-        self.assertEquals(len(self.tree.func_nodes), 0)
-        self.assertEquals(len(self.tree.term_nodes), 0)
-        self.assertEquals(len(self.tree.input_nodes), 1)
+        self.mutated(self.tree, self.tree_mutation.hoist_mutation, 3)
 
     def test_subtree_mutation(self):
         print "SUBTREE MUATION!"

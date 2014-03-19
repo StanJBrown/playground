@@ -1,5 +1,5 @@
 {
-    "max_population" : 500,
+    "max_population" : 5000,
     "max_generation" : 30,
 
     "tree_generation": {
@@ -55,16 +55,6 @@
         },
         {
             "type": "FUNCTION",
-            "name": "EXP",
-            "arity": 1
-        },
-        {
-            "type": "FUNCTION",
-            "name": "LN",
-            "arity": 1
-        },
-        {
-            "type": "FUNCTION",
             "name": "SIN",
             "arity": 1
         },
@@ -77,11 +67,6 @@
             "type": "FUNCTION",
             "name": "RAD",
             "arity": 1
-        },
-        {
-            "type": "FUNCTION",
-            "name": "POW",
-            "arity": 2
         }
     ],
 

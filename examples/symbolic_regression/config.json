@@ -1,6 +1,6 @@
 {
-    "max_population" : 500,
-    "max_generation" : 100,
+    "max_population" : 5000,
+    "max_generation" : 30,
 
     "tree_generation": {
         "method" : "GROW_METHOD",
@@ -52,21 +52,6 @@
             "type": "FUNCTION",
             "name": "DIV",
             "arity": 2
-        },
-        {
-            "type": "FUNCTION",
-            "name": "COS",
-            "arity": 1
-        },
-        {
-            "type": "FUNCTION",
-            "name": "SIN",
-            "arity": 1
-        },
-        {
-            "type": "FUNCTION",
-            "name": "RAD",
-            "arity": 1
         }
     ],
 
@@ -117,17 +102,17 @@
         }
     ],
 
-    "data_file" : "training_data/nguyen_et_al-f1.dat",
+    "data_file" : "training_data/exp_with_noise.dat",
 
     "input_variables" : [
         {
             "type": "INPUT",
-            "name": "var1"
+            "name": "x"
         }
     ],
 
     "response_variable" : {
-        "name": "answer"
+        "name": "y"
     },
 
     "recorder" : {

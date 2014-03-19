@@ -127,9 +127,6 @@ def play(play):
         if play.print_func:
             play.print_func(population, stats["generation"])
 
-        # for i in population.individuals:
-        #     print i, i.score
-
         # genetic genetic operators
         start_time = time.time()
         population = play.selection.select(population)

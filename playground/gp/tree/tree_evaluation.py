@@ -151,7 +151,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
     best_result = None
 
     # remove trees of size 2
-    trees = [t for t in trees if t.size > 2 and len(t.input_nodes) > 0]
+    # trees = [t for t in trees if t.size > 2 and len(t.input_nodes) > 0]
 
     # evaluate trees
     for tree in trees:

@@ -49,8 +49,8 @@ class NodeTests(unittest.TestCase):
 
         # start the playground nodes
         self.node_1 = Popen(nodes[0], preexec_fn=os.setsid)
-        self.node_2 = Popen(nodes[1], preexec_fn=os.setsid)
-        self.node_3 = Popen(nodes[2], preexec_fn=os.setsid)
+        # self.node_2 = Popen(nodes[1], preexec_fn=os.setsid)
+        # self.node_3 = Popen(nodes[2], preexec_fn=os.setsid)
 
         # sleep for 2 seconds while the servers are starting
         time.sleep(1)
@@ -58,8 +58,8 @@ class NodeTests(unittest.TestCase):
     def tearDown(self):
         # shutdown all the playground nodes
         os.kill(self.node_1.pid, signal.SIGTERM)
-        os.kill(self.node_2.pid, signal.SIGTERM)
-        os.kill(self.node_3.pid, signal.SIGTERM)
+        # os.kill(self.node_2.pid, signal.SIGTERM)
+        # os.kill(self.node_3.pid, signal.SIGTERM)
 
     def transmit(self, host, port, req_type, path, data=None):
         request = "/".join(path.split("/"))

@@ -22,7 +22,8 @@ from playground.recorder.json_store import JSONStore
 # SETTINGS
 record_exception = False
 script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-config_fp = os.path.join(script_path, "sine_config.json")
+# config_fp = os.path.join(script_path, "sine_config.json")
+config_fp = os.path.join(script_path, "config.json")
 
 
 if __name__ == "__main__":

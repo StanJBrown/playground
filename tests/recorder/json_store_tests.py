@@ -109,10 +109,8 @@ class JSONStoreTests(unittest.TestCase):
 
         # assert
         record = self.json_store.generation_record
-        # pprint.pprint(record)
         self.assertNotEquals(record, {})
         self.assertEquals(record["crossover"][0]["crossovered"], True)
-        self.assertEquals(record["crossover"][0]["index"], 1)
         self.assertEquals(record["crossover"][0]["method"], "POINT_CROSSOVER")
 
     def test_record_mutation(self):

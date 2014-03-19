@@ -1,5 +1,5 @@
 {
-    "max_population": 5000,
+    "max_population": 50,
 
     "tree_generation" : {
         "method" : "FULL_METHOD",

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-import sys
 import os
+import sys
 import unittest
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import playground.config as config
 from playground.gp.functions import GPFunctionRegistry
 

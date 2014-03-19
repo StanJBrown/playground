@@ -1,5 +1,8 @@
 #!/usr/bin/env python
+import os
+import sys
 import unittest
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from playground.ga.bit_string_generator import BitStringGenerator
 

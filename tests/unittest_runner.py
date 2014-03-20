@@ -71,7 +71,7 @@ if __name__ == "__main__":
             unittest_output = open(unittest_output_fp, 'w')
 
             return_val = subprocess.check_call(
-                ["python", "./{0}".format(unittest)],
+                ["coverage", "run", "./{0}".format(unittest)],
                 stdout=unittest_output,
                 stderr=unittest_output
             )

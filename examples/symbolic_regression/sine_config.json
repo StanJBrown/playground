@@ -1,6 +1,6 @@
 {
     "max_population" : 5000,
-    "max_generation" : 30,
+    "max_generation" : 6,
 
     "tree_generation": {
         "method" : "GROW_METHOD",

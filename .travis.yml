@@ -27,6 +27,9 @@ install:
 script:
     - python tests/unittest_runner.py
 
+after_success:
+    - coveralls
+
 branches:
   only:
       - master

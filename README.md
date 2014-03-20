@@ -25,14 +25,7 @@ features:
 - Ability to record evolution process a JSON flat file
 
 
-## Requirements
-
-- Python (version 2.7 +)
-- sympy (version 0.7.3 +)
-
-
 ## Install
-
 Currently the best way is to clone the repo and install the dependencies:
 
     git clone git@github.com:chutsu/playground.git

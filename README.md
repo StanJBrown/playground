@@ -1,4 +1,7 @@
-# playground [![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
+# playground
+[![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
+[![Coverage Status](https://coveralls.io/repos/chutsu/playground/badge.png)][5]
+
 Playground is an Evolutionary Algorithm library implemented in Python. Currently
 features:
 
@@ -74,3 +77,4 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 [2]: https://bitdeli.com/free
 [3]: http://www.symbolicregression.com/?q=faq
 [4]: https://github.com/chutsu/playground/tree/master/examples/symbolic_regression
+[5]: https://coveralls.io/r/chutsu/playground

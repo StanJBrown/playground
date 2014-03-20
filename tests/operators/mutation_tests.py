@@ -24,6 +24,7 @@ config_path = os.path.normpath(os.path.join(script_path, config_file))
 
 class MutatorTests(unittest.TestCase):
     def setUp(self):
+        random.seed(0)
         self.config = config.load_config(config_path)
 
         self.functions = GPFunctionRegistry()
@@ -178,6 +179,7 @@ class MutatorTests(unittest.TestCase):
 
 class GABitStrMutationTests(unittest.TestCase):
     def setUp(self):
+        random.seed(0)
         self.config = {
             "max_population": 10,
 

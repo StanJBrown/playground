@@ -25,6 +25,7 @@ config_path = os.path.normpath(os.path.join(script_path, config_file))
 
 class GPTreeCrossoverTests(unittest.TestCase):
     def setUp(self):
+        random.seed(0)
         self.config = config.load_config(config_path)
 
         self.functions = GPFunctionRegistry()

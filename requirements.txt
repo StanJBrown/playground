@@ -1,5 +1,4 @@
 sympy
-psycopg2
 flask
 paramiko
 matplotlib

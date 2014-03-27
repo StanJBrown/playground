@@ -13,7 +13,3 @@ source =
     playground.parameter_setter,
     playground.playnode,
     playground.recorder
-
-[report]
-omit =
-    playground/*

@@ -1,53 +1,67 @@
 #!/usr/bin/env python
-from random import rand
-import numpy as np
+from random import random
 
 from playground.population import Population
 
 
 class PSOParticle(object):
     def __init__(self, **kwargs):
-        # score
         self.score = kwargs.get("score", None)
-        self.best_score = kwargs.get("best_score", None)
+        self.best_score = self.score
 
-        # position
         self.position = kwargs.get("position", None)
-        self.best_position = kwargs.get("best_position", None)
+        self.best_position = self.position
 
-        # velocity
         self.velocity = kwargs.get("velocity", None)
+        self.max_velocity = kwargs.get("max_velocity", None)
 
-    def update_velocity(self, population, c_1, c_2):
-        best = population.best_individuals[0]
+        self.bounds = kwargs.get("bounds", None)
 
-        # convert python list to numpy array
-        self.best_position = np.array(self.best_position)
-        self.position = np.array(self.position)
-        best.position = np.array(best.position)
+    def update_velocity(self, best, c_1, c_2):
+        # loop through each dimension
+        for i in range(len(self.position)):
+            # update velocity
+            cog = c_1 * random() * (self.best_position[i] - self.position[i])
+            soc = c_2 * random() * (best.best_position[i] - self.position[i])
+            self.velocity[i] = self.velocity[i] + cog + soc
 
-        # calculate cognitive and social components
-        cog = c_1 * rand() * (self.best_position - self.position).tolist()
-        soc = c_2 * rand() * (best.best_position - self.position).tolist()
+            # if velocity reaches max, cap the velocity
+            if self.velocity[i] > self.max_velocity[i]:
+                self.velocity[i] = self.max_velocity[i]
+            elif self.velocity[i] < -self.max_velocity[i]:
+                self.velocity[i] = -self.max_velocity[i]
 
-        # convert numpy array back to python list
-        self.best_position = self.best_position.tolist()
-        self.position = self.position.tolist()
-        best.position = best.position.tolist()
+    def over_bounds(self, i):
+        print i
+        # loop through every boundary
+        for bound in self.bounds:
+            print bound
+            # check if position is over the boundary
+            if self.position[i] > bound[i]:
+                print "HIT 1!"
+                diff = abs(self.position[i] - bound[i])
+                print "BEFORE CORRECT", self.position[i]
+                self.position[i] = bound[i] - diff
+                print "CORRECT", self.position[i]
+                self.velocity[i] *= -1.0  # reverse direction
 
-        # update velocity
-        self.velocity = self.velocity + cog + soc
+            # under the bound
+            elif self.position[i] < bound[i]:
+                print "HIT 2!"
+                diff = abs(self.position[i] - bound[i])
+                print "BEFORE CORRECT", self.position[i]
+                self.position[i] = bound[i] + diff
+                print "CORRECT", self.position[i]
+                self.velocity[i] *= -1.0  # reverse direction
 
-    def update_position(self, bounds):
-        # convert python list to numpy array
-        self.position = np.array(self.position)
-        self.velocity = np.array(self.velocity)
+    def update_position(self):
+        # loop through each dimension
+        for i in range(len(self.position)):
+            # update position
+            self.position[i] = self.position[i] + self.velocity[i]
 
-        # update position
-        self.position = self.position + self.velocity
-
-        # convert numpy array back to python list
-        self.position = self.position.tolist()
+            # check if over bounds
+            # self.over_bounds(i, self.bounds)
 
     def update_best_position(self):
         if self.score < self.best_score:
@@ -63,12 +77,12 @@ class PSOParticleGenerator(object):
         particle = PSOParticle()
 
         # score
-        particle.score = obj_func(particle.position)
+        particle.score = obj_func(particle.pos)
         particle.best_score = particle.cost
 
         # position
-        particle.position = self.random_vector()
-        particle.best_position = particle.position
+        particle.pos = self.random_vector()
+        particle.bpos = particle.pos
 
         # velocity
         particle.velocity = self.random_vector()
@@ -83,6 +97,10 @@ class PSOParticleGenerator(object):
             population.individuals.append(self.create_particle(obj_func))
 
 
+def obj_func(vector):
+    result = map(lambda el: el ** 2, vector)
+    result = reduce(lambda x, y: x + y, result)
+    return result
 
 
 def pso_search(population, objective_function):

@@ -4,6 +4,8 @@ tags
 lib
 bin
 
+.coverage
+
 *.pyc
 
 CMakeCache.txt

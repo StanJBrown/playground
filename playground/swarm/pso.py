@@ -161,15 +161,27 @@ def pso_search(population, max_generations, c_1, c_2, obj_func):
             particle.update_best_position()
 
         population.sort_individuals()
-        gbest = population.find_best_individuals()[0]
+        gen_best = population.find_best_individuals()[0]
+
+        if gen_best.score < gbest.score:
+            gbest = PSOParticle(
+                score=gen_best.score,
+                position=gen_best.position,
+                velocity=gen_best.velocity,
+                bounds=gen_best.bounds,
+                max_velocity=gen_best.max_velocity
+            )
 
         print " > gen {0}, fitness={1}".format(gen, gbest.score)
 
 
 if __name__ == "__main__":
     config = {
-        "max_population": 5
+        "max_population": 20
     }
+    c_1 = 2.0
+    c_2 = 2.0
+    max_generations = 100
 
     max_velocity = [10.0, 10.0]
     bounds = [[0, 10], [0, 10]]
@@ -184,5 +196,4 @@ if __name__ == "__main__":
     population = generator.init()
     print len(population.individuals)
 
-    pso_search(population, 10, 1.0, 1.0, obj_func)
-    pass
+    pso_search(population, max_generations, c_1, c_2, obj_func)

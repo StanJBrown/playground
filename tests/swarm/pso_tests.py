@@ -189,11 +189,12 @@ class PSOParticleGeneratorTests(unittest.TestCase):
         # test create particle
         result = self.generator.create_particle()
 
-        print "POSITION:", result.position
-        print "VELOCITY:", result.velocity
-        print "SCORE:", result.score
-        print "BEST SCORE:", result.best_score
+        # print "POSITION:", result.position
+        # print "VELOCITY:", result.velocity
+        # print "SCORE:", result.score
+        # print "BEST SCORE:", result.best_score
 
+        # essential fields cannot be None
         self.assertIsNotNone(result.position)
         self.assertIsNotNone(result.velocity)
         self.assertIsNotNone(result.score)
@@ -203,6 +204,7 @@ class PSOParticleGeneratorTests(unittest.TestCase):
 
         self.assertEquals(result.score, result.best_score)
 
+        # make sure position and velocity is within boundaries
         self.assertTrue(result.position[0] >= self.bounds[0][0])
         self.assertTrue(result.position[0] <= self.bounds[0][1])
         self.assertTrue(result.position[1] >= self.bounds[1][0])
@@ -217,11 +219,12 @@ class PSOParticleGeneratorTests(unittest.TestCase):
         population = self.generator.init()
 
         for particle in population.individuals:
-            print "POSITION:", particle.position
-            print "VELOCITY:", particle.velocity
-            print "SCORE:", particle.score
-            print "BEST SCORE:", particle.best_score
+            # print "POSITION:", particle.position
+            # print "VELOCITY:", particle.velocity
+            # print "SCORE:", particle.score
+            # print "BEST SCORE:", particle.best_score
 
+            # essential fields cannot be None
             self.assertIsNotNone(particle.position)
             self.assertIsNotNone(particle.velocity)
             self.assertIsNotNone(particle.score)
@@ -231,6 +234,7 @@ class PSOParticleGeneratorTests(unittest.TestCase):
 
             self.assertEquals(particle.score, particle.best_score)
 
+            # make sure position and velocity is within boundaries
             self.assertTrue(particle.position[0] >= self.bounds[0][0])
             self.assertTrue(particle.position[0] <= self.bounds[0][1])
             self.assertTrue(particle.position[1] >= self.bounds[1][0])

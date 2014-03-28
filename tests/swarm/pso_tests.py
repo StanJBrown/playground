@@ -5,6 +5,7 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from playground.swarm.pso import PSOParticle
+from playground.swarm.pso import PSOParticleGenerator
 
 
 class PSOParticleTests(unittest.TestCase):
@@ -71,8 +72,8 @@ class PSOParticleTests(unittest.TestCase):
         before = list(self.particle.position)
         self.particle.check_over_bounds()
         after = list(self.particle.position)
-        print "x-axis under bounds[BEFORE]:", before
-        print "x-axis under bounds[AFTER]:", after
+        # print "x-axis under bounds[BEFORE]:", before
+        # print "x-axis under bounds[AFTER]:", after
 
         # assert
         self.assertEquals(self.particle.position, [1, 5])
@@ -82,8 +83,8 @@ class PSOParticleTests(unittest.TestCase):
         before = list(self.particle.position)
         self.particle.check_over_bounds()
         after = list(self.particle.position)
-        print "x-axis over bounds[BEFORE]:", before
-        print "x-axis over bounds[AFTER]:", after
+        # print "x-axis over bounds[BEFORE]:", before
+        # print "x-axis over bounds[AFTER]:", after
 
         # assert
         self.assertEquals(self.particle.position, [9, 5])
@@ -93,8 +94,8 @@ class PSOParticleTests(unittest.TestCase):
         before = list(self.particle.position)
         self.particle.check_over_bounds()
         after = list(self.particle.position)
-        print "y-axis over bounds[BEFORE]:", before
-        print "y-axis over bounds[AFTER]:", after
+        # print "y-axis over bounds[BEFORE]:", before
+        # print "y-axis over bounds[AFTER]:", after
 
         # assert
         self.assertEquals(self.particle.position, [5, 1])
@@ -104,8 +105,8 @@ class PSOParticleTests(unittest.TestCase):
         before = list(self.particle.position)
         self.particle.check_over_bounds()
         after = list(self.particle.position)
-        print "y-axis over bounds[BEFORE]:", before
-        print "y-axis over bounds[AFTER]:", after
+        # print "y-axis over bounds[BEFORE]:", before
+        # print "y-axis over bounds[AFTER]:", after
 
         # assert
         self.assertEquals(self.particle.position, [5, 9])
@@ -123,19 +124,122 @@ class PSOParticleTests(unittest.TestCase):
         # assert
         self.assertNotEquals(pos_before, pos_after)
 
-    # def test_update_position_at_boundary(self):
-    #     print "HERE--------"
-    #     # update position with boundary condition
-    #     self.particle.position = [10, 10]
-    #     pos_before = list(self.particle.position)
-    #     self.particle.update_position()
-    #     pos_after = list(self.particle.position)
 
-    #     print "POSITION BEFORE", pos_before
-    #     print "POSITION AFTER", pos_after
+class PSOParticleGeneratorTests(unittest.TestCase):
+    def setUp(self):
+        config = {
+            "max_population": 5
+        }
 
-    #     # assert
-    #     self.assertNotEquals(pos_before, pos_after)
+        self.max_velocity = [10.0, 10.0]
+        self.bounds = [[0, 10], [0, 10]]
+
+        self.particle = PSOParticle(
+            score=0.0,
+            position=[1.0, 1.0],
+            velocity=[1.0, 1.0],
+            max_velocity=self.max_velocity,
+            bounds=self.bounds
+        )
+
+        self.generator = PSOParticleGenerator(
+            config,
+            max_velocity=self.max_velocity,
+            bounds=self.bounds,
+            obj_func=self.obj_func
+        )
+
+    def tearDown(self):
+        pass
+
+    def obj_func(self, vector):
+        result = map(lambda el: el ** 2, vector)
+        result = reduce(lambda x, y: x + y, result)
+        return result
+
+    def test_random_vector(self):
+        # test random position vector
+        test = 100
+        for i in range(test):
+            result = self.generator.random_position_vector()
+
+            # x-axis is between the min and max boundary
+            self.assertTrue(result[0] >= self.bounds[0][0])
+            self.assertTrue(result[0] <= self.bounds[0][1])
+
+            # y-axis is between the min and max boundary
+            self.assertTrue(result[1] >= self.bounds[1][0])
+            self.assertTrue(result[1] <= self.bounds[1][1])
+
+    def test_random_velocity_vector(self):
+        # test random velocity vector
+        test = 100
+        for i in range(test):
+            result = self.generator.random_velocity_vector()
+
+            # x-axis is between the within the max velocity
+            self.assertTrue(result[0] <= self.max_velocity[0])
+            self.assertTrue(result[0] >= -self.max_velocity[0])
+
+            # y-axis is between the within the max velocity
+            self.assertTrue(result[1] <= self.max_velocity[1])
+            self.assertTrue(result[1] >= -self.max_velocity[1])
+
+    def test_create_particle(self):
+        # test create particle
+        result = self.generator.create_particle()
+
+        print "POSITION:", result.position
+        print "VELOCITY:", result.velocity
+        print "SCORE:", result.score
+        print "BEST SCORE:", result.best_score
+
+        self.assertIsNotNone(result.position)
+        self.assertIsNotNone(result.velocity)
+        self.assertIsNotNone(result.score)
+        self.assertIsNotNone(result.best_score)
+        self.assertIsNotNone(result.bounds)
+        self.assertIsNotNone(result.max_velocity)
+
+        self.assertEquals(result.score, result.best_score)
+
+        self.assertTrue(result.position[0] >= self.bounds[0][0])
+        self.assertTrue(result.position[0] <= self.bounds[0][1])
+        self.assertTrue(result.position[1] >= self.bounds[1][0])
+        self.assertTrue(result.position[1] <= self.bounds[1][1])
+
+        self.assertTrue(result.velocity[0] <= self.max_velocity[0])
+        self.assertTrue(result.velocity[0] >= -self.max_velocity[0])
+        self.assertTrue(result.velocity[1] <= self.max_velocity[1])
+        self.assertTrue(result.velocity[1] >= -self.max_velocity[1])
+
+    def test_init(self):
+        population = self.generator.init()
+
+        for particle in population.individuals:
+            print "POSITION:", particle.position
+            print "VELOCITY:", particle.velocity
+            print "SCORE:", particle.score
+            print "BEST SCORE:", particle.best_score
+
+            self.assertIsNotNone(particle.position)
+            self.assertIsNotNone(particle.velocity)
+            self.assertIsNotNone(particle.score)
+            self.assertIsNotNone(particle.best_score)
+            self.assertIsNotNone(particle.bounds)
+            self.assertIsNotNone(particle.max_velocity)
+
+            self.assertEquals(particle.score, particle.best_score)
+
+            self.assertTrue(particle.position[0] >= self.bounds[0][0])
+            self.assertTrue(particle.position[0] <= self.bounds[0][1])
+            self.assertTrue(particle.position[1] >= self.bounds[1][0])
+            self.assertTrue(particle.position[1] <= self.bounds[1][1])
+
+            self.assertTrue(particle.velocity[0] <= self.max_velocity[0])
+            self.assertTrue(particle.velocity[0] >= -self.max_velocity[0])
+            self.assertTrue(particle.velocity[1] <= self.max_velocity[1])
+            self.assertTrue(particle.velocity[1] >= -self.max_velocity[1])
 
 
 if __name__ == "__main__":

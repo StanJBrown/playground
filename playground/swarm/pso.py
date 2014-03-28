@@ -31,27 +31,22 @@ class PSOParticle(object):
             elif self.velocity[i] < -self.max_velocity[i]:
                 self.velocity[i] = -self.max_velocity[i]
 
-    def over_bounds(self, i):
-        print i
+    def check_over_bounds(self):
         # loop through every boundary
-        for bound in self.bounds:
-            print bound
-            # check if position is over the boundary
-            if self.position[i] > bound[i]:
-                print "HIT 1!"
-                diff = abs(self.position[i] - bound[i])
-                print "BEFORE CORRECT", self.position[i]
-                self.position[i] = bound[i] - diff
-                print "CORRECT", self.position[i]
+        for i in range(len(self.bounds)):
+            min_bound = self.bounds[i][0]
+            max_bound = self.bounds[i][1]
+
+            # check for over the boundary
+            if self.position[i] > max_bound:
+                diff = abs(self.position[i] - max_bound)
+                self.position[i] = max_bound - diff
                 self.velocity[i] *= -1.0  # reverse direction
 
-            # under the bound
-            elif self.position[i] < bound[i]:
-                print "HIT 2!"
-                diff = abs(self.position[i] - bound[i])
-                print "BEFORE CORRECT", self.position[i]
-                self.position[i] = bound[i] + diff
-                print "CORRECT", self.position[i]
+            # check for under the boundary
+            elif self.position[i] < min_bound:
+                diff = abs(self.position[i] - min_bound)
+                self.position[i] = min_bound + diff
                 self.velocity[i] *= -1.0  # reverse direction
 
     def update_position(self):
@@ -60,8 +55,8 @@ class PSOParticle(object):
             # update position
             self.position[i] = self.position[i] + self.velocity[i]
 
-            # check if over bounds
-            # self.over_bounds(i, self.bounds)
+        # check if over bounds
+        self.check_over_bounds()
 
     def update_best_position(self):
         if self.score < self.best_score:

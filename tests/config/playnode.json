@@ -1,0 +1,134 @@
+{
+    "max_population" : 10,
+    "max_generation" : 5,
+
+    "tree_generation" : {
+        "method" : "GROW_METHOD",
+        "initial_max_depth" : 3
+    },
+
+    "evaluator": {
+        "use_cache" : true
+    },
+
+    "selection" : {
+        "method" : "TOURNAMENT_SELECTION",
+        "tournament_size": 5
+    },
+
+    "crossover" : {
+        "method" : "POINT_CROSSOVER",
+        "probability" : 0.8
+    },
+
+    "mutation" : {
+        "methods": [
+            "POINT_MUTATION",
+            "HOIST_MUTATION",
+            "SUBTREE_MUTATION",
+            "SHRINK_MUTATION",
+            "EXPAND_MUTATION"
+        ],
+        "probability" : 0.9
+    },
+
+    "function_nodes" : [
+        {
+            "type": "FUNCTION",
+            "name": "ADD",
+            "arity": 2
+        },
+        {
+            "type": "FUNCTION",
+            "name": "SUB",
+            "arity": 2
+        },
+        {
+            "type": "FUNCTION",
+            "name": "MUL",
+            "arity": 2
+        },
+        {
+            "type": "FUNCTION",
+            "name": "DIV",
+            "arity": 2
+        },
+        {
+            "type": "FUNCTION",
+            "name": "COS",
+            "arity": 1
+        },
+        {
+            "type": "FUNCTION",
+            "name": "SIN",
+            "arity": 1
+        }
+    ],
+
+    "terminal_nodes" : [
+        {
+            "type": "TERM",
+            "value": 1.0
+        },
+        {
+            "type": "TERM",
+            "value": 2.0
+        },
+        {
+            "type": "TERM",
+            "value": 2.0
+        },
+        {
+            "type": "TERM",
+            "value": 3.0
+        },
+        {
+            "type": "TERM",
+            "value": 4.0
+        },
+        {
+            "type": "TERM",
+            "value": 5.0
+        },
+        {
+            "type": "TERM",
+            "value": 6.0
+        },
+        {
+            "type": "TERM",
+            "value": 7.0
+        },
+        {
+            "type": "TERM",
+            "value": 8.0
+        },
+        {
+            "type": "TERM",
+            "value": 9.0
+        },
+        {
+            "type": "TERM",
+            "value": 10.0
+        }
+    ],
+
+    "input_variables" : [
+        {
+            "type": "INPUT",
+            "name": "x"
+        }
+    ],
+
+    "data_file" : "tests/data/sine.dat",
+
+    "response_variable" : {
+        "name": "y"
+    },
+
+    "database" : {
+        "database": "playground",
+        "host": "localhost",
+        "port": 5432,
+        "user": "playground_user"
+    }
+}

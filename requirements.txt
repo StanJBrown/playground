@@ -1,6 +1,0 @@
-sympy
-flask
-paramiko
-matplotlib
-numpy
-scipy

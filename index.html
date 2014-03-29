@@ -6,38 +6,50 @@
     <!-- CSS -->
     <style type="text/css">
         body {
-            width: 550px;
+            width: 590px;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 40px;
+            /* margin-top: 40px; */
             margin-bottom: 200px;
-            font-size: 0.8em;
+            font-size: 15px;
             font-family: Helvetica, Arial;
             text-align: justify;
             color: #444;
         }
 
         pre {
-            width: 90%;
+            width: 95%;
+
             margin-left: auto;
             margin-right: auto;
-            padding-left: 7px;
-            padding-right: 7px;
+
+            padding-left: 10px;
+            padding-right: 10px;
             padding-top: 5px;
             padding-bottom: 5px;
-            border-radius: 2px;
-            border: 1px solid #AAA;
+
+            color: #EEE;
+            font-size: 12px;
+
+
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            -khtml-border-radius: 5px;
+            -webkit-border-radius: 5px;
+
+            background-color: #444; 
         }
 
         h1, h2 {
             text-align: left;
             margin-top: 40px;
+            font-size: 28px;
         }
 
-        h1 {
-            font-size: 23px;
-
+        h2 {
+            font-size: 20px;
         }
+
 
         img {
             display: block;
@@ -72,6 +84,80 @@
             font-size: 0.9em;
             text-align: center;
         }
+
+        div.clear {
+            clear: both;
+        }
+
+        nav {
+            display: table;
+            width: 100%;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #AAA;
+        }
+
+        nav h1 {
+            float: left;
+            display: table-cell;
+            width: auto;
+
+            margin-right: 50px;
+            margin-bottom: 0;
+            margin-top: 0;
+
+            font-size: 14px;
+        }
+
+        #examples_gallery {
+            list-style-type: none;
+
+            margin: 0;
+            padding: 0;
+        }
+
+        #examples_gallery .example {
+            float: left;
+            width: 190px;
+
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        #example_details {
+            list-style-type: none;
+            width: 90%;
+
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0px;
+        }
+
+        #example_details li.title {
+            margin-bottom: 5px;
+            padding-left: 2px;
+
+            font-size: 14px;
+            text-align: center;
+        }
+
+        #example_details img {
+            max-width: 160px;
+            height: 120px;
+
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: 0px;
+
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            -khtml-border-radius: 5px;
+            -webkit-border-radius: 5px;
+
+            border: 1px solid black;
+        }
+
     </style>
 
     <!-- MATHJAX -->
@@ -85,6 +171,79 @@
     </script>
 </head>
 <body>
-    <h1>Playground</h1>
+
+<h1>playground</h1>
+<nav>
+    <h1><a href="index.html">Overview</a></h1>
+    <h1><a href="documentation.html">Documentation</a></h1>
+    <h1><a href="github.com/chutsu/playground">Source</a></h1>
+</nav>
+<div class="clear"></div>
+
+<p><b>playground</b> is a <a href="http://en.wikipedia.org/wiki/Metaheuristic">
+meta-heuristic</a> library implemented in Python designed to be <i>flexible</i>
+and <i>reusable</i>. At current the following algorithms have been
+implemented:</p>
+
+<ul>
+    <li>Genetic Algorithm (GA)</li>
+    <li>Genetic Programming (GP)</li>
+    <li>Particle Swarm Optimization (PSO)</li>
+</ul>
+
+<h2>Examples</h2>
+<ul id="examples_gallery">
+    <!-- GENETIC ALGORITHM -->
+    <li class="example">
+        <ul id="example_details">
+            <li class="title">Genetic Algorithm</li>
+            <li class="thumbnail">
+                <img src="images/nasa_antenna.jpg" />
+            </li>
+        </ul>
+    </li>
+
+    <!-- GENETIC PROGRAMMING -->
+    <li class="example">
+        <ul id="example_details">
+            <li class="title">Genetic Programming</li>
+            <li class="thumbnail">
+                <img src="images/gp_tree.png" />
+            </li>
+        </ul>
+    </li>
+
+    <!-- PARTICLE SWARM OPTIMIZATION -->
+    <li class="example">
+        <ul id="example_details">
+            <li class="title">Particle Swarm Optimization</li>
+            <li class="thumbnail">
+                <a href="https://www.youtube.com/watch?v=J1gvufe0Upc">
+                    <img src="images/pso_demo.jpg" />
+                </a>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<div class="clear"></div>
+
+<h2>Install</h2>
+<p>Currently the best way is to clone the repo and install the
+dependencies:</p>
+
+<pre>
+git clone git@github.com:chutsu/playground.git
+pip install -r requirements.txt  # installs dependencies for playground
+</pre>
+
+
+<h2>Author</h2>
+<p>My name is Chris Choi, I am a PhD Student at the <a
+href="http://www.st-andrews.ac.uk/">University of St Andrews</a>. I created
+this library as a programming excercise and also as part of my PhD research to
+find ways to optimize meta-heuristics. For more information about me visit my
+website <a href="chutsu.github.io">here</a>!</p>
+
 </body>
 </html>

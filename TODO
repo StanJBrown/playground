@@ -1,19 +1,32 @@
 # TODO
-#
-- Run parameter sweep
-
 - Implement Racing Algorithm
+- Read Edinburgh PSO paper
+
+- Refactor operators module back into respective ga and gp folder
+- Run parameter sweep
 - Run Racing algorithm benchmark
 
-----
 
+# TODO Documentation
+- Examples
+    - GA
+    - GP
+    - PSO
+
+- play
+- population
+- ga
+- gp
+- operators
+- playnode
+
+
+# TODO Queue
 - Implement Meta-GA
 - Run Meta-GA benchmark
 
 - Add 2 more symbolic regression examples
 - Write the tree evaluator in C as a python extension
-
----
 
 - Look at Cartesian GP
 - Look at Co-evolution and how to implement it

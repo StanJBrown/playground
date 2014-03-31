@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from playground.gp.tree.tree_node import TreeNodeType
+from playground.gp.tree.tree import TreeNodeType
 
 
 def simplify(node, functions):

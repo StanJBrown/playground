@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from sympy import simplify
 
-from playground.gp.functions import EvaluationError
-from playground.gp.tree.tree_node import TreeNode
-from playground.gp.tree.tree_node import TreeNodeType
+from playground.gp.tree.tree import TreeNode
+from playground.gp.tree.tree import TreeNodeType
 from playground.gp.tree.tree_parser import TreeParser
+from playground.gp.functions import EvaluationError
 
 
 def print_func(population, generation):

@@ -2,8 +2,8 @@
 from random import random
 from random import sample
 
-from playground.gp.tree.tree_node import TreeNode
-from playground.gp.tree.tree_node import TreeNodeType
+from playground.gp.tree.tree import TreeNode
+from playground.gp.tree.tree import TreeNodeType
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.recorder.record_type import RecordType
 

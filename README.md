@@ -24,6 +24,8 @@ features:
 - Config files using JSON
 - Ability to record evolution process a JSON flat file
 
+- Particle Swarm Optimization
+
 
 ## Install
 Currently the best way is to clone the repo and install the dependencies:

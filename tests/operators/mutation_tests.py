@@ -24,7 +24,6 @@ config_path = os.path.normpath(os.path.join(script_path, config_file))
 
 class MutatorTests(unittest.TestCase):
     def setUp(self):
-        random.seed(0)
         self.config = config.load_config(config_path)
 
         self.functions = GPFunctionRegistry()
@@ -89,7 +88,6 @@ class MutatorTests(unittest.TestCase):
             return False
 
     def mutated(self, tree, mutation_func, mutation_index=None):
-        print "POINT MUATION!"
         tree_before = self.build_tree_str(self.tree)
         mutation_func(tree, mutation_index)
         tree_after = self.build_tree_str(self.tree)
@@ -179,7 +177,6 @@ class MutatorTests(unittest.TestCase):
 
 class GABitStrMutationTests(unittest.TestCase):
     def setUp(self):
-        random.seed(0)
         self.config = {
             "max_population": 10,
 
@@ -222,4 +219,5 @@ class GABitStrMutationTests(unittest.TestCase):
         self.assertFalse(bitstr_before == bitstr_after)
 
 if __name__ == '__main__':
+    random.seed(0)
     unittest.main()

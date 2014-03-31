@@ -8,6 +8,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 import playground.config as config
 import playground.play as play
+from playground.gp.tree.tree import Tree
+from playground.gp.tree.tree_node import TreeNode
+from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
@@ -22,8 +25,8 @@ from playground.recorder.json_store import JSONStore
 # SETTINGS
 record_exception = False
 script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-# config_fp = os.path.join(script_path, "sine_config.json")
-config_fp = os.path.join(script_path, "config.json")
+config_fp = os.path.join(script_path, "sine_config.json")
+# config_fp = os.path.join(script_path, "config.json")
 
 
 if __name__ == "__main__":

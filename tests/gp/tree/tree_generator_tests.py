@@ -4,7 +4,6 @@ import os
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
-import playground.config as config
 from playground.gp.tree.tree import Tree
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
@@ -14,12 +13,107 @@ from playground.gp.functions import GPFunctionRegistry
 
 # SETTINGS
 cwd = os.path.dirname(__file__)
-tree_init_config = os.path.join(cwd, "../../config/initializer.json")
 
 
 class TreeGeneratorTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(tree_init_config)
+        self.config = {
+            "max_population": 10,
+
+            "tree_generation": {
+                "method": "RAMPED_HALF_AND_HALF_METHOD",
+                "initial_max_depth": 4
+            },
+
+            "function_nodes": [
+                {
+                    "type": "FUNCTION",
+                    "arity": 2,
+                    "name": "ADD"
+                },
+                {
+                    "type": "FUNCTION",
+                    "arity": 2,
+                    "name": "SUB"
+                },
+                {
+                    "type": "FUNCTION",
+                    "arity": 2,
+                    "name": "MUL"
+                },
+                {
+                    "type": "FUNCTION",
+                    "arity": 2,
+                    "name": "DIV"
+                },
+                {
+                    "type": "FUNCTION",
+                    "arity": 1,
+                    "name": "COS"
+                },
+                {
+                    "type": "FUNCTION",
+                    "arity": 1,
+                    "name": "SIN"
+                }
+            ],
+
+            "terminal_nodes": [
+                {
+                    "type": "TERM",
+                    "value": 1.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 2.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 2.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 3.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 4.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 5.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 6.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 7.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 8.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 9.0
+                },
+                {
+                    "type": "TERM",
+                    "value": 10.0
+                }
+            ],
+
+            "input_variables": [
+                {
+                    "name": "x"
+                },
+                {
+                    "name": "y"
+                }
+            ]
+        }
 
         self.functions = GPFunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
@@ -56,7 +150,6 @@ class TreeGeneratorTests(unittest.TestCase):
 
         for i in xrange(tests):
             tree = self.tree_generator.full_method()
-            print tree
 
             # # func nodes
             # print("FUNCTION NODES!")

@@ -13,7 +13,7 @@
 
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",
-        "tournament_size": 5
+        "tournament_size": 2
     },
 
     "crossover" : {
@@ -128,12 +128,5 @@
 
     "response_variable" : {
         "name": "y"
-    },
-
-    "database" : {
-        "database": "playground",
-        "host": "localhost",
-        "port": 5432,
-        "user": "playground_user"
     }
 }

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import math
 import copy
-import time
 import random
 import collections
 import multiprocessing
@@ -128,11 +127,8 @@ def play(play):
             play.print_func(population, stats["generation"])
 
         # genetic genetic operators
-        start_time = time.time()
         population = play.selection.select(population)
         reproduce(population, play.crossover, play.mutation, play.config)
-        end_time = time.time()
-        print "select and reproduce took: %2.2fsec" % (end_time - start_time)
 
         # record
         if play.recorder and isinstance(play.recorder, JSONStore):
@@ -140,7 +136,6 @@ def play(play):
             play.recorder.record_to_file()
 
         # evaluate population
-        start_time = time.time()
         results = []
         play.evaluate(
             population.individuals,
@@ -151,8 +146,6 @@ def play(play):
             play.recorder
         )
         population.individuals = results
-        end_time = time.time()
-        print "evaluation took: %2.2fsec\n" % (end_time - start_time)
 
         # edit population
         if play.config.get("tree_editor", False):

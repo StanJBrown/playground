@@ -13,7 +13,8 @@ from playground.population import Population
 class TreeGenerator(object):
     def __init__(self, config):
         self.config = config
-        self.tree_gen_config = config["tree_generation"]
+        self.gen_config = config["tree_generation"]
+        self.max_depth = self.gen_config.get("initial_max_depth", 0)
         self.tree_parser = TreeParser()
 
     def _gen_func_node(self, tree, random=True):
@@ -84,11 +85,11 @@ class TreeGenerator(object):
             inputs -= 1
 
     def _full_method_node_gen(self, tree, depth):
-        if depth + 1 == self.tree_gen_config["initial_max_depth"]:
+        if depth + 1 == self.max_depth:
                 term_node = self._gen_term_node(tree)
                 tree.term_nodes.append(term_node)
                 tree.size += 1
-                tree.depth = self.tree_gen_config["initial_max_depth"]
+                tree.depth = self.max_depth
                 return term_node
         else:
                 func_node = self._gen_func_node(tree)
@@ -115,11 +116,11 @@ class TreeGenerator(object):
         return tree
 
     def _grow_method_node_gen(self, tree, depth):
-        if depth + 1 == self.tree_gen_config["initial_max_depth"]:
+        if depth + 1 == self.max_depth:
             term_node = self._gen_term_node(tree)
             tree.term_nodes.append(term_node)
             tree.size += 1
-            tree.depth = self.tree_gen_config["initial_max_depth"]
+            tree.depth = self.max_depth
             return term_node
         else:
             prob = random()
@@ -154,11 +155,22 @@ class TreeGenerator(object):
 
         return tree
 
+    def ramped_half_and_half_method(self, input_nodes=True):
+        if random() < 0.5:
+            tree = self.grow_method(input_nodes)
+        else:
+            tree = self.full_method(input_nodes)
+
+        return tree
+
     def generate_tree(self):
-        if self.tree_gen_config["method"] == "FULL_METHOD":
+        if self.gen_config["method"] == "FULL_METHOD":
             tree = self.full_method()
-        elif self.tree_gen_config["method"] == "GROW_METHOD":
+        elif self.gen_config["method"] == "GROW_METHOD":
             tree = self.grow_method()
+        elif self.gen_config["method"] == "RAMPED_HALF_AND_HALF_METHOD":
+            self.max_depth = 2
+            tree = self.ramped_half_and_half_method()
         else:
             raise RuntimeError("Tree init method not defined!")
 
@@ -213,17 +225,39 @@ class TreeGenerator(object):
         return tree
 
     def init(self):
-        population = Population(self.config)
+        pop = Population(self.config)
+        max_pop = self.config["max_population"]
+        methods = {
+            "FULL_METHOD": self.full_method,
+            "GROW_METHOD": self.grow_method,
+            "RAMPED_HALF_AND_HALF_METHOD": self.ramped_half_and_half_method,
+        }
 
-        if self.tree_gen_config["method"] == "FULL_METHOD":
-            for i in xrange(self.config["max_population"]):
-                tree = self.full_method()
-                population.individuals.append(tree)
-        elif self.tree_gen_config["method"] == "GROW_METHOD":
-            for i in xrange(self.config["max_population"]):
-                tree = self.grow_method()
-                population.individuals.append(tree)
-        else:
-            raise RuntimeError("Tree init method not defined!")
+        # check if there is a range for depth of trees
+        ranges = []
+        sizes = []
+        range_mode = False
+        if self.gen_config.get("depth_ranges", False):
+            limit = 0
+            range_mode = True
+            for depth_range in self.gen_config["depth_ranges"]:
+                ranges.append(depth_range["size"])
 
-        return population
+                limit += max_pop * depth_range["percentage"]
+                sizes.append(limit)
+
+            sizes.pop()
+
+        # create trees
+        for i in range(max_pop):
+            if range_mode:
+                if i == 0:
+                    self.max_depth = ranges.pop(0)
+                if len(sizes) > 0 and i == sizes[0]:
+                    self.max_depth = ranges.pop(0)
+                    sizes.pop(0)
+
+            gen_method = methods[self.gen_config["method"]]
+            pop.individuals.append(gen_method())
+
+        return pop

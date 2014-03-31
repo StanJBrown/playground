@@ -15,6 +15,7 @@ def print_func(population, generation):
     print "best_score:", str(best.score)
     print "tree_size:", str(best.size)
 
+    # best individual
     print "best:", tree_parser.parse_equation(best.root)
     if best.score < 20.0:
         eq = tree_parser.parse_equation(best.root)
@@ -30,6 +31,15 @@ def print_func(population, generation):
             eq = eq.replace("LN", "ln")
             eq = eq.replace("LOG", "log")
             print "EQ SIMPLIFIED:", simplify(eq)
+
+    # population diversity
+    p = []
+    for i in population.individuals:
+        p.append(str(i))
+    p = set(p)
+    diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
+    print "population diversity:", str(diversity) + "%"
+
     print
 
 

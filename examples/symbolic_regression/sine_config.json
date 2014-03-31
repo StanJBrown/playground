@@ -3,8 +3,13 @@
     "max_generation" : 6,
 
     "tree_generation": {
-        "method" : "GROW_METHOD",
-        "initial_max_depth" : 4
+        "method" : "RAMPED_HALF_AND_HALF_METHOD",
+        "depth_ranges": [
+            {"size": 4, "percentage": 0.25},
+            {"size": 3, "percentage": 0.25},
+            {"size": 2, "percentage": 0.25},
+            {"size": 1, "percentage": 0.25}
+        ]
     },
 
     "evaluator": {
@@ -18,7 +23,7 @@
 
     "crossover" : {
         "method" : "POINT_CROSSOVER",
-        "probability" : 0.7
+        "probability" : 0.8
     },
 
     "mutation" : {
@@ -29,7 +34,7 @@
             "SHRINK_MUTATION",
             "EXPAND_MUTATION"
         ],
-        "probability" : 0.9
+        "probability" : 0.8
     },
 
     "function_nodes" : [
@@ -114,10 +119,6 @@
         {
             "type": "TERM",
             "value": 10.0
-        },
-        {
-            "type": "TERM",
-            "value": 3.141592653589793238462643383279502884197169399
         }
     ],
 
@@ -132,10 +133,6 @@
 
     "response_variable" : {
         "name": "y"
-    },
-
-    "tree_editor" : {
-        "every": 5
     },
 
     "recorder" : {

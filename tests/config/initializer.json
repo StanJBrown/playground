@@ -2,8 +2,8 @@
     "max_population" : 10,
 
     "tree_generation" : {
-        "method" : "FULL_METHOD",
-        "initial_max_depth" : 2
+        "method" : "RAMPED_HALF_AND_HALF_METHOD",
+        "initial_max_depth" : 4
     },
 
     "function_nodes" : [

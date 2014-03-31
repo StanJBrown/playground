@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from random import random
 from random import sample
-from random import uniform
 
 from playground.gp.tree.tree_node import TreeNode
 from playground.gp.tree.tree_node import TreeNodeType
@@ -163,13 +162,6 @@ class GPTreeMutation(object):
 
         # record before mutation
         self.before_mutation = tree.to_dict()["program"]
-
-        # pre-checks before mutation
-        # if len(tree.term_nodes) < 1 or len(tree.input_nodes) < 1:
-        #         self.random_probability = 1.1
-
-        # if len(tree.func_nodes) < 1:
-        #         self.random_probability = 1.1
 
         # mutate
         if self.mutation_probability >= self.random_probability:

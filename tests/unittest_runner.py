@@ -7,7 +7,7 @@ import subprocess
 
 
 # SETTINGS
-keep_unittest_logs = False
+keep_unittest_logs = True
 unittests_bin_dir = "tests"
 unittests_log_dir = "unittests_log"
 unittests_file_pattern = "^[a-zA-Z0-9_]*_tests.py$"
@@ -75,12 +75,12 @@ if __name__ == "__main__":
                     "coverage",
                     "run",
                     "--source=playground",
+                    "-p",
                     "./{0}".format(unittest)
                 ],
                 stdout=unittest_output,
                 stderr=unittest_output
             )
-            subprocess.check_call(["coverage", "combine"])
             unittest_output.close()
             print("{0}PASSED!{1}".format(TC.OKGREEN, TC.ENDC))
 
@@ -94,6 +94,11 @@ if __name__ == "__main__":
     # keep unittest stdout dir?
     if keep_unittest_logs is False:
         shutil.rmtree(unittests_log_dir)
+
+    # combine coverage data
+    print ""
+    subprocess.call(["coverage", "combine"])
+    subprocess.call(["coverage", "report"])
 
     if error is True:
         sys.exit(-1)

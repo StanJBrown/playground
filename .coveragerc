@@ -1,16 +1,2 @@
 [run]
-append = .coverage
-source =
-    playground,
-    playground.config,
-    playground.play,
-    playground.population,
-    playground.benchmark,
-    playground.ga,
-    playground.gp,
-    playground.net,
-    playground.opencl,
-    playground.operators,
-    playground.parameter_setter,
-    playground.playnode,
-    playground.recorder
+source = playground

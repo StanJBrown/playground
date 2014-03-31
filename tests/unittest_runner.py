@@ -80,6 +80,7 @@ if __name__ == "__main__":
                 stdout=unittest_output,
                 stderr=unittest_output
             )
+            subprocess.check_call(["coverage", "combine"])
             unittest_output.close()
             print("{0}PASSED!{1}".format(TC.OKGREEN, TC.ENDC))
 

@@ -1,4 +1,5 @@
 [run]
+append = .coverage
 source =
     playground,
     playground.config,

@@ -74,6 +74,7 @@ if __name__ == "__main__":
                 [
                     "coverage",
                     "run",
+                    "--source=playground",
                     "./{0}".format(unittest)
                 ],
                 stdout=unittest_output,

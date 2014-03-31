@@ -4,15 +4,15 @@ import sys
 import random
 import unittest
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 import playground.config as config
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
-from playground.operators.selection import Selection
+from playground.selection import Selection
 
 # SETTINGS
 cwd = os.path.dirname(__file__)
-config_fp = os.path.normpath(os.path.join(cwd, "../config/selection.json"))
+config_fp = os.path.normpath(os.path.join(cwd, "config/selection.json"))
 
 
 class SelectionTests(unittest.TestCase):

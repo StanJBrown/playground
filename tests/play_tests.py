@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 import sys
 import os
-import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-import playground.config as config
 import playground.play as play
+import playground.config as config
+from playground.selection import Selection
+from playground.gp.functions import GPFunctionRegistry
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
-from playground.gp.functions import GPFunctionRegistry
-from playground.operators.selection import Selection
-from playground.operators.crossover import GPTreeCrossover
-from playground.operators.mutation import GPTreeMutation
+from playground.gp.tree.tree_crossover import TreeCrossover
+from playground.gp.tree.tree_mutation import TreeMutation
 
 # SETTINGS
 cwd = os.path.dirname(__file__)
@@ -28,8 +27,8 @@ class PlayTests(unittest.TestCase):
         self.tree_generator = TreeGenerator(self.config)
 
         self.selection = Selection(self.config, recorder=None)
-        self.crossover = GPTreeCrossover(self.config, recorder=None)
-        self.mutation = GPTreeMutation(self.config, recorder=None)
+        self.crossover = TreeCrossover(self.config, recorder=None)
+        self.mutation = TreeMutation(self.config, recorder=None)
 
     def tearDown(self):
         del self.config

@@ -8,18 +8,15 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 import playground.config as config
 import playground.play as play
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree_node import TreeNode
-from playground.gp.tree.tree_node import TreeNodeType
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
 from playground.gp.tree.tree_evaluation import print_func
 from playground.gp.tree.tree_editor import edit_trees
 from playground.gp.functions import GPFunctionRegistry
-from playground.operators.selection import Selection
-from playground.operators.crossover import GPTreeCrossover
-from playground.operators.mutation import GPTreeMutation
+from playground.selection import Selection
+from playground.gp.tree.tree_crossover import TreeCrossover
+from playground.gp.tree.tree_mutation import TreeMutation
 from playground.recorder.json_store import JSONStore
 
 # SETTINGS
@@ -40,8 +37,8 @@ if __name__ == "__main__":
 
         # genetic operators
         selection = Selection(config, recorder=json_store)
-        crossover = GPTreeCrossover(config, recorder=json_store)
-        mutation = GPTreeMutation(config, recorder=json_store)
+        crossover = TreeCrossover(config, recorder=json_store)
+        mutation = TreeMutation(config, recorder=json_store)
 
         # run symbolic regression
         population = tree_generator.init()

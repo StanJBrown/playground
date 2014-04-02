@@ -126,11 +126,13 @@ class JSONStore(object):
 
     def finalize(self):
         # compress the store file
+        store_file = self.store_file_path
+
         if self.record_config.get("compress", False):
             # compress store file
             zip_file = self.replace_file_ext(self.store_file_path)
-            zf = zipfile.ZipFile(zip_file, mode="w")
-            zf.write(self.store_file_path)
+            zf = zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED)
+            zf.write(store_file, os.path.basename(store_file))
             zf.close()
 
             # remove uncompressed store file

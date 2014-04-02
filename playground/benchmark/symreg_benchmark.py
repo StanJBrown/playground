@@ -13,12 +13,12 @@ from playground.config import load_config
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
+from playground.gp.tree.tree_crossover import TreeCrossover
+from playground.gp.tree.tree_mutation import TreeMutation
 from playground.gp.functions import GPFunctionRegistry
-from playground.operators.selection import Selection
-from playground.operators.crossover import GPTreeCrossover
-from playground.operators.mutation import GPTreeMutation
+from playground.selection import Selection
 from playground.recorder.json_store import JSONStore
-from playground.parameter_setter.tuner import naive_parameter_sweep
+from playground.parameter_setter.tuner import brute_parameter_sweep
 
 # SETTINGS
 record_exception = False
@@ -36,8 +36,8 @@ def benchmark_loop_gp_tree(config):
 
         # genetic operators
         selection = Selection(config, recorder=json_store)
-        crossover = GPTreeCrossover(config, recorder=json_store)
-        mutation = GPTreeMutation(config, recorder=json_store)
+        crossover = TreeCrossover(config, recorder=json_store)
+        mutation = TreeMutation(config, recorder=json_store)
 
         # setup the initial random population
         population = tree_generator.init()
@@ -114,7 +114,7 @@ if __name__ == "__main__":
             "range": [
                 # 10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
                 # 500
-                100
+                1000
             ]
         },
 
@@ -142,4 +142,4 @@ if __name__ == "__main__":
         "log_path": "/tmp/benchmark_navive_parameter_sweep.log"
     }
 
-    naive_parameter_sweep(param_config, benchmark_loop_gp_tree)
+    brute_parameter_sweep(param_config, benchmark_loop_gp_tree)

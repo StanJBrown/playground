@@ -5,6 +5,7 @@ lib
 bin
 
 .coverage
+.coverage.*
 
 *.pyc
 

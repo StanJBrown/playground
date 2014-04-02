@@ -56,10 +56,11 @@ def gp_benchmark_loop(config):
 
         # print msg
         print(
-            "DONE -> pop: {0} cross_prob: {1} mut_prob: {2} [{3}s]".format(
+            "DONE -> pop: {0} cross: {1} mut: {2} seed: {3} [{4}s]".format(
                 config["max_population"],
                 config["crossover"]["probability"],
                 config["mutation"]["probability"],
+                config["random_seed"],
                 round(time_taken, 2)
             )
         )

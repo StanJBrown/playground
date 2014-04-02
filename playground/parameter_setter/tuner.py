@@ -34,6 +34,39 @@ def _build_parameters(seed, play_config, **kwargs):
     return params
 
 
+def _record_fp(pop, cross, mut, seed):
+    fn = "np_sweep_{0}_{1}_{2}-{3}.dat".format(pop, cross, mut, seed)
+    return fn
+
+
+def _set_record_file(details, param, record_file):
+    if details["record_dir"]:
+        path = os.path.join(details["record_dir"], record_file)
+        param["recorder"]["store_file"] = path
+
+    else:
+        param["recorder"]["store_file"] = record_file
+
+
+def _parallel_param_sweep(details, params, loop_func):
+    try:
+        pool = multiprocessing.Pool(details.get("processes", 1))
+        pool.map(loop_func, params)
+
+    except KeyboardInterrupt:
+        msg = "Received TERM signal, terminating..."
+        print msg
+
+        # write exception to log
+        if details.get("log_path", False):
+            timestamp = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+            log_file = open(details["log_path"], "a+")
+            log_file.write(timestamp + ": " + msg + "\n")
+            log_file.close()
+
+        pool.terminate()
+
+
 def brute_parameter_sweep(details, loop_func=None, debug=False):
     config_vars = [
         "population_size",
@@ -43,9 +76,8 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
     config_sets = [details[var]["range"] for var in config_vars]
     config_matrix = list(itertools.product(*config_sets))
 
-    # build sweep parameters
+    # build run parmaters
     params = []
-    print details["training_data"]
     for data_file in details["training_data"]:
         for seed in range(details["iterations"]):
             for config in config_matrix:
@@ -61,41 +93,14 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
                 )
 
                 # record file
-                record_file = "np_sweep_{0}_{1}_{2}-{3}.dat".format(
-                    config[0],
-                    config[1],
-                    config[2],
-                    seed
-                )
+                record_file = _record_fp(config[0], config[1], config[2], seed)
+                _set_record_file(details, param, record_file)
 
-                # record file and dir
-                if details["record_dir"]:
-                    path = os.path.join(details["record_dir"], record_file)
-                    param["recorder"]["store_file"] = path
-
-                else:
-                    param["recorder"]["store_file"] = record_file
-
+                # add run parmaters to list of params
                 params.append(param)
 
-    # execute parameter sweep in parallel
+    # execute parameter sweep
     if debug is False:
-        try:
-            pool = multiprocessing.Pool(details.get("processes", 1))
-            pool.map(loop_func, params)
-
-        except KeyboardInterrupt:
-            msg = "Received TERM signal, terminating..."
-            print msg
-
-            # write exception to log
-            if details.get("log_path", False):
-                timestamp = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
-                log_file = open(details["log_path"], "a+")
-                log_file.write(timestamp + ": " + msg + "\n")
-                log_file.close()
-
-            pool.terminate()
-
+        _parallel_param_sweep(details, params, loop_func)
     else:
         pprint.pprint(params)

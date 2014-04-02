@@ -134,6 +134,7 @@ def record_eval(recorder, **kwargs):
     match_cached = kwargs.get("match_cached", None)
     trees_evaluated = kwargs.get("trees_evaluated", None)
     tree_nodes_evaluated = kwargs.get("tree_nodes_evaluated", None)
+    diversity = kwargs.get("diversity", None)
 
     if use_cache:
         eval_stats = {
@@ -141,7 +142,8 @@ def record_eval(recorder, **kwargs):
             "cache_size": cache_size,
             "match_cached": match_cached,
             "trees_evaluated": trees_evaluated,
-            "tree_nodes_evaluated": tree_nodes_evaluated
+            "tree_nodes_evaluated": tree_nodes_evaluated,
+            "diversity": diversity
         }
     else:
         eval_stats = {
@@ -160,9 +162,6 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
     best_score = None
     best_result = None
 
-    # remove trees of size 2
-    # trees = [t for t in trees if t.size > 2 and len(t.input_nodes) > 0]
-
     # evaluate trees
     for tree in trees:
         score = None
@@ -180,6 +179,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
                 nodes_evaluated += tree.size
             else:
                 score = cache[str(tree)]
+                match_cached += 1
 
         else:
             score, res = eval_program(
@@ -200,8 +200,12 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
 
         cache[str(tree)] = score
 
-    # record evaluation statistics
     if recorder:
+        # calculate tree diversity
+        tree_strings = set([str(tree) for tree in trees])
+        diversity = len(tree_strings) / float(len(trees))
+
+        # record evaluation statistics
         record_eval(
             recorder,
             use_cache=use_cache,
@@ -209,7 +213,8 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             cache_size=len(cache),
             match_cached=match_cached,
             trees_evaluated=len(trees) - match_cached,
-            tree_nodes_evaluated=len(trees)
+            tree_nodes_evaluated=len(trees),
+            diversity=diversity
         )
 
     return best_result

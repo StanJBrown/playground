@@ -45,7 +45,7 @@ def print_func(population, generation):
 
 def default_stop_func(popualtion, general_stats, config):
     max_gen = config["max_generation"]
-    stale_limit = config.get("stale_limit", 100)
+    stale_limit = config.get("stale_limit", 10)
 
     if general_stats["generation"] >= max_gen:
         return True

@@ -28,13 +28,18 @@ class JSONStore(object):
 
         self.setup_store()
 
-    def setup_store(self):
-        # create folder if not already exists
+    def create_store_dir(self):
         try:
-            os.makedirs(os.path.dirname(self.store_file_path))
+            store_dir = os.path.dirname(self.store_file_path)
+            if store_dir:
+                os.makedirs(store_dir)
         except OSError as exception:
             if exception.errno != errno.EEXIST:
                 raise
+
+    def setup_store(self):
+        # create store dir if not already exists
+        self.create_store_dir()
 
         # open store file for recording
         if self.store_file is None:

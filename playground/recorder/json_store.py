@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 import os
 import json
+import errno
 import zipfile
 from playground.recorder.record_type import RecordType
 
 
 class RecordLevel(object):
-    MIN = 1
-    MAX = 2
+    MIN = "MIN"
+    MAX = "MAX"
 
 
 class JSONStore(object):
@@ -28,6 +29,14 @@ class JSONStore(object):
         self.setup_store()
 
     def setup_store(self):
+        # create folder if not already exists
+        try:
+            os.makedirs(os.path.dirname(self.store_file_path))
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise
+
+        # open store file for recording
         if self.store_file is None:
             self.store_file = open(self.store_file_path, "w")
 

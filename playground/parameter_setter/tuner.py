@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 import os
+import sys
 import copy
 import pprint
 import itertools
 import multiprocessing
 from datetime import datetime
+
+from playground.config import load_data
 
 
 def _build_parameters(seed, play_config, **kwargs):
@@ -20,6 +23,10 @@ def _build_parameters(seed, play_config, **kwargs):
     params["crossover"]["probability"] = kwargs["crossover_probability"]
     params["mutation"]["probability"] = kwargs["mutation_probability"]
     params["data_file"] = kwargs["data_file"]
+
+    # load data from data_file
+    script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    load_data(params, abs_dir=script_path)
 
     if kwargs.get("log_path", False) and kwargs.get("log_path") is not None:
         params["log_path"] = kwargs["log_path"]
@@ -38,6 +45,7 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
 
     # build sweep parameters
     params = []
+    print details["training_data"]
     for data_file in details["training_data"]:
         for seed in range(details["iterations"]):
             for config in config_matrix:

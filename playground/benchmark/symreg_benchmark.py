@@ -9,7 +9,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 # import playground.config as config
 import playground.play as play
-from playground.config import load_config
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
@@ -18,15 +17,9 @@ from playground.gp.tree.tree_mutation import TreeMutation
 from playground.gp.functions import GPFunctionRegistry
 from playground.selection import Selection
 from playground.recorder.json_store import JSONStore
-from playground.parameter_setter.tuner import brute_parameter_sweep
-
-# SETTINGS
-record_exception = False
-script_path = os.path.dirname(os.path.realpath(__file__))
-config_fp = os.path.join(script_path, "config", "template_config.json")
 
 
-def benchmark_loop_gp_tree(config):
+def gp_benchmark_loop(config):
     try:
         # setup
         random.seed(config["random_seed"])  # VERY IMPORTANT!
@@ -101,45 +94,3 @@ def benchmark_loop_gp_tree(config):
             log_file.close()
 
     return config
-
-
-if __name__ == "__main__":
-    config = load_config(config_fp, script_path)
-
-    param_config = {
-        "play_config": config,
-        "iterations": 1,
-
-        "population_size": {
-            "range": [
-                # 10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
-                # 500
-                1000
-            ]
-        },
-
-        "crossover_probability": {
-            "range": [
-                # 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
-                # 0.1, 0.2
-                0.8
-            ]
-        },
-
-        "mutation_probability": {
-            "range": [
-                # 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
-                # 0.1, 0.2
-                0.2
-            ]
-        },
-
-        "training_data": [
-            "training_data/arabas_et_al-f1.dat",
-        ],
-
-        "record_dir": "/tmp/data",
-        "log_path": "/tmp/benchmark_navive_parameter_sweep.log"
-    }
-
-    brute_parameter_sweep(param_config, benchmark_loop_gp_tree)

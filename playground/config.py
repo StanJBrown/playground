@@ -76,7 +76,7 @@ def load_config(config_file, abs_dir=None):
     config = json.loads(open(config_file).read())
 
     # load data
-    if config.get("data_file", False):
+    if config.get("data_file", False) and config["data_file"] is not None:
         load_data(config, abs_dir)
 
     # keep abs_dir in config

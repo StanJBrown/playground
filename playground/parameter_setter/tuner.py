@@ -27,7 +27,7 @@ def _build_parameters(seed, play_config, **kwargs):
     return params
 
 
-def naive_parameter_sweep(details, loop_func=None, debug=False):
+def brute_parameter_sweep(details, loop_func=None, debug=False):
     config_vars = [
         "population_size",
         "crossover_probability",
@@ -91,7 +91,3 @@ def naive_parameter_sweep(details, loop_func=None, debug=False):
 
     else:
         pprint.pprint(params)
-
-
-def racing_algorithm_sweep(details, loop_func=None, debug=False):
-    pass

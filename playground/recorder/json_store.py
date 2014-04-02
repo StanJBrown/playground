@@ -38,6 +38,9 @@ class JSONStore(object):
                 raise
 
     def setup_store(self):
+        # expand on environment variables if defined
+        self.store_file_path = os.path.expandvars(self.store_file_path)
+
         # create store dir if not already exists
         self.create_store_dir()
 

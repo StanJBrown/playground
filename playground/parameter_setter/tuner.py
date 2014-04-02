@@ -34,8 +34,16 @@ def _build_parameters(seed, play_config, **kwargs):
     return params
 
 
-def _record_fp(pop, cross, mut, seed):
-    fn = "np_sweep_{0}_{1}_{2}-{3}.dat".format(pop, cross, mut, seed)
+def _record_fp(details, seed, training_data):
+    pop = details[0]
+    cross = details[1]
+    mut = details[2]
+
+    basename = os.path.basename(training_data)
+    td = os.path.splitext(basename)[0]
+
+    fn = "bps--{4}--{0}_{1}_{2}-{3}.dat".format(pop, cross, mut, seed, td)
+
     return fn
 
 
@@ -93,7 +101,7 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
                 )
 
                 # record file
-                record_file = _record_fp(config[0], config[1], config[2], seed)
+                record_file = _record_fp(config, seed, data_file)
                 _set_record_file(details, param, record_file)
 
                 # add run parmaters to list of params

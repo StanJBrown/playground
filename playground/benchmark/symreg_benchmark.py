@@ -9,6 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 # import playground.config as config
 import playground.play as play
+from playground.config import load_data
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
@@ -23,6 +24,7 @@ def gp_benchmark_loop(config):
     try:
         # setup
         random.seed(config["random_seed"])  # VERY IMPORTANT!
+        load_data(config, config["call_path"])
         json_store = JSONStore(config)
         functions = GPFunctionRegistry()
         tree_generator = TreeGenerator(config)
@@ -73,7 +75,8 @@ def gp_benchmark_loop(config):
                 "config": config,
                 "runtime": time_taken
             }
-            log_file = open(config["log_path"], "a+")
+            log_path = os.path.expandvars(config["log_path"])
+            log_file = open(log_path, "a+")
             log_file.write(json.dumps(msg) + "\n")
             log_file.close()
 
@@ -90,7 +93,8 @@ def gp_benchmark_loop(config):
                 "config": config,
                 "error": err_msg
             }
-            log_file = open(config["log_path"], "a+")
+            log_path = os.path.expandvars(config["log_path"])
+            log_file = open(log_path, "a+")
             log_file.write(json.dumps(msg) + "\n")
             log_file.close()
 

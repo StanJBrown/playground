@@ -9,6 +9,7 @@ from playground.parameter_setter.tuner import brute_parameter_sweep
 
 if __name__ == "__main__":
     config = {
+        "call_path": os.path.dirname(os.path.realpath(sys.argv[0])),
         "max_population": None,
         "max_generation": 1000,
 
@@ -228,14 +229,11 @@ if __name__ == "__main__":
         },
 
         "training_data": [
-            "training_data/arabas_et_al-f1.dat",
-            "training_data/arabas_et_al-f2.dat",
-            "training_data/arabas_et_al-f3.dat",
-            "training_data/arabas_et_al-f4.dat"
+            "training_data/arabas_et_al-f1.dat"
         ],
 
-        "record_dir": "/tmp/data",
-        "log_path": "/tmp/benchmark_navive_parameter_sweep.log"
+        "record_dir": "$HOME/data",
+        "log_path": "$HOME/data/benchmark_navive_parameter_sweep.log"
     }
 
     brute_parameter_sweep(test_parameters, gp_benchmark_loop)

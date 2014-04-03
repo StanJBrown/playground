@@ -71,10 +71,13 @@ class TreeMutation(object):
 
         if node.is_function():
             node.name = new_node["name"]
+
         elif node.is_terminal() or node.is_input():
             node.node_type = new_node.get("type")
             node.name = new_node.get("name", None)
             node.value = new_node.get("value", None)
+
+        self.mutated = True
 
     def hoist_mutation(self, tree, mutation_index=None):
         # new indivdiaul generated from subtree
@@ -86,6 +89,7 @@ class TreeMutation(object):
 
         tree.root = node
         tree.update()
+        self.mutated = True
 
     def subtree_mutation(self, tree, mutation_index=None):
         # subtree exchanged against external random subtree
@@ -100,6 +104,7 @@ class TreeMutation(object):
         sub_tree = self.tree_generator.generate_tree()
         tree.replace_node(node, sub_tree.root)
         tree.update()
+        self.mutated = True
 
     def shrink_mutation(self, tree, mutation_index=None):
         # replace subtree with terminal
@@ -120,6 +125,7 @@ class TreeMutation(object):
 
             tree.replace_node(node, new_node)
             tree.update()
+            self.mutated = True
 
     def expansion_mutation(self, tree, mutation_index=None):
         # terminal exchanged against external random subtree
@@ -142,6 +148,7 @@ class TreeMutation(object):
         sub_tree = self.tree_generator.generate_tree()
         tree.replace_node(node, sub_tree.root)
         tree.update()
+        self.mutated = True
 
     def mutate(self, tree):
         mutation_methods = {
@@ -166,7 +173,6 @@ class TreeMutation(object):
         if self.mutation_probability >= self.random_probability:
             mutation_func = mutation_methods[self.method]
             mutation_func(tree)
-            self.mutated = True
 
         # record after mutation
         self.after_mutation = tree.to_dict()["program"]

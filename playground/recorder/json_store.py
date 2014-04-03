@@ -59,8 +59,9 @@ class JSONStore(object):
 
     def delete_store(self):
         # close store file if opened
-        if self.store_file is not None:
+        if self.store_file:
             self.store_file.close()
+            self.store_file = None
 
         # remove store file if it exists
         if os.path.exists(self.store_file_path):
@@ -90,6 +91,7 @@ class JSONStore(object):
         crossover_dict = crossover.to_dict()
 
         if self.level is RecordLevel.MIN:
+            crossover_dict.pop("index")
             crossover_dict.pop("before_crossover")
             crossover_dict.pop("after_crossover")
 
@@ -145,10 +147,101 @@ class JSONStore(object):
 
         return file_path
 
+    def summarize_crossover(self, crossover):
+        result = {
+            "crossovers": 0,
+            "no_crossovers": 0
+        }
+
+        for instance in crossover:
+            method = instance["method"]
+            crossed = instance["crossovered"]
+            random_prob = instance["random_probability"]
+            crossover_prob = instance["crossover_probability"]
+
+            if method not in result:
+                result[method] = {}
+                result[method]["success"] = 0
+                result[method]["failed"] = 0
+                result[method]["frequency"] = 0
+
+            if crossed:
+                result[method]["success"] += 1
+                result[method]["frequency"] += 1
+                result["crossovers"] += 1
+            else:
+                # check to see if failure is due to probabilities or
+                # true crossover failure
+                if crossover_prob >= random_prob:
+                    result[method]["failed"] += 1
+                    result[method]["frequency"] += 1
+                else:
+                    result["no_crossovers"] += 1
+
+        return result
+
+    def summarize_mutation(self, mutations):
+        result = {
+            "mutations": 0,
+            "no_mutations": 0
+        }
+
+        for instance in mutations:
+            method = instance["method"]
+            mutated = instance["mutated"]
+            random_prob = instance["random_probability"]
+            mutations_prob = instance["mutation_probability"]
+
+            if method not in result:
+                result[method] = {}
+                result[method]["success"] = 0
+                result[method]["failed"] = 0
+                result[method]["frequency"] = 0
+
+            if mutated:
+                result[method]["success"] += 1
+                result[method]["frequency"] += 1
+                result["mutations"] += 1
+            else:
+                # check to see if failure is due to probabilities or
+                # true mutations failure
+                if mutations_prob >= random_prob:
+                    result[method]["failed"] += 1
+                    result[method]["frequency"] += 1
+                else:
+                    result["no_mutations"] += 1
+
+        return result
+
+    def summarize_store(self):
+        if self.store_file:
+            self.store_file.close()
+            self.store_file = None
+
+        # summarize records
+        records = []
+        self.store_file = open(self.store_file_path, "r")
+        for record in self.store_file:
+            record = json.loads(record)
+            record["crossover"] = self.summarize_crossover(record["crossover"])
+            record["mutation"] = self.summarize_mutation(record["mutation"])
+            records.append(record)
+        self.store_file.close()
+
+        # rewrite store file
+        self.store_file = open(self.store_file_path, "w")
+        for record in records:
+            self.store_file.write(json.dumps(record) + "\n")
+        self.store_file.close()
+
     def finalize(self):
-        # compress the store file
         store_file = self.store_file_path
 
+        # summarize records
+        if self.level is RecordLevel.MIN:
+            self.summarize_store()
+
+        # compress the store file
         if self.record_config.get("compress", False):
             # compress store file
             zip_file = self.replace_file_ext(self.store_file_path)

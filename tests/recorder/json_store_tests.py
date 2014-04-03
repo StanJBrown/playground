@@ -152,6 +152,33 @@ class JSONStoreTests(unittest.TestCase):
         self.assertNotEquals(data, {})
         self.assertEquals(data["population"]["generation"], 0)
 
+    def test_summarize_store(self):
+        # write record to file and close
+        self.json_store.setup_store()
+        self.json_store.record_population(self.population)
+
+        for i in range(5):
+            tree_1 = self.population.individuals[0]
+            tree_2 = self.population.individuals[1]
+            self.crossover.crossover(tree_1, tree_2)
+
+        for i in range(10):
+            tree = self.population.individuals[0]
+            self.mutation.mutate(tree)
+
+        self.json_store.record_to_file()
+        self.json_store.store_file.close()
+
+        # summarize
+        self.json_store.summarize_store()
+
+        # assert
+        store_file = open(self.config["recorder"]["store_file"], "r")
+        line = json.loads(store_file.read())
+        store_file.close()
+
+        self.assertIsNotNone(line)
+
     def test_finalize(self):
         # write record to file and close
         self.json_store.setup_store()

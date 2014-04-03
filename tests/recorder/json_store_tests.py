@@ -2,7 +2,6 @@
 import sys
 import os
 import json
-import pprint
 import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
@@ -96,6 +95,7 @@ class JSONStoreTests(unittest.TestCase):
 
         # assert
         record = self.json_store.generation_record
+        # import pprint
         # pprint.pprint(record)
         self.assertNotEquals(record, {})
         self.assertEquals(record["selection"]["selected"], 5)
@@ -109,8 +109,6 @@ class JSONStoreTests(unittest.TestCase):
         # assert
         record = self.json_store.generation_record
         self.assertNotEquals(record, {})
-        self.assertEquals(record["crossover"][0]["crossovered"], True)
-        self.assertEquals(record["crossover"][0]["method"], "POINT_CROSSOVER")
 
     def test_record_mutation(self):
         # record mutation
@@ -121,8 +119,6 @@ class JSONStoreTests(unittest.TestCase):
         record = self.json_store.generation_record
         # pprint.pprint(record)
         self.assertNotEquals(record, {})
-        self.assertEquals(record["mutation"][0]["method"], "SHRINK_MUTATION")
-        self.assertEquals(record["mutation"][0]["mutation_probability"], 0.8)
 
     def test_record_evaulation(self):
         # record evaluation
@@ -137,7 +133,8 @@ class JSONStoreTests(unittest.TestCase):
 
         # assert
         record = self.json_store.generation_record
-        pprint.pprint(record)
+        # import pprint
+        # pprint.pprint(record)
         self.assertEquals(record["evaluation"]["cache_size"], 10)
         self.assertEquals(record["evaluation"]["match_cached"], 0)
 
@@ -154,6 +151,25 @@ class JSONStoreTests(unittest.TestCase):
         # assert tests
         self.assertNotEquals(data, {})
         self.assertEquals(data["population"]["generation"], 0)
+
+    def test_finalize(self):
+        # write record to file and close
+        self.json_store.setup_store()
+        self.json_store.record_population(self.population)
+        self.json_store.record_to_file()
+        self.json_store.store_file.close()
+
+        # zip the store file
+        self.json_store.finalize()
+
+        # assert
+        store_fp = self.config["recorder"]["store_file"]
+        store_fp = list(os.path.splitext(store_fp))  # split ext
+        store_fp[1] = ".zip"  # change ext to zip
+        store_fp = "".join(store_fp)
+
+        file_exists = os.path.exists(store_fp)
+        self.assertEquals(file_exists, True)
 
 
 if __name__ == '__main__':

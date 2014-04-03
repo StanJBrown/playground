@@ -66,6 +66,10 @@ class JSONStore(object):
         if os.path.exists(self.store_file_path):
             os.remove(self.store_file_path)
 
+        # remove compressed store file if it exists
+        if os.path.exists(self.store_file_path.replace(".json", ".zip")):
+            os.remove(self.store_file_path.replace(".json", ".zip"))
+
     def record_population(self, population):
         pop_dict = population.to_dict()
 

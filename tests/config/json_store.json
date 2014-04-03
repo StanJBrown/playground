@@ -125,6 +125,7 @@
 
 
     "recorder" : {
-        "store_file": "json_store_test.json"
+        "store_file": "json_store_test.json",
+        "compress": true
     }
 }

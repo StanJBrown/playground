@@ -68,9 +68,3 @@ if __name__ == "__main__":
     except Exception as err:
         print err
         print traceback.print_exc()
-
-        # write exception out
-        if record_exception:
-            exception_file = open("/tmp/symbolic_regression_err.log", "w")
-            exception_file.write(str(err) + "\n")
-            exception_file.close()

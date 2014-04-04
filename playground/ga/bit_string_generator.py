@@ -17,9 +17,9 @@ class BitStringGenerator(object):
 
     def generate_random_bitstr(self):
         bitstr = BitString()
-        gnome_len = self.bitstr_config["genome_length"]
+        genome_len = self.bitstr_config["genome_length"]
 
-        for i in range(gnome_len):
+        for i in range(genome_len):
             code = self.generate_random_codon()
             bitstr.genome.append(code)
             bitstr.length += 1

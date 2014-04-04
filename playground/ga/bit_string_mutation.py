@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from random import randint
 from random import random
 from random import sample
 
@@ -24,7 +25,7 @@ class BitStringMutation(object):
     def point_mutation(self, bitstr, index=None):
         # mutate node
         if index is None:
-            index = random.randint(0, len(bitstr.genome) - 1)
+            index = randint(0, len(bitstr.genome) - 1)
             self.index = index
         else:
             self.index = index
@@ -32,12 +33,12 @@ class BitStringMutation(object):
         new_codon = self.generator.generate_random_codon()
         bitstr.genome[index] = new_codon
 
-    def mutation(self, bitstr):
+    def mutate(self, bitstr):
         mutation_methods = {
             "POINT_MUTATION": self.point_mutation,
         }
 
-        self.method = sample(self.config["mutation"]["methods"], 1)[0]
+        self.method = sample(self.config["mutation"]["method"], 1)[0]
         self.mutation_probability = self.config["mutation"]["probability"]
         self.random_probability = random()
         self.mutated = False

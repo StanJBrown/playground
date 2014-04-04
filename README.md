@@ -2,28 +2,11 @@
 [![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
 [![Coverage Status](https://coveralls.io/repos/chutsu/playground/badge.png)][5]
 
-Playground is an Evolutionary Algorithm library implemented in Python. Currently
-features:
+Playground is an Meta-heuristic Algorithm library implemented in Python.
+Currently features:
 
-- Genetic Programming in Trees
-- Genetic Algorithm and Evolution Strategy style loops
-- Tree Genetic Operators:
-    - Selection
-        - Roulette wheel selection
-        - Tournament selection
-    - Crossover
-        - One point crossover
-    - Mutation
-        - Point mutation
-        - Hoist mutation
-        - Subtree mutation
-        - Shrink mutation
-        - Expand mutation
-- Multicore Evaluation
-- Centralized Node control and monitoring
-- Config files using JSON
-- Ability to record evolution process a JSON flat file
-
+- Genetic Programming
+- Genetic Algorithm
 - Particle Swarm Optimization
 
 
@@ -33,21 +16,29 @@ Currently the best way is to clone the repo and install the dependencies:
     git clone git@github.com:chutsu/playground.git
     pip install -r requirements.txt  # installs dependencies for playground
 
-To see playground in action, checkout the `examples` folder, at the moment
-the best example is the [symbolic regression][4] example.
-([what is symbolic regression?][3]):
+## Examples
+At the moment the best example is the [symbolic regression][4] example.  ([what
+is symbolic regression?][3]):
 
+    # curve fitting - genetic programming
     cd examples/symbolic_regression
     python symbolic_regression.py
 
     # alternatively you can run the example with PyPy, it is faster :)
-    pypy symbolic_regression.py
+    pypy symbolic_regression.py  # takes around 30s on a macbook pro retina
 
 The example uses data in `examples/symbolic_regression/sine.dat` to find the
 answer (an equation), this is also an example of data-driven search.
 
-More examples to follow, it can solve alot of other problems, such as
-evolving digital circuits, neural nets, etc ... :)
+Others include:
+
+    # find the word "hello world!" - genetic algorithm
+    cd examples/hello_world
+    python hello_world.py
+
+    # find the most optimal point in a x-y graph - particle swarm optimization
+    cd examples/pso
+    python pso.py
 
 
 ## Licence

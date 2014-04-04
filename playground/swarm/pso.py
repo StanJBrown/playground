@@ -144,12 +144,6 @@ class PSOParticleGenerator(object):
         return population
 
 
-def obj_func(vector):
-    result = map(lambda el: el ** 2, vector)
-    result = reduce(lambda x, y: x + y, result)
-    return result
-
-
 def pso_search(population, max_generations, c_1, c_2, obj_func):
     gbest = population.find_best_individuals()[0]
 
@@ -173,27 +167,3 @@ def pso_search(population, max_generations, c_1, c_2, obj_func):
             )
 
         print " > gen {0}, fitness={1}".format(gen, gbest.score)
-
-
-if __name__ == "__main__":
-    config = {
-        "max_population": 20
-    }
-    c_1 = 2.0
-    c_2 = 2.0
-    max_generations = 100
-
-    max_velocity = [10.0, 10.0]
-    bounds = [[0, 10], [0, 10]]
-
-    generator = PSOParticleGenerator(
-        config,
-        max_velocity=max_velocity,
-        bounds=bounds,
-        obj_func=obj_func
-    )
-
-    population = generator.init()
-    print len(population.individuals)
-
-    pso_search(population, max_generations, c_1, c_2, obj_func)

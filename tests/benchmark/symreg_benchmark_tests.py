@@ -148,13 +148,30 @@ class SymRegBenchmarkTests(unittest.TestCase):
             "recorder": {
                 "store_file": "/tmp/test.json",
                 "compress": True
-            }
+            },
+
+            "log_path": "/tmp/test.log"
 
         }
 
+    def tearDown(self):
+        files = [
+            self.config["recorder"]["store_file"],
+            self.config["log_path"]
+        ]
+
+        for f in files:
+            if os.path.isfile(f):
+                os.remove(f)
+
     def test_gp_benchmark_loop(self):
+        # pass test
         result = gp_benchmark_loop(self.config)
         self.assertEquals(self.config, result)
+
+        # fail test
+        self.config.pop("random_seed")
+        self.assertRaises(Exception, gp_benchmark_loop, self.config)
 
 
 if __name__ == "__main__":

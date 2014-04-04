@@ -100,4 +100,6 @@ def gp_benchmark_loop(config):
             log_file.write(json.dumps(msg) + "\n")
             log_file.close()
 
+        raise  # raise the exception
+
     return config

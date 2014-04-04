@@ -77,6 +77,7 @@ class TreeMutation(object):
             node.name = new_node.get("name", None)
             node.value = new_node.get("value", None)
 
+        tree.update()
         self.mutated = True
 
     def hoist_mutation(self, tree, mutation_index=None):
@@ -96,8 +97,17 @@ class TreeMutation(object):
         node = None
         if mutation_index is None:
             node = sample(tree.program, 1)[0]
+
+            # retry sampling a node
+            retry = 0
+            retry_limit = 10
             while node is tree.root:
                 node = sample(tree.program, 1)[0]
+                if retry == retry_limit:
+                    return
+                else:
+                    retry += 1
+
         else:
             node = tree.program[mutation_index]
 
@@ -133,7 +143,9 @@ class TreeMutation(object):
         if mutation_index is None:
             prob = random()
 
-            if prob > 0.5 and len(tree.term_nodes) > 0:
+            if tree.size == 1:
+                return
+            elif prob > 0.5 and len(tree.term_nodes) > 0:
                 node = sample(tree.term_nodes, 1)[0]
             elif prob < 0.5 and len(tree.input_nodes) > 0:
                 node = sample(tree.input_nodes, 1)[0]

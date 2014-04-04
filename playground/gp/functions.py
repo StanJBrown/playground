@@ -89,10 +89,6 @@ def exp_function(value):
         raise EvaluationError("Opps! " + e.message)
 
 
-def fact_function(value):
-    return math.factorial(value)
-
-
 class GPFunctionRegistry(object):
     def __init__(self, override_defaults=False):
         self.functions = {}
@@ -103,12 +99,12 @@ class GPFunctionRegistry(object):
             self.register("MUL", mul_function)
             self.register("DIV", div_function)
             self.register("POW", pow_function)
-            self.register("LOG", ln_function)
 
             self.register("COS", cos_function)
             self.register("SIN", sin_function)
             self.register("RAD", rad_function)
             self.register("LN", ln_function)
+            self.register("LOG", ln_function)
             self.register("EXP", exp_function)
 
     def register(self, function_name, function):
@@ -118,4 +114,7 @@ class GPFunctionRegistry(object):
         del self.functions[function_name]
 
     def get_function(self, function_name):
-        return self.functions[function_name]
+        if function_name in self.functions:
+            return self.functions[function_name]
+        else:
+            return None

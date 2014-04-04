@@ -49,14 +49,14 @@ def pow_function(right, left):
 
 def cos_function(value):
     try:
-        return math.cos(math.radians(value))
+        return math.cos(value)
     except Exception as e:
         raise EvaluationError("Opps! " + e.message)
 
 
 def sin_function(value):
     try:
-        return math.sin(math.radians(value))
+        return math.sin(value)
     except Exception as e:
         raise EvaluationError("Opps! " + e.message)
 

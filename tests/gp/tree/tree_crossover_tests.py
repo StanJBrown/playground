@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 import os
-import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
@@ -31,23 +30,25 @@ class TreeCrossoverTests(unittest.TestCase):
         self.tree_parser = TreeParser()
 
         # create nodes
-        left_node_1 = TreeNode(TreeNodeType.TERM, value=1.0)
+        left_node_1 = TreeNode(TreeNodeType.TERM, name="x")
         right_node_1 = TreeNode(TreeNodeType.TERM, value=2.0)
+        node = TreeNode(TreeNodeType.TERM, value=2.0)
 
         left_node_2 = TreeNode(TreeNodeType.TERM, value=3.0)
         right_node_2 = TreeNode(TreeNodeType.TERM, value=4.0)
 
         cos_func_1 = TreeNode(
             TreeNodeType.FUNCTION,
-            name="COS",
-            arity=1,
-            branches=[left_node_1]
+            name="ADD",
+            arity=2,
+            branches=[left_node_1, right_node_1]
         )
+
         sin_func_1 = TreeNode(
             TreeNodeType.FUNCTION,
             name="SIN",
             arity=1,
-            branches=[right_node_1]
+            branches=[node]
         )
 
         cos_func_2 = TreeNode(
@@ -82,6 +83,8 @@ class TreeCrossoverTests(unittest.TestCase):
         self.tree_1.root = add_func
         self.tree_1.update()
         self.tree_generator._add_input_nodes(self.tree_1)
+
+        print self.tree_1
 
         # create tree_2
         self.tree_2 = Tree()
@@ -144,6 +147,30 @@ class TreeCrossoverTests(unittest.TestCase):
         self.assertFalse(self.tree_equals(tree_1_before, tree_1_after))
         self.assertFalse(self.tree_equals(tree_2_before, tree_2_after))
 
+    def test_common_region_point_crossover(self):
+        # record before crossover
+        tree_1_before = self.build_tree_str(self.tree_1)
+        tree_2_before = self.build_tree_str(self.tree_2)
+
+        # point crossover
+        self.crossover.common_region_point_crossover(self.tree_1, self.tree_2)
+
+        # record after crossover
+        tree_1_after = self.build_tree_str(self.tree_1)
+        tree_2_after = self.build_tree_str(self.tree_2)
+
+        print("Before Crossover")
+        print("\nTree 1")
+        print(tree_1_before)
+        print("\nTree 2")
+        print(tree_2_before)
+
+        print("\nAfter Crossover")
+        print("\nTree 1")
+        print(tree_1_after)
+        print("\nTree 2")
+        print(tree_2_after)
+
     def test_crossover(self):
         # record before crossover
         tree_1_before = self.build_tree_str(self.tree_1)
@@ -179,5 +206,5 @@ class TreeCrossoverTests(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    random.seed(0)
+    # random.seed(0)
     unittest.main()

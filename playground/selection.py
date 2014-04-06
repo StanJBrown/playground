@@ -72,6 +72,16 @@ class Selection(object):
 
         return new_pop
 
+    def elitest_selection(self, population):
+        percentage = self.config["selection"].get("percentage", 10)
+        top = len(population.individuals) / percentage
+
+        # sort population based on fitness and prune the weak
+        population.sort_individuals()
+        population.individuals = population.individuals[0:top]
+
+        return population
+
     def select(self, population):
         self.method = self.config["selection"]["method"]
         self.new_pop = None
@@ -80,6 +90,8 @@ class Selection(object):
             self.new_pop = self.roulette_wheel_selection(population)
         elif self.method == "TOURNAMENT_SELECTION":
             self.new_pop = self.tournament_selection(population)
+        elif self.method == "ELITEST_SELECTION":
+            self.new_pop = self.elitest_selection(population)
         else:
             raise RuntimeError("Undefined selection method!")
 

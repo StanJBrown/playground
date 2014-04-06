@@ -64,6 +64,23 @@ class SelectionTests(unittest.TestCase):
         self.assertFalse(old_pop_size == new_pop_size)
         self.assertEquals(new_pop_size, old_pop_size / 2)
 
+    def test_elitest_selection(self):
+        old_pop_size = len(self.population.individuals)
+        print "OLD[{0}:".format(old_pop_size)
+        for individual in self.population.individuals:
+            print individual, individual.score
+        print '\n\n'
+
+        new_pop = self.selection.elitest_selection(self.population)
+
+        new_pop_size = len(new_pop.individuals)
+        print "NEW[{0}:".format(new_pop_size)
+        for individual in new_pop.individuals:
+            print individual, individual.score
+
+        self.assertFalse(old_pop_size == new_pop_size)
+        self.assertEquals(new_pop_size, old_pop_size * 0.1)
+
     def test_select(self):
         new_pop = self.selection.select(self.population)
 

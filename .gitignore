@@ -16,7 +16,7 @@ cmake_install.cmake
 cmake_uninstall.cmake
 install_manifest.txt
 
-*.log
+unittests_log
 nohup.out
 pycallgraph.png
 .rope*

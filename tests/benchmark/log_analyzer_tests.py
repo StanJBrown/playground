@@ -10,6 +10,7 @@ import playground.benchmark.log_analyzer as log_analyzer
 # SETTINGS
 script_path = os.path.dirname(__file__)
 log_file = os.path.join(script_path, "../data/test.log")
+log_file = os.path.normpath(log_file)
 
 
 class LogAnalzyerTests(unittest.TestCase):

@@ -9,7 +9,7 @@ import playground.benchmark.log_analyzer as log_analyzer
 
 # SETTINGS
 script_path = os.path.dirname(__file__)
-log_file = "/Users/chutsu/data/benchmark_navive_parameter_sweep.log"
+log_file = os.path.join(script_path, "../data/test.log")
 
 
 class LogAnalzyerTests(unittest.TestCase):
@@ -70,6 +70,7 @@ class LogAnalzyerTests(unittest.TestCase):
         log_analyzer.plot_matrix(
             json_data,
             show_plot=True,
+            show_block=False,
             save_plot=True,
             save_path="test.png"
         )

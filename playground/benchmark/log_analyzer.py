@@ -91,7 +91,9 @@ def plot_matrix(log_jsons, **kwargs):
     )
 
     if kwargs.get("show_plot", False):
-        plt.show(block=kwargs.get("show_block", False))
+        if kwargs.get("show_block") is False:
+            plt.ion()
+        plt.show()
 
     if kwargs.get("save_plot", False):
         plt.savefig(

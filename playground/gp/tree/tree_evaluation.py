@@ -19,7 +19,7 @@ def print_func(population, generation):
     print "best:", tree_parser.parse_equation(best.root)
     if best.score < 20.0:
         eq = tree_parser.parse_equation(best.root)
-        if best.size < 50:
+        if best.size < 20:
             eq = eq.replace("ADD", "+")
             eq = eq.replace("SUB", "-")
             eq = eq.replace("MUL", "*")
@@ -153,6 +153,18 @@ def record_eval(recorder, **kwargs):
     recorder.record_evaluation(eval_stats)
 
 
+def filter_trees(trees):
+    result = []
+    min_size = 2
+    max_size = 50
+
+    for tree in trees:
+        if tree.size > min_size and tree.size < max_size:
+            result.append(tree)
+
+    return result
+
+
 def evaluate(trees, functions, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
@@ -163,7 +175,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
     best_result = None
 
     # evaluate trees
-    for tree in trees:
+    for tree in filter_trees(trees):
         score = None
         res = None
 

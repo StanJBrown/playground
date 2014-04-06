@@ -77,7 +77,9 @@ def gp_benchmark_loop(config):
                 "timestamp": time.mktime(datetime.now().timetuple()),
                 "status": "DONE",
                 "config": config,
-                "runtime": time_taken
+                "runtime": time_taken,
+                "best_score": population.find_best_individuals()[0].score,
+                "best": str(population.find_best_individuals()[0])
             }
             log_path = os.path.expandvars(config["log_path"])
             log_file = open(log_path, "a+")

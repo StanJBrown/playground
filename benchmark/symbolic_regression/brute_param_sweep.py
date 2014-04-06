@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import math
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
@@ -16,10 +17,10 @@ if __name__ == "__main__":
         "tree_generation": {
             "method": "RAMPED_HALF_AND_HALF_METHOD",
             "depth_ranges": [
-                {"size": 4, "percentage": 0.25},
+                {"size": 4, "percentage": 0.15},
                 {"size": 3, "percentage": 0.25},
                 {"size": 2, "percentage": 0.25},
-                {"size": 1, "percentage": 0.25}
+                {"size": 1, "percentage": 0.35}
             ]
         },
 
@@ -33,13 +34,13 @@ if __name__ == "__main__":
         },
 
         "crossover": {
-            "method": "POINT_CROSSOVER",
+            "method": "COMMON_REGION_POINT_CROSSOVER",
             "probability": None
         },
 
         "mutation": {
             "methods": [
-                "POINT_MUTATION"
+                "SUBTREE_MUTATION"
             ],
             "probability": None
         },
@@ -126,6 +127,10 @@ if __name__ == "__main__":
             {
                 "type": "TERM",
                 "value": 10.0
+            },
+            {
+                "type": "TERM",
+                "value": math.pi
             }
         ],
 
@@ -142,6 +147,10 @@ if __name__ == "__main__":
             "name": "answer"
         },
 
+        "tree_editor": {
+            "every": 10
+        },
+
         "recorder": {
             "store_file": "/tmp/test.json",
             "compress": True
@@ -152,7 +161,7 @@ if __name__ == "__main__":
     test_parameters = {
         "play_config": config,
         "iterations": 1,
-        "processes": 20,
+        "processes": 1,
 
         "population_size": {
             "range": [
@@ -165,7 +174,7 @@ if __name__ == "__main__":
                 # 400,
                 # 450,
                 # 500,
-                # 550,
+                550,
                 # 600,
                 # 650,
                 # 700,
@@ -174,13 +183,13 @@ if __name__ == "__main__":
                 # 850,
                 # 900,
                 # 950,
-                1000
+                # 1000
             ]
         },
 
         "crossover_probability": {
             "range": [
-                0.05,
+                # 0.05,
                 # 0.10,
                 # 0.15,
                 # 0.20,
@@ -189,7 +198,7 @@ if __name__ == "__main__":
                 # 0.35,
                 # 0.40,
                 # 0.45,
-                # 0.50,
+                0.50,
                 # 0.55,
                 # 0.60,
                 # 0.65,
@@ -205,7 +214,7 @@ if __name__ == "__main__":
 
         "mutation_probability": {
             "range": [
-                0.05,
+                # 0.05,
                 # 0.10,
                 # 0.15,
                 # 0.20,
@@ -220,7 +229,7 @@ if __name__ == "__main__":
                 # 0.65,
                 # 0.70,
                 # 0.75,
-                # 0.80,
+                0.80,
                 # 0.85,
                 # 0.90,
                 # 0.95,

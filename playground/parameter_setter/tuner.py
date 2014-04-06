@@ -105,6 +105,7 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
 
     # execute parameter sweep
     if debug is False:
-        _parallel_param_sweep(details, params, loop_func)
+        loop_func(params[0])
+        # _parallel_param_sweep(details, params, loop_func)
     else:
         pprint.pprint(params)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from random import randint
 from random import random
 from random import sample
 
@@ -24,7 +25,10 @@ class TreeMutation(object):
         self.after_mutation = None
 
     def _gen_new_node(self, details):
-        if details["type"] == TreeNodeType.FUNCTION:
+        if details is None:
+            return None
+
+        elif details["type"] == TreeNodeType.FUNCTION:
             return TreeNode(
                 TreeNodeType.FUNCTION,
                 name=details["name"],
@@ -57,7 +61,14 @@ class TreeMutation(object):
             nodes.extend(self.config["input_variables"])
 
         # check the node and return
+        retry = 0
+        retry_limit = 5
         while True:
+            if retry == retry_limit:
+                return None
+            else:
+                retry += 1
+
             new_node_details = sample(nodes, 1)[0]
             new_node = self._gen_new_node(new_node_details)
 
@@ -69,7 +80,9 @@ class TreeMutation(object):
         node = sample(tree.program, 1)[0]
         new_node = self._get_new_node(node)
 
-        if node.is_function():
+        if new_node is None:
+            return
+        elif node.is_function():
             node.name = new_node["name"]
 
         elif node.is_terminal() or node.is_input():
@@ -97,22 +110,15 @@ class TreeMutation(object):
         node = None
         if mutation_index is None:
             node = sample(tree.program, 1)[0]
-
-            # retry sampling a node
-            retry = 0
-            retry_limit = 10
-            while node is tree.root:
-                node = sample(tree.program, 1)[0]
-                if retry == retry_limit:
-                    return
-                else:
-                    retry += 1
-
         else:
             node = tree.program[mutation_index]
 
+        self.tree_generator.max_depth = randint(1, 3)
         sub_tree = self.tree_generator.generate_tree()
-        tree.replace_node(node, sub_tree.root)
+        if node is not tree.root:
+            tree.replace_node(node, sub_tree.root)
+        else:
+            tree.root = sub_tree.root
         tree.update()
         self.mutated = True
 
@@ -133,9 +139,10 @@ class TreeMutation(object):
             node_details = self._get_new_node(new_node_detail)
             new_node = self._gen_new_node(node_details)
 
-            tree.replace_node(node, new_node)
-            tree.update()
-            self.mutated = True
+            if new_node:
+                tree.replace_node(node, new_node)
+                tree.update()
+                self.mutated = True
 
     def expansion_mutation(self, tree, mutation_index=None):
         # terminal exchanged against external random subtree

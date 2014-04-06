@@ -90,6 +90,7 @@ class TreeCrossover(object):
         return indices
 
     def common_region_point_crossover(self, t1, t2, crossover_index=None):
+        # common_regions is aka alignment by Poli and Langdon (1998)
         common_regions = self.find_common_regions(t1, t2)
 
         if len(common_regions):

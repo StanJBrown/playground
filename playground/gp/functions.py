@@ -47,6 +47,13 @@ def pow_function(right, left):
         raise EvaluationError("Opps! " + e.message)
 
 
+def sq_function(value):
+    try:
+        return value * value
+    except Exception as e:
+        raise EvaluationError("Opps! " + e.message)
+
+
 def cos_function(value):
     try:
         return math.cos(value)
@@ -100,6 +107,7 @@ class GPFunctionRegistry(object):
             self.register("DIV", div_function)
             self.register("POW", pow_function)
 
+            self.register("SQ", sq_function)
             self.register("COS", cos_function)
             self.register("SIN", sin_function)
             self.register("RAD", rad_function)

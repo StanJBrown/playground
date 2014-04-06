@@ -14,6 +14,7 @@ from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import print_func
 from playground.gp.tree.tree_evaluation import default_stop_func
+from playground.gp.tree.tree_editor import edit_trees
 from playground.gp.tree.tree_crossover import TreeCrossover
 from playground.gp.tree.tree_mutation import TreeMutation
 from playground.gp.functions import GPFunctionRegistry
@@ -46,6 +47,7 @@ def gp_benchmark_loop(config):
             selection=selection,
             crossover=crossover,
             mutation=mutation,
+            tree_editor=edit_trees,
             stop_func=default_stop_func,
             print_func=print_func,
             config=config,

@@ -93,6 +93,34 @@ def evaluate_test_function(equation, var_values):
     return data
 
 
+def simple_test_functions(dest, pattern="simple_test_funcs", fext=".dat"):
+    t_funcs = [
+        "(v[0] * v[0])",
+        "(v[0] * v[0]) + 10",
+        "(v[0] * v[0] * v[0])",
+        "(v[0] * v[0] * v[0]) + 10",
+        "(v[0] * v[0] * v[0]) + math.exp(v[0])",
+    ]
+
+    bounds = [
+        [{"lower": -1.0, "upper": 1.0}],
+        [{"lower": -1.0, "upper": 1.0}],
+        [{"lower": -1.0, "upper": 1.0}],
+        [{"lower": -1.0, "upper": 1.0}],
+        [{"lower": -1.0, "upper": 1.0}]
+    ]
+
+    points = [100, 100, 100, 100, 100]
+
+    for i in range(len(t_funcs)):
+        dest_path = os.path.join(dest, pattern)
+        fp = "{0}{1}{2}".format(dest_path, i + 1, fext)
+
+        matrix = generate_series_matrix(bounds[i], points[i])
+        data = evaluate_test_function(t_funcs[i], matrix)
+        write_test_data(fp, data)
+
+
 def arabas_et_al_test_functions(dest, pattern="arabas_et_al-f", fext=".dat"):
     # Arabas, J., Michalewicz, Z. & Mulawka, J., 1994. GAVaPS-a genetic
     # algorithm with varying population size. Proceedings of the First IEEE
@@ -194,3 +222,6 @@ def nguyen_et_al_test_functions(dest, pattern="nguyen_et_al-f", fext=".dat"):
     #     matrix = generate_series_matrix(bounds[i], points[i])
     #     data = evaluate_test_function(t_funcs[i], matrix)
     #     write_test_data(fp, data)
+
+if __name__ == "__main__":
+    simple_test_functions(".")

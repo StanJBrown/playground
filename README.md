@@ -24,8 +24,9 @@ is symbolic regression?][3]):
     cd examples/symbolic_regression
     python symbolic_regression.py
 
-    # alternatively you can run the example with PyPy, it is faster :)
-    pypy symbolic_regression.py  # takes around 30s on a macbook pro retina
+    # the convergence takes a while (62 generations)
+    # running the example with PyPy is faster :)
+    pypy symbolic_regression.py
 
 The example uses data in `examples/symbolic_regression/sine.dat` to find the
 answer (an equation), this is also an example of data-driven search.

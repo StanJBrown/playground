@@ -1,0 +1,127 @@
+{
+    "max_population" : 500,
+    "max_generation" : 30,
+
+    "tree_generation": {
+        "method" : "RAMPED_HALF_AND_HALF_METHOD",
+        "depth_ranges": [
+            {"size": 4, "percentage": 0.25},
+            {"size": 3, "percentage": 0.25},
+            {"size": 2, "percentage": 0.25},
+            {"size": 1, "percentage": 0.25}
+        ]
+    },
+
+    "evaluator": {
+        "use_cache" : true
+    },
+
+    "selection" : {
+        "method" : "TOURNAMENT_SELECTION",
+        "tournament_size": 5
+    },
+
+    "crossover" : {
+        "method" : "POINT_CROSSOVER",
+        "probability" : 0.8
+    },
+
+    "mutation" : {
+        "methods": [
+            "SUBTREE_MUTATION"
+        ],
+        "probability" : 0.2
+    },
+
+    "function_nodes" : [
+        {
+            "type": "FUNCTION",
+            "name": "ADD",
+            "arity": 2
+        },
+        {
+            "type": "FUNCTION",
+            "name": "SUB",
+            "arity": 2
+        },
+        {
+            "type": "FUNCTION",
+            "name": "MUL",
+            "arity": 2
+        },
+        {
+            "type": "FUNCTION",
+            "name": "DIV",
+            "arity": 2
+        }
+    ],
+
+    "terminal_nodes" : [
+        {
+            "type": "TERM",
+            "value": 0.0
+        },
+        {
+            "type": "TERM",
+            "value": 1.0
+        },
+        {
+            "type": "TERM",
+            "value": 2.0
+        },
+        {
+            "type": "TERM",
+            "value": 2.0
+        },
+        {
+            "type": "TERM",
+            "value": 3.0
+        },
+        {
+            "type": "TERM",
+            "value": 4.0
+        },
+        {
+            "type": "TERM",
+            "value": 5.0
+        },
+        {
+            "type": "TERM",
+            "value": 6.0
+        },
+        {
+            "type": "TERM",
+            "value": 7.0
+        },
+        {
+            "type": "TERM",
+            "value": 8.0
+        },
+        {
+            "type": "TERM",
+            "value": 9.0
+        },
+        {
+            "type": "TERM",
+            "value": 10.0
+        }
+    ],
+
+    "data_file" : "training_data/simple_test_funcs1.dat",
+
+    "input_variables" : [
+        {
+            "type": "INPUT",
+            "name": "var1"
+        }
+    ],
+
+    "response_variable" : {
+        "name": "answer"
+    },
+
+    "recorder" : {
+        "store_file": "/tmp/ea_stats.json"
+    }
+
+}

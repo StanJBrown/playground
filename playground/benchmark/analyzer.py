@@ -109,7 +109,7 @@ def summarize_selection(selection, summary):
     summary[sel_method]["selected"].append(selection["selected"])
 
 
-def summarize_generations(generations):
+def summarize_data(fp):
     stats = {
         # population
         "population": {
@@ -140,44 +140,18 @@ def summarize_generations(generations):
         },
 
         # selection
-        "selection": {},
+        "selection": {}
     }
 
+    generations = parse_data(fp)
     for generation in generations:
         summarize_population(generation["population"], stats["population"])
+        summarize_evaluation(generation["evaluation"], stats["evaluation"])
         summarize_selection(generation["selection"], stats["selection"])
         summarize_crossover(generation["crossover"], stats["crossover"])
         summarize_mutation(generation["mutation"], stats["mutation"])
 
     return stats
-
-# def plot_generations(generations, **kwargs):
-#     font = {
-#         "family": "san_serif",
-#         "color": "black",
-#         "weight": "bold",
-#         "size": 12
-#     }
-#
-#     # graph data
-#     best_scores = parse_generation_best_scores(generations)
-#     gens = range(0, len(best_scores))
-#
-#     # plot graph
-#     plt.plot(gens, best_scores)
-#
-#     # graph labels
-#     plt.title("Generation Best Score vs Generations", fontdict=font)
-#     plt.xlabel("Generation", fontdict=font)
-#     plt.ylabel("Generation Best Score", fontdict=font)
-#
-#     if kwargs.get("show_graph", False):
-#         # show graph
-#         plt.show()
-#
-#     if kwargs.get("save_fig", False):
-#         # save graph
-#         plt.savefig(kwargs.get("fig_path", "graph.png"))
 
 
 # def plot_summary(generations):

@@ -37,15 +37,9 @@ class AnalzyerTests(unittest.TestCase):
         # exception test
         self.assertRaises(IOError, analyzer.parse_data, log_file)
 
-    def test_summarize_generations(self):
+    def test_summarize_data(self):
         # pass test
-        data = analyzer.parse_data(data_file)
-
-        # import pprint
-        # print "---> DATA: ",
-        # pprint.pprint(data[0])
-
-        result = analyzer.summarize_generations(data)
+        result = analyzer.summarize_data(data_file)
 
         # import pprint
         # pprint.pprint(result)

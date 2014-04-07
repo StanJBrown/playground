@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
 [![Coverage Status](https://coveralls.io/repos/chutsu/playground/badge.png)][5]
 
-Playground is an Meta-heuristic Algorithm library implemented in Python.
+Playground is an Meta-heuristic library implemented in Python.
 Currently features:
 
 - Genetic Programming
@@ -58,10 +58,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program.  If not, see <http://www.gnu.org/licenses/>.
 
-[![](https://d2weczhvl823v0.cloudfront.net/chutsu/playground/trend.png)][2]
-
 [1]: https://travis-ci.org/chutsu/playground
-[2]: https://bitdeli.com/free
 [3]: http://www.symbolicregression.com/?q=faq
 [4]: https://github.com/chutsu/playground/tree/master/examples/symbolic_regression
 [5]: https://coveralls.io/r/chutsu/playground

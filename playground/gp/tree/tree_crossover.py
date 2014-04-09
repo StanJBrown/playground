@@ -47,7 +47,7 @@ class TreeCrossover(object):
         self.crossovered = True
 
     def find_common_regions(self, t1, t2):
-        common_region = []
+        common_regions = []
         t1_queue = list(t1.root.branches)
         t2_queue = list(t2.root.branches)
 
@@ -57,22 +57,22 @@ class TreeCrossover(object):
 
             if n1.is_function() and n2.is_function():
                 if n1.arity == n2.arity:
-                    common_region.append([n1, n2])
+                    common_regions.append([n1, n2])
 
                     for i in range(n1.arity):
                         t1_queue.append(n1.branches[i])
                         t2_queue.append(n2.branches[i])
 
-        return common_region
+        return common_regions
 
     def random_common_index(self, common_regions, t1, t2):
-        selected_node = sample(common_regions, 1)[0]
+        selected_nodes = sample(common_regions, 1)[0]
         indices = []
 
         # find index of selected node from tree 1
         index = 0
         for node in t1.program:
-            if node is selected_node[0]:
+            if node is selected_nodes[0]:
                 indices.append(index)
                 break
             else:
@@ -81,7 +81,7 @@ class TreeCrossover(object):
         # find index of selected node from tree 2
         index = 0
         for node in t2.program:
-            if node is selected_node[1]:
+            if node is selected_nodes[1]:
                 indices.append(index)
                 break
             else:
@@ -99,6 +99,7 @@ class TreeCrossover(object):
 
     def crossover(self, t1, t2):
         self.method = self.config["crossover"]["method"]
+        self.index = None
         self.crossover_probability = self.config["crossover"]["probability"]
         self.random_probability = random()
         self.crossovered = False

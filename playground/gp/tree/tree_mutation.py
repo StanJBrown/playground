@@ -77,7 +77,8 @@ class TreeMutation(object):
 
     def point_mutation(self, tree, mutation_index=None):
         # mutate node
-        node = sample(tree.program, 1)[0]
+        self.index = randint(0, len(tree.program) - 1)
+        node = tree.program[self.index]
         new_node = self._get_new_node(node)
 
         if new_node is None:
@@ -97,8 +98,10 @@ class TreeMutation(object):
         # new indivdiaul generated from subtree
         node = None
         if mutation_index is None:
-            node = sample(tree.program, 1)[0]
+            self.index = randint(0, len(tree.program) - 1)
+            node = tree.program[self.index]
         else:
+            self.index = mutation_index
             node = tree.program[mutation_index]
 
         tree.root = node
@@ -109,8 +112,10 @@ class TreeMutation(object):
         # subtree exchanged against external random subtree
         node = None
         if mutation_index is None:
-            node = sample(tree.program, 1)[0]
+            self.index = randint(0, len(tree.program) - 1)
+            node = tree.program[self.index]
         else:
+            self.index = mutation_index
             node = tree.program[mutation_index]
 
         self.tree_generator.max_depth = randint(1, 3)
@@ -127,10 +132,14 @@ class TreeMutation(object):
         if len(tree.func_nodes):
             node = None
             if mutation_index is None:
-                node = sample(tree.func_nodes, 1)[0]
+                self.index = randint(0, len(tree.func_nodes) - 1)
+                node = tree.func_nodes[self.index]
+
                 while node is tree.root:
-                    node = sample(tree.func_nodes, 1)[0]
+                    self.index = randint(0, len(tree.func_nodes) - 1)
+                    node = tree.func_nodes[self.index]
             else:
+                self.index = mutation_index
                 node = tree.program[mutation_index]
 
             candidate_nodes = tree.term_nodes
@@ -152,16 +161,25 @@ class TreeMutation(object):
 
             if tree.size == 1:
                 return
+
             elif prob > 0.5 and len(tree.term_nodes) > 0:
-                node = sample(tree.term_nodes, 1)[0]
+                self.index = randint(0, len(tree.term_nodes) - 1)
+                node = tree.term_nodes[self.index]
+
             elif prob < 0.5 and len(tree.input_nodes) > 0:
-                node = sample(tree.input_nodes, 1)[0]
+                self.index = randint(0, len(tree.input_nodes) - 1)
+                node = tree.input_nodes[self.index]
+
             elif len(tree.term_nodes) > 0:
-                node = sample(tree.term_nodes, 1)[0]
+                self.index = randint(0, len(tree.term_nodes) - 1)
+                node = tree.term_nodes[self.index]
+
             elif len(tree.input_nodes) > 0:
-                node = sample(tree.input_nodes, 1)[0]
+                self.index = randint(0, len(tree.input_nodes) - 1)
+                node = tree.input_nodes[self.index]
 
         else:
+            self.index = mutation_index
             node = tree.program[mutation_index]
 
         sub_tree = self.tree_generator.generate_tree()
@@ -179,6 +197,7 @@ class TreeMutation(object):
         }
 
         self.method = sample(self.config["mutation"]["methods"], 1)[0]
+        self.index = None
         self.mutation_probability = self.config["mutation"]["probability"]
         self.random_probability = random()
         self.mutated = False
@@ -203,6 +222,7 @@ class TreeMutation(object):
     def to_dict(self):
         self_dict = {
             "method": self.method,
+            "mutation_index": self.index,
             "mutation_probability": self.mutation_probability,
             "random_probability": self.random_probability,
             "mutated": self.mutated,

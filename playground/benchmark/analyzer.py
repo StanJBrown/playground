@@ -3,7 +3,11 @@ import os
 import json
 import zipfile
 
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import setp
+from matplotlib.pyplot import get_cmap
+from matplotlib.pyplot import legend
+from matplotlib.pyplot import figlegend
 
 
 def parse_data(fp):
@@ -155,27 +159,105 @@ def summarize_data(fp):
     return stats
 
 
-# def plot_summary(generations):
-#     plt.figure(figsize=(7, 10))
-#
-#     # generation best scores
-#     plt.subplot(311)
-#     plot_generation_best_scores(generations)
-#
-#     # all time best scores
-#     plt.subplot(312)
-#     plot_all_time_best_scores(generations)
-#
-#     # evaluation stats
-#     plt.subplot(313)
-#     plot_evaluation_stats(generations)
-#
-#     plt.subplots_adjust(
-#         left=None,
-#         bottom=None,
-#         right=None,
-#         top=None,
-#         wspace=None,
-#         hspace=0.6
-#     )
-#     plt.show()
+def plot_summary_graph(data, labels, field_key, **kwargs):
+    # markers
+    markers = ['o', 'v', '^', '<', '>', 's', 'p', '*', 'h', 'H', '+', 'x']
+
+    # colors
+    cm = get_cmap('gist_rainbow')
+    cgen = [cm(1.0 * i / len(data)) for i in range(len(data))]
+
+    # best score
+    axis = plt.subplot(kwargs["fignum"], sharex=kwargs.get("sharex", None))
+    klev_1, klev_2 = field_key.split(".")
+    max_field = max(data[0][klev_1][klev_2])
+    min_field = min(data[0][klev_1][klev_2])
+
+    lines = []
+    for i in range(len(data)):
+        x = data[i]["population"]["generation"]
+        y = data[i][klev_1][klev_2]
+        lines.extend(plt.plot(x, y, markers[i], linestyle="-", color=cgen[i]))
+
+        if max(y) > max_field:
+            max_field = max(y)
+
+        if min(y) > min_field:
+            min_field = min(y)
+
+    # legend
+    if kwargs.get("show_legend", False):
+        figlegend(tuple(lines), tuple(labels), 'best')
+
+    setp(axis.get_xticklabels())
+    plt.ylabel(kwargs.get("ylabel"))
+    ylim_diff = kwargs.get("ylim_diff", 10)
+    plt.ylim(min_field - ylim_diff, max_field + ylim_diff)
+
+    return axis
+
+
+def plot_summary(data, labels, fig_title=None):
+    fig = plt.figure(figsize=(10, 13.5), facecolor="white")
+
+    # figure title
+    if fig_title:
+        fig.suptitle(fig_title, fontsize=18)
+
+    # best score
+    plot_summary_graph(
+        data,
+        labels,
+        "population.best_score",
+        fignum=511,
+        show_legend=True,
+        ylabel="best score",
+        ylim_diff=10
+    )
+
+    # diversity
+    plot_summary_graph(
+        data,
+        labels,
+        "evaluation.diversity",
+        fignum=512,
+        ylabel="diversity",
+        ylim_diff=0.1
+    )
+
+    # cache size
+    plot_summary_graph(
+        data,
+        labels,
+        "evaluation.cache_size",
+        fignum=513,
+        ylabel="cache size",
+        ylim_diff=10
+    )
+
+    # trees evaluated
+    plot_summary_graph(
+        data,
+        labels,
+        "evaluation.trees_evaluated",
+        fignum=514,
+        ylabel="tree evaluated",
+        ylim_diff=10
+    )
+
+    # tree nodes evaluated
+    plot_summary_graph(
+        data,
+        labels,
+        "evaluation.tree_nodes_evaluated",
+        fignum=515,
+        ylabel="tree nodes evaluated",
+        ylim_diff=10
+    )
+
+    # add shared x axis label
+    plt.xlabel("generation")
+
+    # additional settings
+    plt.subplots_adjust(hspace=0.3)
+    plt.show(block=False)

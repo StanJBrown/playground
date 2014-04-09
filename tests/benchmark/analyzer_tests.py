@@ -157,9 +157,9 @@ class AnalzyerTests(unittest.TestCase):
             "iterations": 1,
             "processes": 1,
 
-            "population_size": {"range": [20]},
+            "population_size": {"range": [100]},
             "crossover_probability": {"range": [0.80]},
-            "mutation_probability": {"range": [0.80]},
+            "mutation_probability": {"range": [0.80, 0.70]},
 
             "training_data": ["../data/arabas_et_al-f1.dat"],
 
@@ -206,9 +206,10 @@ class AnalzyerTests(unittest.TestCase):
 
     def test_summarize_data_max_level(self):
         # test data
-        test_data = "bps--arabas_et_al-f1--20_0.8_0.8.zip"
+        test_data = "bps--arabas_et_al-f1--100_0.8_0.8.zip"
         test_dir = "./analyzer_test_data/seed_0/"
         test_fp = os.path.join(test_dir, test_data)
+        test_fp = os.path.normpath(test_fp)
 
         # summarize data
         result = analyzer.summarize_data(test_fp)
@@ -226,6 +227,25 @@ class AnalzyerTests(unittest.TestCase):
 
         self.assertTrue(len(result["mutation"]["mutations"]), 14)
         self.assertTrue(len(result["mutation"]["no_mutations"]), 14)
+
+    def test_plot_summary(self):
+        # tes data
+        test_data_1 = "bps--arabas_et_al-f1--100_0.8_0.8.zip"
+        test_dir = "./analyzer_test_data/seed_0/"
+        test_1_fp = os.path.join(test_dir, test_data_1)
+
+        test_data_2 = "bps--arabas_et_al-f1--100_0.8_0.7.zip"
+        test_2_fp = os.path.join(test_dir, test_data_2)
+
+        # summarize data
+        test_data_1 = analyzer.summarize_data(test_1_fp)
+        test_data_2 = analyzer.summarize_data(test_2_fp)
+        data = [test_data_1, test_data_2]
+        labels = [
+            "c_prob = 0.8, mut_prob = 0.8",
+            "c_prob = 0.8, mut_prob = 0.7"
+        ]
+        analyzer.plot_summary(data, labels)
 
 
 if __name__ == "__main__":

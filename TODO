@@ -2,7 +2,6 @@
 - Implement Racing Algorithm
 - Read Edinburgh PSO paper
 
-- Refactor operators module back into respective ga and gp folder
 - Run parameter sweep
 - Run Racing algorithm benchmark
 

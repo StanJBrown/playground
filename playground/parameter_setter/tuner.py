@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 import os
-import sys
 import copy
 import pprint
 import itertools
 import multiprocessing
 from datetime import datetime
-
-from playground.config import load_data
 
 
 def _build_parameters(seed, play_config, **kwargs):
@@ -35,12 +32,16 @@ def _record_fp(details, seed, training_data):
     cross = details[1]
     mut = details[2]
 
+    # get training data file name
     basename = os.path.basename(training_data)
     td = os.path.splitext(basename)[0]
 
-    fn = "bps--{4}--{0}_{1}_{2}-{3}.dat".format(pop, cross, mut, seed, td)
+    # build record file path
+    folder = "seed_{0}".format(seed)
+    fn = "bps--{3}--{0}_{1}_{2}.dat".format(pop, cross, mut, td)
+    record_fp = os.path.join(folder, fn)
 
-    return fn
+    return record_fp
 
 
 def _set_record_file(details, param, record_file):

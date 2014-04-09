@@ -12,7 +12,7 @@ import playground.play as play
 from playground.config import load_data
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
-from playground.gp.tree.tree_evaluation import print_func
+# from playground.gp.tree.tree_evaluation import print_func
 from playground.gp.tree.tree_evaluation import default_stop_func
 from playground.gp.tree.tree_editor import edit_trees
 from playground.gp.tree.tree_crossover import TreeCrossover
@@ -49,7 +49,7 @@ def gp_benchmark_loop(config):
             mutation=mutation,
             tree_editor=edit_trees,
             stop_func=default_stop_func,
-            print_func=print_func,
+            # print_func=print_func,
             config=config,
             recorder=json_store
         )

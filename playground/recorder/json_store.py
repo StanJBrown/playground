@@ -178,6 +178,9 @@ class JSONStore(object):
                 else:
                     result["no_crossovers"] += 1
 
+        if self.level == RecordLevel.MAX:
+            result["instances"] = crossover
+
         return result
 
     def summarize_mutation(self, mutations):
@@ -211,6 +214,9 @@ class JSONStore(object):
                 else:
                     result["no_mutations"] += 1
 
+        if self.level == RecordLevel.MAX:
+            result["instances"] = mutations
+
         return result
 
     def summarize_store(self):
@@ -238,8 +244,7 @@ class JSONStore(object):
         store_file = self.store_file_path
 
         # summarize records
-        if self.level is RecordLevel.MIN:
-            self.summarize_store()
+        self.summarize_store()
 
         # compress the store file
         if self.record_config.get("compress", False):

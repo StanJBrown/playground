@@ -11,6 +11,7 @@ def parse_data(fp):
 
     try:
         # parse fp
+        fp = os.path.expandvars(fp)
         data_file, file_ext = os.path.splitext(fp)
         dirname = os.path.dirname(fp)
 
@@ -66,7 +67,7 @@ def summarize_crossover(crossover, summary):
             summary[key]["failed"] = []
             summary[key]["success"] = []
 
-        if key != "crossovers" and key != "no_crossovers":
+        if key not in ["crossovers", "no_crossovers", "instances"]:
             success = crossover[key]["success"]
             failed = crossover[key]["failed"]
             frequency = crossover[key]["frequency"]
@@ -90,7 +91,7 @@ def summarize_mutation(mutation, summary):
             summary[key]["failed"] = []
             summary[key]["success"] = []
 
-        if key != "mutations" and key != "no_mutations":
+        if key not in ["mutations", "no_mutations", "instances"]:
             success = mutation[key]["success"]
             failed = mutation[key]["failed"]
             frequency = mutation[key]["frequency"]

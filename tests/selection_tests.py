@@ -39,26 +39,26 @@ class SelectionTests(unittest.TestCase):
         self.assertEquals(round(total_sum, 2), 1.0)
 
     def test_roulette_selection(self):
-        new_pop = self.selection.roulette_wheel_selection(self.population)
-
         old_pop_size = len(self.population.individuals)
-        new_pop_size = len(new_pop.individuals)
+        self.selection.roulette_wheel_selection(self.population)
+        new_pop_size = len(self.population.individuals)
 
         self.assertFalse(old_pop_size == new_pop_size)
         self.assertEquals(new_pop_size, old_pop_size / 2)
 
     def test_tournament_selection(self):
-        new_pop = self.selection.tournament_selection(self.population)
-
         old_pop_size = len(self.population.individuals)
-        print "OLD:"
+        print "OLD[{0}]:".format(old_pop_size)
         for individual in self.population.individuals:
             print individual, individual.score
         print '\n\n'
 
-        new_pop_size = len(new_pop.individuals)
-        print "NEW:"
-        for individual in new_pop.individuals:
+        # tournament selection
+        self.selection.tournament_selection(self.population)
+
+        new_pop_size = len(self.population.individuals)
+        print "NEW[{0}]:".format(new_pop_size)
+        for individual in self.population.individuals:
             print individual, individual.score
 
         self.assertFalse(old_pop_size == new_pop_size)
@@ -66,26 +66,26 @@ class SelectionTests(unittest.TestCase):
 
     def test_elitest_selection(self):
         old_pop_size = len(self.population.individuals)
-        print "OLD[{0}:".format(old_pop_size)
+        print "OLD[{0}]:".format(old_pop_size)
         for individual in self.population.individuals:
             print individual, individual.score
         print '\n\n'
 
-        new_pop = self.selection.elitest_selection(self.population)
+        # elitest selection
+        self.selection.elitest_selection(self.population)
 
-        new_pop_size = len(new_pop.individuals)
-        print "NEW[{0}:".format(new_pop_size)
-        for individual in new_pop.individuals:
+        new_pop_size = len(self.population.individuals)
+        print "NEW[{0}]:".format(new_pop_size)
+        for individual in self.population.individuals:
             print individual, individual.score
 
         self.assertFalse(old_pop_size == new_pop_size)
         self.assertEquals(new_pop_size, old_pop_size * 0.1)
 
     def test_select(self):
-        new_pop = self.selection.select(self.population)
-
         old_pop_size = len(self.population.individuals)
-        new_pop_size = len(new_pop.individuals)
+        self.selection.select(self.population)
+        new_pop_size = len(self.population.individuals)
 
         self.assertFalse(old_pop_size == new_pop_size)
         self.assertEquals(new_pop_size, old_pop_size / 2)

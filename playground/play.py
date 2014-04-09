@@ -127,7 +127,7 @@ def play(play):
             play.print_func(population, stats["generation"])
 
         # genetic genetic operators
-        population = play.selection.select(population)
+        play.selection.select(population)
         reproduce(population, play.crossover, play.mutation, play.config)
 
         # record
@@ -146,6 +146,7 @@ def play(play):
             play.recorder
         )
         population.individuals = results
+        population.generation += 1
 
         # edit population
         if play.config.get("tree_editor", False):
@@ -187,7 +188,7 @@ def play_multicore(play):
             play.print_func(population, stats["generation"])
 
         # genetic genetic operators
-        population = play.selection.select(population)
+        play.selection.select(population)
         reproduce(population, play.crossover, play.mutation, play.config)
 
         # record
@@ -221,6 +222,7 @@ def play_multicore(play):
             p.join()
         del processes[:]
         population.individuals = [r for r in results]
+        population.generation += 1
 
     # finalize recording
     if play.recorder is not None:
@@ -273,6 +275,7 @@ def play_evolution_strategy(play):
             play.recorder
         )
         population.individuals = results
+        population.generation += 1
 
         # edit population
         if play.config.get("tree_editor", False):

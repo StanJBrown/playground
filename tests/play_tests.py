@@ -57,7 +57,7 @@ class PlayTests(unittest.TestCase):
             #     print i
             # print "\n"
 
-            population = self.selection.select(population)
+            self.selection.select(population)
 
             # print "SELECTION"
             # for i in population.individuals:
@@ -80,7 +80,6 @@ class PlayTests(unittest.TestCase):
             max_pop = self.config["max_population"]
             self.assertEquals(len(population.individuals), max_pop)
             self.assertTrue(population.config is self.config)
-            self.assertEquals(population.generation, 0)
 
     def test_play(self):
         population = self.tree_generator.init()
@@ -102,6 +101,7 @@ class PlayTests(unittest.TestCase):
         play.play(details)
         end_time = time.time()
         print("GP run with cache: %2.2fsec\n" % (end_time - start_time))
+        self.assertEquals(population.generation, 5)
 
         # without cache
         start_time = time.time()
@@ -120,6 +120,7 @@ class PlayTests(unittest.TestCase):
         play.play(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
+        self.assertEquals(population.generation, 10)
 
         # assert
         self.assertTrue(len(population.individuals) > 0)
@@ -143,6 +144,7 @@ class PlayTests(unittest.TestCase):
         play.play_multicore(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
+        self.assertEquals(population.generation, 5)
 
         # assert
         self.assertTrue(len(population.individuals) > 0)
@@ -164,6 +166,7 @@ class PlayTests(unittest.TestCase):
         play.play_evolution_strategy(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
+        self.assertEquals(population.generation, 5)
 
         # assert
         print len(population.individuals)

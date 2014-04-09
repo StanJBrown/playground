@@ -3,7 +3,6 @@ from random import random
 from random import sample
 import operator
 
-from playground.population import Population
 from playground.recorder.record_type import RecordType
 
 
@@ -14,7 +13,6 @@ class Selection(object):
 
         self.method = None
         self.selected = 0
-        self.new_pop = None
 
     def _normalize_scores(self, population):
         # get total
@@ -27,14 +25,13 @@ class Selection(object):
             individual.score = individual.score / total_score
 
     def roulette_wheel_selection(self, population):
-        new_pop = Population(self.config)
-
         # normalize individuals
         self._normalize_scores(population)
 
         # select loop
         self.selected = 0
         max_select = len(population.individuals) / 2
+        winners = []
         while self.selected < max_select:
 
             # spin the wheel
@@ -44,20 +41,21 @@ class Selection(object):
                 cumulative_prob += individual.score
 
                 if cumulative_prob >= probability:
-                    new_pop.individuals.append(individual)
+                    winners.append(individual)
                     self.selected += 1
                     break
 
-        return new_pop
+        del population.individuals[:]
+        population.individuals = winners
+        self.new_pop = population
 
     def tournament_selection(self, population):
-        new_pop = Population(self.config)
-
         # select loop
         self.selected = 0
         max_select = self.config["max_population"] / 2
         t_size = self.config["selection"].get("tournament_size", 2)
 
+        winners = []
         while self.selected < max_select:
             # randomly select N individuals for tournament
             tournament = sample(population.individuals, t_size)
@@ -67,39 +65,37 @@ class Selection(object):
 
             # insert winner into new_pop
             winner = tournament[0]
-            new_pop.individuals.append(winner)
+            winners.append(winner)
             self.selected += 1
 
-        return new_pop
+        del population.individuals[:]
+        population.individuals = winners
+        self.new_pop = population
 
     def elitest_selection(self, population):
         percentage = self.config["selection"].get("percentage", 10)
+        self.selected = self.config["selection"].get("percentage", 10)
         top = len(population.individuals) / percentage
 
         # sort population based on fitness and prune the weak
         population.sort_individuals()
         population.individuals = population.individuals[0:top]
-
-        return population
+        self.new_pop = population
 
     def select(self, population):
         self.method = self.config["selection"]["method"]
-        self.new_pop = None
 
         if self.method == "ROULETTE_SELECTION":
-            self.new_pop = self.roulette_wheel_selection(population)
+            self.roulette_wheel_selection(population)
         elif self.method == "TOURNAMENT_SELECTION":
-            self.new_pop = self.tournament_selection(population)
+            self.tournament_selection(population)
         elif self.method == "ELITEST_SELECTION":
-            self.new_pop = self.elitest_selection(population)
+            self.elitest_selection(population)
         else:
             raise RuntimeError("Undefined selection method!")
 
-        if self.new_pop is not None and self.recorder is not None:
+        if self.recorder:
             self.recorder.record(RecordType.SELECTION, self)
-            # self.recorder.record_selection(self)
-
-        return self.new_pop
 
     def to_dict(self):
         self_dict = {

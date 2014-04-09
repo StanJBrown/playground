@@ -17,8 +17,8 @@ from playground.gp.tree.tree_mutation import TreeMutation
 
 # SETTINGS
 script_path = os.path.dirname(__file__)
-config_file = "../config/json_store.json"
-config_path = os.path.normpath(os.path.join(script_path, config_file))
+config_path = "../config/json_store.json"
+config_path = os.path.normpath(os.path.join(script_path, config_path))
 
 
 class JSONStoreTests(unittest.TestCase):

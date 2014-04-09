@@ -36,6 +36,7 @@
 - GP Initializer
     - Tree initialization via Full method [DONE!]
     - Tree initialization via Grow method [DONE!]
+    - Tree initialization via Ramped Half and Half [DONE!]
 
 - GP Evaluator
     - Tree Evaluator [DONE!]

@@ -6,6 +6,9 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from playground.climbing.climbers import hill_climbing
+from playground.climbing.utils import check_iterations
+from playground.climbing.utils import check_time
+from playground.climbing.utils import check_score
 from playground.climbing.utils import stop_function
 
 
@@ -64,6 +67,25 @@ class ClimbersTests(unittest.TestCase):
             return -1
         else:
             return 0
+
+    def test_check_iterations(self):
+        self.assertFalse(check_iterations(100, 0))
+        self.assertTrue(check_iterations(100, 100))
+        self.assertRaises(RuntimeError, check_iterations, None, 100)
+        self.assertRaises(RuntimeError, check_iterations, 100, None)
+
+    def test_check_time(self):
+        self.assertFalse(check_time(100, 0))
+        self.assertTrue(check_time(100, 100))
+        self.assertRaises(RuntimeError, check_time, None, 100)
+        self.assertRaises(RuntimeError, check_time, 100, None)
+
+    def test_check_score(self):
+        self.assertFalse(check_score(100, 0, self.int_cmp))
+        self.assertTrue(check_score(100, 100, self.int_cmp))
+        self.assertRaises(RuntimeError, check_score, None, 100, self.int_cmp)
+        self.assertRaises(RuntimeError, check_score, 100, None, self.int_cmp)
+        self.assertRaises(RuntimeError, check_score, 100, 100, None)
 
     def test_hill_climbing(self):
         # run hill climbing

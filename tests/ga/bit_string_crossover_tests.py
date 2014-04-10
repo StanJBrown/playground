@@ -31,7 +31,12 @@ class BitStringCrossoverTests(unittest.TestCase):
                 "1001",
                 "1011",
                 "1111"
-            ]
+            ],
+
+            "crossover": {
+                "method": "ONE_POINT_CROSSOVER",
+                "probability": 1.0
+            }
         }
         generator = BitStringGenerator(self.config)
         self.bitstr_1 = generator.generate_random_bitstr()
@@ -74,6 +79,48 @@ class BitStringCrossoverTests(unittest.TestCase):
 
         self.assertTrue(bitstr_1_before == bitstr_1_after)
         self.assertTrue(bitstr_2_before == bitstr_2_after)
+
+    def test_crossover(self):
+        bitstr_1_before = list(self.bitstr_1.genome)
+        bitstr_2_before = list(self.bitstr_2.genome)
+
+        print "BITSTR 1 [BEFORE]:", self.bitstr_1.genome
+        print "BITSTR 2 [BEFORE]:", self.bitstr_2.genome
+
+        self.crossover.crossover(self.bitstr_1, self.bitstr_2)
+
+        bitstr_1_after = list(self.bitstr_1.genome)
+        bitstr_2_after = list(self.bitstr_2.genome)
+
+        print "BITSTR 1 [AFTER]:", self.bitstr_1.genome
+        print "BITSTR 2 [AFTER]:", self.bitstr_2.genome
+
+        # assert
+        self.assertFalse(bitstr_1_before == bitstr_1_after)
+        self.assertFalse(bitstr_2_before == bitstr_2_after)
+
+        self.config["crossover"]["method"] = "RANDOM_CROSSOVER"
+        self.assertRaises(
+            RuntimeError,
+            self.crossover.crossover,
+            self.bitstr_1,
+            self.bitstr_2
+        )
+
+    def test_to_dict(self):
+        self.crossover.crossover(self.bitstr_1, self.bitstr_2)
+        cross_dict = self.crossover.to_dict()
+
+        # import pprint
+        # pprint.pprint(cross_dict)
+
+        self.assertEqual(cross_dict["method"], "ONE_POINT_CROSSOVER")
+        self.assertTrue(cross_dict["index"] is not None)
+        self.assertTrue(cross_dict["crossover_probability"] is not None)
+        self.assertTrue(cross_dict["random_probability"] is not None)
+        self.assertTrue(cross_dict["crossovered"] is not None)
+        self.assertEqual(len(cross_dict["before_crossover"]), 2)
+        self.assertEqual(len(cross_dict["after_crossover"]), 2)
 
 
 if __name__ == '__main__':

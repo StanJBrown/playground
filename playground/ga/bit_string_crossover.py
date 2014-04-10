@@ -43,6 +43,7 @@ class BitStringCrossover(object):
         # swap
         bstr_1.genome[0:index] = bstr_2_half
         bstr_2.genome[0:index] = bstr_1_half
+        self.crossovered = True
 
     def crossover(self, bstr_1, bstr_2):
         self.method = self.config["crossover"]["method"]
@@ -60,7 +61,6 @@ class BitStringCrossover(object):
         if self.crossover_probability >= self.random_probability:
             if self.method == "ONE_POINT_CROSSOVER":
                 self.one_point_crossover(bstr_1, bstr_2)
-                self.crossovered = True
             else:
                 raise RuntimeError("Undefined crossover method!")
 

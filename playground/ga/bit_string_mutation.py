@@ -32,12 +32,9 @@ class BitStringMutation(object):
 
         new_codon = self.generator.generate_random_codon()
         bitstr.genome[index] = new_codon
+        self.mutated = True
 
     def mutate(self, bitstr):
-        mutation_methods = {
-            "POINT_MUTATION": self.point_mutation,
-        }
-
         self.method = sample(self.config["mutation"]["method"], 1)[0]
         self.mutation_probability = self.config["mutation"]["probability"]
         self.random_probability = random()
@@ -50,9 +47,12 @@ class BitStringMutation(object):
 
         # mutate
         if self.mutation_probability >= self.random_probability:
-            mutation_func = mutation_methods[self.method]
-            mutation_func(bitstr)
-            self.mutated = True
+            if self.method == "POINT_MUTATION":
+                self.point_mutation(bitstr)
+            else:
+                raise RuntimeError(
+                    "Undefined mutation method [{0}]".format(self.method)
+                )
 
         # record after mutation
         self.after_mutation = "".join(bitstr.genome)

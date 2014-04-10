@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import copy
 
-from playground.climbing.utils import default_stop_function
+from playground.climbing.utils import stop_function as default_stop_function
 
 
 def hill_climbing(details):

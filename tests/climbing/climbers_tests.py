@@ -6,7 +6,7 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from playground.climbing.climbers import hill_climbing
-from playground.climbing.climbers import default_stop_function
+from playground.climbing.utils import stop_function
 
 
 class ClimbersTests(unittest.TestCase):
@@ -19,7 +19,7 @@ class ClimbersTests(unittest.TestCase):
 
             "tweak_function": self.tweak_function,
             "eval_function": self.eval_function,
-            "stop_function": default_stop_function,
+            "stop_function": stop_function,
 
             "candidate": self.candidate,
             "max_iterations": 1000,

@@ -33,7 +33,7 @@ def check_time(max_time, time):
         return False
 
 
-def default_stop_function(details):
+def stop_function(details):
     max_iterations = details.get("max_iterations", None)
     max_time = details.get("max_time", None)
     target_score = details.get("target_score", None)

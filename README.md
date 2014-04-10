@@ -5,6 +5,7 @@
 Playground is an Meta-heuristic library implemented in Python.
 Currently features:
 
+- Hill Climbing
 - Genetic Programming
 - Genetic Algorithm
 - Particle Swarm Optimization
@@ -33,11 +34,18 @@ answer (an equation), this is also an example of data-driven search.
 
 Others include:
 
-    # find the word "hello world!" - genetic algorithm
+    # HILL CLIMBING
+    # find the word "hello world!"
+    cd examples/climbing
+    python hill_climbing.py
+
+    # GENETIC ALGORITHM
+    # find the word "hello world!"
     cd examples/hello_world
     python hello_world.py
 
-    # find the most optimal point in a x-y graph - particle swarm optimization
+    # PARTICLE SWARM OPTIMIZATION
+    # find the most optimal point in a x-y graph
     cd examples/pso
     python pso.py
 

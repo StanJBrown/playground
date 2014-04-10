@@ -5,7 +5,7 @@ import random
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from playground.climbing.climbers import hill_climbing
-from playground.climbing.climbers import default_stop_function
+from playground.climbing.utils import stop_function
 
 
 def eval_function(candidate):
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
         "tweak_function": tweak_function,
         "eval_function": eval_function,
-        "stop_function": default_stop_function,
+        "stop_function": stop_function,
 
         "candidate": candidate,
         "max_iterations": 1000,
@@ -62,4 +62,5 @@ if __name__ == "__main__":
         "comparator": int_cmp
     }
 
-    print hill_climbing(details)
+    result = hill_climbing(details)
+    print "\nSOLUTION -->", result[0]

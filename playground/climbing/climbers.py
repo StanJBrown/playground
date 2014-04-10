@@ -11,29 +11,28 @@ def hill_climbing(details):
     candidate = copy.deepcopy(details["candidate"])
 
     # assign initial best candidate
-    best = copy.deepcopy(candidate)
-    details["best_score"] = eval_function(best)
-    details["best"] = best
+    initial_best = copy.deepcopy(candidate)
+    details["best_score"] = eval_function(initial_best)
+    details["best"] = initial_best
 
     # hill climb
     details["iteration"] = 0
     while stop_function(details) is False:
         # tweak candidate
-        candidate = tweak_function(copy.deepcopy(best))
+        candidate = tweak_function(copy.deepcopy(details["best"]))
 
         # evaluate
         candidate_score = eval_function(candidate)
 
         # update best
         if candidate_score > details["best_score"]:
-            best = candidate
-            details["best"] = best
+            details["best"] = copy.deepcopy(candidate)
             details["best_score"] = candidate_score
 
-        # update iteration and candidate
+        # update iteration
         details["iteration"] += 1
-        details["candidate"] = candidate
 
+        # print debug msgs
         if details.get("debug", False):
             print "iteration: {0} - {1} - score:{2}".format(
                 details["iteration"],

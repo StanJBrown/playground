@@ -79,8 +79,8 @@ class Selection(object):
 
         # sort population based on fitness and get the elites
         population.sort_individuals()
-        top = len(population.individuals) / percentage
-        elites = population.individuals[0:top]
+        top = round(len(population.individuals) * percentage, 0)
+        elites = population.individuals[0:int(top)]
 
         # fill out the new population with elites
         parents = []

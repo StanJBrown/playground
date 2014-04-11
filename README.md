@@ -23,11 +23,7 @@ is symbolic regression?][3]):
 
     # curve fitting - genetic programming
     cd examples/symbolic_regression
-    python symbolic_regression.py
-
-    # the convergence takes a while (62 generations)
-    # running the example with PyPy is faster :)
-    pypy symbolic_regression.py
+    python symbolic_regression.py  # takes a while (20 generations)
 
 The example uses data in `examples/symbolic_regression/sine.dat` to find the
 answer (an equation), this is also an example of data-driven search.

@@ -112,7 +112,7 @@ def eval_program(tree, tree_size, functions, config):
             # calculate score
             node = stack.pop()
             result.append(node.value)
-            err += pow(abs(response_data[i] - node.value), 2)
+            err += pow(response_data[i] - node.value, 2)
 
             # reset stack
             del stack[:]

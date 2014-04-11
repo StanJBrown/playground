@@ -1,14 +1,15 @@
 {
-    "max_population" : 800,
-    "max_generation" : 200,
-    "stale_limit": 20,
+    "max_population" : 700,
+    "max_generation" : 20,
+    "stale_limit": 10,
 
     "tree_generation": {
         "method" : "RAMPED_HALF_AND_HALF_METHOD",
         "depth_ranges": [
             {"size": 4, "percentage": 0.25},
             {"size": 3, "percentage": 0.25},
-            {"size": 2, "percentage": 0.50}
+            {"size": 2, "percentage": 0.25},
+            {"size": 1, "percentage": 0.25}
         ]
     },
 
@@ -17,19 +18,22 @@
     },
 
     "selection" : {
-        "method" : "ELITEST_SELECTION"
+        "method" : "TOURNAMENT_SELECTION",
+        "tournament_size": 150
     },
 
     "crossover" : {
         "method" : "POINT_CROSSOVER",
-        "probability" : 0.7
+        "probability" : 0.9
     },
 
     "mutation" : {
         "methods": [
-            "SUBTREE_MUTATION"
+            "SUBTREE_MUTATION",
+            "SHRINK_MUTATION",
+            "POINT_MUTATION"
         ],
-        "probability" : 0.8
+        "probability" : 0.7
     },
 
     "function_nodes" : [

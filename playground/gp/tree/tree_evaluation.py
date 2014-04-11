@@ -157,9 +157,21 @@ def filter_trees(trees):
     result = []
     min_size = 2
     max_size = 50
+    min_inputs = 1
 
     for tree in trees:
-        if tree.size > min_size and tree.size < max_size:
+        valid_tree = True
+
+        if tree.size < min_size:
+            valid_tree = False
+
+        if tree.size > max_size:
+            valid_tree = False
+
+        if len(tree.input_nodes) < min_inputs:
+            valid_tree = False
+
+        if valid_tree:
             result.append(tree)
 
     return result

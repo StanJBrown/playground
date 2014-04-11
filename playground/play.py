@@ -47,43 +47,39 @@ def play_details(**kwargs):
 
 def reproduce(population, crossover, mutation, config):
     max_pop = config["max_population"]
-    individuals = list(population.individuals)
+
+    # make a copy of population individuals and delete them from population
+    parents = list(population.individuals)
     del population.individuals[:]
 
     # make individuals even numbered
-    if len(individuals) % 2 == 1:
-        individuals.append(random.sample(individuals, 1)[0])
+    if len(parents) % 2 == 1:
+        parents.append(random.sample(parents, 1)[0])
 
     # reproduce individuals
-    p_index = 0
-    curr_pop = len(individuals)
-    reproduce = max_pop - curr_pop
-    for i in xrange(0, reproduce + 2, 2):
+    new_gen = []
+    for i in xrange(0, len(parents) / 2):
         # get 2 parents
-        parents = individuals[p_index: p_index + 2]
-        p_index += 2
+        child_1 = parents.pop()
+        child_2 = parents.pop()
 
-        # reset p_index if it is larger then available parents
-        if p_index >= curr_pop:
-            p_index = 0
+        # crossover
+        crossover.crossover(child_1, child_2)
 
-        # produce 4 children
-        for i in xrange(0, 2):
-            child_1 = copy.deepcopy(parents[0])
-            child_2 = copy.deepcopy(parents[1])
+        # mutation
+        mutation.mutate(child_1)
+        mutation.mutate(child_2)
 
-            crossover.crossover(child_1, child_2)
-
-            mutation.mutate(child_1)
-            mutation.mutate(child_2)
-
-            population.individuals.append(child_1)
-            population.individuals.append(child_2)
+        # append children to new generation
+        new_gen.append(child_1)
+        new_gen.append(child_2)
 
     # remove the extra at the end
-    if len(population.individuals) > max_pop:
-        for i in xrange(0, len(population.individuals) - max_pop):
-            population.individuals.pop()
+    if len(new_gen) > max_pop:
+        new_gen.pop()
+
+    # assign new generation to population
+    population.individuals = new_gen
 
 
 def update_generation_stats(stats, population):

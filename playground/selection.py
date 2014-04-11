@@ -3,6 +3,7 @@ from random import random
 from random import sample
 import operator
 
+import copy
 from playground.recorder.record_type import RecordType
 
 
@@ -30,7 +31,7 @@ class Selection(object):
 
         # select loop
         self.selected = 0
-        max_select = len(population.individuals) / 2
+        max_select = self.config["max_population"]
         winners = []
         while self.selected < max_select:
 
@@ -41,7 +42,7 @@ class Selection(object):
                 cumulative_prob += individual.score
 
                 if cumulative_prob >= probability:
-                    winners.append(individual)
+                    winners.append(copy.deepcopy(individual))
                     self.selected += 1
                     break
 
@@ -52,7 +53,7 @@ class Selection(object):
     def tournament_selection(self, population):
         # select loop
         self.selected = 0
-        max_select = self.config["max_population"] / 2
+        max_select = self.config["max_population"]
         t_size = self.config["selection"].get("tournament_size", 2)
 
         winners = []
@@ -65,7 +66,7 @@ class Selection(object):
 
             # insert winner into new_pop
             winner = tournament[0]
-            winners.append(winner)
+            winners.append(copy.deepcopy(winner))
             self.selected += 1
 
         del population.individuals[:]
@@ -75,11 +76,25 @@ class Selection(object):
     def elitest_selection(self, population):
         percentage = self.config["selection"].get("percentage", 10)
         self.selected = self.config["selection"].get("percentage", 10)
-        top = len(population.individuals) / percentage
 
-        # sort population based on fitness and prune the weak
+        # sort population based on fitness and get the elites
         population.sort_individuals()
-        population.individuals = population.individuals[0:top]
+        top = len(population.individuals) / percentage
+        elites = population.individuals[0:top]
+
+        # fill out the new population with elites
+        parents = []
+        elite_index = 0
+        for i in range(self.config["max_population"]):
+            parents.append(copy.deepcopy(elites[elite_index]))
+            elite_index += 1
+
+            # reset elite_index
+            if elite_index > (len(elites) - 1):
+                elite_index = 0
+
+        del population.individuals[:]
+        population.individuals = parents
         self.new_pop = population
 
     def select(self, population):

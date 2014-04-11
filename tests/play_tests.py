@@ -54,14 +54,14 @@ class PlayTests(unittest.TestCase):
 
             # print "POPULATION"
             # for i in population.individuals:
-            #     print i
+            #     print i, i.score
             # print "\n"
 
             self.selection.select(population)
 
             # print "SELECTION"
             # for i in population.individuals:
-            #     print i
+            #     print i, i.score
             # print "\n"
 
             # reproduce
@@ -74,7 +74,7 @@ class PlayTests(unittest.TestCase):
 
             # print "REPRODUCE"
             # for i in population.individuals:
-            #     print i
+            #     print i, i.score
 
             # assert
             max_pop = self.config["max_population"]

@@ -29,6 +29,14 @@ class SelectionTests(unittest.TestCase):
         for inidividual in self.population.individuals:
             inidividual.score = random.triangular(1, 100)
 
+    def print_old_population(self, phase, population):
+        print "{0}[{1}]:".format(phase, len(population.individuals))
+        for individual in self.population.individuals:
+            print individual, individual.score
+        print '\n\n'
+
+        return len(population.individuals)
+
     def test_normalize_scores(self):
         self.selection._normalize_scores(self.population)
 
@@ -39,56 +47,40 @@ class SelectionTests(unittest.TestCase):
         self.assertEquals(round(total_sum, 2), 1.0)
 
     def test_roulette_selection(self):
+        print "ROULETTE SELECTION"
+
         old_pop_size = len(self.population.individuals)
         self.selection.roulette_wheel_selection(self.population)
         new_pop_size = len(self.population.individuals)
 
-        self.assertFalse(old_pop_size == new_pop_size)
-        self.assertEquals(new_pop_size, old_pop_size / 2)
+        self.assertEquals(new_pop_size, old_pop_size)
 
     def test_tournament_selection(self):
-        old_pop_size = len(self.population.individuals)
-        print "OLD[{0}]:".format(old_pop_size)
-        for individual in self.population.individuals:
-            print individual, individual.score
-        print '\n\n'
+        print "TOURNAMENT SELECTION"
 
         # tournament selection
+        old_pop_size = self.print_old_population("OLD", self.population)
         self.selection.tournament_selection(self.population)
+        new_pop_size = self.print_old_population("NEW", self.population)
 
-        new_pop_size = len(self.population.individuals)
-        print "NEW[{0}]:".format(new_pop_size)
-        for individual in self.population.individuals:
-            print individual, individual.score
-
-        self.assertFalse(old_pop_size == new_pop_size)
-        self.assertEquals(new_pop_size, old_pop_size / 2)
+        self.assertEqual(old_pop_size, new_pop_size)
 
     def test_elitest_selection(self):
-        old_pop_size = len(self.population.individuals)
-        print "OLD[{0}]:".format(old_pop_size)
-        for individual in self.population.individuals:
-            print individual, individual.score
-        print '\n\n'
+        print "ELITEST SELECTION"
 
         # elitest selection
+        old_pop_size = self.print_old_population("OLD", self.population)
         self.selection.elitest_selection(self.population)
+        new_pop_size = self.print_old_population("NEW", self.population)
 
-        new_pop_size = len(self.population.individuals)
-        print "NEW[{0}]:".format(new_pop_size)
-        for individual in self.population.individuals:
-            print individual, individual.score
-
-        self.assertFalse(old_pop_size == new_pop_size)
-        self.assertEquals(new_pop_size, old_pop_size * 0.1)
+        self.assertEquals(old_pop_size, new_pop_size)
 
     def test_select(self):
         old_pop_size = len(self.population.individuals)
         self.selection.select(self.population)
         new_pop_size = len(self.population.individuals)
 
-        self.assertFalse(old_pop_size == new_pop_size)
-        self.assertEquals(new_pop_size, old_pop_size / 2)
+        self.assertEquals(old_pop_size, new_pop_size)
 
 
 if __name__ == '__main__':

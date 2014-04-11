@@ -1,6 +1,6 @@
 {
     "max_population" : 800,
-    "max_generation" : 62,
+    "max_generation" : 200,
     "stale_limit": 20,
 
     "tree_generation": {
@@ -22,15 +22,14 @@
 
     "crossover" : {
         "method" : "POINT_CROSSOVER",
-        "probability" : 0.8
+        "probability" : 0.7
     },
 
     "mutation" : {
         "methods": [
-            "SUBTREE_MUTATION",
-            "SHRINK_MUTATION"
+            "SUBTREE_MUTATION"
         ],
-        "probability" : 0.5
+        "probability" : 0.8
     },
 
     "function_nodes" : [

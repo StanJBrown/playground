@@ -98,7 +98,7 @@ class JSONStoreTests(unittest.TestCase):
         # import pprint
         # pprint.pprint(record)
         self.assertNotEquals(record, {})
-        self.assertEquals(record["selection"]["selected"], 5)
+        self.assertEquals(record["selection"]["selected"], 10)
 
     def test_record_crossover(self):
         # record crossover

@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 import math
-# from sympy import simplify
-
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-# from playground.gp.tree.tree_parser import TreeParser
-from playground.gp.functions import EvaluationError
 
 
-# def print_func(population, generation):
+# def default_print_func(population, generation):
 #     # display best individual
 #     tree_parser = TreeParser()
 #     best = population.find_best_individuals()[0]
@@ -153,10 +147,10 @@ def record_eval(recorder, **kwargs):
 def evaluate(trees, functions, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
-    nodes_evaluated = 0
-    match_cached = 0
 
     best_score = None
+    nodes_evaluated = 0
+    match_cached = 0
 
     # evaluate trees
     for tree in filter_trees(trees):
@@ -199,6 +193,6 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             cache_size=len(cache),
             match_cached=match_cached,
             trees_evaluated=len(trees) - match_cached,
-            tree_nodes_evaluated=len(trees),
+            tree_nodes_evaluated=nodes_evaluated,
             diversity=diversity
         )

@@ -237,7 +237,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             cache_size=len(cache),
             match_cached=match_cached,
             trees_evaluated=len(trees) - match_cached,
-            tree_nodes_evaluated=len(trees),
+            tree_nodes_evaluated=nodes_evaluated,
             diversity=diversity
         )
 

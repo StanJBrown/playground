@@ -82,6 +82,7 @@ class PlayTests(unittest.TestCase):
             self.assertTrue(population.config is self.config)
 
     def test_play(self):
+        print "PLAY"
         population = self.tree_generator.init()
 
         # with cache
@@ -126,6 +127,7 @@ class PlayTests(unittest.TestCase):
         self.assertTrue(len(population.individuals) > 0)
 
     def test_play_multicore(self):
+        print "PLAY MULTICORE"
         population = self.tree_generator.init()
 
         start_time = time.time()
@@ -150,6 +152,7 @@ class PlayTests(unittest.TestCase):
         self.assertTrue(len(population.individuals) > 0)
 
     def test_play_evolution_strategy(self):
+        print "EVOLUTION STRATEGY"
         population = self.tree_generator.init()
         self.config["max_population"] = 4
 
@@ -169,8 +172,7 @@ class PlayTests(unittest.TestCase):
         self.assertEquals(population.generation, 5)
 
         # assert
-        print len(population.individuals)
-        self.assertTrue(len(population.individuals) > 1)
+        self.assertTrue(len(population.individuals) >= 1)
         # because 1 or more individual may have evaluation error
 
 

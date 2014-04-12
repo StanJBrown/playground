@@ -180,11 +180,12 @@ def filter_trees(trees):
 def evaluate(trees, functions, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
-    nodes_evaluated = 0
-    match_cached = 0
 
     best_score = None
     best_result = None
+    trees_evaluated = 0
+    nodes_evaluated = 0
+    match_cached = 0
 
     # evaluate trees
     for tree in filter_trees(trees):
@@ -201,6 +202,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
                     config
                 )
                 nodes_evaluated += tree.size
+                trees_evaluated += 1
             else:
                 score = cache[str(tree)]
                 match_cached += 1
@@ -222,6 +224,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
                 best_score = score
                 best_result = res
 
+        # cache tree
         cache[str(tree)] = score
 
     if recorder:
@@ -236,7 +239,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             cache=cache,
             cache_size=len(cache),
             match_cached=match_cached,
-            trees_evaluated=len(trees) - match_cached,
+            trees_evaluated=trees_evaluated,
             tree_nodes_evaluated=nodes_evaluated,
             diversity=diversity
         )

@@ -9,9 +9,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import playground.config as config
 import playground.play as play
 from playground.gp.tree.tree_generator import TreeGenerator
-from playground.gp.tree.tree_evaluation_2 import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
 from playground.gp.tree.tree_evaluation import print_func
+from playground.gp.tree.tree_evaluation_2 import evaluate
 from playground.gp.tree.tree_editor import edit_trees
 from playground.gp.functions import GPFunctionRegistry
 from playground.selection import Selection

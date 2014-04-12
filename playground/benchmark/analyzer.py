@@ -6,7 +6,6 @@ import zipfile
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import setp
 from matplotlib.pyplot import get_cmap
-from matplotlib.pyplot import legend
 from matplotlib.pyplot import figlegend
 
 

@@ -62,7 +62,7 @@ def send_cmd(node, cmd, credentials):
 def batch_send_cmd(nodes, cmd, credentials):
     results = []
     workers = []
-    pool = Pool(processes=100)
+    pool = Pool(processes=5)
 
     # send command async
     for node in nodes:
@@ -122,7 +122,7 @@ def test_connections(nodes, credentials):
     offline_nodes = []
 
     # concurrently test connection
-    pool = Pool(processes=100)
+    pool = Pool(processes=5)
     for node in nodes:
         worker = pool.apply_async(test_connection, (node, credentials))
         workers.append((node, worker))

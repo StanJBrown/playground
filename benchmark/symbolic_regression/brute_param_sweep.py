@@ -146,7 +146,8 @@ if __name__ == "__main__":
         },
 
         "recorder": {
-            "store_file": "/tmp/test.json",
+            "store_file": None,
+            "record_level": "MAX",
             "compress": True
         }
 
@@ -155,11 +156,11 @@ if __name__ == "__main__":
     test_parameters = {
         "play_config": config,
         "iterations": 1,
-        "processes": 1,
+        "processes": 6,
 
         "population_size": {
             "range": [
-                100,
+                # 100,
                 # 150,
                 # 200,
                 # 250,
@@ -173,7 +174,7 @@ if __name__ == "__main__":
                 # 650,
                 # 700,
                 # 750,
-                # 800,
+                800,
                 # 850,
                 # 900,
                 # 950,
@@ -183,51 +184,51 @@ if __name__ == "__main__":
 
         "crossover_probability": {
             "range": [
-                0.05,
-                0.10,
-                0.15,
-                0.20,
-                0.25,
-                0.30,
-                0.35,
-                0.40,
-                0.45,
-                0.50,
-                0.55,
-                0.60,
+                # 0.05,
+                # 0.10,
+                # 0.15,
+                # 0.20,
+                # 0.25,
+                # 0.30,
+                # 0.35,
+                # 0.40,
+                # 0.45,
+                # 0.50,
+                # 0.55,
+                # 0.60,
                 0.65,
                 0.70,
                 0.75,
                 0.80,
-                0.85,
-                0.90,
-                0.95,
-                1.00
+                # 0.85,
+                # 0.90,
+                # 0.95,
+                # 1.00
             ]
         },
 
         "mutation_probability": {
             "range": [
-                0.05,
-                0.10,
-                0.15,
-                0.20,
-                0.25,
-                0.30,
-                0.35,
-                0.40,
-                0.45,
-                0.50,
-                0.55,
-                0.60,
+                # 0.05,
+                # 0.10,
+                # 0.15,
+                # 0.20,
+                # 0.25,
+                # 0.30,
+                # 0.35,
+                # 0.40,
+                # 0.45,
+                # 0.50,
+                # 0.55,
+                # 0.60,
                 0.65,
                 0.70,
                 0.75,
                 0.80,
-                0.85,
-                0.90,
-                0.95,
-                1.00
+                # 0.85,
+                # 0.90,
+                # 0.95,
+                # 1.00
             ]
         },
 
@@ -236,7 +237,7 @@ if __name__ == "__main__":
         ],
 
         "record_dir": "$HOME/data",
-        "log_path": "$HOME/data/benchmark_navive_parameter_sweep.log"
+        "log_path": "$HOME/data/benchmark.log"
     }
 
     brute_parameter_sweep(test_parameters, gp_benchmark_loop)

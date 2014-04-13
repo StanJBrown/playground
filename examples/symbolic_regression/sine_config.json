@@ -139,7 +139,7 @@
     },
 
     "recorder" : {
-        "store_file": "/tmp/ea_stats.json",
+        "store_file": "/tmp/ea_stats.dat",
         "record_level": 2
     }
 }

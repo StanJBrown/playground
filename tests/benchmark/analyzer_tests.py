@@ -249,4 +249,7 @@ class AnalzyerTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    # data_file = "/tmp/ea_stats.dat"
+    # data = analyzer.summarize_data(data_file)
+    # analyzer.plot_summary([data], [""])
     unittest.main()

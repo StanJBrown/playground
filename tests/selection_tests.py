@@ -53,6 +53,13 @@ class SelectionTests(unittest.TestCase):
         self.selection.roulette_wheel_selection(self.population)
         new_pop_size = len(self.population.individuals)
 
+        # assert
+        # check for object uniqueness
+        individual_ids = []
+        for i in self.population.individuals:
+            self.assertFalse(id(i) in individual_ids)
+            individual_ids.append(id(i))
+
         self.assertEquals(new_pop_size, old_pop_size)
 
     def test_tournament_selection(self):
@@ -62,6 +69,13 @@ class SelectionTests(unittest.TestCase):
         old_pop_size = self.print_old_population("OLD", self.population)
         self.selection.tournament_selection(self.population)
         new_pop_size = self.print_old_population("NEW", self.population)
+
+        # assert
+        # check for object uniqueness
+        individual_ids = []
+        for i in self.population.individuals:
+            self.assertFalse(id(i) in individual_ids)
+            individual_ids.append(id(i))
 
         self.assertEqual(old_pop_size, new_pop_size)
 
@@ -79,6 +93,13 @@ class SelectionTests(unittest.TestCase):
         old_pop_size = len(self.population.individuals)
         self.selection.select(self.population)
         new_pop_size = len(self.population.individuals)
+
+        # assert
+        # check for object uniqueness
+        individual_ids = []
+        for i in self.population.individuals:
+            self.assertFalse(id(i) in individual_ids)
+            individual_ids.append(id(i))
 
         self.assertEquals(old_pop_size, new_pop_size)
 

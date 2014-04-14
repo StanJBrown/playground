@@ -67,7 +67,7 @@ def filter_trees(trees):
     return result
 
 
-def generate_eq_function(tree):
+def generate_eq_function(tree, config):
     eq = str(tree)
 
     # replace function node names with python equivalents
@@ -82,11 +82,19 @@ def generate_eq_function(tree):
     eq = eq.replace("LN", "math.ln")
     eq = eq.replace("LOG", "math.log")
 
-    return eval("lambda x: " + eq)
+    # prep input variables
+    input_vars = []
+    for var in config["input_variables"]:
+        input_vars.append(var["name"])
+
+    # prep evaluation string
+    eval_str = "lambda " + ", ".join(input_vars) + ": " + eq
+
+    return eval(eval_str)
 
 
 def eval_tree(tree, config):
-    eq_func = generate_eq_function(tree)
+    eq_func = generate_eq_function(tree, config)
     data = config["data"]
 
     response_var = config["response_variable"]["name"]

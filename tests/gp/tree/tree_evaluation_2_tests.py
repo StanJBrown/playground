@@ -62,11 +62,48 @@ class TreeEvaluatorTests(unittest.TestCase):
         tree.update()
 
         # generate equation function
-        eq_func = evaluator.generate_eq_function(tree)
+        eq_func = evaluator.generate_eq_function(tree, self.config)
 
         # assert
         self.assertIsNotNone(eq_func)
         self.assertEquals(round(eq_func(1), 4), 0.9848)
+
+    def test_generate_eq_function_multivars(self):
+        # create terminal nodes
+        term_node = TreeNode(TreeNodeType.INPUT, name="var2")
+        input_node = TreeNode(TreeNodeType.INPUT, name="var1")
+
+        # create function nodes
+        div_func = TreeNode(
+            TreeNodeType.FUNCTION,
+            name="DIV",
+            arity=2,
+            branches=[input_node, term_node]
+        )
+
+        # create tree
+        tree = Tree()
+        tree.root = div_func
+        tree.update()
+
+        # generate equation function
+        config = {
+            "input_variables": [
+                {
+                    "type": "INPUT",
+                    "name": "var1"
+                },
+                {
+                    "type": "INPUT",
+                    "name": "var2"
+                }
+            ]
+        }
+        eq_func = evaluator.generate_eq_function(tree, config)
+
+        # assert
+        self.assertIsNotNone(eq_func)
+        self.assertEquals(eq_func(1.0, 2.0), 0.5)
 
     def test_eval_tree(self):
         # create terminal nodes

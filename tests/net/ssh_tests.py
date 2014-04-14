@@ -59,20 +59,20 @@ class SSHTests(unittest.TestCase):
         self.assertEquals(len(online_nodes), 0)
         self.assertEquals(len(offline_nodes), 1)
 
-    def test_parse_netadaptor_details(self):
-        result = ssh.send_cmd("localhost", "ifconfig", {})
-        result = ssh.parse_netadaptor_details(result["stdout"])
+    # def test_parse_netadaptor_details(self):
+    #     result = ssh.send_cmd("localhost", "ifconfig", {})
+    #     result = ssh.parse_netadaptor_details(result["stdout"])
 
-        self.assertTrue(result["ip"] is not None)
-        self.assertTrue(result["mac_addr"] is not None)
+    #     self.assertTrue(result["ip"] is not None)
+    #     self.assertTrue(result["mac_addr"] is not None)
 
-    def test_get_netadaptor_details(self):
-        nodes = ["localhost"]
-        result = ssh.get_netadaptor_details(nodes, {})[0]
+    # def test_get_netadaptor_details(self):
+    #     nodes = ["localhost"]
+    #     result = ssh.get_netadaptor_details(nodes, {})[0]
 
-        # assert
-        self.assertTrue(result["node"] is not None)
-        self.assertTrue(result["mac_addr"] is not None)
+    #     # assert
+    #     self.assertTrue(result["node"] is not None)
+    #     self.assertTrue(result["mac_addr"] is not None)
 
     def test_record_netadaptor_details(self):
         test_fp = "test.json"

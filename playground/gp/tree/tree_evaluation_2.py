@@ -2,59 +2,6 @@
 import math
 
 
-# def default_print_func(population, generation):
-#     # display best individual
-#     tree_parser = TreeParser()
-#     best = population.find_best_individuals()[0]
-#     print "generation:", generation
-#     print "best_score:", str(best.score)
-#     print "tree_size:", str(best.size)
-#
-#     # best individual
-#     print "best:", tree_parser.parse_equation(best.root)
-#     if best.score < 20.0:
-#         eq = tree_parser.parse_equation(best.root)
-#         if best.size < 20:
-#             eq = eq.replace("ADD", "+")
-#             eq = eq.replace("SUB", "-")
-#             eq = eq.replace("MUL", "*")
-#             eq = eq.replace("DIV", "/")
-#             eq = eq.replace("POW", "**")
-#             eq = eq.replace("SIN", "sin")
-#             eq = eq.replace("COS", "cos")
-#             eq = eq.replace("RAD", "rad")
-#             eq = eq.replace("LN", "ln")
-#             eq = eq.replace("LOG", "log")
-#             print "EQ SIMPLIFIED:", simplify(eq)
-#
-#     # population diversity
-#     p = []
-#     for i in population.individuals:
-#         p.append(str(i))
-#     p = set(p)
-#     diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
-#     print "population diversity:", str(diversity) + "%"
-#
-#     print
-#
-#
-# def default_stop_func(popualtion, general_stats, config):
-#     max_gen = config["max_generation"]
-#     stale_limit = config.get("stale_limit", 10)
-#
-#     if general_stats["generation"] >= max_gen:
-#         return True
-#
-#     elif general_stats["stale_counter"] >= stale_limit:
-#         return True
-#
-#     elif config.get("stop_score", None):
-#         if config["stop_score"] <= general_stats["best"].score:
-#             return True
-#
-#     return False
-
-
 def filter_trees(trees):
     result = []
     min_size = 2

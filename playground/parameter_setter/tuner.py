@@ -14,9 +14,6 @@ def _build_parameters(seed, play_config, **kwargs):
     # main parameters
     params["random_seed"] = seed
     params["max_population"] = kwargs["max_population"]
-    params["selection"]["tournament_size"] = int(
-        kwargs["max_population"] * 0.1
-    )
     params["crossover"]["probability"] = kwargs["crossover_probability"]
     params["mutation"]["probability"] = kwargs["mutation_probability"]
     params["data_file"] = kwargs["data_file"]

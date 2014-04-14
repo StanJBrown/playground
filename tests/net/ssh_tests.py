@@ -72,7 +72,6 @@ class SSHTests(unittest.TestCase):
 
         # assert
         self.assertTrue(result["node"] is not None)
-        self.assertTrue(result["ip"] is not None)
         self.assertTrue(result["mac_addr"] is not None)
 
     def test_record_netadaptor_details(self):

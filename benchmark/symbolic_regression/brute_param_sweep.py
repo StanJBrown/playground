@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     test_parameters = {
         "play_config": config,
-        "iterations": 1,
+        "iterations": 5,
         "processes": 6,
 
         "population_size": {

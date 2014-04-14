@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from playground.swarm.pso import PSOParticle
 from playground.swarm.pso import PSOParticleGenerator
+from playground.swarm.pso import pso_search
 
 
 class PSOParticleTests(unittest.TestCase):
@@ -127,12 +128,15 @@ class PSOParticleTests(unittest.TestCase):
 
 class PSOParticleGeneratorTests(unittest.TestCase):
     def setUp(self):
-        config = {
-            "max_population": 5
-        }
-
         self.max_velocity = [10.0, 10.0]
         self.bounds = [[0, 10], [0, 10]]
+
+        config = {
+            "max_population": 5,
+            "max_velocity": self.max_velocity,
+            "bounds": self.bounds,
+            "objective_function": self.obj_func
+        }
 
         self.particle = PSOParticle(
             score=0.0,
@@ -142,12 +146,7 @@ class PSOParticleGeneratorTests(unittest.TestCase):
             bounds=self.bounds
         )
 
-        self.generator = PSOParticleGenerator(
-            config,
-            max_velocity=self.max_velocity,
-            bounds=self.bounds,
-            obj_func=self.obj_func
-        )
+        self.generator = PSOParticleGenerator(config)
 
     def tearDown(self):
         pass
@@ -244,6 +243,39 @@ class PSOParticleGeneratorTests(unittest.TestCase):
             self.assertTrue(particle.velocity[0] >= -self.max_velocity[0])
             self.assertTrue(particle.velocity[1] <= self.max_velocity[1])
             self.assertTrue(particle.velocity[1] >= -self.max_velocity[1])
+
+
+class PSOTest(unittest.TestCase):
+    def setUp(self):
+        self.config = {
+            "c_1": 2.0,
+            "c_2": 2.0,
+
+            "max_population": 10,
+            "max_generations": 20,
+
+            "max_velocity": [0.5, 0.5],
+            "bounds": [[0, 10], [0, 10]],
+            "objective_function": self.obj_func,
+
+            "animate": True,
+            "animation_frame_delay": 0.0
+        }
+
+        # generate random particles
+        generator = PSOParticleGenerator(self.config)
+        self.population = generator.init()
+
+    def obj_func(self, vector):
+        result = map(lambda el: el ** 2, vector)
+        result = reduce(lambda x, y: x + y, result)
+        return result
+
+    def test_pso_search(self):
+        result = pso_search(self.population, self.config)
+        self.assertTrue(result[0][0] < 0.1)
+        self.assertTrue(result[0][1] < 0.1)
+        self.assertTrue(result[1] < 1.0)
 
 
 if __name__ == "__main__":

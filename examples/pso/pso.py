@@ -23,10 +23,10 @@ if __name__ == "__main__":
 
         "max_velocity": [0.5, 0.5],
         "bounds": [[0, 10], [0, 10]],
-        "obj_func": obj_func,
+        "objective_function": obj_func,
 
         "animate": True,
-        "animate_timestep": 0.25
+        "animation_frame_delay": 0.1
     }
 
     # generate random particles
@@ -34,4 +34,4 @@ if __name__ == "__main__":
     population = generator.init()
 
     # search
-    pso_search(population, obj_func, config)
+    pso_search(population, config)

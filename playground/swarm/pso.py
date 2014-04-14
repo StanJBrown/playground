@@ -86,7 +86,7 @@ class PSOParticleGenerator(object):
 
         self.bounds = config.get("bounds", None)
         self.max_velocity = config.get("max_velocity", None)
-        self.obj_func = config.get("obj_func", None)
+        self.obj_func = config.get("objective_function", None)
 
     def random_velocity_vector(self):
         if self.max_velocity is None:
@@ -149,7 +149,8 @@ class PSOParticleGenerator(object):
         return population
 
 
-def pso_search(population, obj_func, config, animate=False):
+def pso_search(population, config):
+    obj_func = config["objective_function"]
     gbest = population.find_best_individuals()[0]
     max_generations = config["max_generations"]
     c_1 = config["c_1"]
@@ -195,4 +196,6 @@ def pso_search(population, obj_func, config, animate=False):
             plt.ylim(config["bounds"][1])
             plt.draw()
             plt.show(block=False)
-            time.sleep(config.get("animate_timestep", 0.25))
+            time.sleep(config.get("animation_frame_delay", 0.1))
+
+    return (gbest.position, gbest.score)

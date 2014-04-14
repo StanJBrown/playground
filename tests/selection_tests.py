@@ -29,9 +29,9 @@ class SelectionTests(unittest.TestCase):
         for inidividual in self.population.individuals:
             inidividual.score = random.triangular(1, 100)
 
-    def print_old_population(self, phase, population):
+    def print_population(self, phase, population):
         print "{0}[{1}]:".format(phase, len(population.individuals))
-        for individual in self.population.individuals:
+        for individual in population.individuals:
             print individual, individual.score
         print '\n\n'
 
@@ -66,9 +66,9 @@ class SelectionTests(unittest.TestCase):
         print "TOURNAMENT SELECTION"
 
         # tournament selection
-        old_pop_size = self.print_old_population("OLD", self.population)
+        old_pop_size = self.print_population("OLD", self.population)
         self.selection.tournament_selection(self.population)
-        new_pop_size = self.print_old_population("NEW", self.population)
+        new_pop_size = self.print_population("NEW", self.population)
 
         # assert
         # check for object uniqueness
@@ -83,9 +83,24 @@ class SelectionTests(unittest.TestCase):
         print "ELITEST SELECTION"
 
         # elitest selection
-        old_pop_size = self.print_old_population("OLD", self.population)
+        old_pop_size = self.print_population("OLD", self.population)
         self.selection.elitest_selection(self.population)
-        new_pop_size = self.print_old_population("NEW", self.population)
+        new_pop_size = self.print_population("NEW", self.population)
+
+        self.assertEquals(old_pop_size, new_pop_size)
+
+    def test_greedy_over_selection(self):
+        print "GREEDY-OVER SELECTION"
+
+        # create population of size 1000
+        self.config["max_population"] = 1000
+        generator = TreeGenerator(self.config)
+        population = generator.init()
+
+        # greedy over selection
+        old_pop_size = self.print_population("OLD", population)
+        self.selection.greedy_over_selection(population)
+        new_pop_size = self.print_population("NEW", population)
 
         self.assertEquals(old_pop_size, new_pop_size)
 

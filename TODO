@@ -1,8 +1,5 @@
 # TODO
 - Implement Racing Algorithm
-- Read Edinburgh PSO paper
-
-- Run parameter sweep
 - Run Racing algorithm benchmark
 
 
@@ -21,10 +18,8 @@
 
 
 # TODO Queue
-- Implement Meta-GA
 - Run Meta-GA benchmark
 
-- Add 2 more symbolic regression examples
 - Write the tree evaluator in C as a python extension
 
 - Look at Cartesian GP
@@ -34,32 +29,33 @@
 # COMPLETED!
 
 - GP Initializer
-    - Tree initialization via Full method [DONE!]
-    - Tree initialization via Grow method [DONE!]
-    - Tree initialization via Ramped Half and Half [DONE!]
+    - Tree initialization via Full method
+    - Tree initialization via Grow method
+    - Tree initialization via Ramped Half and Half
 
 - GP Evaluator
-    - Tree Evaluator [DONE!]
-    - Basic cache system [DONE!]
+    - Tree Evaluator
+    - Basic cache system
 
 - Crossover methods
-    - Point crossover [DONE!]
+    - Point crossover
+    - Uniform crossover
 
 - Mutation methods
-    - Point mutation [DONE!]
-    - Hoist mutation [DONE!]
-    - Shrink Mutation [DONE!]
-    - Expand Mutation [DONE!]
-    - Subtree Replacement [DONE!]
+    - Point mutation
+    - Hoist mutation
+    - Shrink Mutation
+    - Expand Mutation
+    - Subtree Replacement
 
 - Essential elements
-    - Population [DONE!]
-    - Reproduce loop [DONE!]
-    - Play loop [DONE!]
+    - Population
+    - Reproduce loop
+    - Play loop
 
 - Extra features
-    - Symbolic maths simplifier [DONE!]
-    - Record convergence process [DONE!]:
+    - Symbolic maths simplifier
+    - Record convergence process:
         - population
             - size
             - generation number
@@ -75,6 +71,7 @@
             - method
             - selected
         - crossover
+            - index
             - method
             - probability
         - mutation

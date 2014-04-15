@@ -19,7 +19,8 @@ if __name__ == "__main__":
             "depth_ranges": [
                 {"size": 4, "percentage": 0.25},
                 {"size": 3, "percentage": 0.25},
-                {"size": 2, "percentage": 0.50}
+                {"size": 2, "percentage": 0.25},
+                {"size": 1, "percentage": 0.25}
             ]
         },
 
@@ -28,7 +29,8 @@ if __name__ == "__main__":
         },
 
         "selection": {
-            "method": "ELITEST_SELECTION",
+            "method": "TOURNAMENT_SELECTION",
+            "tournament_size": 10
         },
 
         "crossover": {
@@ -38,8 +40,7 @@ if __name__ == "__main__":
 
         "mutation": {
             "methods": [
-                "SUBTREE_MUTATION",
-                "SHRINK_MUTATION"
+                "SUBTREE_MUTATION"
             ],
             "probability": None
         },
@@ -147,7 +148,7 @@ if __name__ == "__main__":
 
         "recorder": {
             "store_file": None,
-            "record_level": "MAX",
+            "record_level": "MIN",
             "compress": True
         }
 
@@ -155,80 +156,80 @@ if __name__ == "__main__":
 
     test_parameters = {
         "play_config": config,
-        "iterations": 1,
-        "processes": 6,
+        "iterations": 10,
+        "processes": 20,
 
         "population_size": {
             "range": [
-                # 100,
-                # 150,
-                # 200,
-                # 250,
-                # 300,
-                # 350,
-                # 400,
-                # 450,
-                # 500,
-                # 550,
-                # 600,
-                # 650,
-                # 700,
-                # 750,
+                100,
+                150,
+                200,
+                250,
+                300,
+                350,
+                400,
+                450,
+                500,
+                550,
+                600,
+                650,
+                700,
+                750,
                 800,
-                # 850,
-                # 900,
-                # 950,
-                # 1000
+                850,
+                900,
+                950,
+                1000
             ]
         },
 
         "crossover_probability": {
             "range": [
-                # 0.05,
-                # 0.10,
-                # 0.15,
-                # 0.20,
-                # 0.25,
-                # 0.30,
-                # 0.35,
-                # 0.40,
-                # 0.45,
-                # 0.50,
-                # 0.55,
-                # 0.60,
+                0.05,
+                0.10,
+                0.15,
+                0.20,
+                0.25,
+                0.30,
+                0.35,
+                0.40,
+                0.45,
+                0.50,
+                0.55,
+                0.60,
                 0.65,
                 0.70,
-                # 0.75,
-                # 0.80,
-                # 0.85,
-                # 0.90,
-                # 0.95,
-                # 1.00
+                0.75,
+                0.80,
+                0.85,
+                0.90,
+                0.95,
+                1.00
             ]
         },
 
         "mutation_probability": {
             "range": [
-                # 0.05,
-                # 0.10,
-                # 0.15,
-                # 0.20,
-                # 0.25,
-                # 0.30,
-                # 0.35,
-                # 0.40,
-                # 0.45,
-                # 0.50,
-                # 0.55,
-                # 0.60,
+                0.05,
+                0.10,
+                0.15,
+                0.20,
+                0.25,
+                0.30,
+                0.35,
+                0.40,
+                0.45,
+                0.50,
+                0.55,
+                0.60,
                 0.65,
-                # 0.70,
-                # 0.75,
-                # 0.80,
-                # 0.85,
-                # 0.90,
-                # 0.95,
-                # 1.00
+                0.70,
+                0.75,
+                0.80,
+                0.85,
+                0.90,
+                0.95,
+                1.00
             ]
         },
 

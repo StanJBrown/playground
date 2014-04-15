@@ -15,23 +15,23 @@ def obj_func(vector):
 
 if __name__ == "__main__":
     config = {
-        "max_population": 20
-    }
-    c_1 = 2.0
-    c_2 = 2.0
-    max_generations = 100
+        "c_1": 2.0,
+        "c_2": 2.0,
 
-    max_velocity = [10.0, 10.0]
-    bounds = [[0, 10], [0, 10]]
+        "max_population": 20,
+        "max_generations": 50,
+
+        "max_velocity": [0.5, 0.5],
+        "bounds": [[0, 10], [0, 10]],
+        "objective_function": obj_func,
+
+        "animate": True,
+        "animation_frame_delay": 0.1
+    }
 
     # generate random particles
-    generator = PSOParticleGenerator(
-        config,
-        max_velocity=max_velocity,
-        bounds=bounds,
-        obj_func=obj_func
-    )
+    generator = PSOParticleGenerator(config)
     population = generator.init()
 
     # search
-    pso_search(population, max_generations, c_1, c_2, obj_func)
+    pso_search(population, config)

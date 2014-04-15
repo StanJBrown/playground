@@ -46,6 +46,7 @@ class Selection(object):
                     self.selected += 1
                     break
 
+        # replace old population with new
         del population.individuals[:]
         population.individuals = winners
         self.new_pop = population
@@ -69,6 +70,7 @@ class Selection(object):
             winners.append(copy.deepcopy(winner))
             self.selected += 1
 
+        # replace old population with new
         del population.individuals[:]
         population.individuals = winners
         self.new_pop = population
@@ -93,6 +95,35 @@ class Selection(object):
             if elite_index > (len(elites) - 1):
                 elite_index = 0
 
+        # replace old population with new
+        del population.individuals[:]
+        population.individuals = parents
+        self.new_pop = population
+
+    def greedy_over_selection(self, population):
+        top = self.config.get("top", 320)
+        max_pop = self.config["max_population"]
+        pop_size = len(population.individuals)
+
+        # pre-check
+        if max_pop < 1000 or pop_size < 1000:
+            err_msg = "Error! Greedy-Over selection is for population > 1000"
+            raise RuntimeError(err_msg)
+
+        # sort population based on score and place population into 2 groups
+        population.sort_individuals()
+        group_1 = copy.deepcopy(population.individuals[0:top])
+        group_2 = copy.deepcopy(population.individuals[top:])
+
+        # randomly sample from group 1 and 2
+        parents = []
+        for i in range(self.config["max_population"]):
+            if random() >= 0.2:
+                parents.append(sample(group_1, 1)[0])
+            else:
+                parents.append(sample(group_2, 1)[0])
+
+        # replace old population with new
         del population.individuals[:]
         population.individuals = parents
         self.new_pop = population
@@ -106,6 +137,8 @@ class Selection(object):
             self.tournament_selection(population)
         elif self.method == "ELITEST_SELECTION":
             self.elitest_selection(population)
+        elif self.method == "GREEDY_OVER_SELECTION":
+            self.greedy_over_selection(population)
         else:
             raise RuntimeError("Undefined selection method!")
 

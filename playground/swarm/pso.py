@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 import os
 import sys
+import time
 from random import random
 from random import uniform
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
+
+import matplotlib.pylab as plt
 
 from playground.population import Population
 
@@ -27,9 +30,11 @@ class PSOParticle(object):
 
         # loop through each dimension
         for i in range(len(self.position)):
-            # update velocity
+            # calcuate cognitive and social components
             cog = c_1 * random() * (self.best_position[i] - self.position[i])
             soc = c_2 * random() * (best.best_position[i] - self.position[i])
+
+            # update velocity
             self.velocity[i] = self.velocity[i] + cog + soc
 
             # if velocity reaches max, cap the velocity
@@ -76,12 +81,12 @@ class PSOParticle(object):
 
 
 class PSOParticleGenerator(object):
-    def __init__(self, config, **kwargs):
+    def __init__(self, config):
         self.config = config
 
-        self.bounds = kwargs.get("bounds", None)
-        self.max_velocity = kwargs.get("max_velocity", None)
-        self.obj_func = kwargs.get("obj_func", None)
+        self.bounds = config.get("bounds", None)
+        self.max_velocity = config.get("max_velocity", None)
+        self.obj_func = config.get("objective_function", None)
 
     def random_velocity_vector(self):
         if self.max_velocity is None:
@@ -144,26 +149,53 @@ class PSOParticleGenerator(object):
         return population
 
 
-def pso_search(population, max_generations, c_1, c_2, obj_func):
+def pso_search(population, config):
+    obj_func = config["objective_function"]
     gbest = population.find_best_individuals()[0]
+    max_generations = config["max_generations"]
+    c_1 = config["c_1"]
+    c_2 = config["c_2"]
 
+    # search loop
     for gen in range(max_generations):
+        # update particles
         for particle in population.individuals:
             particle.update_velocity(gbest, c_1, c_2)
             particle.update_position()
             particle.score = obj_func(particle.position)
             particle.update_best_position()
 
+        # update global best
         population.sort_individuals()
         gen_best = population.find_best_individuals()[0]
-
         if gen_best.score < gbest.score:
             gbest = PSOParticle(
                 score=gen_best.score,
-                position=gen_best.position,
-                velocity=gen_best.velocity,
+                position=list(gen_best.position),
+                velocity=list(gen_best.velocity),
                 bounds=gen_best.bounds,
                 max_velocity=gen_best.max_velocity
             )
 
+        # print
         print " > gen {0}, fitness={1}".format(gen, gbest.score)
+
+        # display animation
+        if config.get("animate", False):
+            # pre-check
+            if len(config["bounds"]) > 2:
+                raise RuntimeError("Animate does not support > 2 dimensions!")
+
+            # animate swarm
+            x = [p.position[0] for p in population.individuals]
+            y = [p.position[1] for p in population.individuals]
+
+            plt.clf()  # clear figure
+            plt.scatter(x, y)
+            plt.xlim(config["bounds"][0])
+            plt.ylim(config["bounds"][1])
+            plt.draw()
+            plt.show(block=False)
+            time.sleep(config.get("animation_frame_delay", 0.1))
+
+    return (gbest.position, gbest.score)

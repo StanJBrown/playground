@@ -74,7 +74,7 @@ class JSONStore(object):
     def record_population(self, population):
         pop_dict = population.to_dict()
 
-        if self.level is RecordLevel.MIN:
+        if self.level == RecordLevel.MIN:
             pop_dict.pop("individuals")
 
         self.generation_record["population"] = pop_dict
@@ -82,7 +82,7 @@ class JSONStore(object):
     def record_selection(self, selection):
         select_dict = selection.to_dict()
 
-        if self.level is RecordLevel.MIN:
+        if self.level == RecordLevel.MIN:
             select_dict.pop("selected_individuals")
 
         self.generation_record["selection"] = select_dict
@@ -90,7 +90,7 @@ class JSONStore(object):
     def record_crossover(self, crossover):
         crossover_dict = crossover.to_dict()
 
-        if self.level is RecordLevel.MIN:
+        if self.level == RecordLevel.MIN:
             crossover_dict.pop("index")
             crossover_dict.pop("before_crossover")
             crossover_dict.pop("after_crossover")
@@ -100,14 +100,14 @@ class JSONStore(object):
     def record_mutation(self, mutation):
         mutation_dict = mutation.to_dict()
 
-        if self.level is RecordLevel.MIN:
+        if self.level == RecordLevel.MIN:
             mutation_dict.pop("before_mutation")
             mutation_dict.pop("after_mutation")
 
         self.generation_record["mutation"].append(mutation_dict)
 
     def record_evaluation(self, evaluation_stats):
-        if self.level is RecordLevel.MIN:
+        if self.level == RecordLevel.MIN:
             evaluation_stats.pop("cache")
 
         self.generation_record["evaluation"] = evaluation_stats

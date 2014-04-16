@@ -100,10 +100,10 @@
 
         #content {
             width: 600px;
-            min-height: 600px;
 
             margin-left: 310px;
             padding-top: 10px;
+            padding-bottom: 150px;
 
             text-align: justify;
             font-size: 12px;
@@ -127,6 +127,37 @@
             border-radius: 10px;
         }
 
+        #content h2 {
+            margin-top: 30px;
+        }
+
+        #content h3 {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px dotted #777;
+        }
+
+        #error {
+            width: 600px;
+
+            margin-left: 310px;
+            padding-bottom: 200px;
+
+            text-align: justify;
+            font-size: 12px;
+        }
+
+        #error img {
+            width: 70%;
+            display: block;
+
+            margin-left: auto;
+            margin-right: auto;
+
+            border-radius: 5px;
+
+        }
+
         .clear {
             clear: both;
 
@@ -139,22 +170,17 @@
     <div id="wrapper">
         <div id="sidebar"></div>
         <div id="content"></div>
+        <div id="error"></div>
         <div class="clear"></div>
     </div>
     <script>
         function page_not_found() {
             $.get("pages/404.md", function(data) {
-                $("#content").html(marked(data));
+                $("#error").html(marked(data));
             }, "text");
         }
 
-        $(document).ready(function() {
-            // load sidebar
-            $.get("pages/sidebar.md", function(data) {
-                $("#sidebar").html(marked(data));
-            }, "text");
-
-            // load content
+        function init_content() {
             if (location.hash === "") {
                 $.get("README.md", function(data) {
                     $("#content").html(marked(data));
@@ -166,8 +192,15 @@
                     $("#content").html(page_not_found());
                 });
             }
+        }
 
-            // on hash change
+        function init_sidebar() {
+            $.get("pages/sidebar.md", function(data) {
+                $("#sidebar").html(marked(data));
+            }, "text");
+        }
+
+        function init_router() {
             $(window).on('hashchange', function() {
                 var hash = location.hash;
                 hash = hash.replace("#", "./");
@@ -178,6 +211,12 @@
                     $("#content").html(page_not_found());
                 });
             });
+        }
+
+        $(document).ready(function() {
+            init_sidebar();
+            init_content();
+            init_router();
         });
     </script>
 </body>

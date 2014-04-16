@@ -1,10 +1,22 @@
+# playground.gp.tree.tree_generator
+During the Genetic Programming search process an initial random population is
+needed, this module provides methods to produce the initial random population.
+
+**Module contents**:
+
+- class TreeGenerator(object)
+
+
 ## TreeGenerator(object)
 `TreeGenerator` is responsible for creating an population of `Tree`s used in
 the Genetic Programming process. It supports tree intialization using the:
 
 - Full Method
 - Grow Method
+- Ramped Half and Half Method
 
+For more information on these methods have a look at "_A Field Guide to
+Genetic Programming_" by Riccard Poli, Bill Langdon and Nic McPhee.
 
     Attributes:
 

@@ -3,7 +3,7 @@
 <head>
     <title>playground - docs</title>
     <!-- LiveReload -->
-    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+    <!-- <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script> -->
 
     <!-- MATHJAX -->
     <script type="text/x-mathjax-config">
@@ -20,10 +20,6 @@
 
     <!-- JQuery -->
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script>
-
-
-    </script>
 
     <!-- CSS -->
     <style>
@@ -43,7 +39,7 @@
 
         #sidebar {
             position: fixed;
-            width: 250px;
+            width: 220px;
             height: 100%;
 
             overflow-y: scroll;
@@ -51,11 +47,13 @@
 
             margin-right: 20px;
             margin-top: 0;
-            padding-left: 20px;
+            padding-left: 25px;
             padding-top: 0;
 
-
-            /* border: 1px solid black; */
+            box-shadow: 0 0 40px #CCC;
+            -webkit-box-shadow: 0 0 40px #CCC;
+            -moz-box-shadow: 0 0 40px #CCC;
+            border-right: 1px solid #BBB;
         }
 
         #sidebar .title {
@@ -66,8 +64,18 @@
             font-size: 25px;
         }
 
+        #sidebar h1 a:link, #sidebar h1 a:visited {
+            color: #333;
+        }
+
         #sidebar h2 {
-            font-size: 18px;
+            font-size: 13px;
+        }
+
+        #sidebar a:visited, #sidebar a:link {
+            color: #4682BE;
+            text-decoration: none;
+
         }
 
         #sidebar ul {
@@ -95,6 +103,7 @@
             min-height: 600px;
 
             margin-left: 310px;
+            padding-top: 10px;
 
             text-align: justify;
             font-size: 12px;
@@ -133,14 +142,42 @@
         <div class="clear"></div>
     </div>
     <script>
+        function page_not_found() {
+            $.get("pages/404.md", function(data) {
+                $("#content").html(marked(data));
+            }, "text");
+        }
+
         $(document).ready(function() {
+            // load sidebar
             $.get("pages/sidebar.md", function(data) {
                 $("#sidebar").html(marked(data));
             }, "text");
 
-            $.get("README.md", function(data) {
-                $("#content").html(marked(data));
-            }, "text");
+            // load content
+            if (location.hash === "") {
+                $.get("README.md", function(data) {
+                    $("#content").html(marked(data));
+                }, "text");
+            } else {
+                $.get(location.hash.replace("#", "./"), function(data) {
+                    $("#content").html(marked(data));
+                }).fail(function() {
+                    $("#content").html(page_not_found());
+                });
+            }
+
+            // on hash change
+            $(window).on('hashchange', function() {
+                var hash = location.hash;
+                hash = hash.replace("#", "./");
+
+                $.get(hash, function(data) {
+                    $("#content").html(marked(data));
+                }).fail(function() {
+                    $("#content").html(page_not_found());
+                });
+            });
         });
     </script>
 </body>

@@ -34,8 +34,8 @@ def _record_fp(details, seed, training_data):
     td = os.path.splitext(basename)[0]
 
     # build record file path
-    folder = "{0}/seed_{1}/".format(td, seed)
-    fn = "{0}-{1}-{2}.dat".format(pop, cross, mut)
+    folder = "{0}/seed_{1}/pop_{2}".format(td, seed, pop)
+    fn = "{0}-{1}.dat".format(cross, mut)
     record_fp = os.path.join(folder, fn)
 
     return record_fp

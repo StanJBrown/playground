@@ -88,4 +88,4 @@ if __name__ == "__main__":
     )
     end_time = time.time()
     time_taken = end_time - start_time
-    print "Evaluator 1 took:", str(round(time_taken, 2)) + "s"
+    print "Evaluator 2 took:", str(round(time_taken, 2)) + "s"

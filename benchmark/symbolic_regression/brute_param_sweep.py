@@ -46,105 +46,35 @@ if __name__ == "__main__":
         },
 
         "function_nodes": [
-            {
-                "type": "FUNCTION",
-                "name": "ADD",
-                "arity": 2
-            },
-            {
-                "type": "FUNCTION",
-                "name": "SUB",
-                "arity": 2
-            },
-            {
-                "type": "FUNCTION",
-                "name": "MUL",
-                "arity": 2
-            },
-            {
-                "type": "FUNCTION",
-                "name": "DIV",
-                "arity": 2
-            },
-            {
-                "type": "FUNCTION",
-                "name": "COS",
-                "arity": 1
-            },
-            {
-                "type": "FUNCTION",
-                "name": "SIN",
-                "arity": 1
-            }
+            {"type": "FUNCTION", "name": "ADD", "arity": 2},
+            {"type": "FUNCTION", "name": "SUB", "arity": 2},
+            {"type": "FUNCTION", "name": "MUL", "arity": 2},
+            {"type": "FUNCTION", "name": "DIV", "arity": 2},
+            {"type": "FUNCTION", "name": "COS", "arity": 1},
+            {"type": "FUNCTION", "name": "SIN", "arity": 1}
         ],
 
         "terminal_nodes": [
-            {
-                "type": "TERM",
-                "value": 0.0
-            },
-            {
-                "type": "TERM",
-                "value": 1.0
-            },
-            {
-                "type": "TERM",
-                "value": 2.0
-            },
-            {
-                "type": "TERM",
-                "value": 2.0
-            },
-            {
-                "type": "TERM",
-                "value": 3.0
-            },
-            {
-                "type": "TERM",
-                "value": 4.0
-            },
-            {
-                "type": "TERM",
-                "value": 5.0
-            },
-            {
-                "type": "TERM",
-                "value": 6.0
-            },
-            {
-                "type": "TERM",
-                "value": 7.0
-            },
-            {
-                "type": "TERM",
-                "value": 8.0
-            },
-            {
-                "type": "TERM",
-                "value": 9.0
-            },
-            {
-                "type": "TERM",
-                "value": 10.0
-            },
-            {
-                "type": "TERM",
-                "value": math.pi
-            }
+            {"type": "TERM", "value": 0.0},
+            {"type": "TERM", "value": 1.0},
+            {"type": "TERM", "value": 2.0},
+            {"type": "TERM", "value": 2.0},
+            {"type": "TERM", "value": 3.0},
+            {"type": "TERM", "value": 4.0},
+            {"type": "TERM", "value": 5.0},
+            {"type": "TERM", "value": 6.0},
+            {"type": "TERM", "value": 7.0},
+            {"type": "TERM", "value": 8.0},
+            {"type": "TERM", "value": 9.0},
+            {"type": "TERM", "value": 10.0},
+            {"type": "TERM", "value": math.pi}
         ],
 
         "data_file": None,
 
-        "input_variables": [
-            {
-                "type": "INPUT",
-                "name": "var1"
-            }
-        ],
+        "input_variables": [{"type": "INPUT", "name": "var1"}],
 
-        "response_variable": {
-            "name": "answer"
-        },
+        "response_variable": {"name": "answer"},
 
         "recorder": {
             "store_file": None,

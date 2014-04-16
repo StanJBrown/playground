@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- PAGE TITLE -->
-    <title>playground | home</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>playground - docs</title>
+    <!-- LiveReload -->
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
     <!-- MATHJAX -->
     <script type="text/x-mathjax-config">
@@ -13,85 +11,137 @@
                 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
                 TeX: { equationNumbers: { autoNumber: "AMS" }}
             });
-        </script>
+    </script>
     <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
     </script>
+
+    <!-- Marked -->
+    <script src="./js/marked.min.js"></script>
+
+    <!-- JQuery -->
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script>
+
+
+    </script>
+
+    <!-- CSS -->
+    <style>
+        body {
+            color: #333;
+            margin: 0;
+            padding: 0;
+
+            font-family: Verdana, Arial;
+            font-size: 1em;
+        }
+
+        #wrapper {
+            position: relative;
+            width: 950px;
+        }
+
+        #sidebar {
+            position: fixed;
+            width: 250px;
+            height: 100%;
+
+            overflow-y: scroll;
+            overflow: -moz-scrollbars-vertical;
+
+            margin-right: 20px;
+            margin-top: 0;
+            padding-left: 20px;
+            padding-top: 0;
+
+
+            /* border: 1px solid black; */
+        }
+
+        #sidebar .title {
+
+        }
+
+        #sidebar h1 {
+            font-size: 25px;
+        }
+
+        #sidebar h2 {
+            font-size: 18px;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            margin: 0;
+            padding-left: 10px;
+        }
+
+        #sidebar ul li:before {  /* a hack to have dashes as a list style */
+            content: "-";
+            position: relative;
+            left: -5px;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 2px;
+            margin-left: 10px;
+
+            text-indent: -5px;  /* to compensate for the padding for the dash */
+            font-size: 12px;
+        }
+
+        #content {
+            width: 600px;
+            min-height: 600px;
+
+            margin-left: 310px;
+
+            text-align: justify;
+            font-size: 12px;
+
+            /* border: 1px solid black; */
+        }
+
+        #content pre {
+            width: 95%;
+
+            margin-left: auto;
+            margin-right: auto;
+            padding: 10px;
+
+            color: #EEE;
+            font-size: 10px;
+            font-weight: normal;
+            font-family: Consolas, monospace;
+
+            background: #333;
+            border-radius: 10px;
+        }
+
+        .clear {
+            clear: both;
+
+        }
+
+
+    </style>
 </head>
 <body>
+    <div id="wrapper">
+        <div id="sidebar"></div>
+        <div id="content"></div>
+        <div class="clear"></div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $.get("pages/sidebar.md", function(data) {
+                $("#sidebar").html(marked(data));
+            }, "text");
 
-<h1 id="project_title">playground</h1>
-<nav>
-    <h1><a href="index.html">Home</a></h1>
-    <h1><a href="documentation.html">Documentation</a></h1>
-    <h1><a href="http://github.com/chutsu/playground">Source</a></h1>
-</nav>
-<div class="clear"></div>
-
-<p><b>playground</b> is a <a href="http://en.wikipedia.org/wiki/Metaheuristic">
-meta-heuristic</a> library implemented in Python designed to be <i>flexible</i>
-and <i>reusable</i>. At current the following algorithms have been
-implemented:</p>
-
-<ul>
-    <li>Genetic Algorithm (GA)</li>
-    <li>Genetic Programming (GP)</li>
-    <li>Particle Swarm Optimization (PSO)</li>
-</ul>
-
-<h2>Examples</h2>
-<ul id="examples_gallery">
-    <!-- GENETIC ALGORITHM -->
-    <li class="example">
-        <ul id="example_details">
-            <li class="title">Genetic Algorithm</li>
-            <li class="thumbnail">
-                <img src="images/nasa_antenna.jpg" />
-            </li>
-        </ul>
-    </li>
-
-    <!-- GENETIC PROGRAMMING -->
-    <li class="example">
-        <ul id="example_details">
-            <li class="title">Genetic Programming</li>
-            <li class="thumbnail">
-                <img src="images/gp_tree.png" />
-            </li>
-        </ul>
-    </li>
-
-    <!-- PARTICLE SWARM OPTIMIZATION -->
-    <li class="example">
-        <ul id="example_details">
-            <li class="title">Particle Swarm Optimization</li>
-            <li class="thumbnail">
-                <a href="https://www.youtube.com/watch?v=J1gvufe0Upc">
-                    <img src="images/pso_demo.jpg" />
-                </a>
-            </li>
-        </ul>
-    </li>
-</ul>
-
-<div class="clear"></div>
-
-<h2>Installation</h2>
-<p>Currently the best way is to clone the repo and install the
-dependencies:</p>
-
-<pre>
-    git clone git@github.com:chutsu/playground.git
-    pip install -r requirements.txt  # installs dependencies for playground
-</pre>
-
-
-<h2>Author</h2>
-<p>My name is Chris Choi, I am a PhD Student at the <a
-href="http://www.st-andrews.ac.uk/">University of St Andrews</a>. I created
-this library as a programming excercise and also as part of my PhD research to
-find ways to optimize meta-heuristics. For more information about me visit my
-website <a href="chutsu.github.io">here</a>!</p>
-
-
+            $.get("README.md", function(data) {
+                $("#content").html(marked(data));
+            }, "text");
+        });
+    </script>
 </body>
 </html>

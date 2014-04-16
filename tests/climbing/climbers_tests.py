@@ -6,6 +6,7 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from playground.climbing.climbers import hill_climbing
+# from playground.climbing.climbers import steepest_ascent_hill_climbing
 from playground.climbing.utils import check_iterations
 from playground.climbing.utils import check_time
 from playground.climbing.utils import check_score
@@ -13,11 +14,12 @@ from playground.climbing.utils import stop_function
 
 
 class ClimbersTests(unittest.TestCase):
+
     def setUp(self):
         self.solution = "helloworld"
         self.candidate = "abcdefghij"
 
-        self.hill_climbing_details = {
+        self.config = {
             "debug": False,
 
             "tweak_function": self.tweak_function,
@@ -89,11 +91,20 @@ class ClimbersTests(unittest.TestCase):
 
     def test_hill_climbing(self):
         # run hill climbing
-        result = hill_climbing(self.hill_climbing_details)
+        result = hill_climbing(self.config)
 
         # assert
         self.assertEquals(result[0], self.solution)
         self.assertEquals(result[1], 1000)
+
+    # def test_steepest_ascent_hill_climbing(self):
+    #     # run hill climbing
+    #     self.config["tweaks"] = 10
+    #     result = steepest_ascent_hill_climbing(self.config)
+
+    #     # assert
+    #     self.assertEquals(result[0], self.solution)
+    #     self.assertEquals(result[1], 1000)
 
 if __name__ == "__main__":
     unittest.main()

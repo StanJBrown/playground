@@ -3,23 +3,27 @@
 <head>
     <title>playground - docs</title>
     <!-- LiveReload -->
-    <!-- <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script> -->
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
     <!-- MATHJAX -->
     <script type="text/x-mathjax-config">
-            MathJax.Hub.Config({
-                tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
-                TeX: { equationNumbers: { autoNumber: "AMS" }}
-            });
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+            TeX: { equationNumbers: { autoNumber: "AMS" }}
+        });
     </script>
     <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
     </script>
 
+    <!-- JQuery -->
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
     <!-- Marked -->
     <script src="./js/marked.min.js"></script>
 
-    <!-- JQuery -->
-    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <!-- Mdoc -->
+    <script src="./js/mdoc.js"></script>
+
 
     <!-- CSS -->
     <style>
@@ -54,10 +58,6 @@
             -webkit-box-shadow: 0 0 40px #CCC;
             -moz-box-shadow: 0 0 40px #CCC;
             border-right: 1px solid #BBB;
-        }
-
-        #sidebar .title {
-
         }
 
         #sidebar h1 {
@@ -147,6 +147,7 @@
         }
 
         #content ul {
+            display: block;
             list-style-type: none;
         }
 
@@ -171,6 +172,56 @@
             text-decoration: none;
         }
 
+        #back_to_top {
+            position: fixed;
+
+            height: 20px;
+            width: 70px;
+            top: 20px;
+
+            margin-left: 920px;
+            margin-top: 0px;
+
+            color: #FFF;
+            line-height: 20px;
+            text-align: center;
+            font-size: 10px;
+
+
+            border-radius: 5px;
+            background-color: #AAA;
+        }
+
+        #back_to_top:hover {
+            background-color: #444;
+            cursor: pointer;
+        }
+
+        #edit {
+            position: fixed;
+
+            height: 17px;
+            width: 70px;
+            top: 45px;
+
+            margin-left: 920px;
+            margin-top: 0px;
+
+            color: #FFF;
+            line-height: 17px;
+            text-align: center;
+            font-size: 10px;
+
+
+            border-radius: 5px;
+            background-color: #AAA;
+        }
+
+        #edit:hover {
+            background-color: #444;
+            cursor: pointer;
+        }
+
         .clear {
             clear: both;
 
@@ -183,93 +234,11 @@
     <div id="wrapper">
         <div id="sidebar"></div>
         <div id="content"></div>
+        <div id="back_to_top">back to top</div>
+        <div id="edit">edit</div>
         <div class="clear"></div>
     </div>
     <script>
-        function init_sidebar() {
-            $.get("pages/sidebar.md", function(data) {
-                $("#sidebar").html(marked(data));
-            }, "text");
-        }
-
-        function init_content() {
-            $.get("README.md", function(data) {
-                $("#content").html(marked(data));
-            }, "text");
-        }
-
-        function show_error() {
-            $.get("pages/404.md", function(data) {
-                $("#content").html(marked(data));
-            }, "text");
-        }
-
-        function replace_symbols(text) {
-            // replace symbols with underscore
-            return text.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "_")
-        }
-
-        function li_create_linkage(li_tag, header_level) {
-            // add custom id and class attributes
-            html_safe_tag = replace_symbols(li_tag.text());
-            li_tag.attr("id", html_safe_tag);
-            li_tag.attr("class", "link");
-
-            // add click listener - on click scroll to relevant header section
-            $("#content li#" + li_tag.attr("id")).click(function() {
-                var header = $("#content h" + header_level + "." + li_tag.attr("id"));
-                $('html body').animate({
-                    scrollTop: header.offset().top
-                }, 200);
-            });
-        }
-
-        function create_page_anchors() {
-            // create page anchors by matching headers with li's
-            // if there is a match, create javascript click listeners
-            // and scroll to relevant sections
-
-            // go through header level 2 and 3
-            for (var i = 2; i <= 4; i++) {
-                // parse all headers
-                var headers = [];
-                $('#content h' + i).map(function() {
-                    headers.push($(this).text());
-                    $(this).addClass(replace_symbols($(this).text()));
-                });
-
-                // parse and set links between li and h2
-                $('#content ul li').map(function() {
-                    for (var j = 0; j < headers.length; j++) {
-                        if (headers[j] === $(this).text()) {
-                            li_create_linkage($(this), i);
-                        }
-                    }
-                });
-            }
-        }
-
-        function router() {
-            var path = location.hash.replace("#", "./");
-
-            // default page if hash is empty
-            if (path === "") {
-                path = "#README.md";
-            }
-
-            $.get(path, function(data) {
-                var doc = marked(data)
-                $("#content").html(doc);
-                create_page_anchors();
-            }).fail(show_error);
-        }
-
-        $(document).ready(function() {
-            init_sidebar();
-            init_content();
-
-            $(window).on('hashchange', router);
-        });
     </script>
 </body>
 </html>

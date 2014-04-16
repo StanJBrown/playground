@@ -56,6 +56,10 @@ node.
 **functions**:
 
 - has_value_node(node)
+- is_function()
+- is_terminal()
+- is_input()
+- equals(node)
 
 
 ### has_value_node(node)

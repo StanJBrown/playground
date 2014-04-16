@@ -1,22 +1,8 @@
 # playground.gp.tree
 
-## TreeNodeType(object)
-`TreeNodeType` encapsulates the idea of what type of tree node one is. It
-denotes tree nodes:
-
-- Unary function node
-- Binary function node
-- Terminal node
-- Input node
-
-
-    Constants:
-
-        UNARY_OP
-        BINARY_OP
-        TERM
-        INPUT
-
+**Module contents**:
+- TreeNode(object)
+- Tree(object)
 
 
 ## TreeNode(object)
@@ -24,48 +10,52 @@ denotes tree nodes:
 node.
 
 
-    Attributes:
+**Attributes**:
 
-        node_type (str):
-            type of node
+    node_type (str):
+        type of node
 
-        name (str):
-            name of node
+    name (str):
+        name of node
 
-        value (object):
-            value of node
+    value (object):
+        value of node
 
-        left_branch (object):
-            left value of function node
+    left_branch (object):
+        left value of function node
 
-        right_branch (object):
-            right value of function node
+    right_branch (object):
+        right value of function node
 
-        value_branch (object):
-            value of function node
+    value_branch (object):
+        value of function node
 
 
-    Constructor Arguments:
+**Constructor Arguments**:
 
-        node_type (str):
-            node type
+    node_type (str):
+        node type
 
-        **kwargs:
+    **kwargs:
 
-            # function node specific
-            if node_type is TreeNodeType.UNARY_OP:
-                name (str) and value_branch (object) are expected.
+        # function node specific
+        if node_type is TreeNodeType.UNARY_OP:
+            name (str) and value_branch (object) are expected.
 
-            else if node_type is TreeNodeType.BINARY_OP:
-                name (str), left_branch (object) and right_branch (object) are
-                expected.
+        else if node_type is TreeNodeType.BINARY_OP:
+            name (str), left_branch (object) and right_branch (object) are
+            expected.
 
-            # terminal node specific
-            if node_type is TreeNodeType.TERM:
-                name (str) and value (object) are expected.
+        # terminal node specific
+        if node_type is TreeNodeType.TERM:
+            name (str) and value (object) are expected.
 
-            else node_type is TreeNodeType.INPUT:
-                name (str) is expected.
+        else node_type is TreeNodeType.INPUT:
+            name (str) is expected.
+
+**functions**:
+
+- has_value_node(node)
 
 
 ### has_value_node(node)

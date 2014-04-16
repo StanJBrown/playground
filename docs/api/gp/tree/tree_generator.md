@@ -4,8 +4,7 @@ needed, this module provides methods to produce the initial random population.
 
 **Module contents**:
 
-- class TreeGenerator(object)
-
+- TreeGenerator(object)
 
 ## TreeGenerator(object)
 `TreeGenerator` is responsible for creating an population of `Tree`s used in
@@ -18,16 +17,16 @@ the Genetic Programming process. It supports tree intialization using the:
 For more information on these methods have a look at "_A Field Guide to
 Genetic Programming_" by Riccard Poli, Bill Langdon and Nic McPhee.
 
-    Attributes:
+**Attributes**:
 
-        config (dict):
-            configuration
+    config (dict):
+        configuration
 
-        tree_parser (TreeParser):
-            tree parser instance
+    tree_parser (TreeParser):
+        tree parser instance
 
-        tree_evaluator (TreeEvaluator):
-            tree evaluator instance
+    tree_evaluator (TreeEvaluator):
+        tree evaluator instance
 
 
 ### full_method()

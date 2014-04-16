@@ -1,4 +1,7 @@
 # [playground](http://chutsu.github.io/playground)
+[![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
+[![Coverage Status](https://coveralls.io/repos/chutsu/playground/badge.png)][2]
+
 - Github Repository
 
 ## Examples
@@ -54,3 +57,6 @@
 
 ### Author
 - Chris Choi
+
+[1]: https://travis-ci.org/chutsu/playground
+[2]: https://coveralls.io/r/chutsu/playground

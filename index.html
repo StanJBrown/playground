@@ -75,7 +75,6 @@
         #sidebar a:visited, #sidebar a:link {
             color: #4682BE;
             text-decoration: none;
-
         }
 
         #sidebar ul {
@@ -137,25 +136,39 @@
             border-top: 1px dotted #777;
         }
 
-        #error {
-            width: 600px;
-
-            margin-left: 310px;
-            padding-bottom: 200px;
-
-            text-align: justify;
-            font-size: 12px;
-        }
-
-        #error img {
-            width: 70%;
+        #content img {
+            max-width: 90%;
             display: block;
 
             margin-left: auto;
             margin-right: auto;
 
             border-radius: 5px;
+        }
 
+        #content ul {
+            list-style-type: none;
+        }
+
+        #content ul li:before {  /* a hack to have dashes as a list style */
+            content: "-";
+            position: relative;
+            left: -5px;
+        }
+
+        #content ul li {
+            text-indent: -5px;  /* to compensate for the padding for the dash */
+        }
+
+        #content ul li.link {
+            color: #4682BE;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #content a:link, #content a:visited {
+            color: #4682BE;
+            text-decoration: none;
         }
 
         .clear {
@@ -170,53 +183,92 @@
     <div id="wrapper">
         <div id="sidebar"></div>
         <div id="content"></div>
-        <div id="error"></div>
         <div class="clear"></div>
     </div>
     <script>
-        function page_not_found() {
-            $.get("pages/404.md", function(data) {
-                $("#error").html(marked(data));
-            }, "text");
-        }
-
-        function init_content() {
-            if (location.hash === "") {
-                $.get("README.md", function(data) {
-                    $("#content").html(marked(data));
-                }, "text");
-            } else {
-                $.get(location.hash.replace("#", "./"), function(data) {
-                    $("#content").html(marked(data));
-                }).fail(function() {
-                    $("#content").html(page_not_found());
-                });
-            }
-        }
-
         function init_sidebar() {
             $.get("pages/sidebar.md", function(data) {
                 $("#sidebar").html(marked(data));
             }, "text");
         }
 
-        function init_router() {
-            $(window).on('hashchange', function() {
-                var hash = location.hash;
-                hash = hash.replace("#", "./");
+        function init_content() {
+            $.get("README.md", function(data) {
+                $("#content").html(marked(data));
+            }, "text");
+        }
 
-                $.get(hash, function(data) {
-                    $("#content").html(marked(data));
-                }).fail(function() {
-                    $("#content").html(page_not_found());
-                });
+        function show_error() {
+            $.get("pages/404.md", function(data) {
+                $("#content").html(marked(data));
+            }, "text");
+        }
+
+        function replace_symbols(text) {
+            // replace symbols with underscore
+            return text.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "_")
+        }
+
+        function li_create_linkage(li_tag, header_level) {
+            // add custom id and class attributes
+            html_safe_tag = replace_symbols(li_tag.text());
+            li_tag.attr("id", html_safe_tag);
+            li_tag.attr("class", "link");
+
+            // add click listener - on click scroll to relevant header section
+            $("#content li#" + li_tag.attr("id")).click(function() {
+                var header = $("#content h" + header_level + "." + li_tag.attr("id"));
+                $('html body').animate({
+                    scrollTop: header.offset().top
+                }, 200);
             });
+        }
+
+        function create_page_anchors() {
+            // create page anchors by matching headers with li's
+            // if there is a match, create javascript click listeners
+            // and scroll to relevant sections
+
+            // go through header level 2 and 3
+            for (var i = 2; i <= 4; i++) {
+                // parse all headers
+                var headers = [];
+                $('#content h' + i).map(function() {
+                    headers.push($(this).text());
+                    $(this).addClass(replace_symbols($(this).text()));
+                });
+
+                // parse and set links between li and h2
+                $('#content ul li').map(function() {
+                    for (var j = 0; j < headers.length; j++) {
+                        if (headers[j] === $(this).text()) {
+                            li_create_linkage($(this), i);
+                        }
+                    }
+                });
+            }
+        }
+
+        function router() {
+            var path = location.hash.replace("#", "./");
+
+            // default page if hash is empty
+            if (path === "") {
+                path = "#README.md";
+            }
+
+            $.get(path, function(data) {
+                var doc = marked(data)
+                $("#content").html(doc);
+                create_page_anchors();
+            }).fail(show_error);
         }
 
         $(document).ready(function() {
             init_sidebar();
             init_content();
-            init_router();
+
+            $(window).on('hashchange', router);
         });
     </script>
 </body>

@@ -18,6 +18,9 @@
     <!-- JQuery -->
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 
+    <!-- JQuery UI -->
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+
     <!-- Marked -->
     <script src="./js/marked.min.js"></script>
 
@@ -105,7 +108,7 @@
             padding-bottom: 150px;
 
             text-align: justify;
-            font-size: 12px;
+            font-size: 13px;
 
             /* border: 1px solid black; */
         }
@@ -127,7 +130,14 @@
         }
 
         #content h2 {
-            margin-top: 30px;
+            margin-top: 100px;
+            padding-top: 30px;
+
+            height: 40px;
+
+            font-size: 25px;
+
+            border-top: 3px dotted black;
         }
 
         #content h3 {
@@ -159,11 +169,13 @@
 
         #content ul li {
             text-indent: -5px;  /* to compensate for the padding for the dash */
+            font-size: 13px;
         }
 
         #content ul li.link {
             color: #4682BE;
             text-decoration: none;
+            font-weight: bold;
             cursor: pointer;
         }
 

@@ -156,6 +156,16 @@ within a tree, as well as the size and depth, etc.
         tree_parser (TreeParser):
             tree parser instance
 
+**functions**:
+- valid(config_input_nodes)
+- get_linked_node(target_node)
+- replace_node(target_node, replace_with, override_update=False)
+- equals(tree)
+- update_program()
+- update_func_nodes()
+- update_term_nodes()
+- update()
+
 
 ### valid(config_input_nodes)
 A boolean function that checks to see if `Tree` instance is valid. The criteria

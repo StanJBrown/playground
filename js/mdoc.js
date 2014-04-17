@@ -104,9 +104,9 @@ function router() {
         path = "README.md";
     }
 
+    // otherwise get the markdown and render it
     $.get(path, function(data) {
-        var doc = marked(data);
-        $("#content").html(doc);
+        $("#content").html(marked(data));
         create_page_anchors();
     }).fail(show_error);
 }

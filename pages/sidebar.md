@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
 [![Coverage Status](https://coveralls.io/repos/chutsu/playground/badge.png)][2]
 
-- Github Repository
+- [Github Repository](http://github.com/chutsu/playground/)
 
 ## Examples
 - Genetic Programming
@@ -55,8 +55,8 @@
     - [pso](#docs/api/benchmark/pso.md)
 
 
-### Author
-- Chris Choi
+##### Author
+- [Chris Choi](http://chutsu.github.io/#about)
 
 [1]: https://travis-ci.org/chutsu/playground
 [2]: https://coveralls.io/r/chutsu/playground

@@ -24,13 +24,13 @@ function init_back_to_top_button() {
 
 function init_edit_button(base_url) {
     $("#edit").on("click", function() {
-        var hash = location.hash.replace("#", "/") + ".md";
+        var hash = location.hash.replace("#", "/");
 
         if (hash === "") {
             hash = "/README.md";
         }
 
-        window.open(base_url + hash);
+        window.open(base_url + hash + ".md");
         // open is better than redirecting, as the previous page history with
         // redirect is a bit messed up
     });
@@ -97,15 +97,15 @@ function show_error(error_file) {
 }
 
 function router() {
-    var path = location.hash.replace("#", "./") + ".md";
+    var path = location.hash.replace("#", "./");
 
     // default page if hash is empty
     if (path === "") {
-        path = "/README.md";
+        path = "/README";
     }
 
     // otherwise get the markdown and render it
-    $.get(path, function(data) {
+    $.get(path + ".md", function(data) {
         $("#content").html(marked(data));
         create_page_anchors();
     }).fail(show_error);

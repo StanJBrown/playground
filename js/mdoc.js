@@ -81,7 +81,7 @@ function create_page_anchors() {
 }
 
 function show_error(error_file) {
-    $.get("404.md", function(data) {
+    $.get("pages/404.md", function(data) {
         $("#content").html(marked(data));
     }).fail(function() {
         alert("Opps the 404 file couldn't not be found!");

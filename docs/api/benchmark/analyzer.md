@@ -177,7 +177,60 @@ Is a wrapper function that performs the following summarization in one go:
 
 
 ## plot_summary_graph(data, labels, field_key, **kwargs)
+Creates a summary scatter plot.
 
+    Args:
+
+        data (list of dict):
+            data to be plotted, expects a list of dictionary containing
+            generation statistics per dict
+
+        lables (list of str):
+            labels for the series of data to be plotted
+
+        field_key (str):
+           dictionary key to plot against generation, expects a string of the
+           form "population.best_score"
+
+        **kwargs:
+            kwargs["fignum"] (int):
+                i-th figure number
+
+            kwargs["sharex"] (matplotlib.axes)[default=None]:
+                x-axis to share plot with
+
+            kwargs["show_legend"] (bool)[default=False]:
+                show lengend
+
+            kwargs["ylabel"] (str):
+                set y-axis lable
+
+            kwargs["ydiff"] (float)[default=10]:
+                the extra y-range
+
+
+    Return:
+
+        plot axis (matplotlib.axes)
 
 
 ## plot_summary(data, labels, fig_title=None)
+Wrapper function that plots multiple summary scatter plots, with generation against:
+
+- population.best_score
+- evaluation.diversity
+- evaluation.cache_size
+- evaluation.trees_evaluated
+- evaluation.tree_nodes_evaluated
+
+    Args:
+
+        data (list of dict):
+            data to be plotted, expects a list of dictionary containing
+            generation statistics per dict
+
+        lables (list of str):
+            labels for the series of data to be plotted
+
+        fig_title (str)[default=None]:
+            figure title

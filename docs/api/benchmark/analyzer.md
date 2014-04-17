@@ -1,119 +1,183 @@
 # playground.benchmark.analyzer
 
 **Module contents**:
-- parse_log(path)
-- sort_records_by(attribute, log_jsons, reverse=False)
-- parse_general_stats(log_jsons)
-- plot_matrix(log_jsons, **kwargs)
-- scatterplot_matrix(data, names=[], **kwargs)
+- parse_data(fp)
+- summarize_population(population, summary)
+- summarize_evaluation(evaluation, summary)
+- summarize_crossover(crossover, summary)
+- summarize_mutation(mutation, summary)
+- summarize_selection(selection, summary)
+- summarize_data(fp)
+- plot_summary_graph(data, labels, field_key, **kwargs)
+- plot_summary(data, labels, fig_title=None)
 
 
-## parse_log(path)
-Parses the log file assumed to be a JSON file.
+
+## parse_data(fp)
+Parse data file, the raw file is assumed to have file extension
+'.dat', though you may compress the file with zip. (i.e. the function also
+accepts '.zip')
+
 
     Args:
 
-        path (str):
-            full path to log file
+        fp (str):
+            file path to parse data. Raw data file must have extension '.dat'.
+            a zipped file is also acceptable
 
     Returns:
 
-        list of JSON objects
+        list of dict objects
 
 
-## sort_records_by(attribute, log_jsons, reverse=False)
-Sort wrapper. It essentially sorts the list of log JSON objects after they
-have been parsed via `parse_log(path)`, accordding to the JSON object
-attribute.
+## summarize_population(population, summary)
+Summarize `population` dict and appends the result to `summary` dict. This
+function expects the following keys from `population` and `summary`:
+
+- generation
+- best_score
+- best_individual
+
 
     Args:
 
-        attribute (str):
-            attribute of the JSON object to be sorted
+        population (dict):
+            population to be summarized
 
-        log_jsons (list of JSONS):
-            list of JSON objects from `parse_log(path)`
-
-    Returns:
-
-        sorted list of JSON objects
+        summary (dict):
+            results from summary to be added to
 
 
-## parse_general_stats(log_jsons)
-Summarize general statistics from list of log JSON objects. It loops through
-every log JSON object in `log_jsons` and summarizes:
+## summarize_evaluation(evaluation, summary)
+Summarize `evaluation` dict and appends the result to `summary` dict. This
+function expects the following keys from `evaluation` and `summary`:
 
-- best individual
-- best score
-- run time
+- cache_size
+- diversity
+- matched_cache
+- trees_evaluated
+- tree_nodes_evaluated
+
 
     Args:
 
-        log_jsons (list of JSONS):
-            list of JSON objects from `parse_log(path)`
+        evaluation (dict):
+            evaluation to be summarized
+
+        summary (dict):
+            results from summary to be added to
+
+
+## summarize_crossover(crossover, summary)
+Summarize `crossover` dict and appends the result to `summary` dict. This
+function expects the following keys from `crossover` and `summary`:
+
+- crossovers
+- no_crossovers
+- instances
+- crossover_method["success"]
+- crossover_method["failed"]
+- crossover_method["frequency"]
+
+*Note*: crossover_method is the actual method name (e.g. "POINT_CROSSOVER")
+
+
+    Args:
+
+        crossover (dict):
+            crossover to be summarized
+
+        summary (dict):
+            results from summary to be added to
+
+
+## summarize_mutation(mutation, summary)
+Summarize `mutation` dict and appends the result to `summary` dict. This
+function expects the following keys from `mutation` and `summary`:
+
+- mutations
+- no_mutations
+- instances
+- mutation_method["success"]
+- mutation_method["failed"]
+- mutation_method["frequency"]
+
+*Note*: mutation_method is the actual method name (e.g. "POINT_MUTATION")
+
+
+    Args:
+
+        mutation (dict):
+            mutation to be summarized
+
+        summary (dict):
+            results from summary to be added to
+
+
+## summarize_selection(selection, summary)
+Summarize `selection` dict and appends the result to `summary` dict. This
+function expects the following keys from `selection` and `summary`:
+
+- method
+- selection_method["selected"]
+
+*Note*: selection_method is the actual method name (e.g. "ROULETTE_SELECTION")
+
+
+    Args:
+
+        selection (dict):
+            selection to be summarized
+
+        summary (dict):
+            results from summary to be added to
+
+
+## summarize_data(fp)
+Is a wrapper function that performs the following summarization in one go:
+
+- population
+- evaluation
+- selection
+- crossover
+- mutation
+
+
+    Args:
+
+        fp (str):
+            file path to data to be summarized
+
 
     Returns:
 
         dictionary:
-            - best_individuals (list of str)
-            - best_scores (list of float)
-            - runtimes (list of float)
+            population
+                generation
+                best_score
+                best_individual
+
+            evaluation
+                cache_size
+                diversity
+                matched_cache
+                trees_evaluated
+                tree_nodes_evaluated
+
+            crossover
+                crossvers
+                no_crossovers
+
+            mutation
+                mutations
+                no_mutations
+
+            selection
 
 
-## plot_matrix(log_jsons, **kwargs)
-Wrapper function that performs a pairs plot, or a matrix plot of:
 
-- population size
-- crossover probability
-- mutation probability
-- best score
-- runtime
-
-This wrapper prepares and summarizes the above data fields in order for the
-matrix plot to be performed.
-
-    Args:
-
-        log_jsons (list of JSONS):
-            list of JSON objects from `parse_log(path)`
-
-        **kwargs:
-
-            kwargs["show_plot"] (bool)[default=False]:
-                show plot via GUI
-
-            kwargs["save_plot"] (bool)[default=False]:
-                save plot
-
-            kwargs["save_path"] (str):
-                path to save plot, compulsary if `save_plot` is True
-
-            kwargs["save_format"] (str)[default="png"]:
-                image format to be saved
+## plot_summary_graph(data, labels, field_key, **kwargs)
 
 
-## scatterplot_matrix(data, names=[], **kwargs)
-The actual matrix/ pairs plotting function using `matplotlib`.
 
-
-    Args:
-
-        data (2D list of floats):
-            data to be plotted
-
-        names (list of str):
-            name or field of data to be plotted, used to label axises
-
-
-        **kwargs:
-
-            kwargs["figsize"] (tuple)[default=(8, 8)]:
-                figure size
-
-            kwargs["facecolor"] (str)[default="white"]:
-                plot background color
-
-
-    Returns:
-
-        matplotlib Fig object
+## plot_summary(data, labels, fig_title=None)

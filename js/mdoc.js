@@ -92,13 +92,16 @@ function router() {
     var path = location.hash.replace("#", "./");
 
     // default page if hash is empty
-    if (path === "") {
-        path = "/README";
+    if (location.pathname === "/index.html") {
+        path = location.pathname.replace("index.html", "README.md");
+    } else if (path === "") {
+        path = window.location + "README.md";
+    } else {
+        path = path + ".md";
     }
 
     // otherwise get the markdown and render it
-    console.log(path);
-    $.get(path + ".md", function(data) {
+    $.get(path , function(data) {
         $("#content").html(marked(data));
         create_page_anchors();
     }).fail(show_error);

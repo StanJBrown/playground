@@ -94,7 +94,7 @@ function router() {
     // default page if hash is empty
     if (location.hostname != "127.0.0.1" && path === "") {
         path = "playground/README";
-    } else {
+    } else if (path === "") {
         path = "README";
     }
 

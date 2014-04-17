@@ -83,8 +83,8 @@ function create_page_anchors() {
 function show_error(error_file) {
     $.get("404.md", function(data) {
         $("#content").html(marked(data));
-    }, "text").fail(function() {
-        alert("Opps! can't find the 404 file to display!");
+    }).fail(function() {
+        alert("Opps the 404 file couldn't not be found!");
     });
 }
 
@@ -105,6 +105,4 @@ function router() {
         $("#content").html(marked(data));
         create_page_anchors();
     }).fail(show_error);
-
-    $(window).on('hashchange', router);
 }

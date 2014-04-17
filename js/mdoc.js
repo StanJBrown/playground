@@ -27,7 +27,7 @@ function init_edit_button(base_url) {
         var hash = location.hash.replace("#", "/");
 
         if (hash === "") {
-            hash = "/README.md";
+            hash = "/README";
         }
 
         window.open(base_url + hash + ".md");
@@ -105,10 +105,11 @@ function router() {
     }
 
     // otherwise get the markdown and render it
+    console.log(path);
     $.get(path + ".md", function(data) {
         $("#content").html(marked(data));
         create_page_anchors();
     }).fail(show_error);
 
-    $(window).on('hashchange', router);
+    // $(window).on('hashchange', router);
 }

@@ -105,5 +105,5 @@ function router() {
         create_page_anchors();
     }).fail(show_error);
 
-    // $(window).on('hashchange', router);
+    $(window).on('hashchange', router);
 }

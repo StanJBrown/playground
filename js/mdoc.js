@@ -6,14 +6,6 @@ function init_sidebar_section(sidebar_file) {
     });
 }
 
-function init_content_section(content_file) {
-    $.get(content_file, function(data) {
-        $("#content").html(marked(data));
-    }, "text").fail(function() {
-        alert("Opps! can't find the default index file to display!");
-    });
-}
-
 function init_back_to_top_button() {
     $("#back_to_top").on("click", function() {
         $("html body").animate({
@@ -100,7 +92,9 @@ function router() {
     var path = location.hash.replace("#", "./");
 
     // default page if hash is empty
-    if (path === "") {
+    if (location.hostname != "127.0.0.1" && path === "") {
+        path = "playground/README";
+    } else {
         path = "README";
     }
 

@@ -92,10 +92,8 @@ function router() {
     var path = location.hash.replace("#", "./");
 
     // default page if hash is empty
-    if (location.hostname != "127.0.0.1" && path === "") {
-        path = "playground/README";
-    } else if (path === "") {
-        path = "README";
+    if (path === "") {
+        path = "/README";
     }
 
     // otherwise get the markdown and render it

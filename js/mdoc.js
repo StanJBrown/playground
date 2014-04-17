@@ -30,7 +30,7 @@ function init_edit_button(base_url) {
 
 function replace_symbols(text) {
     // replace symbols with underscore
-    return text.replace(/[&\/\\#,+=()$~%.'":*?<>{}\ ]/g, "_");
+    return text.replace(/[&\/\\#,+=()$~%.'":*?<>{}\ \]\[]/g, "_");
 }
 
 function li_create_linkage(li_tag, header_level) {

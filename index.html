@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>playground - docs</title>
+    <title>playground</title>
     <!-- LiveReload -->
     <!-- <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script> -->
 
@@ -128,12 +128,12 @@
             margin-right: auto;
             padding: 10px;
 
-            color: #EEE;
+            color: #FFF;
             font-size: 10px;
             font-weight: normal;
             font-family: Consolas, monospace;
 
-            background: #333;
+            background: #444;
             border-radius: 10px;
         }
 
@@ -183,7 +183,7 @@
         #content ul li.link {
             color: #4682BE;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
         }
@@ -260,6 +260,17 @@
         <div class="clear"></div>
     </div>
     <script>
+        $(document).ready(function() {
+            // initialization
+            init_sidebar_section("pages/sidebar.md");
+            init_content_section("README.md");
+            init_back_to_top_button();
+            init_edit_button("https://github.com/chutsu/playground/tree/gh-pages");
+
+            // page router
+            router();
+            $(window).on('hashchange', router);
+        });
     </script>
 </body>
 </html>

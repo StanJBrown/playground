@@ -10,21 +10,23 @@ This module contains hill climbing algorithms, current it features:
 
 
 ## hill_climbing(config)
+
     Args:
 
         config (dict):
+
             config is a dictionary containing elements needed for the algorithm
 
-        config["tweak_function"] (function):
+            config["tweak_function"] (function):
 
 
-        config["eval_function"] (function):
+            config["eval_function"] (function):
 
 
-        config["stop_function"] (function):
+            config["stop_function"] (function):
 
 
-        config["max_iteration"] (int):
+            config["max_iteration"] (int):
 
 
 

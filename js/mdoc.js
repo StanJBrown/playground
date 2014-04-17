@@ -24,7 +24,7 @@ function init_back_to_top_button() {
 
 function init_edit_button(base_url) {
     $("#edit").on("click", function() {
-        var hash = location.hash.replace("#", "/");
+        var hash = location.hash.replace("#", "/") + ".md";
 
         if (hash === "") {
             hash = "/README.md";
@@ -33,14 +33,6 @@ function init_edit_button(base_url) {
         window.open(base_url + hash);
         // open is better than redirecting, as the previous page history with
         // redirect is a bit messed up
-    });
-}
-
-function show_error(error_file) {
-    $.get("404.md", function(data) {
-        $("#content").html(marked(data));
-    }, "text").fail(function() {
-        alert("Opps! can't find the 404 file to display!");
     });
 }
 
@@ -66,7 +58,7 @@ function li_create_linkage(li_tag, header_level) {
         // highlight the relevant section
         original_color = header.css("color");
         header.animate({ color: "#ED1C24", }, 500, function() {
-            $(this).animate({color: original_color}, 2500);
+            $(this).animate({color: original_color}, 2500);  // revert back to orig color
         });
     });
 }
@@ -96,12 +88,20 @@ function create_page_anchors() {
     }
 }
 
+function show_error(error_file) {
+    $.get("404.md", function(data) {
+        $("#content").html(marked(data));
+    }, "text").fail(function() {
+        alert("Opps! can't find the 404 file to display!");
+    });
+}
+
 function router() {
-    var path = location.hash.replace("#", "./");
+    var path = location.hash.replace("#", "./") + ".md";
 
     // default page if hash is empty
     if (path === "") {
-        path = "README.md";
+        path = "/README.md";
     }
 
     // otherwise get the markdown and render it
@@ -110,15 +110,3 @@ function router() {
         create_page_anchors();
     }).fail(show_error);
 }
-
-$(document).ready(function() {
-    // initialization
-    init_sidebar_section("pages/sidebar.md");
-    init_content_section("README.md");
-    init_back_to_top_button();
-    init_edit_button("https://github.com/chutsu/playground/tree/gh-pages");
-
-    // page router
-    router();
-    $(window).on('hashchange', router);
-});

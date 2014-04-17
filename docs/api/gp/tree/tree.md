@@ -10,48 +10,48 @@
 node.
 
 
-**Attributes**:
+    Attributes:
 
-    node_type (str):
-        type of node
+        node_type (str):
+            type of node
 
-    name (str):
-        name of node
+        name (str):
+            name of node
 
-    value (object):
-        value of node
+        value (object):
+            value of node
 
-    left_branch (object):
-        left value of function node
+        left_branch (object):
+            left value of function node
 
-    right_branch (object):
-        right value of function node
+        right_branch (object):
+            right value of function node
 
-    value_branch (object):
-        value of function node
+        value_branch (object):
+            value of function node
 
 
-**Constructor Arguments**:
+    Constructor Arguments:
 
-    node_type (str):
-        node type
+        node_type (str):
+            node type
 
-    **kwargs:
+        **kwargs:
 
-        # function node specific
-        if node_type is TreeNodeType.UNARY_OP:
-            name (str) and value_branch (object) are expected.
+            # function node specific
+            if node_type is TreeNodeType.UNARY_OP:
+                name (str) and value_branch (object) are expected.
 
-        else if node_type is TreeNodeType.BINARY_OP:
-            name (str), left_branch (object) and right_branch (object) are
-            expected.
+            else if node_type is TreeNodeType.BINARY_OP:
+                name (str), left_branch (object) and right_branch (object) are
+                expected.
 
-        # terminal node specific
-        if node_type is TreeNodeType.TERM:
-            name (str) and value (object) are expected.
+            # terminal node specific
+            if node_type is TreeNodeType.TERM:
+                name (str) and value (object) are expected.
 
-        else node_type is TreeNodeType.INPUT:
-            name (str) is expected.
+            else node_type is TreeNodeType.INPUT:
+                name (str) is expected.
 
 **functions**:
 
@@ -156,7 +156,7 @@ within a tree, as well as the size and depth, etc.
         tree_parser (TreeParser):
             tree parser instance
 
-**functions**:
+**Methods**:
 - valid(config_input_nodes)
 - get_linked_node(target_node)
 - replace_node(target_node, replace_with, override_update=False)
@@ -212,6 +212,9 @@ set to `True`.
 
         replace_with (TreeNode):
             node to replace with
+
+        override_update (bool)[default=False]:
+            flag to override update
 
 
 ### equals(tree)

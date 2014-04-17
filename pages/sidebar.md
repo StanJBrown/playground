@@ -19,7 +19,7 @@
 - [climbing](#docs/api/climbing.md)
     - [climbers](#docs/api/climbing/climbers.md)
 - [ga](#docs/api/ga.md)
-    - [bit_string](#docs/api/benchmark/bit_string.md)
+    - [bit_string](#docs/api/ga/bit_string.md)
     - [bit_string_crossover](#docs/api/ga/bit_string_crossover.md)
     - [bit_string_generator](#docs/api/ga/bit_string_generator.md)
     - [bit_string_mutation](#docs/api/ga/bit_string_mutation.md)

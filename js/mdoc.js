@@ -46,7 +46,7 @@ function show_error(error_file) {
 
 function replace_symbols(text) {
     // replace symbols with underscore
-    return text.replace(/[&\/\\#,+=()$~%.'":*?<>{}]/g, "_");
+    return text.replace(/[&\/\\#,+=()$~%.'":*?<>{}\ ]/g, "_");
 }
 
 function li_create_linkage(li_tag, header_level) {

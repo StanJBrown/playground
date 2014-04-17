@@ -101,7 +101,7 @@ function router() {
 
     // default page if hash is empty
     if (path === "") {
-        path = "/README";
+        path = "README";
     }
 
     // otherwise get the markdown and render it
@@ -109,4 +109,6 @@ function router() {
         $("#content").html(marked(data));
         create_page_anchors();
     }).fail(show_error);
+
+    $(window).on('hashchange', router);
 }

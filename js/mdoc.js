@@ -90,6 +90,7 @@ function show_error(error_file) {
 
 function show_loading() {
     $("#loading").show();
+    $("#content").html("");  // clear content
 
     // infinite loop until clearInterval() is called on loading
     var loading = setInterval(function() {

@@ -88,6 +88,18 @@ function show_error(error_file) {
     });
 }
 
+function show_loading() {
+    $("#loading").show();
+
+    // infinite loop until clearInterval() is called on loading
+    var loading = setInterval(function() {
+        $("#loading").fadeIn(1000).fadeOut(1000);
+        console.log("running!");
+    }, 2000);
+
+    return loading;
+}
+
 function router() {
     var path = location.hash.replace("#", "./");
 
@@ -101,8 +113,14 @@ function router() {
     }
 
     // otherwise get the markdown and render it
+    var loading = show_loading();  // show loading icon
     $.get(path , function(data) {
         $("#content").html(marked(data));
         create_page_anchors();
-    }).fail(show_error);
+    }).fail(function() {
+        show_error();
+    }).always(function() {
+        clearInterval(loading);
+        $("#loading").hide();
+    });
 }

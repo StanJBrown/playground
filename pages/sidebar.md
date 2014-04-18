@@ -11,12 +11,12 @@
 
 
 ## API
-- [benchmark](#docs/api/benchmark)
+- [benchmark](#docs/api/benchmark/benchmark)
     - [analyzer](#docs/api/benchmark/analyzer)
     - [log_analyzer](#docs/api/benchmark/log_analyzer)
     - [symreg_benchmark](#docs/api/benchmark/symreg_benchmark)
     - [symreg_test_funcs](#docs/api/benchmark/symreg_test_funcs)
-- [climbing](#docs/api/climbing)
+- [climbing](#docs/api/climbing/climbing)
     - [climbers](#docs/api/climbing/climbers)
 - [ga](#docs/api/ga)
     - [bit_string](#docs/api/ga/bit_string)

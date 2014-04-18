@@ -27,7 +27,6 @@
     <!-- Mdoc -->
     <script src="./js/mdoc.js"></script>
 
-
     <!-- CSS -->
     <style>
         body {
@@ -250,6 +249,17 @@
             cursor: pointer;
         }
 
+        #loading {
+            display: block;
+            position: fixed;
+
+            height: 17px;
+            width: 70px;
+            top: 45%;
+
+            margin-left: 560px;
+        }
+
         .clear {
             clear: both;
 
@@ -264,6 +274,7 @@
         <div id="content"></div>
         <div id="back_to_top">back to top</div>
         <div id="edit">edit</div>
+        <div id="loading">Loading ...</div>
         <div class="clear"></div>
     </div>
     <script>

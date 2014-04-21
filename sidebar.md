@@ -4,6 +4,8 @@
 
 - [Github Repository](http://github.com/chutsu/playground/)
 
+[ditto:searchbar]
+
 
 ## Examples
 - Genetic Programming

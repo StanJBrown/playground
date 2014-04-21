@@ -14,22 +14,22 @@ from paramiko import SSHException
 
 
 def send_cmd(node, cmd, credentials):
-    ssh = paramiko.SSHClient()
-    ssh.load_system_host_keys()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-    private_key_path = os.path.expanduser("~/.ssh/id_rsa")
-    private_key = None
-    if os.path.isfile(private_key_path):
-        private_key = paramiko.RSAKey.from_private_key_file(private_key_path)
-
     try:
+        ssh = paramiko.SSHClient()
+        ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        priv_key_path = os.path.expanduser("~/.ssh/id_rsa")
+        priv_key = None
+        if os.path.isfile(priv_key_path):
+            priv_key = paramiko.RSAKey.from_private_key_file(priv_key_path)
+
         ssh.connect(
             node,
             username=credentials.get("username", None),
             password=credentials.get("password", None),
             timeout=credentials.get("timeout", 2.0),
-            pkey=private_key
+            pkey=priv_key
         )
 
         stdin, stdout, stderr = ssh.exec_command(cmd)

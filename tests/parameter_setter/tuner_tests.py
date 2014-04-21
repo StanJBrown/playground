@@ -53,7 +53,7 @@ class TunerTests(unittest.TestCase):
         result = tuner._record_fp(details, 0, "test_file.dat")
 
         # assert
-        self.assertEquals(result, "test_file/seed_0/100-0.8-0.7.dat")
+        self.assertEquals(result, "test_file/seed_0/pop_100/0.8-0.7.dat")
 
     def test_set_record_file(self):
         details = {

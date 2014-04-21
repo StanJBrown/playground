@@ -206,8 +206,8 @@ class AnalzyerTests(unittest.TestCase):
 
     def test_summarize_data_max_level(self):
         # test data
-        test_dir = "./analyzer_test_data/arabas_et_al-f1/seed_0/"
-        test_data = "100-0.8-0.8.zip"
+        test_dir = "./analyzer_test_data/arabas_et_al-f1/seed_0/pop_100/"
+        test_data = "0.8-0.8.zip"
         test_fp = os.path.join(test_dir, test_data)
         test_fp = os.path.normpath(test_fp)
 
@@ -230,11 +230,11 @@ class AnalzyerTests(unittest.TestCase):
 
     def test_plot_summary(self):
         # tes data
-        test_dir = "./analyzer_test_data/arabas_et_al-f1/seed_0/"
-        test_data_1 = "100-0.8-0.8.zip"
+        test_dir = "./analyzer_test_data/arabas_et_al-f1/seed_0/pop_100/"
+        test_data_1 = "0.8-0.8.zip"
         test_1_fp = os.path.join(test_dir, test_data_1)
 
-        test_data_2 = "100-0.8-0.7.zip"
+        test_data_2 = "0.8-0.7.zip"
         test_2_fp = os.path.join(test_dir, test_data_2)
 
         # summarize data

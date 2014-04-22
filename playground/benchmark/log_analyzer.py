@@ -87,7 +87,7 @@ def plot_matrix(log_jsons, **kwargs):
         linestyle="none",
         marker='o',
         color="#75B4FF",
-        figsize=(12, 12)
+        figsize=(15, 15)
     )
 
     if kwargs.get("show_plot", False):

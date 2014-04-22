@@ -12,7 +12,7 @@ setup(
     data_files=[
         (
             'examples/symbolic_regression',
-            ['examples/symbolic_regression/config.json'],
+            ['examples/symbolic_regression/sine_config.json'],
 
             'examples/symbolic_regression/training_data',
             ['examples/symbolic_regression/training_data/sine.dat'],

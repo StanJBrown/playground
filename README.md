@@ -7,6 +7,8 @@ Currently features:
 
 - Hill Climbing
 - Genetic Programming
+    - Tree
+    - Cartesian (In Development)
 - Genetic Algorithm
 - Particle Swarm Optimization
 

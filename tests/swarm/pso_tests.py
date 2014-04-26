@@ -273,8 +273,8 @@ class PSOTest(unittest.TestCase):
 
     def test_pso_search(self):
         result = pso_search(self.population, self.config)
-        self.assertTrue(result[0][0] < 0.1)
-        self.assertTrue(result[0][1] < 0.1)
+        self.assertTrue(result[0][0] < 1.0)
+        self.assertTrue(result[0][1] < 1.0)
         self.assertTrue(result[1] < 1.0)
 
 

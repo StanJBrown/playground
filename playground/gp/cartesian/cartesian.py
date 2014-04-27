@@ -32,17 +32,17 @@ class Cartesian(object):
             "score": self.score,
 
             "rows": self.rows,
-            "columns": self.cols,
+            "columns": self.columns,
             "levels_back": self.levels_back,
 
             "func_nodes_len": len(self.func_nodes),
             "input_nodes_len": len(self.input_nodes),
             "output_nodes_len": len(self.output_nodes),
 
-            "func_nodes": str(self.func_nodes),
-            "input_nodes": str(self.input_nodes),
-            "output_nodes": str(self.output_nodes),
+            "func_nodes": self.func_nodes,
+            "input_nodes": self.input_nodes,
+            "output_nodes": self.output_nodes,
 
-            "program": str(self.program())
+            "program": self.program()
         }
         return self_dict

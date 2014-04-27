@@ -16,3 +16,9 @@ class Cartesian(object):
         self.input_nodes = kwargs["input_nodes"]
         self.output_nodes = kwargs["output_nodes"]
         self.graph = self.input_nodes + self.func_nodes
+
+    def total_genes(self):
+        total_genes = len([gene for node in self.func_nodes for gene in node])
+        total_genes += len(self.input_nodes)
+
+        return total_genes

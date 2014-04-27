@@ -1,20 +1,5 @@
 #!/usr/bin/env python
 import playground.gp.functions as functions
-# Ln - Maximum nodes in a graph
-# Ln = n_c * n_r
-# L_g - Total number of genes in the genotype
-#
-# n_u - Number of nodes used/active
-# n_i - Number of program inputs
-# n_o - Number of program outputs
-# O_i - Number of output genes
-# f_i - Function integer addresses
-# C_ij - Connection genes C_ij
-#
-# G[L_g] - Genotype array
-#
-#
-# M = L_n + n_i
 
 
 class CartesianEvaluator(object):

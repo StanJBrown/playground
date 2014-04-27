@@ -101,7 +101,7 @@ class CartesianMutation(object):
 
         # mutate output node
         else:
-            # convert index to output node index
+            # convert index to output node index and mutate
             node_index = index - (len(cartesian.func_nodes) - 1)
             new_addr = self.mutate_output_node(node_index, cartesian)
             result = {
@@ -117,7 +117,7 @@ class CartesianMutation(object):
             self.mutated = True
             self.index = result
 
-    def mutate(self, tree):
+    def mutate(self, cartesian):
         mutation_methods = {
             "POINT_MUTATION": self.point_mutation
         }
@@ -131,15 +131,15 @@ class CartesianMutation(object):
         self.after_mutation = None
 
         # record before mutation
-        self.before_mutation = tree.to_dict()["program"]
+        self.before_mutation = copy.deepcopy(cartesian.program())
 
         # mutate
         if self.mutation_probability >= self.random_probability:
             mutation_func = mutation_methods[self.method]
-            mutation_func(tree)
+            mutation_func(cartesian)
 
         # record after mutation
-        self.after_mutation = tree.to_dict()["program"]
+        self.after_mutation = copy.deepcopy(cartesian.program())
 
         # record
         if self.recorder is not None:
@@ -151,6 +151,7 @@ class CartesianMutation(object):
             "mutation_probability": self.mutation_probability,
             "random_probability": self.random_probability,
             "mutated": self.mutated,
+            "index": self.index,
             "before_mutation": self.before_mutation,
             "after_mutation": self.after_mutation
         }

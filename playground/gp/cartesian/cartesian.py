@@ -22,3 +22,27 @@ class Cartesian(object):
         total_genes += len(self.input_nodes)
 
         return total_genes
+
+    def program(self):
+        return self.input_nodes + self.func_nodes + self.output_nodes
+
+    def to_dict(self):
+        self_dict = {
+            "id": id(self),
+            "score": self.score,
+
+            "rows": self.rows,
+            "columns": self.cols,
+            "levels_back": self.levels_back,
+
+            "func_nodes_len": len(self.func_nodes),
+            "input_nodes_len": len(self.input_nodes),
+            "output_nodes_len": len(self.output_nodes),
+
+            "func_nodes": str(self.func_nodes),
+            "input_nodes": str(self.input_nodes),
+            "output_nodes": str(self.output_nodes),
+
+            "program": str(self.program())
+        }
+        return self_dict

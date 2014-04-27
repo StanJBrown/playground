@@ -22,7 +22,12 @@ class CartesianMutationTests(unittest.TestCase):
                 {"type": "FUNCTION", "name": "COS", "arity": 1},
                 {"type": "FUNCTION", "name": "SIN", "arity": 1},
                 {"type": "FUNCTION", "name": "RAD", "arity": 1}
-            ]
+            ],
+
+            "mutation": {
+                "methods": ["POINT_MUTATION"],
+                "probability": 1.0
+            }
         }
         self.mutator = CartesianMutation(self.config)
 
@@ -134,6 +139,27 @@ class CartesianMutationTests(unittest.TestCase):
                 num_outputs = len(self.cartesian.output_nodes)
                 self.assertNotEquals(output_before, output_after)
                 self.assertTrue(index >= 0 and index <= num_outputs - 1)
+
+    def test_to_dict(self):
+        for i in range(100):
+            # print "PROGRAM:", self.cartesian.program()
+            self.mutator.mutate(self.cartesian)
+            # print "PROGRAM:", self.cartesian.program()
+
+            # import pprint
+            # pprint.pprint(self.mutator.to_dict())
+
+            mut_dict = self.mutator.to_dict()
+            before_mut = mut_dict["before_mutation"]
+            after_mut = mut_dict["after_mutation"]
+
+            self.assertNotEquals(before_mut, after_mut)
+            self.assertIsNotNone(mut_dict["method"])
+            self.assertIsNotNone(mut_dict["mutation_probability"])
+            self.assertIsNotNone(mut_dict["random_probability"])
+            self.assertIsNotNone(mut_dict["mutated"])
+            self.assertIsNotNone(mut_dict["before_mutation"])
+            self.assertIsNotNone(mut_dict["after_mutation"])
 
 
 if __name__ == "__main__":

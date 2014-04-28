@@ -53,7 +53,7 @@ class CartesianMutationTests(unittest.TestCase):
         self.output_nodes = [4, 9, 12, 13]
         self.cartesian = Cartesian(
             rows=1,
-            cols=14,
+            columns=14,
             levels_back=0,
             func_nodes=self.chromosome,
             input_nodes=self.data,

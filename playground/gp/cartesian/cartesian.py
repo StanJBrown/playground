@@ -25,6 +25,9 @@ class Cartesian(object):
     def program(self):
         return self.input_nodes + self.func_nodes + self.output_nodes
 
+    def graph(self):
+        return self.input_nodes + self.func_nodes
+
     def to_dict(self):
         self_dict = {
             "id": id(self),

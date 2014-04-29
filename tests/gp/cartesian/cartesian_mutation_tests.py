@@ -14,6 +14,15 @@ class CartesianMutationTests(unittest.TestCase):
     def setUp(self):
         # config and mutation
         self.config = {
+            "cartesian": {
+                "rows": 4,
+                "columns": 4,
+                "levels_back": 2,
+
+                "num_inputs": 4,
+                "num_outputs": 4
+            },
+
             "function_nodes": [
                 {"type": "FUNCTION", "name": "ADD", "arity": 2},
                 {"type": "FUNCTION", "name": "SUB", "arity": 2},
@@ -60,43 +69,22 @@ class CartesianMutationTests(unittest.TestCase):
             output_nodes=self.output_nodes
         )
 
-    def test_generate_random_gene(self):
-        # test function gene
-        num_functions = len(self.config["function_nodes"])
-        for i in range(100):
-            old = random.randint(0,  num_functions - 1)
-            res = self.mutator.gen_random_gene("FUNC", old, self.cartesian)
-
-            # asserts
-            self.assertTrue(res != old)
-            self.assertTrue(res >= 0 and res <= num_functions - 1)
-
-        # test connection gene
-        num_nodes = len(self.cartesian.graph)
-        for i in range(100):
-            old = random.randint(0, num_nodes - 1)
-            res = self.mutator.gen_random_gene("CONN", old, self.cartesian)
-
-            # asserts
-            self.assertTrue(res != old)
-            self.assertTrue(res >= 0 and res <= num_nodes - 1)
-
     def test_mutate_function_node(self):
         num_input_nodes = len(self.cartesian.input_nodes)
-        num_nodes = len(self.cartesian.graph)
+        num_nodes = len(self.cartesian.graph())
 
         for i in range(100):
             n_addr = random.randint(num_input_nodes, num_nodes - 1)
 
             # before
-            graph_before = copy.deepcopy(self.cartesian.graph)
+            graph_before = copy.deepcopy(self.cartesian.graph())
             # print "BEFORE:", self.cartesian.graph
 
             # mutate
             g_index = self.mutator.mutate_function_node(n_addr, self.cartesian)
 
             # after
-            graph_after = copy.deepcopy(self.cartesian.graph)
+            graph_after = copy.deepcopy(self.cartesian.graph())
             # print "AFTER:", self.cartesian.graph
 
             gene_before = graph_before[n_addr][g_index]

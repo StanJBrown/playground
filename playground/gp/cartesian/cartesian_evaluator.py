@@ -5,8 +5,6 @@ import playground.gp.functions as functions
 class CartesianEvaluator(object):
     def __init__(self):
         self.genotype_table = []
-        self.prog_inputs = 4
-        self.prog_outputs = 4
 
         self.lookup_table = {}
         self.lookup_table[0] = functions.add_function
@@ -34,8 +32,8 @@ class CartesianEvaluator(object):
         return node_output
 
     def traverse_backwards(self, cartesian, node_index, output, visited):
-        if node_index >= self.prog_inputs:
-            node = cartesian.graph[node_index]
+        if node_index >= len(cartesian.input_nodes):
+            node = cartesian.graph()[node_index]
 
             # check arity
             conn_genes = node[1:]

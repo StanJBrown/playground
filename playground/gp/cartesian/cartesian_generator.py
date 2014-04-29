@@ -92,7 +92,6 @@ class CartesianGenerator(object):
 
     def gen_random_func_gene(self):
         gene = randint(0, len(self.config["function_nodes"]) - 1)
-
         return gene
 
     def gen_random_func_node(self, node_addr):

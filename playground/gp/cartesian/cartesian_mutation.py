@@ -22,6 +22,36 @@ class CartesianMutation(object):
         self.before_mutation = None
         self.after_mutation = None
 
+    def mutate_new_func_gene(self, old_gene):
+        retry = 0
+        retry_limit = 10
+        new_gene = old_gene
+
+        while new_gene == old_gene and retry < retry_limit:
+            new_gene = self.generator.gen_random_func_gene()
+            retry += 1
+
+        if new_gene == old_gene:
+            err = "Error! Failed to mutate new function gene!"
+            raise RuntimeError(err)
+        else:
+            return new_gene
+
+    def mutate_new_conn_gene(self, old_gene, node_addr):
+        retry = 0
+        retry_limit = 10
+        new_gene = old_gene
+
+        while new_gene == old_gene and retry < retry_limit:
+            new_gene = self.generator.gen_random_conn_gene(node_addr)
+            retry += 1
+
+        if new_gene == old_gene:
+            err = "Error! Failed to mutate new function gene!"
+            raise RuntimeError(err)
+        else:
+            return new_gene
+
     def mutate_function_node(self, node_addr, cartesian):
         # pick random function gene
         node = cartesian.graph()[node_addr]
@@ -31,19 +61,16 @@ class CartesianMutation(object):
         # mutate function gene
         if gene_index == 0:
             old_gene = node[gene_index]
-            new_gene = self.generator.gen_new_random_gene("FUNC", old_gene)
+            new_gene = self.mutate_new_func_gene(old_gene)
 
         # mutate connection gene
         else:
             old_gene = node[gene_index]
-            new_gene = self.generator.gen_new_random_gene("CONN", old_gene)
+            new_gene = self.mutate_new_conn_gene(old_gene, node_addr)
 
         # return
-        if new_gene is not None:
-            cartesian.graph()[node_addr][gene_index] = new_gene
-            return gene_index
-        else:
-            return None
+        cartesian.graph()[node_addr][gene_index] = new_gene
+        return gene_index
 
     def mutate_output_node(self, node_index, cartesian):
         retry = 0

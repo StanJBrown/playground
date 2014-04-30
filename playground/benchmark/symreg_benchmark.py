@@ -73,6 +73,7 @@ def gp_benchmark_loop(config):
 
         # log on completion
         if config.get("log_path", False):
+            config.pop("data")
             msg = {
                 "timestamp": time.mktime(datetime.now().timetuple()),
                 "status": "DONE",

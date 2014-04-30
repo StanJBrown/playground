@@ -58,6 +58,7 @@ def load_data(config, abs_dir=None):
     # open data and csv reader
     if abs_dir:
         config["data_file"] = os.path.join(abs_dir, config["data_file"])
+        config["data_file"] = os.path.normpath(config["data_file"])
 
     data_file = open(config["data_file"], "rb")
     csv_reader = csv.reader(data_file)

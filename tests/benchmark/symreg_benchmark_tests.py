@@ -2,6 +2,8 @@
 import os
 import sys
 import math
+import copy
+import json
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
@@ -49,96 +51,33 @@ class SymRegBenchmarkTests(unittest.TestCase):
             },
 
             "function_nodes": [
-                {
-                    "type": "FUNCTION",
-                    "name": "ADD",
-                    "arity": 2
-                },
-                {
-                    "type": "FUNCTION",
-                    "name": "SUB",
-                    "arity": 2
-                },
-                {
-                    "type": "FUNCTION",
-                    "name": "MUL",
-                    "arity": 2
-                },
-                {
-                    "type": "FUNCTION",
-                    "name": "DIV",
-                    "arity": 2
-                },
-                {
-                    "type": "FUNCTION",
-                    "name": "COS",
-                    "arity": 1
-                },
-                {
-                    "type": "FUNCTION",
-                    "name": "SIN",
-                    "arity": 1
-                }
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "COS", "arity": 1},
+                {"type": "FUNCTION", "name": "SIN", "arity": 1}
             ],
 
             "terminal_nodes": [
-                {
-                    "type": "TERM",
-                    "value": 1.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 2.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 2.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 3.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 4.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 5.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 6.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 7.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 8.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 9.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 10.0
-                },
-                {
-                    "type": "TERM",
-                    "value": math.pi
-                }
+                {"type": "TERM", "value": 1.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 3.0},
+                {"type": "TERM", "value": 4.0},
+                {"type": "TERM", "value": 5.0},
+                {"type": "TERM", "value": 6.0},
+                {"type": "TERM", "value": 7.0},
+                {"type": "TERM", "value": 8.0},
+                {"type": "TERM", "value": 9.0},
+                {"type": "TERM", "value": 10.0},
+                {"type": "TERM", "value": math.pi}
             ],
 
             "data_file": "../data/sine.dat",
 
             "input_variables": [
-                {
-                    "type": "INPUT",
-                    "name": "var1"
-                }
+                {"type": "INPUT", "name": "var1"}
             ],
 
             "response_variable": {
@@ -166,12 +105,21 @@ class SymRegBenchmarkTests(unittest.TestCase):
 
     def test_gp_benchmark_loop(self):
         # pass test
+        config_before = copy.deepcopy(self.config)
         result = gp_benchmark_loop(self.config)
-        self.assertEquals(self.config, result)
+        self.assertIsNotNone(result)
+
+        # make sure the data field is removed from benchmark log
+        log_file = json.loads(open(self.config["log_path"], "r").read())
+        self.assertFalse("data" in log_file)
+
+        # import pprint
+        # pprint.pprint(log_file)
 
         # fail test
-        self.config.pop("random_seed")
-        self.assertRaises(Exception, gp_benchmark_loop, self.config)
+        result["data_file"] = config_before["data_file"]
+        result.pop("random_seed")
+        self.assertRaises(Exception, gp_benchmark_loop, result)
 
 
 if __name__ == "__main__":

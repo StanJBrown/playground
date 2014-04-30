@@ -78,6 +78,11 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
     config_sets = [details[var]["range"] for var in config_vars]
     config_matrix = list(itertools.product(*config_sets))
 
+    # pre-check
+    if details["iterations"] != len(details["random_seeds"]):
+        err = "Number of iterations do no match number of random seeds!"
+        raise RuntimeError(err)
+
     # build run parmaters
     params = []
     for data_file in details["training_data"]:

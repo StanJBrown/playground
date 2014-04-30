@@ -140,6 +140,15 @@ class TunerTests(unittest.TestCase):
         }
         tuner.brute_parameter_sweep(test_parameters, gp_benchmark_loop)
 
+        # test exception
+        test_parameters["random_seeds"] = range(0)
+        self.assertRaises(
+            RuntimeError,
+            tuner.brute_parameter_sweep,
+            test_parameters,
+            gp_benchmark_loop
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

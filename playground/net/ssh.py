@@ -206,6 +206,9 @@ def parse_netadaptor_details(ifconfig_dump):
             if "ether" in line:
                 netadaptor["mac_addr"] = line[1]
 
+            if "HWaddr" in line:
+                netadaptor["mac_addr"] = line[-1]
+
     # add last net adaptor
     interfaces.append(netadaptor)
 

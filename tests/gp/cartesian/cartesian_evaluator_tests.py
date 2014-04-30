@@ -8,7 +8,7 @@ from playground.gp.cartesian.cartesian import Cartesian
 from playground.gp.cartesian.cartesian_evaluator import CartesianEvaluator
 
 
-class CartesianDecoderTests(unittest.TestCase):
+class CartesianEvaluatorTests(unittest.TestCase):
     def setUp(self):
         self.config = {
             "cartesian": {
@@ -21,16 +21,25 @@ class CartesianDecoderTests(unittest.TestCase):
             },
 
             "input_variables": [
-                {"name": "x"}
+                {"name": "a"},
+                {"name": "b"},
+                {"name": "c"},
+                {"name": "d"}
             ],
 
             "response_variables": [
                 {"name": "y"}
-            ]
+            ],
+
+            "data": {
+                "a": [1, 2, 3, 4],
+                "b": [1, 2, 3, 4],
+                "c": [1, 2, 3, 4],
+                "d": [1, 2, 3, 4]
+            }
         }
 
-        self.input_nodes = []
-
+        self.input_nodes = ["a", "b", "c", "d"]
         self.func_nodes = [
             [0, 0, 2],
             [0, 0, 3],
@@ -50,10 +59,10 @@ class CartesianDecoderTests(unittest.TestCase):
             columns=14,
             levels_back=0,
             func_nodes=self.func_nodes,
-            input_nodes=self.data,
+            input_nodes=self.input_nodes,
             output_nodes=self.output_nodes
         )
-        self.evaluator = CartesianEvaluator()
+        self.evaluator = CartesianEvaluator(self.config)
 
     def tearDown(self):
         pass

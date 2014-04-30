@@ -3,12 +3,12 @@
 - Run Racing algorithm benchmark
 
 
-- Remove data key from config when benchmarking
 - Check all arabas test data
 - Run param sweep on f1 - f4
 
 # Done
 - Manually feed random seed
+- Remove data key from config when benchmarking
 
 
 # TODO Documentation

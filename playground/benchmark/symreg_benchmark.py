@@ -89,7 +89,6 @@ def gp_benchmark_loop(config):
     except Exception as err_msg:
         import traceback
         traceback.print_exc()
-        print err_msg
 
         # log exception
         if config.get("log_path", False):

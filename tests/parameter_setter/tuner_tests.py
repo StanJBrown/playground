@@ -125,7 +125,8 @@ class TunerTests(unittest.TestCase):
 
         test_parameters = {
             "play_config": config,
-            "iterations": 1,
+            "random_seeds": [10, 20],
+            "iterations": 2,
             "processes": 1,
 
             "population_size": {"range": [100]},
@@ -137,7 +138,6 @@ class TunerTests(unittest.TestCase):
             "record_dir": "/tmp/unittest",
             "log_path": "/tmp/unittest/benchmark.log"
         }
-
         tuner.brute_parameter_sweep(test_parameters, gp_benchmark_loop)
 
 

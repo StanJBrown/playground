@@ -2,6 +2,11 @@
 - Implement Racing Algorithm
 - Run Racing algorithm benchmark
 
+- Remove data key from config when benchmarking
+- Manually feed random seed
+- Check all arabas test data
+- Run param sweep on f1 - f4
+
 
 # TODO Documentation
 - Examples

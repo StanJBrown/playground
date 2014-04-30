@@ -139,29 +139,6 @@ class CartesianGeneratorTests(unittest.TestCase):
             result = self.generator.gen_random_func_gene()
             self.assertTrue(result >= 0, result <= num_funcs - 1)
 
-    # def test_gen_new_random_gene(self):
-    #     # test function gene
-    #     num_functions = len(self.config["function_nodes"])
-    #     for i in range(100):
-    #         old = random.randint(0,  num_functions - 1)
-    #         res = self.generator.gen_new_random_gene("FUNC", old, 7)
-
-    #         # asserts
-    #         self.assertTrue(res != old)
-    #         self.assertTrue(res >= 0 and res <= num_functions - 1)
-
-    #     # test connection gene
-    #     rows = self.config["cartesian"]["rows"]
-    #     columns = self.config["cartesian"]["columns"]
-    #     max_addr = (rows * columns) - 1
-    #     for i in range(100):
-    #         old = random.randint(0, max_addr)
-    #         res = self.generator.gen_new_random_gene("CONN", old, 7)
-
-    #         # asserts
-    #         self.assertTrue(res != old)
-    #         self.assertTrue(res >= 0 and res <= max_addr)
-
     def test_gen_random_func_node(self):
         for i in range(100):
             node_addr = 7
@@ -199,8 +176,8 @@ class CartesianGeneratorTests(unittest.TestCase):
         cartesian = self.generator.generate_new_cartesian()
         cart_dict = cartesian.to_dict()
 
-        import pprint
-        pprint.pprint(cartesian.to_dict())
+        # import pprint
+        # pprint.pprint(cartesian.to_dict())
 
         # asserts
         rows = self.config["cartesian"]["rows"]

@@ -81,9 +81,11 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
     # build run parmaters
     params = []
     for data_file in details["training_data"]:
-        for seed in range(details["iterations"]):
+        for i in range(details["iterations"]):
             for config in config_matrix:
                 # build parameters
+                seed = details["random_seeds"][i]
+
                 param = _build_parameters(
                     seed,
                     details["play_config"],

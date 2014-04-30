@@ -10,14 +10,28 @@ from playground.gp.cartesian.cartesian_evaluator import CartesianEvaluator
 
 class CartesianDecoderTests(unittest.TestCase):
     def setUp(self):
-        self.data = [
-            [1, 2, 3, 4],
-            [5, 6, 7, 8],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16]
-        ]
+        self.config = {
+            "cartesian": {
+                "rows": 4,
+                "columns": 4,
+                "levels_back": 2,
 
-        self.chromosome = [
+                "num_inputs": 4,
+                "num_outputs": 4
+            },
+
+            "input_variables": [
+                {"name": "x"}
+            ],
+
+            "response_variables": [
+                {"name": "y"}
+            ]
+        }
+
+        self.input_nodes = []
+
+        self.func_nodes = [
             [0, 0, 2],
             [0, 0, 3],
             [3, 4, 5],
@@ -30,15 +44,15 @@ class CartesianDecoderTests(unittest.TestCase):
             [0, 11, 8]
         ]
         self.output_nodes = [4, 9, 12, 13]
+
         self.cartesian = Cartesian(
             rows=1,
             columns=14,
             levels_back=0,
-            func_nodes=self.chromosome,
+            func_nodes=self.func_nodes,
             input_nodes=self.data,
             output_nodes=self.output_nodes
         )
-
         self.evaluator = CartesianEvaluator()
 
     def tearDown(self):

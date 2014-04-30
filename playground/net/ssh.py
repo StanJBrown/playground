@@ -182,23 +182,37 @@ def deploy_public_key(nodes, pubkey_path, credentials):
 
 
 def parse_netadaptor_details(ifconfig_dump):
-    ip = None
-    mac_addr = None
-    net_adaptor = None
-    ifconfig_dump = ifconfig_dump.split()
+    interfaces = []
 
-    # find inet and ether keywords and scrape the details
-    for i in range(len(ifconfig_dump)):
-        if ifconfig_dump[i] == "en0:":
-            net_adaptor = "en0"
+    # parse ifconfig dump line by line
+    netadaptor = {}
+    for line in ifconfig_dump.split('\n'):
+        # parsing net adaptor entry
+        if len(line) > 0 and line[0] != " ":
+            if len(netadaptor):
+                interfaces.append(netadaptor)
+                netadaptor = {}
 
-        if ifconfig_dump[i] == "ether" and net_adaptor == "en0":
-            mac_addr = ifconfig_dump[i + 1]
-        elif ifconfig_dump[i] == "inet" and net_adaptor == "en0":
-            ip = ifconfig_dump[i + 1]
-            break
+            adaptor = line.split(" ")[0]
+            adaptor = adaptor.replace(":", "")
+            netadaptor["interface"] = adaptor
 
-    return {"mac_addr": mac_addr, "ip": ip}
+        # line ip or mac address
+        else:
+            line = line.split()
+            if "inet" in line:
+                netadaptor["ip"] = line[1]
+
+            if "ether" in line:
+                netadaptor["mac_addr"] = line[1]
+
+    # add last net adaptor
+    interfaces.append(netadaptor)
+
+    # drop "lo" interface
+    interfaces = [i for i in interfaces if i["interface"] != "lo"]
+
+    return interfaces
 
 
 def get_netadaptor_details(nodes, credentials):
@@ -212,7 +226,7 @@ def get_netadaptor_details(nodes, credentials):
     for result in results:
         node = result["node"]
         ifconfig_dump = result["output"]["stdout"]
-        details = parse_netadaptor_details(ifconfig_dump)
+        details = parse_netadaptor_details(ifconfig_dump)[0]
 
         node_net_details.append(
             {

@@ -3,8 +3,8 @@ import playground.gp.functions as functions
 
 
 class CartesianEvaluator(object):
-    def __init__(self):
-        self.genotype_table = []
+    def __init__(self, config):
+        self.config = config
 
         self.lookup_table = {}
         self.lookup_table[0] = functions.add_function
@@ -18,13 +18,31 @@ class CartesianEvaluator(object):
     def eval_node(self, node, conn_genes, data):
         arity = len(node[1:])
         function = self.lookup_table[node[0]]
+        num_inputs = self.config["cartesian"]["num_inputs"]
+        rows = self.config["cartesian"]["rows"]
+        columns = self.config["cartesian"]["columns"]
+        max_addr = (rows * columns) + num_inputs - 1
 
         # prep input data
         node_input = []
         for i in range(arity):
-            node_input.append(data[conn_genes[i]])
+            node_addr = conn_genes[i]
 
-        # evaluate
+            # node is input
+            if node_addr < num_inputs and node_addr >= 0:
+                input_var = self.config["input_variables"][node_addr]["name"]
+                node_input.append(self.config["data"][input_var])
+
+            # node is function
+            elif node_addr >= num_inputs:
+                node_input.append(data[node_addr])
+
+            # invalid node
+            elif node_addr > max_addr:
+                err = "Invalid node address [{0}]!".format(node_addr)
+                raise RuntimeError(err)
+
+        # evaluate node
         node_output = []
         for data_row in zip(*node_input):
             node_output.append(function(*data_row))

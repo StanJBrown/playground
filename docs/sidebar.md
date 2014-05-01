@@ -55,7 +55,7 @@
 
 
 <div style="margin-top: 30%"></div>
-Docs Powered by [mdoc](https://chutsu.github.io/mdoc)
+Docs Powered by [ditto](https://chutsu.github.io/ditto)
 
 [1]: https://travis-ci.org/chutsu/playground
 [2]: https://coveralls.io/r/chutsu/playground

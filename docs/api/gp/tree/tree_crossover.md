@@ -3,11 +3,11 @@
 Programming process. It can currently perform the following crossover methods
 on a Tree.
 
-    - One point crossover
+- One point crossover
 
 
-    Class:
-        - GPTreeCrossover
+**Module contents**:
+- GPTreeCrossover
 
 
 

@@ -11,14 +11,11 @@ structure. (See image below for an example)
 ![A tree representing a mathematical equation](images/gp_tree.png)
 
 Playground current supports the current GP genetic operators:
-
 - Selection
     - Roulette wheel selection
     - Tournament selection
-
 - Crossover
     - One point crossover
-
 - Mutation
     - Point mutation
     - Hoist mutation
@@ -26,10 +23,9 @@ Playground current supports the current GP genetic operators:
     - Shrink mutation
     - Expand mutation
 
-
 # Example
 
-- [Symbolic Regression (aka Curve Fitting)](../examples/gp-symbolic_regression.md)
+- [Symbolic Regression](../examples/gp-symbolic_regression.md)
 
 
 

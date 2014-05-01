@@ -1,5 +1,5 @@
-# mutation
-`mutation` contains mutation operators that form part of the Genetic
+# playground.gp.tree_mutation
+This module contains mutation operators that form part of the Genetic
 Programming process. It can currently perform the following mutation methods
 on a Tree.
 

@@ -1,3 +1,10 @@
+# playground.gp.tree_parser
+This module contains tree parsing methods.
+
+**Module contents**:
+- TreeParser(object)
+
+
 ## TreeParser(object)
 `TreeParser` is responsible for tree parsing operations.
 

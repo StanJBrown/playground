@@ -1,0 +1,87 @@
+# TODO
+- Implement Racing Algorithm
+- Run Racing algorithm benchmark
+
+
+- Check all arabas test data
+- Run param sweep on f1 - f4
+
+# Done
+- Manually feed random seed
+- Remove data key from config when benchmarking
+
+
+# TODO Documentation
+- Examples
+    - GA
+    - GP
+    - PSO
+
+- play
+- population
+- ga
+- gp
+- operators
+- playnode
+
+
+# TODO Queue
+- Run Meta-GA benchmark
+
+- Write the tree evaluator in C as a python extension
+
+- Look at Cartesian GP
+- Look at Co-evolution and how to implement it
+
+
+# COMPLETED!
+
+- GP Initializer
+    - Tree initialization via Full method
+    - Tree initialization via Grow method
+    - Tree initialization via Ramped Half and Half
+
+- GP Evaluator
+    - Tree Evaluator
+    - Basic cache system
+
+- Crossover methods
+    - Point crossover
+    - Uniform crossover
+
+- Mutation methods
+    - Point mutation
+    - Hoist mutation
+    - Shrink Mutation
+    - Expand Mutation
+    - Subtree Replacement
+
+- Essential elements
+    - Population
+    - Reproduce loop
+    - Play loop
+
+- Extra features
+    - Symbolic maths simplifier
+    - Record convergence process:
+        - population
+            - size
+            - generation number
+            - best score
+            - best individual
+        - individuals
+            - score
+            - size
+            - depth
+            - branches
+            - tree structure in post-order format
+        - selection
+            - method
+            - selected
+        - crossover
+            - index
+            - method
+            - probability
+        - mutation
+            - method
+            - probability

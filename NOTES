@@ -1,0 +1,76 @@
+# PostgreSQL
+## Mac 10.9 Maverick
+
+    # install PostgreSQL using homebrew
+    brew install postgresql
+
+    # make a new database directory for postgresql 9.3 (change the 9.3)
+    PG_DATA_DIR = /usr/local/var/postgres9.3
+    initdb $PG_DATA_DIR -E utf8
+
+    # start/stop/restart pg (it's good idea to put these in your bashrc or bash_profile)
+    PG_DATA_DIR = /usr/local/var/postgres9.3
+    PG_LOG_FILE = /usr/local/var/postgres9.3/server.log
+    pg_ctl -D  $PG_DATA_DIR -l $PG_LOG_FILE start
+    pg_ctl -D  $PG_DATA_DIR -l $PG_LOG_FILE stop
+    pg_ctl -D  $PG_DATA_DIR -l $PG_LOG_FILE restart
+
+    # create pg user
+    createuser playground_user
+
+    # create pg database under playground_user
+    createdb playground_user playground
+
+    # drop pg database
+    dropdb playground
+
+
+# PRE-POPULATION
+y = {0 - 10} + {0 - 10} * x
+y = {0 - 10} + {0 - 10} * x * LN(x)
+y = {0 - 10} + {0 - 10} * POW(x, 1.5)
+y = {0 - 10} + {0 - 10} * POW(x, 2.0)
+y = {0 - 10} + {0 - 10} * POW(x, 2.0) * LN(x)
+y = {0 - 10} + {0 - 10} * POW(x, 2.5)
+y = {0 - 10} + {0 - 10} * POW(x, 3.0)
+y = {0 - 10} + {0 - 10} * EXP(x)
+y = {0 - 10} + {0 - 10} * POW(x, 0.5) * LN(x)
+y = {0 - 10} + {0 - 10} * POW(LN(x), 2)
+y = {0 - 10} + {0 - 10} * x / LN(X)
+y = {0 - 10} + {0 - 10} * POW(x, 0.5)
+y = {0 - 10} + {0 - 10} * LN(x) / x
+y = {0 - 10} + {0 - 10} / x
+y = {0 - 10} + {0 - 10} / POW(x, 1.5)
+y = {0 - 10} + {0 - 10} * LN(x) / POW(x, 2)
+y = {0 - 10} + {0 - 10} / POW(x, 2)
+y = {0 - 10} + {0 - 10} * EXP(-x)
+
+
+# Hypothesis
+Symbolic regression is harder than literature wants to admit. Koza claims to be
+able to solve most symbolic regression problems with:
+
+- point crossover
+- subtree mutation (but he prefers not to use it)
+
+But there are limitations to both which could cause the GP system to converge to
+a local minimal. Starting with the point crossover, Koza's point crossover operates
+by randomly selecting a crossover point from the two parents and switching the
+subtress with one another. The selected crossover point does not have to be the same.
+While this does indeed increase the diversity of the trees, the root of the
+tree is never modified.
+
+A Similar situation can be found with the subtree mutation, subtree mutation works
+by selecting a random node in the tree, replacing the node and its children by
+generating a random subtree. While this operation does have a chance in
+selecting the root of the tree, it is rare. Even if the root is mutated with a
+random subtree the chances of generating a useful subtree is slim, it
+survivability to the next generation is also in question.
+
+Population diversity when it is low (e.g. > ~45%) is an indication that the
+operators are inadequate in producing enought variation to combinatorially find
+a solution, and will likely not converge to anything interesting.
+
+While a combination of high population diversity, coupled with a inability to
+lower the fitness score before stale limit is reached indicates either the
+population diversity in not enough

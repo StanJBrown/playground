@@ -1,0 +1,6 @@
+sympy
+flask
+paramiko
+numpy
+scipy
+matplotlib

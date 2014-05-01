@@ -1,9 +1,14 @@
 # playground
+[![Build Status](https://travis-ci.org/chutsu/playground.png)][1]
+[![Coverage Status](https://coveralls.io/repos/chutsu/playground/badge.png)][5]
+
 Playground is an Meta-heuristic library implemented in Python.
 Currently features:
 
 - Hill Climbing
 - Genetic Programming
+    - Tree
+    - Cartesian (In Development)
 - Genetic Algorithm
 - Particle Swarm Optimization
 

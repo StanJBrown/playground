@@ -9,7 +9,6 @@ computer programs according to a fitness landscape determined by a program's
 ability to perform a given computational task.
 
 There are two implementations of GP:
-
 - **Tree based**
     - tree
     - tree_crossover
@@ -19,7 +18,6 @@ There are two implementations of GP:
     - tree_generator
     - tree_mutation
     - tree_parser
-
 - **Cartesian based**
     - cartesian
     - cartesian_evaluator

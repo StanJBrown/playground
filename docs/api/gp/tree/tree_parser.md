@@ -1,6 +1,13 @@
 ## TreeParser(object)
 `TreeParser` is responsible for tree parsing operations.
 
+**Module contents**:
+
+- print_tree(root_node)
+- post_order_traverse(node, stack=None)
+- parse_tree(tree, node, depth=None, stack=None)
+- parse_equation(node, eq_str=None)
+
 
 ### print_tree(root_node)
 Prints the tree structure in dot graph language

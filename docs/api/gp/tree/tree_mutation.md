@@ -3,15 +3,15 @@
 Programming process. It can currently perform the following mutation methods
 on a Tree.
 
-    - Point mutation
-    - Hoist mutation
-    - Subtree mutation
-    - Shrink mutation
-    - Expand mutation
+- Point mutation
+- Hoist mutation
+- Subtree mutation
+- Shrink mutation
+- Expand mutation
 
+**Module contents**:
 
-    Class:
-        - GPTreeMutation
+- GPTreeMutation(object)
 
 
 

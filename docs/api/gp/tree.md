@@ -9,15 +9,12 @@ tree data structure.
         - Tree
         - TreeNode
         - TreeNodeType
-
 - playground.gp.tree_generator
     classes:
         - TreeGenerator
-
 - playground.gp.tree_evaluation
     classes:
         - TreeEvaluator
-
 - playground.gp.tree_evaluation_2
     classes:
         - TreeEvaluator

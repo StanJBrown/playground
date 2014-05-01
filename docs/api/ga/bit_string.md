@@ -1,6 +1,6 @@
 # playground.ga.bit_string
 
-**Module contents**:
+**Classes**:
 - BitString(object)
 
 

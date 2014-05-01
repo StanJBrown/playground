@@ -1,11 +1,13 @@
 # playground.gp.tree.tree_evaluation
 This module contains methods needed to evaluate the GP tree structure.
 
-**Module contents**:
-- TreeEvaluator(object)
+**Functions**:
 - eval_node(node, stack)
 - eval_program(program, tree_size)
 - evaluate(tree)
+
+**Classes**:
+- TreeEvaluator(object)
 
 ## TreeEvaluator(object)
 `TreeEvaluator` evaluates a `Tree` object to determine its fitness score.

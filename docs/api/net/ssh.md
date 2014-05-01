@@ -4,8 +4,7 @@ host via SSH. This module can utilize multiple processes (i.e. batch mode) to
 communicate to multiple machines at the same time, greatly saving time compared to
 sending commands sequentially.
 
-Module contents:
-
+**Functions**:
 - send_cmd(node, cmd, credentials)
 - batch_send_cmd(nodes, cmd, credentials)
 - test_connection(node, credentials)

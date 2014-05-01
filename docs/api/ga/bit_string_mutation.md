@@ -1,6 +1,6 @@
 # playground.ga.bit_string_mutation
 
-**Module contents**:
+**Classes**:
 - BitStringMutation(object)
 
 

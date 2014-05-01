@@ -1,6 +1,6 @@
 # playground.benchmark.log_analyzer
 
-**Module contents**:
+**Functions**:
 - parse_log(path)
 - sort_records_by(attribute, log_jsons, reverse=False)
 - parse_general_stats(log_jsons)

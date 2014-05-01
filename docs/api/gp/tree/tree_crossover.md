@@ -5,8 +5,7 @@ on a Tree.
 
 - One point crossover
 
-
-**Module contents**:
+**Classes**:
 - GPTreeCrossover
 
 

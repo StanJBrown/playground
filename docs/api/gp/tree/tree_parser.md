@@ -1,15 +1,14 @@
 # playground.gp.tree_parser
 This module contains tree parsing methods.
 
-**Module contents**:
+**Classes**:
 - TreeParser(object)
 
 
 ## TreeParser(object)
 `TreeParser` is responsible for tree parsing operations.
 
-**Module contents**:
-
+**Methods**:
 - print_tree(root_node)
 - post_order_traverse(node, stack=None)
 - parse_tree(tree, node, depth=None, stack=None)

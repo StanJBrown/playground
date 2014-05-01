@@ -1,6 +1,6 @@
 # playground.benchmark.analyzer
 
-**Module contents**:
+**Functions**:
 - parse_data(fp)
 - summarize_population(population, summary)
 - summarize_evaluation(evaluation, summary)

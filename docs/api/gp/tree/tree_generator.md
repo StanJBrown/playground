@@ -2,8 +2,7 @@
 During the Genetic Programming search process an initial random population is
 needed, this module provides methods to produce the initial random population.
 
-**Module contents**:
-
+**Classes**:
 - TreeGenerator(object)
 
 ## TreeGenerator(object)

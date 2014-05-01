@@ -1,6 +1,6 @@
 # playground.gp.tree
 
-**Module contents**:
+**Classes**:
 - TreeNode(object)
 - Tree(object)
 

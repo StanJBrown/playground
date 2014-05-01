@@ -1,6 +1,6 @@
 # playground.ga.bit_string_crossover
 
-**Module contents**:
+**Classes**:
 - BitStringCrossover(object)
 
 

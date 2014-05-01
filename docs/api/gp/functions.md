@@ -1,22 +1,21 @@
 # playground.gp.functions
 `functions` contains function ingredients that a Genetic Programming requires.
 
-    Functions:
-        - add_function(left, right)
-        - sub_function(left, right)
-        - mul_function(left, right)
-        - div_function(left, right)
-        - pow_function(left, right)
+**Functions**:
+- add_function(left, right)
+- sub_function(left, right)
+- mul_function(left, right)
+- div_function(left, right)
+- pow_function(left, right)
+- cos_function(value)
+- sin_function(value)
+- rad_function(value)
+- ln_function(value)
+- fact_function(value)
 
-        - cos_function(value)
-        - sin_function(value)
-        - rad_function(value)
-        - ln_function(value)
-        - fact_function(value)
-
-    Class:
-        - EvaluationError
-        - GPFunctionRegistry
+**Class**:
+- EvaluationError(Exception)
+- GPFunctionRegistry(object)
 
 
 ## GPFunctionRegistry(object)

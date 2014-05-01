@@ -9,8 +9,7 @@ on a Tree.
 - Shrink mutation
 - Expand mutation
 
-**Module contents**:
-
+**Classes**:
 - GPTreeMutation(object)
 
 

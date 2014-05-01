@@ -4,7 +4,7 @@ This module contains hill climbing algorithms, current it features:
 - Hill Climbing
 - Steepest Ascent Hill Climbing
 
-**Module contents**:
+**Functions**:
 - hill_climbing(config)
 - steepest_ascent_hill_climbing(config)
 

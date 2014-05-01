@@ -197,6 +197,11 @@ def parse_netadaptor_details(ifconfig_dump):
             adaptor = adaptor.replace(":", "")
             netadaptor["interface"] = adaptor
 
+            # on some ifconfig dumps the mac address is on the same
+            # line as the network interface
+            if "HWaddr" in line.split():
+                netadaptor["mac_addr"] = line[-1]
+
         # line ip or mac address
         else:
             line = line.split()
@@ -205,9 +210,6 @@ def parse_netadaptor_details(ifconfig_dump):
 
             if "ether" in line:
                 netadaptor["mac_addr"] = line[1]
-
-            if "HWaddr" in line:
-                netadaptor["mac_addr"] = line[-1]
 
     # add last net adaptor
     interfaces.append(netadaptor)

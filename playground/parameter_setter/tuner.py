@@ -69,7 +69,7 @@ def _parallel_param_sweep(details, params, loop_func):
         pool.terminate()
 
 
-def brute_parameter_sweep(details, functions, loop_func=None, debug=False):
+def brute_parameter_sweep(details, functions, loop_func, debug=False):
     config_vars = [
         "population_size",
         "crossover_probability",

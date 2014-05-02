@@ -1,6 +1,6 @@
 # playground.symreg_benchmark
 
-**Module contains**:
+**Functions**:
 - gp_benchmark_loop(config)
 
 

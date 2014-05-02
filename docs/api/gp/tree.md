@@ -4,17 +4,17 @@ methods to do with the representation, generation, parsing and evaluation of a
 tree data structure.
 
 **Modules**:
-- playground.gp.tree
-    classes:
+- **playground.gp.tree**
+    - **classes**:
         - Tree
         - TreeNode
         - TreeNodeType
-- playground.gp.tree_generator
-    classes:
+- **playground.gp.tree_generator**
+    - **classes**:
         - TreeGenerator
-- playground.gp.tree_evaluation
-    classes:
+- **playground.gp.tree_evaluation**
+    - **classes**:
         - TreeEvaluator
-- playground.gp.tree_evaluation_2
-    classes:
+- **playground.gp.tree_evaluation_2**
+    - **classes**:
         - TreeEvaluator

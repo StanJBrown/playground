@@ -53,7 +53,7 @@ node.
             else node_type is TreeNodeType.INPUT:
                 name (str) is expected.
 
-**functions**:
+**Methods**:
 
 - has_value_node(node)
 - is_function()

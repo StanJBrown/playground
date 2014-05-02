@@ -1,6 +1,6 @@
 # playground.symreg_test_funcs
 
-**Module contains**:
+**Functions**:
 - write_test_data(fp, data)
 - generate_random_matrix(bounds, points, decimal_places=2)
 - generate_series_matrix(bounds, points, decimal_places=2)

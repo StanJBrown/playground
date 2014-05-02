@@ -13,14 +13,54 @@ from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 import playground.gp.tree.tree_evaluation as evaluator
 
-# SETTINGS
-cwd = os.path.dirname(__file__)
-config_fp = os.path.join(cwd, "../../config/evaluator.json")
-
 
 class TreeEvaluatorTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_fp)
+        self.config = {
+            "max_population": 50,
+
+            "tree_generation": {
+                "method": "FULL_METHOD",
+                "initial_max_depth": 4
+            },
+
+            "evaluator": {
+                "use_cache": True
+            },
+
+            "function_nodes": [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "COS", "arity": 1},
+                {"type": "FUNCTION", "name": "SIN", "arity": 1}
+            ],
+
+            "terminal_nodes": [
+                {"type": "TERM", "value": 1.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 3.0},
+                {"type": "TERM", "value": 4.0},
+                {"type": "TERM", "value": 5.0},
+                {"type": "TERM", "value": 6.0},
+                {"type": "TERM", "value": 7.0},
+                {"type": "TERM", "value": 8.0},
+                {"type": "TERM", "value": 9.0},
+                {"type": "TERM", "value": 10.0}
+            ],
+
+            "input_variables": [
+                {"type": "INPUT", "name": "x"}
+            ],
+
+            "data_file": "tests/data/sine.dat",
+
+            "response_variable": {"name": "y"}
+        }
+
+        config.load_data(self.config)
         self.functions = GPFunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
 

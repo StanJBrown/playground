@@ -14,20 +14,12 @@ def filter_trees(trees):
     return result
 
 
-def generate_eq_function(tree, config):
+def generate_eq_function(tree, functions, config):
     eq = str(tree)
 
     # replace function node names with python equivalents
-    eq = eq.replace("ADD", "+")
-    eq = eq.replace("SUB", "-")
-    eq = eq.replace("MUL", "*")
-    eq = eq.replace("DIV", "/")
-    eq = eq.replace("POW", "**")
-    eq = eq.replace("SIN", "math.sin")
-    eq = eq.replace("COS", "math.cos")
-    eq = eq.replace("RAD", "math.radians")
-    eq = eq.replace("LN", "math.ln")
-    eq = eq.replace("LOG", "math.log")
+    for key, val in functions.items():
+        eq = eq.replace(key, val)
 
     # prep input variables
     input_vars = []
@@ -40,8 +32,8 @@ def generate_eq_function(tree, config):
     return eval(eval_str)
 
 
-def eval_tree(tree, config):
-    eq_func = generate_eq_function(tree, config)
+def eval_tree(tree, functions, config):
+    eq_func = generate_eq_function(tree, functions, config)
     data = config["data"]
 
     response_var = config["response_variable"]["name"]
@@ -115,7 +107,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
         # use cahce?
         if use_cache:
             if str(tree) not in cache:
-                score = eval_tree(tree, config)
+                score = eval_tree(tree, functions, config)
                 nodes_evaluated += tree.size
                 trees_evaluated += 1
             else:
@@ -123,7 +115,7 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
                 match_cached += 1
 
         else:
-            score = eval_tree(tree, config)
+            score = eval_tree(tree, functions, config)
             nodes_evaluated += tree.size
 
         # update result

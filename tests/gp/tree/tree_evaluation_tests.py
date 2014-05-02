@@ -20,14 +20,55 @@ config_fp = os.path.join(cwd, "../../config/evaluator.json")
 
 class TreeEvaluatorTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_fp)
-        self.functions = GPFunctionRegistry()
+        self.config = {
+            "max_population": 50,
+
+            "tree_generation": {
+                "method": "FULL_METHOD",
+                "initial_max_depth": 4
+            },
+
+            "evaluator": {"use_cache": True},
+
+            "function_nodes": [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "COS", "arity": 1},
+                {"type": "FUNCTION", "name": "SIN", "arity": 1}
+            ],
+
+            "terminal_nodes": [
+                {"type": "TERM", "value": 1.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 3.0},
+                {"type": "TERM", "value": 4.0},
+                {"type": "TERM", "value": 5.0},
+                {"type": "TERM", "value": 6.0},
+                {"type": "TERM", "value": 7.0},
+                {"type": "TERM", "value": 8.0},
+                {"type": "TERM", "value": 9.0},
+                {"type": "TERM", "value": 10.0}
+            ],
+
+            "input_variables": [
+                {"type": "INPUT", "name": "x"}
+            ],
+
+            "data_file": "tests/data/sine.dat",
+
+            "response_variable": {"name": "y"},
+
+            "functions": GPFunctionRegistry()
+        }
+        config.load_data(self.config)
         self.tree_generator = TreeGenerator(self.config)
 
     def tearDown(self):
         del self.config
         del self.tree_generator
-        del self.functions
 
     def test_gen_term_node(self):
         row = 0
@@ -48,14 +89,14 @@ class TreeEvaluatorTests(unittest.TestCase):
 
         # evaluate term_node
         stack = []
-        evaluator.eval_node(term_node_1, stack, self.functions, self.config)
+        evaluator.eval_node(term_node_1, stack, self.config)
         self.assertEquals(len(stack), 1)
         self.assertTrue(stack[0] is term_node_1)
 
         # evaluate unary_node
         stack = []
         stack.append(term_node_1)
-        evaluator.eval_node(unary_node, stack, self.functions, self.config)
+        evaluator.eval_node(unary_node, stack, self.config)
         self.assertEquals(len(stack), 1)
         self.assertTrue(stack[0].value == 1.0)
 
@@ -63,7 +104,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         stack = []
         stack.append(term_node_2)
         stack.append(term_node_3)
-        evaluator.eval_node(binary_node, stack, self.functions, self.config)
+        evaluator.eval_node(binary_node, stack, self.config)
         self.assertEquals(len(stack), 1)
         self.assertTrue(stack[0].value == 100.0)
 
@@ -108,12 +149,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         print ""
 
         # evaluate tree
-        res = evaluator.eval_program(
-            tree,
-            tree.size,
-            self.functions,
-            self.config,
-        )
+        res = evaluator.eval_program(tree, tree.size, self.config)
 
         # assert
         self.assertTrue(res is not None)
@@ -127,7 +163,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         start_time = time.time()
         evaluator.evaluate(
             population.individuals,
-            self.functions,
+
             self.config,
             results
         )

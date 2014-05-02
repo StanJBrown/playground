@@ -69,7 +69,7 @@ def gen_term_node(node, row, config):
         print node.name, row
 
 
-def eval_node(node, stack, functions, config, data_row=None):
+def eval_node(node, stack, config, data_row=None):
     try:
         if node.is_terminal():
             stack.append(node)
@@ -83,7 +83,7 @@ def eval_node(node, stack, functions, config, data_row=None):
             input_values = [stack.pop().value for i in xrange(node.arity)]
 
             # execute function
-            function = functions.get_function(node.name)
+            function = config["functions"].get_function(node.name)
             result_value = function(*input_values)
             result = TreeNode(TreeNodeType.TERM, value=result_value)
 
@@ -94,7 +94,7 @@ def eval_node(node, stack, functions, config, data_row=None):
         raise
 
 
-def eval_program(tree, tree_size, functions, config):
+def eval_program(tree, tree_size, config):
     try:
         stack = []
         err = 0.0  # mean absolute error
@@ -107,7 +107,7 @@ def eval_program(tree, tree_size, functions, config):
         for i in xrange(rows):
             # evaluate program
             for node in tree.program:
-                eval_node(node, stack, functions, config, i)
+                eval_node(node, stack, config, i)
 
             # calculate score
             node = stack.pop()
@@ -177,7 +177,7 @@ def filter_trees(trees):
     return result
 
 
-def evaluate(trees, functions, config, results, cache={}, recorder=None):
+def evaluate(trees, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
 
@@ -198,7 +198,6 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
                 score, res = eval_program(
                     tree,
                     tree.size,
-                    functions,
                     config
                 )
                 nodes_evaluated += tree.size
@@ -211,7 +210,6 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             score, res = eval_program(
                 tree,
                 tree.size,
-                functions,
                 config)
             nodes_evaluated += tree.size
 

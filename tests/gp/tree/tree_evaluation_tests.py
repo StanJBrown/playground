@@ -1,4 +1,4 @@
-##!/usr/bin/env python
+#!/usr/bin/env python2.7
 import os
 import sys
 import time
@@ -13,10 +13,6 @@ from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 import playground.gp.tree.tree_evaluation as evaluator
 
-# SETTINGS
-cwd = os.path.dirname(__file__)
-config_fp = os.path.join(cwd, "../../config/evaluator.json")
-
 
 class TreeEvaluatorTests(unittest.TestCase):
     def setUp(self):
@@ -28,7 +24,9 @@ class TreeEvaluatorTests(unittest.TestCase):
                 "initial_max_depth": 4
             },
 
-            "evaluator": {"use_cache": True},
+            "evaluator": {
+                "use_cache": True
+            },
 
             "function_nodes": [
                 {"type": "FUNCTION", "name": "ADD", "arity": 2},
@@ -59,11 +57,11 @@ class TreeEvaluatorTests(unittest.TestCase):
 
             "data_file": "tests/data/sine.dat",
 
-            "response_variable": {"name": "y"},
-
-            "functions": GPFunctionRegistry()
+            "response_variable": {"name": "y"}
         }
+
         config.load_data(self.config)
+        self.functions = GPFunctionRegistry()
         self.tree_generator = TreeGenerator(self.config)
 
     def tearDown(self):
@@ -89,14 +87,14 @@ class TreeEvaluatorTests(unittest.TestCase):
 
         # evaluate term_node
         stack = []
-        evaluator.eval_node(term_node_1, stack, self.config)
+        evaluator.eval_node(term_node_1, stack, self.functions, self.config)
         self.assertEquals(len(stack), 1)
         self.assertTrue(stack[0] is term_node_1)
 
         # evaluate unary_node
         stack = []
         stack.append(term_node_1)
-        evaluator.eval_node(unary_node, stack, self.config)
+        evaluator.eval_node(unary_node, stack, self.functions, self.config)
         self.assertEquals(len(stack), 1)
         self.assertTrue(stack[0].value == 1.0)
 
@@ -104,7 +102,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         stack = []
         stack.append(term_node_2)
         stack.append(term_node_3)
-        evaluator.eval_node(binary_node, stack, self.config)
+        evaluator.eval_node(binary_node, stack, self.functions, self.config)
         self.assertEquals(len(stack), 1)
         self.assertTrue(stack[0].value == 100.0)
 
@@ -149,7 +147,12 @@ class TreeEvaluatorTests(unittest.TestCase):
         print ""
 
         # evaluate tree
-        res = evaluator.eval_program(tree, tree.size, self.config)
+        res = evaluator.eval_program(
+            tree,
+            tree.size,
+            self.functions,
+            self.config
+        )
 
         # assert
         self.assertTrue(res is not None)
@@ -163,7 +166,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         start_time = time.time()
         evaluator.evaluate(
             population.individuals,
-
+            self.functions,
             self.config,
             results
         )

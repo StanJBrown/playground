@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import pyopencl as cl
 import numpy
 import numpy.linalg as la

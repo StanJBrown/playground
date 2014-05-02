@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 
 def get_arity(node):
     return len(node) - 1
 
 
-def eval_node(node, conn_genes, data, config):
+def eval_node(node, conn_genes, functions, data, config):
     arity = len(node[1:])
-    function = config["functions"][node[0]]
+    function = functions[node[0]]
     num_inputs = config["cartesian"]["num_inputs"]
     rows = config["cartesian"]["rows"]
     columns = config["cartesian"]["columns"]
@@ -40,25 +40,30 @@ def eval_node(node, conn_genes, data, config):
     return node_output
 
 
-def traverse_backwards(cartesian, node_index, output, visited, config):
-    if node_index >= len(cartesian.input_nodes):
-        node = cartesian.graph()[node_index]
+def traverse(cartesian, node_index, functions, output, visited, config):
+    # pre-check
+    if node_index < len(cartesian.input_nodes):
+        return
 
-        # check arity
-        conn_genes = node[1:]
-        for conn in conn_genes:
-            traverse_backwards(cartesian, conn, output, visited, config)
+    # get current node
+    node = cartesian.graph()[node_index]
 
-        if node_index not in visited:
-            # evaluate function with data
-            node_output = eval_node(node, conn_genes, output, config)
+    # check arity first
+    conn_genes = node[1:]
+    for conn in conn_genes:
+        traverse(cartesian, conn, functions, output, visited, config)
 
-            # record node output and append node index to visited
-            output[node_index] = node_output
-            visited.append(node_index)
+    # check root node
+    if node_index not in visited:
+        # evaluate function with data
+        node_output = eval_node(node, conn_genes, functions, output, config)
+
+        # record node output and append node index to visited
+        output[node_index] = node_output
+        visited.append(node_index)
 
 
-def evaluate_cartesian(cartesian, config):
+def evaluate_cartesian(cartesian, functions, config):
     visited = []
     results = []
     output = {}
@@ -69,7 +74,7 @@ def evaluate_cartesian(cartesian, config):
 
     # for node in output_nodes:
     for node_index in cartesian.output_nodes:
-        traverse_backwards(cartesian, node_index, output, visited, config)
+        traverse(cartesian, node_index, functions, output, visited, config)
         results.append(output[node_index])
 
     return (results, output)
@@ -101,7 +106,7 @@ def record_eval(recorder, **kwargs):
     recorder.record_evaluation(eval_stats)
 
 
-def evaluate(cartesians, config, results, cache={}, recorder=None):
+def evaluate(cartesians, functions, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
 
@@ -119,7 +124,7 @@ def evaluate(cartesians, config, results, cache={}, recorder=None):
         # use cahce?
         if use_cache:
             if str(cartesian) not in cache:
-                score, res = evaluate_cartesian(cartesian, config)
+                score, res = evaluate_cartesian(cartesian, functions, config)
                 nodes_evaluated += cartesian.rows * cartesian.columns
                 cartesians_evaluated += 1
             else:
@@ -127,7 +132,7 @@ def evaluate(cartesians, config, results, cache={}, recorder=None):
                 match_cached += 1
 
         else:
-            score, res = evaluate_cartesian(cartesian, config)
+            score, res = evaluate_cartesian(cartesian, functions, config)
             nodes_evaluated += cartesian.size
 
         # check result

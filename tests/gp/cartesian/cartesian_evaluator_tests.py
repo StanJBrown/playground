@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import os
 import sys
 import unittest
@@ -39,13 +39,13 @@ class CartesianEvaluatorTests(unittest.TestCase):
                 "d": [1, 2, 3, 4]
             },
 
-            "functions": [
-                functions.add_function,
-                functions.sub_function,
-                functions.mul_function,
-                functions.div_function,
-            ]
         }
+        self.functions = [
+            functions.add_function,
+            functions.sub_function,
+            functions.mul_function,
+            functions.div_function,
+        ]
 
         self.input_nodes = ["a", "b", "c", "d"]
         self.func_nodes = [
@@ -75,7 +75,11 @@ class CartesianEvaluatorTests(unittest.TestCase):
         pass
 
     def test_evaluate_cartesian(self):
-        result, outputs = evaluate_cartesian(self.cartesian, self.config)
+        result, outputs = evaluate_cartesian(
+            self.cartesian,
+            self.functions,
+            self.config
+        )
         self.assertIsNotNone(result)
         self.assertIsNotNone(outputs)
 

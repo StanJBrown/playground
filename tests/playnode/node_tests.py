@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import os
 import sys
 import json
@@ -42,9 +42,9 @@ class NodeTests(unittest.TestCase):
         host = "localhost"
         ntype = PlayNodeType.EVALUATOR
         nodes = [
-            ["python", n_script, host, "8080", ntype],
-            ["python", n_script, host, "8081", ntype],
-            ["python", n_script, host, "8082", ntype]
+            ["./" + n_script, host, "8080", ntype],
+            ["./" + n_script, host, "8081", ntype],
+            ["./" + n_script, host, "8082", ntype]
         ]
 
         # start the playground nodes

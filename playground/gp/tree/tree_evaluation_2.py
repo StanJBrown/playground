@@ -1,12 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import math
 
 
-def generate_eq_function(tree, config):
+def generate_eq_function(tree, functions, config):
     eq = str(tree)
 
     # replace function node names with python equivalents
-    for key, val in config["functions"].items():
+    for key, val in functions.items():
         eq = eq.replace(key, val)
 
     # prep input variables
@@ -20,8 +20,8 @@ def generate_eq_function(tree, config):
     return eval(eval_str)
 
 
-def eval_tree(tree, config):
-    eq_func = generate_eq_function(tree, config)
+def eval_tree(tree, functions, config):
+    eq_func = generate_eq_function(tree, functions, config)
     data = config["data"]
 
     response_var = config["response_variable"]["name"]
@@ -91,7 +91,7 @@ def record_eval(recorder, **kwargs):
     recorder.record_evaluation(eval_stats)
 
 
-def evaluate(trees, config, results, cache={}, recorder=None):
+def evaluate(trees, functions, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
 
@@ -107,7 +107,7 @@ def evaluate(trees, config, results, cache={}, recorder=None):
         # use cahce?
         if use_cache:
             if str(tree) not in cache:
-                score = eval_tree(tree, config)
+                score = eval_tree(tree, functions, config)
                 nodes_evaluated += tree.size
                 trees_evaluated += 1
             else:
@@ -115,7 +115,7 @@ def evaluate(trees, config, results, cache={}, recorder=None):
                 match_cached += 1
 
         else:
-            score = eval_tree(tree, config)
+            score = eval_tree(tree, functions, config)
             nodes_evaluated += tree.size
 
         # update result

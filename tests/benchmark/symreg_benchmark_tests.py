@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import os
 import sys
 import math
@@ -92,6 +92,18 @@ class SymRegBenchmarkTests(unittest.TestCase):
             "log_path": "/tmp/test.log"
 
         }
+        self.functions = {
+            "ADD": "+",
+            "SUB": "-",
+            "MUL": "*",
+            "DIV": "/",
+            "POW": "**",
+            "SIN": "math.sin",
+            "COS": "math.cos",
+            "RAD": "math.radians",
+            "LN": "math.ln",
+            "LOG": "math.log"
+        }
 
     def tearDown(self):
         files = [
@@ -106,6 +118,7 @@ class SymRegBenchmarkTests(unittest.TestCase):
     def test_gp_benchmark_loop(self):
         # pass test
         config_before = copy.deepcopy(self.config)
+        self.config["functions"] = self.functions
         result = gp_benchmark_loop(self.config)
         self.assertIsNotNone(result)
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import os
 import sys
 import json
@@ -43,9 +43,11 @@ def init(host, port):
     # check if process is already running
     pid = str(os.getpid())
     pid_fp = "/tmp/playground-{0}-{1}.pid".format(host, port)
+
     if os.path.isfile(pid_fp):
         print("{0} already exists, exiting".format(pid_fp))
         sys.exit()
+
     else:
         pid_content = json.dumps({"pid": pid, "status": PlayNodeStatus.OK})
         pidfile = file(pid_fp, "w")
@@ -135,17 +137,17 @@ def monitor():
     return render_template("monitor.html", title="monitor")
 
 
-@app.route("/monitor", methods=["POST"])
-def monitor_add_data():
-    response = {}
-    if request.data is not None:
-        incomming = json.loads(request.data)
-        response["status"] = "OK"
-
-    else:
-        response["status"] = "ERROR"
-
-    return jsonify(response)
+# @app.route("/monitor", methods=["POST"])
+# def monitor_add_data():
+#     response = {}
+#     if request.data is not None:
+#         incomming = json.loads(request.data)
+#         response["status"] = "OK"
+#
+#     else:
+#         response["status"] = "ERROR"
+#
+#     return jsonify(response)
 
 
 @app.route("/monitor_data")

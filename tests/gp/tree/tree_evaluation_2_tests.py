@@ -1,4 +1,4 @@
-##!/usr/bin/env python
+#!/usr/bin/env python2.7
 import os
 import sys
 import time
@@ -10,12 +10,7 @@ from playground.gp.tree.tree import Tree
 from playground.gp.tree.tree import TreeNode
 from playground.gp.tree.tree import TreeNodeType
 from playground.gp.tree.tree_generator import TreeGenerator
-from playground.gp.functions import GPFunctionRegistry
 import playground.gp.tree.tree_evaluation_2 as evaluator
-
-# SETTINGS
-cwd = os.path.dirname(__file__)
-config_fp = os.path.join(cwd, "../../config/evaluator.json")
 
 
 class TreeEvaluatorTests(unittest.TestCase):
@@ -28,7 +23,9 @@ class TreeEvaluatorTests(unittest.TestCase):
                 "initial_max_depth": 4
             },
 
-            "evaluator": {"use_cache": True},
+            "evaluator": {
+                "use_cache": True
+            },
 
             "function_nodes": [
                 {"type": "FUNCTION", "name": "ADD", "arity": 2},
@@ -59,22 +56,22 @@ class TreeEvaluatorTests(unittest.TestCase):
 
             "data_file": "tests/data/sine.dat",
 
-            "response_variable": {"name": "y"},
-
-            "functions": {
-                "ADD": "+",
-                "SUB": "-",
-                "MUL": "*",
-                "DIV": "/",
-                "POW": "**",
-                "SIN": "math.sin",
-                "COS": "math.cos",
-                "RAD": "math.radians",
-                "LN": "math.ln",
-                "LOG": "math.log"
-            }
+            "response_variable": {"name": "y"}
         }
         config.load_data(self.config)
+
+        self.functions = {
+            "ADD": "+",
+            "SUB": "-",
+            "MUL": "*",
+            "DIV": "/",
+            "POW": "**",
+            "SIN": "math.sin",
+            "COS": "math.cos",
+            "RAD": "math.radians",
+            "LN": "math.ln",
+            "LOG": "math.log"
+        }
         self.tree_generator = TreeGenerator(self.config)
 
     def tearDown(self):
@@ -114,7 +111,11 @@ class TreeEvaluatorTests(unittest.TestCase):
         tree.update()
 
         # generate equation function
-        eq_func = evaluator.generate_eq_function(tree, self.config)
+        eq_func = evaluator.generate_eq_function(
+            tree,
+            self.functions,
+            self.config
+        )
 
         # assert
         self.assertIsNotNone(eq_func)
@@ -164,7 +165,7 @@ class TreeEvaluatorTests(unittest.TestCase):
                 "LOG": "math.log"
             }
         }
-        eq_func = evaluator.generate_eq_function(tree, config)
+        eq_func = evaluator.generate_eq_function(tree, self.functions, config)
 
         # assert
         self.assertIsNotNone(eq_func)
@@ -203,7 +204,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         tree.update()
 
         # evaluate tree
-        result = evaluator.eval_tree(tree, self.config)
+        result = evaluator.eval_tree(tree, self.functions, self.config)
         self.assertEquals(round(result, 7), 0.5000001)
 
     def test_evaluate(self):
@@ -213,6 +214,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         start_time = time.time()
         evaluator.evaluate(
             population.individuals,
+            self.functions,
             self.config,
             results
         )

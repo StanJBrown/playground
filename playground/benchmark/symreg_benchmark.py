@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import os
 import sys
 import time
@@ -42,7 +42,7 @@ def gp_benchmark_loop(config):
         # create play details
         details = play.play_details(
             population=population,
-            # functions=functions,
+            functions=config["functions"],
             evaluate=evaluate,
             selection=selection,
             crossover=crossover,

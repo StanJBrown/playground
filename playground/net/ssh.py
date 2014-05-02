@@ -3,8 +3,6 @@ import os
 import time
 import json
 import socket
-import struct
-# import pprint
 from multiprocessing import Pool
 
 import paramiko
@@ -165,7 +163,8 @@ def deploy_public_key(nodes, pubkey_path, credentials):
     pubkey_file.close()
 
     # authorized keys file path
-    authkeys = credentials.get("remote_authkeys_fp", "~/.ssh/authorized_keys")
+    default_remote_authkeys = os.path.expanduser("~/.ssh/authorized_keys")
+    authkeys = credentials.get("remote_authkeys", default_remote_authkeys)
 
     # add local public key to remote node's authorized_keys file
     for node in nodes:
@@ -177,7 +176,7 @@ def deploy_public_key(nodes, pubkey_path, credentials):
         )
 
         # append local public key
-        ssh.exec_command("echo '{0}' >> {1}".format(pubkey, authkeys))
+        ssh.exec_command("echo '{0}' >> {1}".format(pubkey.strip(), authkeys))
         ssh.close()
 
 
@@ -263,137 +262,3 @@ def record_netadaptor_details(file_path, nodes, credentials):
     net_adaptors_json = json.dumps({"nodes": net_adaptors})
     net_adaptor_file.write(net_adaptors_json + "\n")
     net_adaptor_file.close()
-
-
-def send_wol_packet(dst_mac_addr):
-    addr_byte = dst_mac_addr.split(':')
-    hw_addr = struct.pack(
-        'BBBBBB',
-        int(addr_byte[0], 16),
-        int(addr_byte[1], 16),
-        int(addr_byte[2], 16),
-        int(addr_byte[3], 16),
-        int(addr_byte[4], 16),
-        int(addr_byte[5], 16)
-    )
-    macpck = '\xff' * 6 + hw_addr * 16
-    scks = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    scks.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    scks.sendto(macpck, ('<broadcast>', 9))
-    scks.close()
-
-
-def send_wol_packets(net_adaptor_details):
-    for node in net_adaptor_details["nodes"]:
-        send_wol_packet(node["mac_addr"])
-
-
-def remote_sleep_mac(node, credentials):
-    cmd = "pmset sleepnow && exit"
-    result = send_cmd(node, cmd, credentials)
-
-    if int(result["stdout"].strip()) == 0:
-        return True
-    else:
-        return False
-
-
-def remote_sleep_macs(nodes, credentials):
-    workers = []
-    sleep_nodes = []
-    fail_nodes = []
-
-    # concurrently test connection
-    pool = Pool(processes=100)
-    for node in nodes:
-        worker = pool.apply_async(remote_sleep_mac, (node, credentials))
-        workers.append((node, worker))
-
-    # get results
-    for worker in workers:
-        node = worker[0]
-        retry = 0
-        while(retry != 3):
-            try:
-                result = worker[1].get()
-                sleep = result[0]
-
-                if sleep:
-                    sleep_nodes.append(node)
-                else:
-                    res = {"node": node, "exception": "Failed to sleep mac!"}
-                    fail_nodes.append(res)
-                break
-
-            except Exception:
-                retry += 1
-                time.sleep(1)
-
-        if retry == 3:
-            fail_nodes.append(node)
-    del workers[:]
-
-    return (sleep_nodes, fail_nodes)
-
-
-def remote_play(node, target, args, credentials, **kwargs):
-    python_interpreter = kwargs.get("python_interpreter", "CPYTHON")
-
-    # precheck
-    dest = kwargs.get("dest", None)
-    if dest:
-        remote_check_file(node, dest)
-    else:
-        remote_check_file(node, target)
-
-    if python_interpreter == "CPYTHON":
-        cmd = ["python", target]
-    elif python_interpreter == "PYPY":
-        cmd = ["pypy", target]
-    cmd.extend(args)
-    cmd = " ".join(cmd)
-
-
-if __name__ == "__main__":
-    nodes = []
-    workers = []
-
-    # ssh credentials
-    credentials = {
-        "username": "cc218"
-    }
-
-    # build nodes list
-    for i in range(73):
-        node = "mac1-{0}-m.cs.st-andrews.ac.uk".format(str(i).zfill(3))
-        nodes.append(node)
-
-    # query online offline nodes
-    online_nodes, offline_nodes = test_connections(nodes, credentials)
-    print "ONLINE NODES: ", len(online_nodes)
-    print "OFFLINE NODES: ", len(offline_nodes)
-
-    # pprint.pprint(offline_nodes[0])
-
-    # cmd = "afplay hahahrawrrahaha.mp3"
-    cmd = "osascript -e 'set volume 3' && afplay hahahrawrrahaha.mp3"
-    results = batch_send_cmd(online_nodes, cmd, credentials)
-    for result in results:
-        print result["node"]
-        print result["output"]["stdout"]
-        print result["output"]
-
-
-    # send_wol_packet("34:15:9e:22:5a:b2")
-    # print remote_sleep_mac(online_nodes[0], credentials)
-    # sleep_nodes, failed_nodes = remote_sleep_macs(online_nodes, credentials)
-    # print "SLEEP NODES: ", len(sleep_nodes)
-    # print "FAILED NODES: ", len(failed_nodes)
-
-    # record_netadaptor_details("net_adaptors.json", online_nodes, credentials)
-
-    # cmd = "ls"
-    # results = batch_send_cmd(online_nodes, cmd, credentials)
-    # for result in results:
-    #     print result["node"]
-    #     print result["output"]["stdout"]

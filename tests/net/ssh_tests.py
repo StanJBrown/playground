@@ -6,9 +6,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 
 import playground.net.ssh as ssh
 
-# SETTINGS
-cwd = os.path.dirname(__file__)
-
 
 class SSHTests(unittest.TestCase):
     def test_send_cmd(self):
@@ -58,6 +55,27 @@ class SSHTests(unittest.TestCase):
         online_nodes, offline_nodes = ssh.test_connections(["x"], {})
         self.assertEquals(len(online_nodes), 0)
         self.assertEquals(len(offline_nodes), 1)
+
+    def test_deploy_public_key(self):
+        nodes = ["localhost"]
+        credentials = {}
+        pubkey_path = os.path.expanduser("~/.ssh/id_rsa.pub")
+        ssh.deploy_public_key(nodes, pubkey_path, credentials)
+
+        # assert
+        authkeys_file = open(os.path.expanduser("~/.ssh/authorized_keys"), "r")
+        authkeys = [line for line in authkeys_file]
+        authkeys_file.close()
+
+        authkey = authkeys.pop()
+        pubkey = open(pubkey_path, "r").read()
+        self.assertEquals(authkey, pubkey)
+
+        # clean up
+        authkeys_file = open(os.path.expanduser("~/.ssh/authorized_keys"), "w")
+        for key in authkeys:
+            authkeys_file.write(key)
+        authkeys_file.close()
 
     def test_parse_netadaptor_details(self):
         result = ssh.send_cmd("localhost", "ifconfig", {})

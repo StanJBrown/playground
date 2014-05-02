@@ -92,6 +92,18 @@ class SymRegBenchmarkTests(unittest.TestCase):
             "log_path": "/tmp/test.log"
 
         }
+        self.functions = {
+            "ADD": "+",
+            "SUB": "-",
+            "MUL": "*",
+            "DIV": "/",
+            "POW": "**",
+            "SIN": "math.sin",
+            "COS": "math.cos",
+            "RAD": "math.radians",
+            "LN": "math.ln",
+            "LOG": "math.log"
+        }
 
     def tearDown(self):
         files = [
@@ -106,7 +118,7 @@ class SymRegBenchmarkTests(unittest.TestCase):
     def test_gp_benchmark_loop(self):
         # pass test
         config_before = copy.deepcopy(self.config)
-        result = gp_benchmark_loop(self.config)
+        result = gp_benchmark_loop(self.functions, self.config)
         self.assertIsNotNone(result)
 
         # make sure the data field is removed from benchmark log

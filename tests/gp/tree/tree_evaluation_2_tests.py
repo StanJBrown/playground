@@ -20,14 +20,66 @@ config_fp = os.path.join(cwd, "../../config/evaluator.json")
 
 class TreeEvaluatorTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_fp)
-        self.functions = GPFunctionRegistry()
+        self.config = {
+            "max_population": 50,
+
+            "tree_generation": {
+                "method": "FULL_METHOD",
+                "initial_max_depth": 4
+            },
+
+            "evaluator": {"use_cache": True},
+
+            "function_nodes": [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "COS", "arity": 1},
+                {"type": "FUNCTION", "name": "SIN", "arity": 1}
+            ],
+
+            "terminal_nodes": [
+                {"type": "TERM", "value": 1.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 3.0},
+                {"type": "TERM", "value": 4.0},
+                {"type": "TERM", "value": 5.0},
+                {"type": "TERM", "value": 6.0},
+                {"type": "TERM", "value": 7.0},
+                {"type": "TERM", "value": 8.0},
+                {"type": "TERM", "value": 9.0},
+                {"type": "TERM", "value": 10.0}
+            ],
+
+            "input_variables": [
+                {"type": "INPUT", "name": "x"}
+            ],
+
+            "data_file": "tests/data/sine.dat",
+
+            "response_variable": {"name": "y"},
+
+            "functions": {
+                "ADD": "+",
+                "SUB": "-",
+                "MUL": "*",
+                "DIV": "/",
+                "POW": "**",
+                "SIN": "math.sin",
+                "COS": "math.cos",
+                "RAD": "math.radians",
+                "LN": "math.ln",
+                "LOG": "math.log"
+            }
+        }
+        config.load_data(self.config)
         self.tree_generator = TreeGenerator(self.config)
 
     def tearDown(self):
         del self.config
         del self.tree_generator
-        del self.functions
 
     def test_generate_eq_function(self):
         # create terminal nodes
@@ -97,7 +149,20 @@ class TreeEvaluatorTests(unittest.TestCase):
                     "type": "INPUT",
                     "name": "var2"
                 }
-            ]
+            ],
+
+            "functions": {
+                "ADD": "+",
+                "SUB": "-",
+                "MUL": "*",
+                "DIV": "/",
+                "POW": "**",
+                "SIN": "math.sin",
+                "COS": "math.cos",
+                "RAD": "math.radians",
+                "LN": "math.ln",
+                "LOG": "math.log"
+            }
         }
         eq_func = evaluator.generate_eq_function(tree, config)
 
@@ -148,7 +213,6 @@ class TreeEvaluatorTests(unittest.TestCase):
         start_time = time.time()
         evaluator.evaluate(
             population.individuals,
-            self.functions,
             self.config,
             results
         )

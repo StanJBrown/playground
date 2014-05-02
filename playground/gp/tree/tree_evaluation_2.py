@@ -2,32 +2,12 @@
 import math
 
 
-def filter_trees(trees):
-    result = []
-    min_size = 2
-    max_size = 50
-
-    for tree in trees:
-        if tree.size > min_size and tree.size < max_size:
-            result.append(tree)
-
-    return result
-
-
 def generate_eq_function(tree, config):
     eq = str(tree)
 
     # replace function node names with python equivalents
-    eq = eq.replace("ADD", "+")
-    eq = eq.replace("SUB", "-")
-    eq = eq.replace("MUL", "*")
-    eq = eq.replace("DIV", "/")
-    eq = eq.replace("POW", "**")
-    eq = eq.replace("SIN", "math.sin")
-    eq = eq.replace("COS", "math.cos")
-    eq = eq.replace("RAD", "math.radians")
-    eq = eq.replace("LN", "math.ln")
-    eq = eq.replace("LOG", "math.log")
+    for key, val in config["functions"].items():
+        eq = eq.replace(key, val)
 
     # prep input variables
     input_vars = []
@@ -73,6 +53,18 @@ def eval_tree(tree, config):
         return None
 
 
+def filter_trees(trees):
+    result = []
+    min_size = 2
+    max_size = 50
+
+    for tree in trees:
+        if tree.size > min_size and tree.size < max_size:
+            result.append(tree)
+
+    return result
+
+
 def record_eval(recorder, **kwargs):
     use_cache = kwargs["use_cache"]
     cache = kwargs.get("cache", None)
@@ -99,7 +91,7 @@ def record_eval(recorder, **kwargs):
     recorder.record_evaluation(eval_stats)
 
 
-def evaluate(trees, functions, config, results, cache={}, recorder=None):
+def evaluate(trees, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
     use_cache = evaluator_config.get("use_cache", False)
 

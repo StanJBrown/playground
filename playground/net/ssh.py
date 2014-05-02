@@ -11,35 +11,45 @@ from paramiko import AuthenticationException
 from paramiko import SSHException
 
 
+def obtain_private_key():
+    priv_key_path = os.path.expanduser("~/.ssh/id_rsa")
+    priv_key = None
+
+    if os.path.isfile(priv_key_path):
+        priv_key = paramiko.RSAKey.from_private_key_file(priv_key_path)
+
+    return priv_key
+
 def send_cmd(node, cmd, credentials):
     try:
+        # setup ssh client
         ssh = paramiko.SSHClient()
         ssh.load_system_host_keys()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-        priv_key_path = os.path.expanduser("~/.ssh/id_rsa")
-        priv_key = None
-        if os.path.isfile(priv_key_path):
-            priv_key = paramiko.RSAKey.from_private_key_file(priv_key_path)
-
+        # connect
         ssh.connect(
             node,
             username=credentials.get("username", None),
             password=credentials.get("password", None),
             timeout=credentials.get("timeout", 2.0),
-            pkey=priv_key
+            pkey=obtain_private_key()
         )
-
         stdin, stdout, stderr = ssh.exec_command(cmd)
-        exit_status = stdout.channel.recv_exit_status()
-        ssh.close()
 
+        # wait for the command to terminate
+        while not stdout.channel.exit_status_ready() and stdout.channel.recv_ready():
+            time.sleep(1)
+
+        # get output
+        exit_status = stdout.channel.recv_exit_status()
         result = {
             "stdout": stdout.read(),
             "stderr": stderr.read(),
             "exit_status": exit_status,
             "exception": None
         }
+        ssh.close()
         return result
 
     except (

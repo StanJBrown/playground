@@ -2,57 +2,6 @@
 
 
 class TreeParser(object):
-    def _print_node(self, node):
-        if hasattr(node, "name") and node.name is None:
-            print('"{0}{1}"'.format(node.value, id(node)))
-        else:
-            print('"{0}{1}"'.format(node.name, id(node)))
-
-    def _print_node_label(self, node):
-        if hasattr(node, "name") and node.name is None:
-            print('{0}{1}[label="{0}"];'.format(node.value, id(node)))
-        else:
-            print('{0}{1}[label="{0}"];'.format(node.name, id(node)))
-
-    def _print_relation(self, from_node, to_node, node_list):
-        from_node_id = None
-        to_node_id = None
-
-        if from_node.name is None:
-            from_node_id = from_node.value
-        else:
-            from_node_id = from_node.name
-
-        if to_node.name is None:
-            to_node_id = to_node.value
-        else:
-            to_node_id = to_node.name
-
-        print(
-            '"{0}{1}" -> "{2}{3}";'.format(
-                from_node_id,
-                id(from_node),
-                to_node_id,
-                id(to_node)
-            )
-        )
-
-        node_list.append(to_node)
-
-    def _print_tree_structure(self, node, node_list):
-        if node.is_function():
-            for value_node in node.branches:
-                self._print_relation(node, value_node, node_list)
-                self._print_tree_structure(value_node, node_list)
-
-    def print_tree(self, root_node):
-        node_list = []
-        node_list.append(root_node)
-        self._print_tree_structure(root_node, node_list)
-
-        for node in node_list:
-            self._print_node_label(node)
-
     def post_order_traverse(self, node, stack=None):
         stack = stack if stack is not None else []
 

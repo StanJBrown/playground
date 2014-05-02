@@ -7,94 +7,31 @@
     },
 
     "function_nodes" : [
-        {
-            "type": "BINARY_OP",
-            "arity": 2,
-            "name": "ADD"
-        },
-        {
-            "type": "BINARY_OP",
-            "arity": 2,
-            "name": "SUB"
-        },
-        {
-            "type": "BINARY_OP",
-            "arity": 2,
-            "name": "MUL"
-        },
-        {
-            "type": "BINARY_OP",
-            "arity": 2,
-            "name": "DIV"
-        },
-        {
-            "type": "UNARY_OP",
-            "arity": 1,
-            "name": "COS"
-        },
-        {
-            "type": "UNARY_OP",
-            "arity": 1,
-            "name": "SIN"
-        }
+        {"type": "FUNCTION", "name": "ADD", "arity": 2},
+        {"type": "FUNCTION", "name": "SUB", "arity": 2},
+        {"type": "FUNCTION", "name": "MUL", "arity": 2},
+        {"type": "FUNCTION", "name": "DIV", "arity": 2},
+        {"type": "FUNCTION", "name": "COS", "arity": 1},
+        {"type": "FUNCTION", "name": "SIN", "arity": 1}
     ],
 
     "terminal_nodes" : [
-        {
-            "type": "TERM",
-            "value": 1.0
-        },
-        {
-            "type": "TERM",
-            "value": 2.0
-        },
-        {
-            "type": "TERM",
-            "value": 2.0
-        },
-        {
-            "type": "TERM",
-            "value": 3.0
-        },
-        {
-            "type": "TERM",
-            "value": 4.0
-        },
-        {
-            "type": "TERM",
-            "value": 5.0
-        },
-        {
-            "type": "TERM",
-            "value": 6.0
-        },
-        {
-            "type": "TERM",
-            "value": 7.0
-        },
-        {
-            "type": "TERM",
-            "value": 8.0
-        },
-        {
-            "type": "TERM",
-            "value": 9.0
-        },
-        {
-            "type": "TERM",
-            "value": 10.0
-        }
+        {"type": "TERM", "value": 1.0},
+        {"type": "TERM", "value": 2.0},
+        {"type": "TERM", "value": 2.0},
+        {"type": "TERM", "value": 3.0},
+        {"type": "TERM", "value": 4.0},
+        {"type": "TERM", "value": 5.0},
+        {"type": "TERM", "value": 6.0},
+        {"type": "TERM", "value": 7.0},
+        {"type": "TERM", "value": 8.0},
+        {"type": "TERM", "value": 9.0},
+        {"type": "TERM", "value": 10.0}
     ],
 
     "input_variables" : [
-        {
-            "name": "x"
-        },
-        {
-            "name": "y"
-        },
-        {
-            "name": "z"
-        }
+        {"name": "x"},
+        {"name": "y"},
+        {"name": "z"}
     ]
 }

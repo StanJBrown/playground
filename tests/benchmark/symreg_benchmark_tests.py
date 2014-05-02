@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import os
 import sys
 import math
@@ -118,7 +118,8 @@ class SymRegBenchmarkTests(unittest.TestCase):
     def test_gp_benchmark_loop(self):
         # pass test
         config_before = copy.deepcopy(self.config)
-        result = gp_benchmark_loop(self.functions, self.config)
+        self.config["functions"] = self.functions
+        result = gp_benchmark_loop(self.config)
         self.assertIsNotNone(result)
 
         # make sure the data field is removed from benchmark log

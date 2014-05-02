@@ -22,7 +22,7 @@ from playground.selection import Selection
 from playground.recorder.json_store import JSONStore
 
 
-def gp_benchmark_loop(functions, config):
+def gp_benchmark_loop(config):
     try:
         # setup
         random.seed(config["random_seed"])  # VERY IMPORTANT!
@@ -42,7 +42,7 @@ def gp_benchmark_loop(functions, config):
         # create play details
         details = play.play_details(
             population=population,
-            functions=functions,
+            functions=config["functions"],
             evaluate=evaluate,
             selection=selection,
             crossover=crossover,

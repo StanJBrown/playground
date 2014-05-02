@@ -69,7 +69,7 @@ def _parallel_param_sweep(details, params, loop_func):
         pool.terminate()
 
 
-def brute_parameter_sweep(details, loop_func=None, debug=False):
+def brute_parameter_sweep(details, functions, loop_func=None, debug=False):
     config_vars = [
         "population_size",
         "crossover_probability",
@@ -91,7 +91,7 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
                 # build parameters
                 seed = details["random_seeds"][i]
 
-                param = _build_parameters(
+                gp_param = _build_parameters(
                     seed,
                     details["play_config"],
                     max_population=config[0],
@@ -100,13 +100,14 @@ def brute_parameter_sweep(details, loop_func=None, debug=False):
                     data_file=data_file,
                     log_path=details.get("log_path")
                 )
+                gp_param["functions"] = functions
 
                 # record file
                 record_file = _record_fp(config, seed, data_file)
-                _set_record_file(details, param, record_file)
+                _set_record_file(details, gp_param, record_file)
 
                 # add run parmaters to list of params
-                params.append(param)
+                params.append(gp_param)
 
     # execute parameter sweep
     if debug is False:

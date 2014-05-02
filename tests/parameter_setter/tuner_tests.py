@@ -27,6 +27,19 @@ class TunerTests(unittest.TestCase):
             "log_path": None
         }
 
+        self.functions = {
+            "ADD": "+",
+            "SUB": "-",
+            "MUL": "*",
+            "DIV": "/",
+            "POW": "**",
+            "SIN": "math.sin",
+            "COS": "math.cos",
+            "RAD": "math.radians",
+            "LN": "math.ln",
+            "LOG": "math.log"
+        }
+
     def tearDown(self):
         if os.path.exists("/tmp/unittest/"):
             shutil.rmtree("/tmp/unittest/")
@@ -138,7 +151,11 @@ class TunerTests(unittest.TestCase):
             "record_dir": "/tmp/unittest",
             "log_path": "/tmp/unittest/benchmark.log"
         }
-        tuner.brute_parameter_sweep(test_parameters, gp_benchmark_loop)
+        tuner.brute_parameter_sweep(
+            test_parameters,
+            self.functions,
+            gp_benchmark_loop
+        )
 
         # asserts
         self.assertTrue(os.path.isfile(test_parameters["log_path"]))
@@ -149,6 +166,7 @@ class TunerTests(unittest.TestCase):
             RuntimeError,
             tuner.brute_parameter_sweep,
             test_parameters,
+            self.functions,
             gp_benchmark_loop
         )
 

@@ -122,11 +122,18 @@ class ColorDetector(object):
                 # draw detected contour
                 cv2.drawContours(orig_frame, contours, i, (0, 255, 0), 3)
 
-                # draw rectangle
+                # draw center in detected contour
+                top_left = (cx, cy)
+                bottom_right = (cx + 5, cy + 5)
+                color = (255, 0, 0)  # blue
+                cv2.rectangle(orig_frame, top_left, bottom_right, color, 3)
+
+                # draw rectangle around detected contour
                 x, y, w, h = cv2.boundingRect(contours[i])
-                origin = (x, y)
-                bounds = (x + w, y + h)
-                cv2.rectangle(orig_frame, origin, bounds, (0, 0, 255), 2)
+                top_left = (x, y)
+                bottom_right = (x + w, y + h)
+                color = (0, 0, 255)  # red
+                cv2.rectangle(orig_frame, top_left, bottom_right, color, 2)
 
         cv2.imshow("Detected", orig_frame)
 
@@ -136,7 +143,7 @@ class ColorDetector(object):
         self.capture.release()
         cv2.destroyAllWindows()
 
-    def run(self):
+    def run(self, detected_objects):
         while (self.capture.isOpened()):
             ret, frame = self.capture.read()
             key = cv2.waitKey(50)
@@ -144,7 +151,6 @@ class ColorDetector(object):
             if ret:
                 if key == 27 or key == ord('q'):
                     self.cleanup()
-                    break
 
                 elif key == ord('d'):
                     self.detection_area = not self.detection_area
@@ -181,11 +187,18 @@ class ColorDetector(object):
 
                     # cv2.imshow('Video Stream', frame)
                     cv2.imshow('Threshold', thres_frame)
-                    self.detect_color(frame, thres_frame)
+
+                    # detect color objects
+                    del detected_objects[:]
+                    objects = self.detect_color(frame, thres_frame)
+                    detected_objects.extend(objects)
             else:
                 break
 
 
 if __name__ == "__main__":
+    detected_objects = []
     detector = ColorDetector()
-    detector.run()
+    detector.run(detected_objects)
+
+    print "Detected objects:", detected_objects

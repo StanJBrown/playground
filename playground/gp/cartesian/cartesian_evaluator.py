@@ -1,6 +1,44 @@
 #!/usr/bin/env python2.7
 
 
+def print_func(population, generation):
+    # display best individual
+    best = population.find_best_individuals()[0]
+    print "generation:", generation
+    print "best_score:", str(best.score)
+
+    # best individual
+    if best.score < 20.0:
+        print best
+
+    # population diversity
+    p = []
+    for i in population.individuals:
+        p.append(str(i))
+    p = set(p)
+    diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
+    print "population diversity:", str(diversity) + "%"
+
+    print
+
+
+def default_stop_func(popualtion, general_stats, config):
+    max_gen = config["max_generation"]
+    stale_limit = config.get("stale_limit", 10)
+
+    if general_stats["generation"] >= max_gen:
+        return True
+
+    elif general_stats["stale_counter"] >= stale_limit:
+        return True
+
+    elif config.get("stop_score", None):
+        if config["stop_score"] <= general_stats["best"].score:
+            return True
+
+    return False
+
+
 def get_arity(node):
     return len(node) - 1
 
@@ -108,7 +146,7 @@ def record_eval(recorder, **kwargs):
 
 def evaluate(cartesians, functions, config, results, cache={}, recorder=None):
     evaluator_config = config.get("evaluator", None)
-    use_cache = evaluator_config.get("use_cache", False)
+    use_cache = True
 
     best_score = None
     best_result = None

@@ -3,6 +3,7 @@ from random import randint
 from random import sample
 
 from playground.gp.cartesian.cartesian import Cartesian
+from playground.population import Population
 
 
 class CartesianGenerator(object):
@@ -152,3 +153,13 @@ class CartesianGenerator(object):
             input_nodes=input_nodes,
             output_nodes=output_nodes
         )
+
+    def init(self):
+        pop = Population(self.config)
+        max_pop = self.config["max_population"]
+
+        # create cartesians
+        for i in range(max_pop):
+            pop.individuals.append(self.generate_new_cartesian())
+
+        return pop

@@ -10,12 +10,18 @@ import playground.play as play
 import playground.config as config
 from playground.selection import Selection
 from playground.gp.functions import GPFunctionRegistry
+import playground.gp.functions as functions
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import evaluate
 from playground.gp.tree.tree_evaluation import default_stop_func
 from playground.gp.tree.tree_evaluation import print_func
 from playground.gp.tree.tree_crossover import TreeCrossover
 from playground.gp.tree.tree_mutation import TreeMutation
+
+from playground.gp.cartesian.cartesian_generator import CartesianGenerator
+import playground.gp.cartesian.cartesian_evaluator as cgp_evaluate
+from playground.gp.cartesian.cartesian_mutation import CartesianMutation
+
 
 # SETTINGS
 cwd = os.path.dirname(__file__)
@@ -173,6 +179,85 @@ class PlayTests(unittest.TestCase):
 
         # assert
         self.assertTrue(len(population.individuals) >= 1)
+        # because 1 or more individual may have evaluation error
+
+    def test_play_evolution_strategy_cgp(self):
+        print "EVOLUTION STRATEGY - CGP"
+        config = {
+            "max_population": 4,
+            "max_generation": 100,
+
+            "cartesian": {
+                "rows": 4,
+                "columns": 4,
+                "levels_back": 2,
+
+                "num_inputs": 4,
+                "num_outputs": 4
+            },
+
+            "function_nodes": [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+            ],
+
+            "input_variables": [
+                {"name": "a"},
+                {"name": "b"},
+                {"name": "c"},
+                {"name": "d"}
+            ],
+
+            "mutation": {
+                "methods": [
+                    "POINT_MUTATION"
+                ],
+                "probability": 0.2
+            },
+
+            "response_variables": [
+                {"name": "y"}
+            ],
+
+            "data": {
+                "a": [1, 2, 3, 4],
+                "b": [1, 2, 3, 4],
+                "c": [1, 2, 3, 4],
+                "d": [1, 2, 3, 4]
+            },
+
+        }
+        cgp_functions = [
+            functions.add_function,
+            functions.sub_function,
+            functions.mul_function,
+            functions.div_function,
+        ]
+
+        generator = CartesianGenerator(config)
+        population = generator.init()
+
+        mutation = CartesianMutation(config)
+
+        start_time = time.time()
+        details = play.play_details(
+            population=population,
+            functions=cgp_functions,
+            evaluate=cgp_evaluate.evaluate,
+            mutation=mutation,
+            stop_func=cgp_evaluate.default_stop_func,
+            print_func=cgp_evaluate.print_func,
+            config=config
+        )
+        play.play_evolution_strategy(details)
+        end_time = time.time()
+        print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
+        # self.assertEquals(population.generation, 5)
+
+        # assert
+        # self.assertTrue(len(population.individuals) >= 1)
         # because 1 or more individual may have evaluation error
 
 

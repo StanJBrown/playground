@@ -30,6 +30,7 @@ class CartesianTests(unittest.TestCase):
         ]
         self.output_nodes = [4, 9, 12, 13]
         self.cartesian = Cartesian(
+            config={},
             rows=1,
             columns=14,
             levels_back=0,

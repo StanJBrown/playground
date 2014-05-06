@@ -79,10 +79,22 @@ if __name__ == "__main__":
     print "Evaluator 1 took:", str(round(time_taken, 2)) + "s"
 
     # Tree Evalutor 2
+    functions = {
+        "ADD": "+",
+        "SUB": "-",
+        "MUL": "*",
+        "DIV": "/",
+        "POW": "**",
+        "SIN": "math.sin",
+        "COS": "math.cos",
+        "RAD": "math.radians",
+        "LN": "math.ln",
+        "LOG": "math.log"
+    }
     start_time = time.time()
     tree_eval_2.evaluate(
         copy.deepcopy(population.individuals),
-        None,
+        functions,
         config,
         results
     )

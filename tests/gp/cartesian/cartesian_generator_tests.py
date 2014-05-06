@@ -159,9 +159,12 @@ class CartesianGeneratorTests(unittest.TestCase):
                 self.assertTrue(conn >= 0 and conn <= max_addr)
 
     def test_gen_random_output_node(self):
+        num_inputs = self.config["cartesian"]["num_inputs"]
         rows = self.config["cartesian"]["rows"]
         columns = self.config["cartesian"]["columns"]
-        max_addr = (rows * columns) - 1
+        num_funcs = (rows * columns)
+        max_addr = (num_funcs + num_inputs) - 1
+
         for i in range(100):
             res = self.generator.gen_random_output_node()
 

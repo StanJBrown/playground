@@ -7,7 +7,7 @@ import multiprocessing
 from multiprocessing import Process
 from multiprocessing import Manager
 
-# import matplotlib.pyplot as plt
+import pylab as plt
 
 from playground.recorder.json_store import JSONStore
 
@@ -64,11 +64,13 @@ def reproduce(population, crossover, mutation, config):
         child_2 = parents.pop()
 
         # crossover
-        crossover.crossover(child_1, child_2)
+        if crossover:
+            crossover.crossover(child_1, child_2)
 
         # mutation
-        mutation.mutate(child_1)
-        mutation.mutate(child_2)
+        if mutation:
+            mutation.mutate(child_1)
+            mutation.mutate(child_2)
 
         # append children to new generation
         new_gen.append(child_1)
@@ -238,7 +240,7 @@ def play_evolution_strategy(play):
     # evaluate population
     results = []
     cache = {}
-    play.evaluate(
+    eval_output = play.evaluate(
         population.individuals,
         play.functions,
         play.config,
@@ -247,7 +249,8 @@ def play_evolution_strategy(play):
         play.recorder
     )
     population.individuals = results
-    cur_best = copy.deepcopy(population.find_best_individuals()[0])
+    curr_best = copy.deepcopy(population.find_best_individuals()[0])
+    best_output = list(eval_output)
 
     while play.stop_func(population, stats, play.config) is False:
         # print function
@@ -257,18 +260,29 @@ def play_evolution_strategy(play):
 
         # update best individual
         best_individuals = population.find_best_individuals()
-        if len(best_individuals):
+        if len(best_individuals) > 0:
             pop_best = copy.deepcopy(best_individuals[0])
-            if pop_best.score < cur_best.score:
-                cur_best = copy.deepcopy(pop_best)
+
+            if pop_best.score <= curr_best.score:
+                curr_best = copy.deepcopy(pop_best)
+                best_output = list(eval_output) if eval_output else best_output
+
+                if (stats["generation"] % 100) == 0:
+                    plt.clf()
+                    x_data = play.config["data"]["x"]
+                    y_data = play.config["data"]["y"]
+                    plt.plot(x_data, y_data)
+                    plt.plot(x_data, best_output)
+                    plt.draw()
 
         # reproduce
         del population.individuals[:]  # because we already have the best
-        for i in range(play.config["max_population"]):
-            child = copy.deepcopy(cur_best)
-            for i in range(5):
-                play.mutation.mutate(child)
+        for i in range(4):
+            child = copy.deepcopy(curr_best)
+            play.mutation.mutate(child)
             population.individuals.append(child)
+
+        print "BEST[score: {0}] {1}\n".format(curr_best.score, str(curr_best))
 
         # record
         if play.recorder and isinstance(play.recorder, JSONStore):
@@ -276,7 +290,7 @@ def play_evolution_strategy(play):
 
         # evaluate population
         results = []
-        play.evaluate(
+        eval_output = play.evaluate(
             population.individuals,
             play.functions,
             play.config,

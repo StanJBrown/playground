@@ -83,7 +83,7 @@ class TunerTests(unittest.TestCase):
         config = {
             "call_path": unittest_root,
             "max_population": None,
-            "max_generation": 1000,
+            "max_generation": 10,
 
             "tree_generation": {
                 "method": "RAMPED_HALF_AND_HALF_METHOD",

@@ -9,9 +9,10 @@ from playground.gp.cartesian.cartesian_generator import CartesianGenerator
 
 
 class CartesianMutation(object):
-    def __init__(self, config):
+    def __init__(self, config, **kwargs):
         self.config = config
-        self.recorder = config.get("recorder", None)
+        self.record_config = config.get("recorder", None)
+        self.recorder = kwargs.get("recorder", None)
         self.generator = CartesianGenerator(config)
 
         # mutation stats
@@ -39,7 +40,7 @@ class CartesianMutation(object):
 
     def mutate_new_conn_gene(self, old_gene, node_addr):
         retry = 0
-        retry_limit = 10
+        retry_limit = 20
         new_gene = old_gene
 
         while new_gene == old_gene and retry < retry_limit:
@@ -63,6 +64,17 @@ class CartesianMutation(object):
             old_gene = node[gene_index]
             new_gene = self.mutate_new_func_gene(old_gene)
 
+            old_arity = self.config["function_nodes"][old_gene]["arity"]
+            new_arity = self.config["function_nodes"][new_gene]["arity"]
+
+            if old_arity < new_arity:
+                for i in range(old_arity - new_arity):
+                    conn_gene = self.generator.gen_random_conn_gene(node_addr)
+                    cartesian.graph()[node_addr].append(conn_gene)
+            else:
+                for i in range(new_arity - old_arity):
+                    cartesian.graph()[node_addr].pop()
+
         # mutate connection gene
         else:
             old_gene = node[gene_index]
@@ -74,7 +86,7 @@ class CartesianMutation(object):
 
     def mutate_output_node(self, node_index, cartesian):
         retry = 0
-        retry_limit = 10
+        retry_limit = 20
         old_node_addr = cartesian.output_nodes[node_index]
         new_node_addr = old_node_addr
 
@@ -92,15 +104,18 @@ class CartesianMutation(object):
             return new_node_addr
 
     def point_mutation(self, cartesian):
-        # chose random node
-        node_pool = cartesian.func_nodes + cartesian.output_nodes
-        index = randint(0, len(node_pool) - 2)
         result = None
+        num_inputs = self.config["cartesian"]["num_inputs"]
+        num_outputs = self.config["cartesian"]["num_outputs"]
+        num_funcs = len(cartesian.func_nodes)
+        max_addr = num_inputs + num_funcs + num_outputs - 1
+
+        # chose random node
+        node_addr = randint(num_inputs, max_addr)
 
         # mutate function node
-        if index < (len(node_pool) - len(cartesian.output_nodes) - 1):
+        if node_addr < num_inputs + num_funcs:
             # convert index to node_addr in cartesian graph and mutate
-            node_addr = index + len(cartesian.input_nodes)
             gene_index = self.mutate_function_node(node_addr, cartesian)
             result = {
                 "mutated_node": "FUNC_NODE",
@@ -111,7 +126,7 @@ class CartesianMutation(object):
         # mutate output node
         else:
             # convert index to output node index and mutate
-            node_index = index - (len(cartesian.func_nodes) - 1)
+            node_index = node_addr - num_inputs - num_funcs
             new_addr = self.mutate_output_node(node_index, cartesian)
             result = {
                 "mutated_node": "OUTPUT_NODE",

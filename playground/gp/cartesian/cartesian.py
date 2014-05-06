@@ -6,6 +6,8 @@ class Cartesian(object):
         self.cartesian_id = None
         self.score = None
 
+        self.config = kwargs["config"]
+
         # graph config
         self.rows = kwargs["rows"]
         self.columns = kwargs["columns"]
@@ -27,6 +29,39 @@ class Cartesian(object):
 
     def graph(self):
         return self.input_nodes + self.func_nodes
+
+    def traverse(self, node_addr):
+        tree_str = ""
+
+        # pre-check edge cases
+        if node_addr < len(self.input_nodes):
+            input_name = self.program()[node_addr]
+            return input_name
+
+        # get node details
+        node = self.program()[node_addr]
+        conn_genes = node[1:]
+        arity = len(conn_genes)
+
+        # print node children and root
+        tree_str += "("
+        if arity == 2:
+            tree_str += self.traverse(conn_genes.pop())
+            tree_str += " "
+            tree_str += self.config["function_nodes"][node[0]]["name"]
+            tree_str += " "
+            tree_str += self.traverse(conn_genes.pop())
+
+        elif arity == 1:
+            tree_str += self.config["function_nodes"][node[0]]["name"]
+            tree_str += " "
+            tree_str += self.traverse(conn_genes.pop())
+        tree_str += ")"
+
+        return tree_str
+
+    def __str__(self):
+        return self.traverse(self.output_nodes[0])
 
     def to_dict(self):
         self_dict = {

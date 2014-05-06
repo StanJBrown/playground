@@ -206,7 +206,7 @@ class PlayTests(unittest.TestCase):
             ],
 
             "input_variables": [
-                {"name": "a"},
+                {"name": "x"},
                 {"name": "1"},
             ],
 
@@ -222,7 +222,7 @@ class PlayTests(unittest.TestCase):
             ],
 
             "data": {
-                "a": [1, 2, 3, 4],
+                "x": [1, 2, 3, 4],
                 "1": [1, 1, 1, 1],
                 "y": [2, 4, 6, 8]
             },
@@ -238,14 +238,12 @@ class PlayTests(unittest.TestCase):
         generator = CartesianGenerator(config)
         population = generator.init()
 
-        mutation = CartesianMutation(config)
-
         start_time = time.time()
         details = play.play_details(
             population=population,
             functions=cgp_functions,
             evaluate=cgp_evaluate.evaluate,
-            mutation=mutation,
+            mutation=CartesianMutation(config),
             stop_func=cgp_evaluate.default_stop_func,
             print_func=cgp_evaluate.print_func,
             config=config
@@ -255,8 +253,10 @@ class PlayTests(unittest.TestCase):
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
 
         # assert
-        self.assertTrue(population.generation < config["max_generation"])
-        self.assertEquals(len(population.individuals), config["max_population"])
+        generation = population.generation
+        individuals = population.individuals
+        self.assertTrue(generation <= config["max_generation"])
+        self.assertEquals(len(individuals), config["max_population"])
 
 
 if __name__ == "__main__":

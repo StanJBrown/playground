@@ -61,6 +61,7 @@ class CartesianMutationTests(unittest.TestCase):
         ]
         self.output_nodes = [4, 9, 12, 13]
         self.cartesian = Cartesian(
+            config={},
             rows=1,
             columns=14,
             levels_back=0,
@@ -122,6 +123,7 @@ class CartesianMutationTests(unittest.TestCase):
             # asserts
             if self.mutator.index["mutated_node"] == "FUNC_NODE":
                 self.assertNotEquals(graph_before, graph_after)
+
             elif self.mutator.index["mutated_node"] == "OUTPUT_NODE":
                 index = self.mutator.index["output_node"]
                 num_outputs = len(self.cartesian.output_nodes)

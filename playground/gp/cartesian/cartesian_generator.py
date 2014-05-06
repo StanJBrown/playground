@@ -107,7 +107,7 @@ class CartesianGenerator(object):
         columns = self.config["cartesian"]["columns"]
         max_addr = rows * columns - 1
 
-        return self.gen_random_conn_gene(max_addr)
+        return self.gen_random_conn_gene(max_addr, "OUTPUT_NODE")
 
     def prep_input_nodes(self):
         inputs = self.config["input_variables"]
@@ -146,6 +146,7 @@ class CartesianGenerator(object):
 
         # create new cartesian obj
         return Cartesian(
+            config=self.config,
             rows=self.config["cartesian"]["rows"],
             columns=self.config["cartesian"]["columns"],
             levels_back=self.config["cartesian"]["levels_back"],

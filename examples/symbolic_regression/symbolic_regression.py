@@ -32,7 +32,18 @@ if __name__ == "__main__":
         random.seed(10)  # seed random so results can be reproduced
         config = config.load_config(config_fp, script_path)
         json_store = JSONStore(config)
-        functions = GPFunctionRegistry()
+        functions = {
+            "ADD": "+",
+            "SUB": "-",
+            "MUL": "*",
+            "DIV": "/",
+            "POW": "**",
+            "SIN": "math.sin",
+            "COS": "math.cos",
+            "RAD": "math.radians",
+            "LN": "math.ln",
+            "LOG": "math.log"
+        }
         tree_generator = TreeGenerator(config)
 
         # genetic operators
@@ -47,6 +58,7 @@ if __name__ == "__main__":
         details = play.play_details(
             population=population,
             evaluate=evaluate,
+            functions=functions,
             selection=selection,
             crossover=crossover,
             mutation=mutation,

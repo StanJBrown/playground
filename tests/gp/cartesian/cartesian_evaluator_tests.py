@@ -8,64 +8,94 @@ from playground.gp.cartesian.cartesian import Cartesian
 from playground.gp.cartesian.cartesian_evaluator import evaluate_cartesian
 import playground.gp.functions as functions
 
+from playground.config import load_data
+
 
 class CartesianEvaluatorTests(unittest.TestCase):
     def setUp(self):
         self.config = {
             "cartesian": {
-                "rows": 4,
+                "rows": 1,
                 "columns": 4,
-                "levels_back": 2,
+                "levels_back": 4,
 
-                "num_inputs": 4,
-                "num_outputs": 4
+                "num_inputs": 12,
+                "num_outputs": 1
             },
 
             "input_variables": [
-                {"name": "a"},
-                {"name": "b"},
-                {"name": "c"},
-                {"name": "d"}
+                {"type": "INPUT", "name": "x"},
+                {"type": "CONSTANT", "name": "0.0"},
+                {"type": "CONSTANT", "name": "1.0"},
+                {"type": "CONSTANT", "name": "2.0"},
+                {"type": "CONSTANT", "name": "3.0"},
+                {"type": "CONSTANT", "name": "4.0"},
+                {"type": "CONSTANT", "name": "5.0"},
+                {"type": "CONSTANT", "name": "6.0"},
+                {"type": "CONSTANT", "name": "7.0"},
+                {"type": "CONSTANT", "name": "8.0"},
+                {"type": "CONSTANT", "name": "9.0"},
+                {"type": "CONSTANT", "name": "10.0"}
             ],
+
+            "function_nodes": [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "SIN", "arity": 1},
+                {"type": "FUNCTION", "name": "COS", "arity": 1},
+                {"type": "FUNCTION", "name": "RAD", "arity": 1}
+            ],
+
+            "response_variable": {
+                "name": "y"
+            },
 
             "response_variables": [
                 {"name": "y"}
             ],
 
-            "data": {
-                "a": [1, 2, 3, 4],
-                "b": [1, 2, 3, 4],
-                "c": [1, 2, 3, 4],
-                "d": [1, 2, 3, 4]
-            },
+            "data_file": "../../data/sine.dat",
 
         }
+        script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+        load_data(self.config, script_path)
+
+        # add constants
+        rows = len(self.config["data"]["y"])
+        for i in range(11):
+            i = float(i)
+            self.config["data"][str(i) + ".0"] = [i for j in range(rows)]
+
         self.functions = [
             functions.add_function,
             functions.sub_function,
             functions.mul_function,
             functions.div_function,
+            functions.sin_function,
+            functions.cos_function,
+            functions.rad_function
         ]
 
-        self.input_nodes = ["a", "b", "c", "d"]
-        self.func_nodes = [
-            [0, 0, 2],
-            [0, 0, 3],
-            [3, 4, 5],
-            [0, 1, 2],
-            [0, 1, 3],
-            [2, 5, 7],
-            [2, 6, 9],
-            [0, 5, 7],
-            [2, 11, 8],
-            [0, 11, 8]
+        self.input_nodes = [
+            "x",
+            "0.0", "1.0", "2.0", "3.0", "4.0", "5.0",
+            "6.0", "7.0", "8.0", "9.0", "10.0"
         ]
-        self.output_nodes = [4, 9, 12, 13]
+        self.func_nodes = [
+            [2, 11, 11],    # 12
+            [6, 0],         # 13
+            [2, 12, 13],    # 14
+            [4, 14],        # 15
+        ]
+        self.output_nodes = [15]
 
         self.cartesian = Cartesian(
+            config={},
             rows=1,
-            columns=14,
-            levels_back=0,
+            columns=4,
+            levels_back=4,
             func_nodes=self.func_nodes,
             input_nodes=self.input_nodes,
             output_nodes=self.output_nodes
@@ -75,13 +105,15 @@ class CartesianEvaluatorTests(unittest.TestCase):
         pass
 
     def test_evaluate_cartesian(self):
+        print self.cartesian.program()
         result, outputs = evaluate_cartesian(
             self.cartesian,
             self.functions,
             self.config
         )
-        self.assertIsNotNone(result)
-        self.assertIsNotNone(outputs)
+        print result
+        # self.assertIsNotNone(result)
+        # self.assertIsNotNone(outputs)
 
     # def test_evaluate(self):
     #     output = evaluate_cartesian(self.cartesian, self.config)

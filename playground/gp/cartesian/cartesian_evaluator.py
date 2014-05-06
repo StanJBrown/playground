@@ -3,23 +3,26 @@
 
 def print_func(population, generation):
     # display best individual
-    best = population.find_best_individuals()[0]
-    print "generation:", generation
-    print "generation_best_score:", str(best.score)
+    best_individuals = population.find_best_individuals()
+    if best_individuals:
+        best = best_individuals[0]
+        print "generation:", generation
+        print "generation_best_score:", str(best.score)
 
-    # best individual
-    if best.score < 20.0:
-        print best.program()
+        # best individual
+        print "generatio_best:", str(best)
 
-    # population diversity
-    p = []
-    for i in population.individuals:
-        p.append(str(i))
-    p = set(p)
-    diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
-    print "population diversity:", str(diversity) + "%"
+        # population diversity
+        p = []
+        for i in population.individuals:
+            p.append(str(i.graph()))
+        p = set(p)
+        diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
+        print "population diversity:", str(diversity) + "%"
+        print ""
 
-    print
+    else:
+        print "generation:", generation
 
 
 def default_stop_func(popualtion, stats, config):
@@ -31,11 +34,9 @@ def default_stop_func(popualtion, stats, config):
     stop = False
 
     if stats["generation"] >= max_gen:
-        print "1"
         stop = True
 
     if stats["stale_counter"] >= stale_limit:
-        print "2"
         stop = True
 
     if stop_score is not None:
@@ -88,12 +89,12 @@ def traverse(cartesian, node_addr, functions, output, visited, config):
     # get current node
     node = cartesian.graph()[node_addr]
 
-    # check arity first
+    # traverse children first
     conn_genes = node[1:]
     for conn in conn_genes:
         traverse(cartesian, conn, functions, output, visited, config)
 
-    # check root node
+    # traverse root node
     if node_addr not in visited:
         # evaluate function with data
         node_output = eval_node(node, conn_genes, functions, output, config)
@@ -107,37 +108,44 @@ def evaluate_cartesian(cartesian, functions, config):
     visited = []
     results = []
     output = {}
+    output_node_data = []
+    sse = None
 
-    # prep output with input data
-    for i in range(len(cartesian.input_nodes)):
-        output[i] = cartesian.input_nodes[i]
+    try:
+        # prep output with input data
+        for i in range(len(cartesian.input_nodes)):
+            output[i] = cartesian.input_nodes[i]
 
-    # for node in output_nodes:
-    for output_node_index in range(len(cartesian.output_nodes)):
-        node_addr = cartesian.output_nodes[output_node_index]
-        traverse(cartesian, node_addr, functions, output, visited, config)
-        results.append(output[node_addr])
+        # for node in output_nodes:
+        for output_node_index in range(len(cartesian.output_nodes)):
+            node_addr = cartesian.output_nodes[output_node_index]
+            traverse(cartesian, node_addr, functions, output, visited, config)
+            results.append(output[node_addr])
 
-        # get output from node
-        output_node_data = []
-        if node_addr < len(cartesian.input_nodes):
-            input_name = cartesian.input_nodes[node_addr]
-            output_node_data = config["data"][input_name]
-        else:
-            output_node_data = output[node_addr]
+            # get output from node
+            del output_node_data[:]
+            if node_addr < len(cartesian.input_nodes):
+                input_name = cartesian.input_nodes[node_addr]
+                output_node_data = config["data"][input_name]
+            else:
+                output_node_data = output[node_addr]
 
-        # get training data to compare
-        resp_var = config["response_variables"][output_node_index]["name"]
-        resp_data = config["data"][resp_var]
+            # get training data to compare
+            resp_var = config["response_variables"][output_node_index]["name"]
+            resp_data = config["data"][resp_var]
 
+            # calculate sum squared error (SSE)
+            sse = 0
+            for i in range(len(resp_data)):
+                sse += pow(abs(output_node_data[i] - resp_data[i]), 2)
+                # if abs(output_node_data[i] - resp_data[i]) > 0.1:
+                #     sse += 1
+            # sse += len(cartesian.program())
 
-        # calculate sum squared error (SSE)
-        sse = 0
-        for i in range(len(resp_data)):
-            sse += pow(abs(output_node_data[i] - resp_data[i]), 2)
+    except:
+        pass
 
-
-    return (sse, output)
+    return (sse, output_node_data)
 
 
 def record_eval(recorder, **kwargs):
@@ -167,11 +175,11 @@ def record_eval(recorder, **kwargs):
 
 
 def evaluate(cartesians, functions, config, results, cache={}, recorder=None):
-    evaluator_config = config.get("evaluator", None)
+    # evaluator_config = config.get("evaluator", None)
     use_cache = True
 
     best_score = None
-    best_result = None
+    best_output = None
     cartesians_evaluated = 0
     nodes_evaluated = 0
     match_cached = 0
@@ -179,20 +187,26 @@ def evaluate(cartesians, functions, config, results, cache={}, recorder=None):
     # evaluate cartesians
     for cartesian in cartesians:
         score = None
-        res = None
+        output = None
 
         # use cahce?
         if use_cache:
             if str(cartesian) not in cache:
-                score, res = evaluate_cartesian(cartesian, functions, config)
+                score, output = evaluate_cartesian(
+                    cartesian,
+                    functions,
+                    config
+                )
                 nodes_evaluated += cartesian.rows * cartesian.columns
                 cartesians_evaluated += 1
             else:
-                score = cache[str(cartesian)]
+                cached_record = cache[str(cartesian)]
+                score = cached_record["score"]
+                output = cached_record["output"]
                 match_cached += 1
 
         else:
-            score, res = evaluate_cartesian(cartesian, functions, config)
+            score, output = evaluate_cartesian(cartesian, functions, config)
             nodes_evaluated += cartesian.size
 
         # check result
@@ -200,12 +214,12 @@ def evaluate(cartesians, functions, config, results, cache={}, recorder=None):
             cartesian.score = score
             results.append(cartesian)
 
-            if score < best_score or best_score is None:
+            if score <= best_score or best_score is None:
                 best_score = score
-                best_result = res
+                best_output = output
 
         # cache cartesian
-        cache[str(cartesian)] = score
+        cache[str(cartesian)] = {"score": score, "output": output}
 
     if recorder:
         # calculate cartesian diversity
@@ -224,4 +238,4 @@ def evaluate(cartesians, functions, config, results, cache={}, recorder=None):
             diversity=diversity
         )
 
-    return best_result
+    return best_output

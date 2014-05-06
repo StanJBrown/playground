@@ -184,37 +184,37 @@ class PlayTests(unittest.TestCase):
     def test_play_evolution_strategy_cgp(self):
         print "EVOLUTION STRATEGY - CGP"
         config = {
+            "stale_limit": 10,
+            "stop_score": 0,
             "max_population": 4,
             "max_generation": 100,
 
             "cartesian": {
-                "rows": 4,
-                "columns": 4,
-                "levels_back": 2,
+                "rows": 2,
+                "columns": 3,
+                "levels_back": 1,
 
-                "num_inputs": 4,
-                "num_outputs": 4
+                "num_inputs": 2,
+                "num_outputs": 1
             },
 
             "function_nodes": [
                 {"type": "FUNCTION", "name": "ADD", "arity": 2},
                 {"type": "FUNCTION", "name": "SUB", "arity": 2},
                 {"type": "FUNCTION", "name": "MUL", "arity": 2},
-                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2}
             ],
 
             "input_variables": [
                 {"name": "a"},
-                {"name": "b"},
-                {"name": "c"},
-                {"name": "d"}
+                {"name": "1"},
             ],
 
             "mutation": {
                 "methods": [
                     "POINT_MUTATION"
                 ],
-                "probability": 0.2
+                "probability": 1.0
             },
 
             "response_variables": [
@@ -223,9 +223,8 @@ class PlayTests(unittest.TestCase):
 
             "data": {
                 "a": [1, 2, 3, 4],
-                "b": [1, 2, 3, 4],
-                "c": [1, 2, 3, 4],
-                "d": [1, 2, 3, 4]
+                "1": [1, 1, 1, 1],
+                "y": [2, 4, 6, 8]
             },
 
         }
@@ -254,11 +253,10 @@ class PlayTests(unittest.TestCase):
         play.play_evolution_strategy(details)
         end_time = time.time()
         print("GP run without cache: %2.2fsec\n" % (end_time - start_time))
-        # self.assertEquals(population.generation, 5)
 
         # assert
-        # self.assertTrue(len(population.individuals) >= 1)
-        # because 1 or more individual may have evaluation error
+        self.assertTrue(population.generation < config["max_generation"])
+        self.assertEquals(len(population.individuals), config["max_population"])
 
 
 if __name__ == "__main__":

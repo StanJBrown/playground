@@ -10,37 +10,44 @@ from playground.gp.functions import EvaluationError
 def print_func(population, generation):
     # display best individual
     tree_parser = TreeParser()
-    best = population.find_best_individuals()[0]
+    best_individuals = population.find_best_individuals()
+    best = None
+    if len(best_individuals):
+        best = best_individuals[0]
+
     print "generation:", generation
-    print "best_score:", str(best.score)
-    print "tree_size:", str(best.size)
+    if best:
+        print "best_score:", str(best.score)
+        print "tree_size:", str(best.size)
+    else:
+        print "No valid trees in this generation"
 
     # best individual
-    print "best:", tree_parser.parse_equation(best.root)
-    if best.score < 20.0:
-        eq = tree_parser.parse_equation(best.root)
-        if best.size < 20:
-            eq = eq.replace("ADD", "+")
-            eq = eq.replace("SUB", "-")
-            eq = eq.replace("MUL", "*")
-            eq = eq.replace("DIV", "/")
-            eq = eq.replace("POW", "**")
-            eq = eq.replace("SIN", "sin")
-            eq = eq.replace("COS", "cos")
-            eq = eq.replace("RAD", "rad")
-            eq = eq.replace("LN", "ln")
-            eq = eq.replace("LOG", "log")
-            print "EQ SIMPLIFIED:", simplify(eq)
+    if best:
+        print "best:", tree_parser.parse_equation(best.root)
+        if best.score < 20.0:
+            eq = tree_parser.parse_equation(best.root)
+            if best.size < 20:
+                eq = eq.replace("ADD", "+")
+                eq = eq.replace("SUB", "-")
+                eq = eq.replace("MUL", "*")
+                eq = eq.replace("DIV", "/")
+                eq = eq.replace("POW", "**")
+                eq = eq.replace("SIN", "sin")
+                eq = eq.replace("COS", "cos")
+                eq = eq.replace("RAD", "rad")
+                eq = eq.replace("LN", "ln")
+                eq = eq.replace("LOG", "log")
+                print "EQ SIMPLIFIED:", simplify(eq)
 
-    # population diversity
-    p = []
-    for i in population.individuals:
-        p.append(str(i))
-    p = set(p)
-    diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
-    print "population diversity:", str(diversity) + "%"
-
-    print
+        # population diversity
+        p = []
+        for i in population.individuals:
+            p.append(str(i))
+        p = set(p)
+        diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
+        print "population diversity:", str(diversity) + "%"
+    print ""
 
 
 def default_stop_func(popualtion, general_stats, config):

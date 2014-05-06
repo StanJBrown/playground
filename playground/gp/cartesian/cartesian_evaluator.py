@@ -5,11 +5,11 @@ def print_func(population, generation):
     # display best individual
     best = population.find_best_individuals()[0]
     print "generation:", generation
-    print "best_score:", str(best.score)
+    print "generation_best_score:", str(best.score)
 
     # best individual
     if best.score < 20.0:
-        print best
+        print best.program()
 
     # population diversity
     p = []
@@ -22,25 +22,27 @@ def print_func(population, generation):
     print
 
 
-def default_stop_func(popualtion, general_stats, config):
+def default_stop_func(popualtion, stats, config):
     max_gen = config["max_generation"]
     stale_limit = config.get("stale_limit", 10)
+    stop_score = config.get("stop_score", None)
+    curr_best = stats["current_best"]
+    curr_best_score = None if curr_best is None else curr_best.score
+    stop = False
 
-    if general_stats["generation"] >= max_gen:
-        return True
+    if stats["generation"] >= max_gen:
+        print "1"
+        stop = True
 
-    elif general_stats["stale_counter"] >= stale_limit:
-        return True
+    if stats["stale_counter"] >= stale_limit:
+        print "2"
+        stop = True
 
-    elif config.get("stop_score", None):
-        if config["stop_score"] <= general_stats["best"].score:
-            return True
+    if stop_score is not None:
+        if curr_best_score is not None and stop_score >= curr_best_score:
+            stop = True
 
-    return False
-
-
-def get_arity(node):
-    return len(node) - 1
+    return stop
 
 
 def eval_node(node, conn_genes, functions, data, config):
@@ -78,13 +80,13 @@ def eval_node(node, conn_genes, functions, data, config):
     return node_output
 
 
-def traverse(cartesian, node_index, functions, output, visited, config):
+def traverse(cartesian, node_addr, functions, output, visited, config):
     # pre-check
-    if node_index < len(cartesian.input_nodes):
+    if node_addr < len(cartesian.input_nodes):
         return
 
     # get current node
-    node = cartesian.graph()[node_index]
+    node = cartesian.graph()[node_addr]
 
     # check arity first
     conn_genes = node[1:]
@@ -92,13 +94,13 @@ def traverse(cartesian, node_index, functions, output, visited, config):
         traverse(cartesian, conn, functions, output, visited, config)
 
     # check root node
-    if node_index not in visited:
+    if node_addr not in visited:
         # evaluate function with data
         node_output = eval_node(node, conn_genes, functions, output, config)
 
         # record node output and append node index to visited
-        output[node_index] = node_output
-        visited.append(node_index)
+        output[node_addr] = node_output
+        visited.append(node_addr)
 
 
 def evaluate_cartesian(cartesian, functions, config):
@@ -111,11 +113,31 @@ def evaluate_cartesian(cartesian, functions, config):
         output[i] = cartesian.input_nodes[i]
 
     # for node in output_nodes:
-    for node_index in cartesian.output_nodes:
-        traverse(cartesian, node_index, functions, output, visited, config)
-        results.append(output[node_index])
+    for output_node_index in range(len(cartesian.output_nodes)):
+        node_addr = cartesian.output_nodes[output_node_index]
+        traverse(cartesian, node_addr, functions, output, visited, config)
+        results.append(output[node_addr])
 
-    return (results, output)
+        # get output from node
+        output_node_data = []
+        if node_addr < len(cartesian.input_nodes):
+            input_name = cartesian.input_nodes[node_addr]
+            output_node_data = config["data"][input_name]
+        else:
+            output_node_data = output[node_addr]
+
+        # get training data to compare
+        resp_var = config["response_variables"][output_node_index]["name"]
+        resp_data = config["data"][resp_var]
+
+
+        # calculate sum squared error (SSE)
+        sse = 0
+        for i in range(len(resp_data)):
+            sse += pow(abs(output_node_data[i] - resp_data[i]), 2)
+
+
+    return (sse, output)
 
 
 def record_eval(recorder, **kwargs):

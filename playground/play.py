@@ -84,14 +84,19 @@ def reproduce(population, crossover, mutation, config):
 
 def update_generation_stats(stats, population):
     # obtain the best individual and set stale counter
-    stats["generation_best"] = population.find_best_individuals()[0]
+    best_individuals = population.find_best_individuals()
+    if len(best_individuals) > 0:
+        stats["generation_best"] = population.find_best_individuals()[0]
+    else:
+        stats["generation_best"] = None
 
     if stats["current_best"] is None:
         stats["current_best"] = copy.deepcopy(stats["generation_best"])
 
-    elif stats["generation_best"].score < stats["current_best"].score:
-        stats["current_best"] = stats["generation_best"]
-        stats["stale_counter"] = 1  # reset stale counter
+    if stats["generation_best"] is not None:
+        if stats["generation_best"].score < stats["current_best"].score:
+            stats["current_best"] = stats["generation_best"]
+            stats["stale_counter"] = 1  # reset stale counter
 
     else:
         stats["stale_counter"] += 1
@@ -242,6 +247,7 @@ def play_evolution_strategy(play):
         play.recorder
     )
     population.individuals = results
+    cur_best = copy.deepcopy(population.find_best_individuals()[0])
 
     while play.stop_func(population, stats, play.config) is False:
         # print function
@@ -249,11 +255,19 @@ def play_evolution_strategy(play):
         if play.print_func:
             play.print_func(population, stats["generation"])
 
+        # update best individual
+        best_individuals = population.find_best_individuals()
+        if len(best_individuals):
+            pop_best = copy.deepcopy(best_individuals[0])
+            if pop_best.score < cur_best.score:
+                cur_best = copy.deepcopy(pop_best)
+
         # reproduce
         del population.individuals[:]  # because we already have the best
-        for i in xrange(play.config["max_population"]):
-            child = copy.deepcopy(stats["current_best"])
-            play.mutation.mutate(child)
+        for i in range(play.config["max_population"]):
+            child = copy.deepcopy(cur_best)
+            for i in range(5):
+                play.mutation.mutate(child)
             population.individuals.append(child)
 
         # record

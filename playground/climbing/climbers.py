@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python2
 import copy
 
 from playground.climbing.utils import stop_function as default_stop_function

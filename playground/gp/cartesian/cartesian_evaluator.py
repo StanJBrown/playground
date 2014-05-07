@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python2
 
 
 def print_func(population, generation):
@@ -17,7 +17,8 @@ def print_func(population, generation):
         for i in population.individuals:
             p.append(str(i.graph()))
         p = set(p)
-        diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
+        diversity = (len(p) / float(len(population.individuals))) * 100
+        diversity = round(diversity, 2)
         print "population diversity:", str(diversity) + "%"
         print ""
 
@@ -199,6 +200,7 @@ def evaluate(cartesians, functions, config, results, cache={}, recorder=None):
                 )
                 nodes_evaluated += cartesian.rows * cartesian.columns
                 cartesians_evaluated += 1
+
             else:
                 cached_record = cache[str(cartesian)]
                 score = cached_record["score"]

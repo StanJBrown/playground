@@ -45,12 +45,12 @@ def play_details(**kwargs):
     )
 
 
-def reproduce(population, crossover, mutation, config):
-    max_pop = config["max_population"]
+def play_ga_reproduce(play):
+    max_pop = play.config["max_population"]
 
     # make a copy of population individuals and delete them from population
-    parents = list(population.individuals)
-    del population.individuals[:]
+    parents = list(play.population.individuals)
+    del play.population.individuals[:]
 
     # make individuals even numbered
     if len(parents) % 2 == 1:
@@ -64,13 +64,13 @@ def reproduce(population, crossover, mutation, config):
         child_2 = parents.pop()
 
         # crossover
-        if crossover:
-            crossover.crossover(child_1, child_2)
+        if play.crossover:
+            play.crossover.crossover(child_1, child_2)
 
         # mutation
-        if mutation:
-            mutation.mutate(child_1)
-            mutation.mutate(child_2)
+        if play.mutation:
+            play.mutation.mutate(child_1)
+            play.mutation.mutate(child_2)
 
         # append children to new generation
         new_gen.append(child_1)
@@ -81,23 +81,35 @@ def reproduce(population, crossover, mutation, config):
         new_gen.pop()
 
     # assign new generation to population
-    population.individuals = new_gen
+    play.population.individuals = new_gen
 
 
-def update_generation_stats(stats, population):
+def play_es_reproduce(play, stats):
+    # clear population - because we already have the best
+    del play.population.individuals[:]
+
+    # reproduce
+    for i in range(4):
+        child = copy.deepcopy(stats["all_time_best"])
+        play.mutation.mutate(child)
+        play.population.individuals.append(child)
+
+
+def play_update_generation_stats(play, stats):
     # obtain the best individual and set stale counter
-    best_individuals = population.find_best_individuals()
+    best_individuals = play.population.find_best_individuals()
+
     if len(best_individuals) > 0:
-        stats["generation_best"] = population.find_best_individuals()[0]
+        stats["generation_best"] = best_individuals[0]
     else:
         stats["generation_best"] = None
 
-    if stats["current_best"] is None:
-        stats["current_best"] = copy.deepcopy(stats["generation_best"])
+    if stats["all_time_best"] is None:
+        stats["all_time_best"] = copy.deepcopy(stats["generation_best"])
 
     if stats["generation_best"] is not None:
-        if stats["generation_best"].score < stats["current_best"].score:
-            stats["current_best"] = stats["generation_best"]
+        if stats["generation_best"].score < stats["all_time_best"].score:
+            stats["all_time_best"] = stats["generation_best"]
             stats["stale_counter"] = 1  # reset stale counter
 
     else:
@@ -106,209 +118,187 @@ def update_generation_stats(stats, population):
     stats["generation"] += 1
 
 
-def play(play):
-    population = play.population
-    stats = {"generation": 0, "stale_counter": 0, "current_best": None}
+def play_display_status(play, stats):
+    if play.print_func:
+        play.print_func(play.population, stats["generation"])
 
-    # evaluate population
+
+def play_record(play):
+    if play.recorder and isinstance(play.recorder, JSONStore):
+        play.recorder.record_population(play.population)
+        play.recorder.record_to_file()
+
+
+def play_finalize_recording(play):
+    if play.recorder is not None:
+        play.recorder.finalize()
+
+
+def play_evaluate(play, cache):
     results = []
-    cache = {}
-    play.evaluate(
-        population.individuals,
+    output = play.evaluate(
+        play.population.individuals,
         play.functions,
         play.config,
         results,
         cache,
         play.recorder
     )
-    population.individuals = results
+    play.population.individuals = results
 
-    while play.stop_func(population, stats, play.config) is False:
-        # update stats and print function
-        update_generation_stats(stats, population)
-        if play.print_func:
-            play.print_func(population, stats["generation"])
+    return output
 
-        # genetic genetic operators
-        play.selection.select(population)
-        reproduce(population, play.crossover, play.mutation, play.config)
 
-        # record
-        if play.recorder and isinstance(play.recorder, JSONStore):
-            play.recorder.record_population(population)
-            play.recorder.record_to_file()
+def play_multiprocess_evaluate(play, cache):
+    results = Manager().list()
+    nproc = float(multiprocessing.cpu_count() * 2)
+    chunk_sz = int(math.ceil(len(play.population.individuals) / nproc))
 
-        # evaluate population
-        results = []
-        play.evaluate(
-            population.individuals,
+    # start multiprocesses
+    processes = []
+    for i in xrange(int(nproc)):
+        start = chunk_sz * i
+        end = chunk_sz * (i + 1)
+        chunk = play.population.individuals[start:end]
+        args = (
+            chunk,
             play.functions,
             play.config,
             results,
             cache,
             play.recorder
         )
-        population.individuals = results
-        population.generation += 1
+
+        p = Process(target=play.evaluate, args=args)
+        processes.append(p)
+        p.start()
+
+    # wait till processes finish
+    for p in processes:
+        p.join()
+    del processes[:]
+
+    # assign results
+    play.population.individuals = [r for r in results]
+
+
+def play_edit_population(play, stats):
+    if play.config.get("tree_editor", False):
+        every = play.config["tree_editor"]["every"]
+        if stats["generation"] != 0 and stats["generation"] % every == 0:
+            print "\nEDIT TREES!\n"
+            play.tree_editor(population, play.functions)
+
+
+def play(play):
+    cache = {}
+    stats = {"generation": 0, "stale_counter": 0, "all_time_best": None}
+
+    # evaluate population
+    play_evaluate(play, cache)
+
+    while play.stop_func(play.population, stats, play.config) is False:
+        # update stats and print status
+        play_update_generation_stats(play, stats)
+        play_display_status(play, stats)
+
+        # genetic genetic operators
+        play.selection.select(play.population)
+        play_ga_reproduce(play)
+
+        # record
+        play_record(play)
+
+        # evaluate population
+        play_evaluate(play, cache)
+        play.population.generation += 1
 
         # edit population
-        if play.config.get("tree_editor", False):
-            every = play.config["tree_editor"]["every"]
-            if stats["generation"] != 0 and stats["generation"] % every == 0:
-                print "\nEDIT TREES!\n"
-                play.tree_editor(population, play.functions)
+        play_edit_population(play, stats)
 
-    # finalize recording
-    if play.recorder is not None:
-        play.recorder.finalize()
-    return population
+    # finish up
+    play_finalize_recording(play)
+    return play.population
 
 
 def play_multicore(play):
-    population = play.population
     manager = Manager()
-    nproc = float(multiprocessing.cpu_count() * 2)
-    stats = {"generation": 0, "stale_counter": 0, "current_best": None}
+    stats = {"generation": 0, "stale_counter": 0, "all_time_best": None}
 
     # evaluate population
-    results = []
     cache = {}
-    play.evaluate(
-        population.individuals,
-        play.functions,
-        play.config,
-        results,
-        cache,
-        play.recorder
-    )
-    population.individuals = results
+    play_multiprocess_evaluate(play, cache)
 
     processes = []
-    while play.stop_func(population, stats, play.config) is False:
-        # print function
-        update_generation_stats(stats, population)
-        if play.print_func:
-            play.print_func(population, stats["generation"])
+    while play.stop_func(play.population, stats, play.config) is False:
+        # update stats and print status
+        play_update_generation_stats(play, stats)
+        play_display_status(play, stats)
 
         # genetic genetic operators
-        play.selection.select(population)
-        reproduce(population, play.crossover, play.mutation, play.config)
+        play.selection.select(play.population)
+        play_ga_reproduce(play)
 
         # record
-        if play.recorder and isinstance(play.recorder, JSONStore):
-            play.recorder.record_population(population)
-            play.recorder.record_to_file()
+        play_record(play)
 
         # evaluate population - start multiple proceses
-        results = manager.list()
-        cache = manager.dict()
-        chunk_sz = int(math.ceil(len(population.individuals) / nproc))
-        for i in xrange(int(nproc)):
-            start = chunk_sz * i
-            end = chunk_sz * (i + 1)
-            chunk = population.individuals[start:end]
-            args = (
-                chunk,
-                play.functions,
-                play.config,
-                results,
-                cache,
-                play.recorder
-            )
+        play_multiprocess_evaluate(play, cache)
+        play.population.generation += 1
 
-            p = Process(target=play.evaluate, args=args)
-            processes.append(p)
-            p.start()
-
-        # wait till processes finish
-        for p in processes:
-            p.join()
-        del processes[:]
-        population.individuals = [r for r in results]
-        population.generation += 1
-
-    # finalize recording
-    if play.recorder is not None:
-        play.recorder.finalize()
-    return population
+    # finish up
+    play_finalize_recording(play)
+    return play.population
 
 
 def play_evolution_strategy(play):
-    population = play.population
-    stats = {"generation": 0, "stale_counter": 0, "current_best": None}
+    stats = {
+        "generation": 0,
+        "stale_counter": 0,
+        "all_time_best": None,
+        "best_output": None
+    }
 
     # evaluate population
-    results = []
     cache = {}
-    eval_output = play.evaluate(
-        population.individuals,
-        play.functions,
-        play.config,
-        results,
-        cache,
-        play.recorder
-    )
-    population.individuals = results
-    curr_best = copy.deepcopy(population.find_best_individuals()[0])
-    best_output = list(eval_output)
+    eval_output = play_evaluate(play, cache)
+    stats["best_output"] = list(eval_output)
 
-    while play.stop_func(population, stats, play.config) is False:
+    while play.stop_func(play.population, stats, play.config) is False:
         # print function
-        update_generation_stats(stats, population)
-        if play.print_func:
-            play.print_func(population, stats["generation"])
+        play_update_generation_stats(play, stats)
+        play_display_status(play, stats)
 
         # update best individual
-        best_individuals = population.find_best_individuals()
-        if len(best_individuals) > 0:
-            pop_best = copy.deepcopy(best_individuals[0])
+        # best_individuals = play.population.find_best_individuals()
+        # if len(best_individuals) > 0:
+        #     pop_best = copy.deepcopy(best_individuals[0])
 
-            if pop_best.score <= curr_best.score:
-                curr_best = copy.deepcopy(pop_best)
-                best_output = list(eval_output) if eval_output else best_output
+        #     if pop_best.score <= curr_best.score:
+        #         curr_best = copy.deepcopy(pop_best)
+        #         best_output = list(eval_output) if eval_output else best_output
 
-                if (stats["generation"] % 100) == 0:
-                    plt.clf()
-                    x_data = play.config["data"]["x"]
-                    y_data = play.config["data"]["y"]
-                    plt.plot(x_data, y_data)
-                    plt.plot(x_data, best_output)
-                    plt.draw()
+        #         if (stats["generation"] % 100) == 0:
+        #             plt.clf()
+        #             x_data = play.config["data"]["x"]
+        #             y_data = play.config["data"]["y"]
+        #             plt.plot(x_data, y_data)
+        #             plt.plot(x_data, best_output)
+        #             plt.draw()
 
         # reproduce
-        del population.individuals[:]  # because we already have the best
-        for i in range(4):
-            child = copy.deepcopy(curr_best)
-            play.mutation.mutate(child)
-            population.individuals.append(child)
-
-        print "BEST[score: {0}] {1}\n".format(curr_best.score, str(curr_best))
+        play_es_reproduce(play, stats)
 
         # record
-        if play.recorder and isinstance(play.recorder, JSONStore):
-            play.recorder.record_to_file()
+        play_record(play)
 
         # evaluate population
-        results = []
-        eval_output = play.evaluate(
-            population.individuals,
-            play.functions,
-            play.config,
-            results,
-            cache,
-            play.recorder
-        )
-        population.individuals = results
-        population.generation += 1
+        play_evaluate(play, cache)
+        play.population.generation += 1
 
         # edit population
-        if play.config.get("tree_editor", False):
-            every = play.config["tree_editor"]["every"]
-            if stats["generation"] != 0 and stats["generation"] % every == 0:
-                print "\nEDIT TREES!\n"
-                play.tree_editor(population, play.functions)
+        play_edit_population(play, stats)
 
     # finalize recording
-    if play.recorder is not None:
-        play.recorder.finalize()
-    return population
+    play_finalize_recording(play)
+    return play.population

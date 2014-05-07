@@ -66,7 +66,7 @@ def stop_func(population, general_stats, config):
     stop_score = config.get("stop_score", None)
 
     if general_stats["generation"] > 1:
-        if stop_score >= general_stats["current_best"].score:
+        if stop_score >= general_stats["all_time_best"].score:
             return True
 
     if general_stats["generation"] >= max_gen:

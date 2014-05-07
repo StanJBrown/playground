@@ -71,12 +71,14 @@ class PlayTests(unittest.TestCase):
             # print "\n"
 
             # reproduce
-            play.reproduce(
-                population,
-                self.crossover,
-                self.mutation,
-                self.config
+            play_details = play.play_details(
+                population=population,
+                crossover=self.crossover,
+                mutation=self.mutation,
+                evaluate=None,
+                config=self.config
             )
+            play.play_ga_reproduce(play_details)
 
             # print "REPRODUCE"
             # for i in population.individuals:

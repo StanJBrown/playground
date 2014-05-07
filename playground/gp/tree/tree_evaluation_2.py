@@ -31,7 +31,7 @@ def default_stop_func(popualtion, stats, config):
     max_gen = config["max_generation"]
     stale_limit = config.get("stale_limit", 10)
     stop_score = config.get("stop_score", None)
-    curr_best = stats["current_best"]
+    curr_best = stats["all_time_best"]
     curr_best_score = None if curr_best is None else curr_best.score
     stop = False
 

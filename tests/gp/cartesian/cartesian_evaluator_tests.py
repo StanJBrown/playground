@@ -48,13 +48,7 @@ class CartesianEvaluatorTests(unittest.TestCase):
                 {"type": "FUNCTION", "name": "RAD", "arity": 1}
             ],
 
-            "response_variable": {
-                "name": "y"
-            },
-
-            "response_variables": [
-                {"name": "y"}
-            ],
+            "response_variables" : [{"name": "y"}],
 
             "data_file": "../../data/sine.dat",
 

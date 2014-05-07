@@ -134,7 +134,7 @@ class ConfigTests(unittest.TestCase):
         self.assertEquals(input_node["data_index"], 0)
 
         # check index of y
-        response_var = self.config["response_variable"]
+        response_var = self.config["response_variables"][0]
         self.assertEquals(response_var["data_index"], 1)
 
     def test_parse_data_row(self):
@@ -143,7 +143,7 @@ class ConfigTests(unittest.TestCase):
         row = [0, 100]
         self.config["data"] = []
         variables = []
-        variables.append(self.config["response_variable"])
+        variables.append(self.config["response_variables"][0])
         variables.extend(self.config["input_variables"])
 
         # create data and variables (i.e. a data table in list form)

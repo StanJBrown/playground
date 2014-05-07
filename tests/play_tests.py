@@ -217,9 +217,7 @@ class PlayTests(unittest.TestCase):
                 "probability": 1.0
             },
 
-            "response_variables": [
-                {"name": "y"}
-            ],
+            "response_variables" : [{"name": "y"}],
 
             "data": {
                 "x": [1, 2, 3, 4],

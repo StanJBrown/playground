@@ -67,9 +67,7 @@
         {"type": "INPUT", "name": "x"}
     ],
 
-    "response_variable" : {
-        "name": "y"
-    },
+    "response_variables" : [{"name": "y"}],
 
     "recorder" : {
         "store_file": "/tmp/ea_stats.dat",

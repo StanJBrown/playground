@@ -24,15 +24,18 @@ def eval_tree(tree, functions, config):
     eq_func = generate_eq_function(tree, functions, config)
     data = config["data"]
 
-    response_var = config["response_variable"]["name"]
+    response_var = config["response_variables"][0]["name"]
     response_data = config["data"][response_var]
     input_vars = [i["name"] for i in config["input_variables"]]
     rows = len(response_data)
     residual = []
 
-    # import pprint
-    # pprint.pprint(config)
+    # pre-check
+    if len(config["response_variables"]) > 1:
+        err = "Tree evaulation only supports 1 response varaiable!"
+        raise RuntimeError(err)
 
+    # evaluate tree
     try:
         for i in xrange(rows):
             # get expected output and input

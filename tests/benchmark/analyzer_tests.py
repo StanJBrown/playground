@@ -79,7 +79,7 @@ class AnalzyerTests(unittest.TestCase):
             "data_file": None,
 
             "input_variables": [{"type": "INPUT", "name": "var1"}],
-            "response_variable": {"name": "answer"},
+            "response_variables": [{"name": "answer"}],
 
             "recorder": {
                 "store_file": None,

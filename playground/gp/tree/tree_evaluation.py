@@ -104,13 +104,19 @@ def eval_node(node, stack, functions, config, data_row=None):
 def eval_program(tree, tree_size, functions, config):
     try:
         stack = []
-        err = 0.0  # mean absolute error
+        err = 0.0  # residual squared error
         score = 0.0
-        response_var = config["response_variable"]["name"]
+        response_var = config["response_variables"][0]["name"]
         response_data = config["data"][response_var]
         rows = len(response_data)
         result = []
 
+        # pre-check
+        if len(config["response_variables"]) > 1:
+            err = "Tree evaulation only supports 1 response varaiable!"
+            raise RuntimeError(err)
+
+        # evaluate tree
         for i in xrange(rows):
             # evaluate program
             for node in tree.program:

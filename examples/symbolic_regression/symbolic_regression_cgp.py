@@ -76,7 +76,7 @@ if __name__ == "__main__":
                 {"type": "CONSTANT", "name": "1.0"}
             ],
 
-            "response_variable": {"name": "y"},
+            "response_variables": [{"name": "y"}],
 
             "recorder": {
                 "store_file": "/tmp/ea_stats.dat",
@@ -84,9 +84,6 @@ if __name__ == "__main__":
             }
         }
         load_data(config, script_path)
-        config["response_variables"] = [
-            config["response_variable"]
-        ]
 
         # add constants
         rows = len(config["data"]["y"])

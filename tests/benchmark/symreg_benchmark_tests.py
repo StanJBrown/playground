@@ -80,9 +80,7 @@ class SymRegBenchmarkTests(unittest.TestCase):
                 {"type": "INPUT", "name": "var1"}
             ],
 
-            "response_variable": {
-                "name": "answer"
-            },
+            "response_variables": [{"name": "answer"}],
 
             "recorder": {
                 "store_file": "/tmp/test.json",

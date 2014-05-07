@@ -57,7 +57,7 @@ class TreeEvaluatorTests(unittest.TestCase):
 
             "data_file": "tests/data/sine.dat",
 
-            "response_variable": {"name": "y"}
+            "response_variables": [{"name": "y"}]
         }
 
         config.load_data(self.config)

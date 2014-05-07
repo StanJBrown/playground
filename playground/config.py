@@ -18,14 +18,14 @@ def _parse_header(csv_reader, config):
     header = [el.strip() for el in header]
 
     # obtain and set response variable index
-    response_var = config["response_variable"]
-    response_index = _find_header_index(header, response_var["name"])
-    response_var["data_index"] = response_index
+    for response_var in config["response_variables"]:
+        response_index = _find_header_index(header, response_var["name"])
+        response_var["data_index"] = response_index
 
-    # obtain and set input variable index
-    for input_node in config["input_variables"]:
-        index = _find_header_index(header, input_node["name"])
-        input_node["data_index"] = index
+        # obtain and set input variable index
+        for input_node in config["input_variables"]:
+            index = _find_header_index(header, input_node["name"])
+            input_node["data_index"] = index
 
 
 def _parse_data_row(row, config, variables):
@@ -40,7 +40,7 @@ def _parse_data_row(row, config, variables):
 def _parse_data(csv_reader, config):
     # var list containig details what each column is
     variables = []
-    variables.append(config["response_variable"])
+    variables.extend(config["response_variables"])
     variables.extend(config["input_variables"])
 
     # create data and variables (i.e. a data table in list form)

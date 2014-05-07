@@ -57,7 +57,7 @@ if __name__ == "__main__":
             {"type": "TERM", "value": 10.0},
         ],
         "input_variables": [{"type": "INPUT", "name": "var1"}],
-        "response_variable": {"name": "answer"},
+        "response_variables": [{"name": "answer"}],
         "data_file": "arabas_et_al-f1.dat"
     }
     config["max_population"] = 10000

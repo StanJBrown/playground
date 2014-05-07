@@ -116,9 +116,7 @@
         }
     ],
 
-    "response_variable" : {
-        "name": "answer"
-    },
+    "response_variables" : [{"name": "answer"}],
 
     "recorder" : {
         "store_file": "/tmp/ea_stats.json"

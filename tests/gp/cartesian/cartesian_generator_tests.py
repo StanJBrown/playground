@@ -33,9 +33,7 @@ class CartesianGeneratorTests(unittest.TestCase):
 
             "data_file": "tests/data/sine.dat",
 
-            "response_variable": {
-                "name": "y"
-            },
+            "response_variables" : [{"name": "y"}],
 
             "input_variables": [
                 {"type": "INPUT", "name": "a"},

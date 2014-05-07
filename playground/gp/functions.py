@@ -11,6 +11,7 @@ class EvaluationError(Exception):
         return repr(self.message)
 
 
+# SYMBOLIC REGRESSION FUNCTIONS
 def add_function(right, left):
     try:
         return left + right
@@ -94,6 +95,44 @@ def exp_function(value):
         return math.exp(value)
     except Exception as e:
         raise EvaluationError("Opps! " + e.message)
+
+
+# LOGIC FUNCTIONS
+def and_function(input_1, input_2):
+    if input_1 and input_2:
+        return 1
+    else:
+        return 0
+
+def or_function(input_1, input_2):
+    if input_1 or input_2:
+        return 1
+    else:
+        return 0
+
+def not_function(value):
+    return not value
+
+
+def nand_function(input_1, input_2):
+    return not and_function(input_1, input_2)
+
+
+def nor_function(input_1, input_2):
+    return not or_function(input_1, input_2)
+
+
+def xor_function(input_1, input_2):
+    if input_1 and input_2:
+        return 0
+    elif not input_1 and not input_2:
+        return 0
+    elif input_1 or input_2:
+        return 1
+
+def xnor_function(input_1, input_2):
+    return not xor_function(input_1, input_2)
+
 
 
 class GPFunctionRegistry(object):

@@ -32,7 +32,7 @@ class PlayTests(unittest.TestCase):
     def setUp(self):
         random.seed(0)
         self.config = config.load_config(config_fp)
-        self.functions = GPFunctionRegistry()
+        self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.tree_generator = TreeGenerator(self.config)
 
         self.selection = Selection(self.config, recorder=None)

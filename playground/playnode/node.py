@@ -16,7 +16,7 @@ from playground.gp.functions import GPFunctionRegistry
 
 # GLOBAL VARS
 app = Flask(__name__)
-functions = GPFunctionRegistry()
+functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
 evaluate = evaluate
 
 

@@ -17,7 +17,7 @@ config_fp = os.path.join(script_path, config_file)
 class FunctionsTests(unittest.TestCase):
     def setUp(self):
         self.config_file = config.load_config(config_fp)
-        self.function = GPFunctionRegistry()
+        self.function = GPFunctionRegistry("SYMBOLIC_REGRESSION")
 
     def tearDown(self):
         del self.config_file

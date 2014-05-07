@@ -71,7 +71,7 @@ if __name__ == "__main__":
     start_time = time.time()
     tree_eval_1.evaluate(
         copy.deepcopy(population.individuals),
-        GPFunctionRegistry(),
+        GPFunctionRegistry("SYMBOLIC_REGRESSION"),
         config,
         results
     )
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     start_time = time.time()
     tree_eval_3.evaluate(
         copy.deepcopy(population.individuals),
-        GPFunctionRegistry(),
+        GPFunctionRegistry("SYMBOLIC_REGRESSION"),
         config,
         results
     )

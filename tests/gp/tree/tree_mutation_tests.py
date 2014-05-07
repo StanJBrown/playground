@@ -25,7 +25,7 @@ class TreeMutatorTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_path)
 
-        self.functions = GPFunctionRegistry()
+        self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.tree_generator = TreeGenerator(self.config)
 
         self.tree_parser = TreeParser()

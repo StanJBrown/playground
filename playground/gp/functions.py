@@ -97,23 +97,27 @@ def exp_function(value):
 
 
 class GPFunctionRegistry(object):
-    def __init__(self, override_defaults=False):
+    def __init__(self, functions_type=None):
         self.functions = {}
 
-        if override_defaults is False:
-            self.register("ADD", add_function)
-            self.register("SUB", sub_function)
-            self.register("MUL", mul_function)
-            self.register("DIV", div_function)
-            self.register("POW", pow_function)
+        if functions_type == "SYMBOLIC_REGRESSION":
+            self.symbolic_regression_mode()
 
-            self.register("SQ", sq_function)
-            self.register("COS", cos_function)
-            self.register("SIN", sin_function)
-            self.register("RAD", rad_function)
-            self.register("LN", ln_function)
-            self.register("LOG", ln_function)
-            self.register("EXP", exp_function)
+
+    def symbolic_regression_mode(self):
+        self.register("ADD", add_function)
+        self.register("SUB", sub_function)
+        self.register("MUL", mul_function)
+        self.register("DIV", div_function)
+        self.register("POW", pow_function)
+
+        self.register("SQ", sq_function)
+        self.register("COS", cos_function)
+        self.register("SIN", sin_function)
+        self.register("RAD", rad_function)
+        self.register("LN", ln_function)
+        self.register("LOG", ln_function)
+        self.register("EXP", exp_function)
 
     def register(self, function_name, function):
         self.functions[function_name] = function

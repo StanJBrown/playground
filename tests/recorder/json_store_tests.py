@@ -25,7 +25,7 @@ class JSONStoreTests(unittest.TestCase):
     def setUp(self):
         self.config = config.load_config(config_path)
 
-        self.functions = GPFunctionRegistry()
+        self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.tree_generator = TreeGenerator(self.config)
 
         self.json_store = JSONStore(self.config)

@@ -28,7 +28,7 @@ def gp_benchmark_loop(config):
         random.seed(config["random_seed"])  # VERY IMPORTANT!
         load_data(config, config["call_path"])
         json_store = JSONStore(config)
-        # functions = GPFunctionRegistry()
+        # functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         tree_generator = TreeGenerator(config)
 
         # genetic operators

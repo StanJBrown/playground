@@ -61,7 +61,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         }
         config.load_data(self.config)
 
-        self.functions = GPFunctionRegistry()
+        self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.tree_generator = TreeGenerator(self.config)
 
     def tearDown(self):

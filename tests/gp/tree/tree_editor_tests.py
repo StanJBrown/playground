@@ -13,7 +13,7 @@ from playground.gp.tree.tree import TreeNodeType
 
 class TreeEditorTests(unittest.TestCase):
     def setUp(self):
-        self.functions = GPFunctionRegistry()
+        self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
 
         term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
         term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)

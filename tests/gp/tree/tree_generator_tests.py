@@ -115,7 +115,7 @@ class TreeGeneratorTests(unittest.TestCase):
             ]
         }
 
-        self.functions = GPFunctionRegistry()
+        self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.tree_generator = TreeGenerator(self.config)
 
         self.tree_parser = TreeParser()

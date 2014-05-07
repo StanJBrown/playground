@@ -53,6 +53,9 @@ def _parse_data(csv_reader, config):
         _parse_data_row(row, config, variables)
         rownum += 1
 
+    # keep a record number of data rows
+    config["data"]["rows"] = rownum
+
 
 def load_data(config, abs_dir=None):
     # open data and csv reader

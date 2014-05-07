@@ -10,6 +10,7 @@ from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 import playground.gp.tree.tree_evaluation as tree_eval_1
 import playground.gp.tree.tree_evaluation_2 as tree_eval_2
+import playground.gp.tree.tree_evaluation_3 as tree_eval_3
 
 # SETTINGS
 script_path = os.path.dirname(__file__)
@@ -66,7 +67,7 @@ if __name__ == "__main__":
     population = generator.init()
     results = []
 
-    # Tree Evalutor 1
+    # TREE EVALUTOR 1
     start_time = time.time()
     tree_eval_1.evaluate(
         copy.deepcopy(population.individuals),
@@ -78,7 +79,7 @@ if __name__ == "__main__":
     time_taken = end_time - start_time
     print "Evaluator 1 took:", str(round(time_taken, 2)) + "s"
 
-    # Tree Evalutor 2
+    # TREE EVALUTOR 2
     functions = {
         "ADD": "+",
         "SUB": "-",
@@ -95,6 +96,18 @@ if __name__ == "__main__":
     tree_eval_2.evaluate(
         copy.deepcopy(population.individuals),
         functions,
+        config,
+        results
+    )
+    end_time = time.time()
+    time_taken = end_time - start_time
+    print "Evaluator 2 took:", str(round(time_taken, 2)) + "s"
+
+    # TREE EVALUTOR 3
+    start_time = time.time()
+    tree_eval_3.evaluate(
+        copy.deepcopy(population.individuals),
+        GPFunctionRegistry(),
         config,
         results
     )

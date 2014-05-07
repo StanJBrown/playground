@@ -160,10 +160,12 @@ class ConfigTests(unittest.TestCase):
     def test_parse_data(self):
         config._parse_header(self.csv_reader, self.config)
         config._parse_data(self.csv_reader, self.config)
+        self.config["data"].pop("rows")
         self.assertEquals(self.config["data"], self.solution)
 
     def test_load_data(self):
         config.load_data(self.config)
+        self.config["data"].pop("rows")
         self.assertEquals(self.config["data"], self.solution)
 
 

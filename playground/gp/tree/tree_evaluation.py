@@ -104,7 +104,7 @@ def eval_node(node, stack, functions, config, data_row=None):
 def eval_program(tree, tree_size, functions, config):
     try:
         stack = []
-        err = 0.0  # residual squared error
+        err = 0.0  # sum squared error
         score = 0.0
         response_var = config["response_variables"][0]["name"]
         response_data = config["data"][response_var]
@@ -113,7 +113,7 @@ def eval_program(tree, tree_size, functions, config):
 
         # pre-check
         if len(config["response_variables"]) > 1:
-            err = "Tree evaulation only supports 1 response varaiable!"
+            err = "Tree evaluation only supports 1 response variable!"
             raise RuntimeError(err)
 
         # evaluate tree
@@ -130,7 +130,9 @@ def eval_program(tree, tree_size, functions, config):
             # reset stack
             del stack[:]
 
+        # calculate fitness score
         score = err + (tree_size * 0.1)
+
         return score, result
 
     except EvaluationError:

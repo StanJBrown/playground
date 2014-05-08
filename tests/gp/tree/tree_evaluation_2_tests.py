@@ -204,8 +204,8 @@ class TreeEvaluatorTests(unittest.TestCase):
         tree.update()
 
         # evaluate tree
-        result = evaluator.eval_tree(tree, self.functions, self.config)
-        self.assertEquals(round(result, 7), 0.5000001)
+        score, output = evaluator.eval_tree(tree, self.functions, self.config)
+        self.assertEquals(round(score, 7), 0.5000001)
 
     def test_evaluate(self):
         population = self.tree_generator.init()

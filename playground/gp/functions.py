@@ -104,11 +104,13 @@ def and_function(input_1, input_2):
     else:
         return 0
 
+
 def or_function(input_1, input_2):
     if input_1 or input_2:
         return 1
     else:
         return 0
+
 
 def not_function(value):
     return not value
@@ -130,9 +132,9 @@ def xor_function(input_1, input_2):
     elif input_1 or input_2:
         return 1
 
+
 def xnor_function(input_1, input_2):
     return not xor_function(input_1, input_2)
-
 
 
 class GPFunctionRegistry(object):
@@ -141,7 +143,6 @@ class GPFunctionRegistry(object):
 
         if functions_type == "SYMBOLIC_REGRESSION":
             self.symbolic_regression_mode()
-
 
     def symbolic_regression_mode(self):
         self.register("ADD", add_function)
@@ -155,7 +156,7 @@ class GPFunctionRegistry(object):
         self.register("SIN", sin_function)
         self.register("RAD", rad_function)
         self.register("LN", ln_function)
-        self.register("LOG", ln_function)
+        self.register("LOG", log_function)
         self.register("EXP", exp_function)
 
     def register(self, function_name, function):

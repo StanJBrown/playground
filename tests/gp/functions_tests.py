@@ -54,6 +54,12 @@ class FunctionsTests(unittest.TestCase):
         self.assertEquals(result, 4.0)
         self.assertRaises(EvaluationError, func, "A", 2.0)
 
+        # SQ
+        func = self.function.get_function("SQ")
+        result = func(4.0)
+        self.assertEquals(result, 16.0)
+        self.assertRaises(EvaluationError, func, "A")
+
         # COS
         func = self.function.get_function("COS")
         result = func(0)
@@ -82,6 +88,12 @@ class FunctionsTests(unittest.TestCase):
         func = self.function.get_function("LOG")
         result = func(1)
         self.assertEquals(result, 0.0)
+        self.assertRaises(EvaluationError, func, "A")
+
+        # EXP
+        func = self.function.get_function("EXP")
+        result = func(0)
+        self.assertEquals(result, 1.0)
         self.assertRaises(EvaluationError, func, "A")
 
     def test_logic_functions(self):

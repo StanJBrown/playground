@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 import math
+import pylab as plt
 
 
 def print_func(population, generation):
@@ -25,6 +26,25 @@ def print_func(population, generation):
 
     else:
         print "generation:", generation
+
+
+def plot_func(play, stats):
+    x_axis = play.config["live_plot"]["x-axis"]
+    y_axis = play.config["live_plot"]["y-axis"]
+    generation = stats["generation"]
+    every = play.config["live_plot"].get("every", 100)
+
+    if (generation % every) == 0:
+        # obtain data
+        x_data = play.config["data"][x_axis]
+        y_data = play.config["data"][y_axis]
+
+        # plot graph
+        plt.clf()
+        plt.plot(x_data, y_data)
+        plt.plot(x_data, stats["best_output"])
+        plt.draw()
+        plt.pause(0.0001)  # very important else plot won't be displayed
 
 
 def default_stop_func(popualtion, stats, config):
@@ -74,6 +94,7 @@ def eval_tree(tree, functions, config):
     response_data = config["data"][response_var]
     input_vars = [i["name"] for i in config["input_variables"]]
     rows = len(response_data)
+    output = []
     residual = []
 
     # pre-check
@@ -90,16 +111,17 @@ def eval_tree(tree, functions, config):
 
             # evaluate
             eq_output = float(eq_func(*args))
+            output.append(eq_output)
             residual.append(eq_output - expected_output)
 
         # sum of squared errors
         sse = sum([pow(r, 2) for r in residual])
         score = sse + (tree.size * 0.1)
 
-        return score
+        return score, output
 
     except:
-        return None
+        return None, None
 
 
 def filter_trees(trees):
@@ -145,6 +167,8 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
     use_cache = evaluator_config.get("use_cache", False)
 
     best_score = None
+    best_output = None
+
     trees_evaluated = 0
     nodes_evaluated = 0
     match_cached = 0
@@ -152,19 +176,22 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
     # evaluate trees
     for tree in filter_trees(trees):
         score = None
+        output = None
 
         # use cahce?
         if use_cache:
             if str(tree) not in cache:
-                score = eval_tree(tree, functions, config)
+                score, output = eval_tree(tree, functions, config)
                 nodes_evaluated += tree.size
                 trees_evaluated += 1
             else:
-                score = cache[str(tree)]
+                cached_record = cache[str(tree)]
+                score = cached_record["score"]
+                output = cached_record["output"]
                 match_cached += 1
 
         else:
-            score = eval_tree(tree, functions, config)
+            score, output = eval_tree(tree, functions, config)
             nodes_evaluated += tree.size
 
         # update result
@@ -175,23 +202,36 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             # update best_score
             if score < best_score or best_score is None:
                 best_score = score
+                best_output = output
 
         # cache tree
-        cache[str(tree)] = score
+        cache[str(tree)] = {"score": score, "output": output}
 
     if recorder:
         # calculate tree diversity
         tree_strings = set([str(tree) for tree in trees])
         diversity = len(tree_strings) / float(len(trees))
 
+        # clean up cache
+        cache_copy = dict(cache)
+        for key in cache_copy:
+            score = None
+
+            if "score" in cache_copy[key]:
+                score = cache_copy[key]["score"]
+
+            cache_copy[key] = score
+
         # record evaluation statistics
         record_eval(
             recorder,
             use_cache=use_cache,
-            cache=cache,
-            cache_size=len(cache),
+            cache=cache_copy,
+            cache_size=len(cache_copy),
             match_cached=match_cached,
             trees_evaluated=trees_evaluated,
             tree_nodes_evaluated=nodes_evaluated,
             diversity=diversity
         )
+
+    return best_output

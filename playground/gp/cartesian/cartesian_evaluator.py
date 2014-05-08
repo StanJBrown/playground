@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+import pylab as plt
 
 
 def print_func(population, generation):
@@ -24,6 +25,25 @@ def print_func(population, generation):
 
     else:
         print "generation:", generation
+
+
+def plot_func(play, stats):
+    x_axis = play.config["live_plot"]["x-axis"]
+    y_axis = play.config["live_plot"]["y-axis"]
+    generation = stats["generation"]
+    every = play.config["live_plot"].get("every", 100)
+
+    if (generation % every) == 0:
+        # obtain data
+        x_data = play.config["data"][x_axis]
+        y_data = play.config["data"][y_axis]
+
+        # plot graph
+        plt.clf()
+        plt.plot(x_data, y_data)
+        plt.plot(x_data, stats["best_output"])
+        plt.draw()
+        plt.pause(0.0001)  # very important else plot won't be displayed
 
 
 def default_stop_func(popualtion, stats, config):

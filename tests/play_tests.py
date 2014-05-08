@@ -73,6 +73,7 @@ class PlayTests(unittest.TestCase):
             # reproduce
             play_details = play.play_details(
                 population=population,
+                selection=self.selection,
                 crossover=self.crossover,
                 mutation=self.mutation,
                 evaluate=None,

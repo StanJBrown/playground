@@ -69,6 +69,12 @@
 
     "response_variables" : [{"name": "y"}],
 
+    "live_plot": {
+        "every": 1,
+        "x-axis": "x",
+        "y-axis": "y"
+    },
+
     "recorder" : {
         "store_file": "/tmp/ea_stats.dat",
         "record_level": 2

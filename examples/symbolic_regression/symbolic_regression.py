@@ -11,9 +11,9 @@ import playground.play as play
 from playground.gp.tree.tree_generator import TreeGenerator
 from playground.gp.tree.tree_evaluation import default_stop_func
 from playground.gp.tree.tree_evaluation import print_func
+from playground.gp.tree.tree_evaluation_2 import plot_func
 from playground.gp.tree.tree_evaluation_2 import evaluate
 from playground.gp.tree.tree_editor import edit_trees
-from playground.gp.functions import GPFunctionRegistry
 from playground.selection import Selection
 from playground.gp.tree.tree_crossover import TreeCrossover
 from playground.gp.tree.tree_mutation import TreeMutation
@@ -63,6 +63,7 @@ if __name__ == "__main__":
             crossover=crossover,
             mutation=mutation,
             print_func=print_func,
+            plot_func=plot_func,
             stop_func=default_stop_func,
             config=config,
             tree_editor=edit_trees,
@@ -70,7 +71,6 @@ if __name__ == "__main__":
         )
 
         play.play(details)
-        # play.play_multicore(details)
         # play.play_evolution_strategy(details)
 
         end_time = time.time()

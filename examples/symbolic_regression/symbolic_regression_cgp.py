@@ -15,6 +15,7 @@ from playground.gp.cartesian.cartesian_generator import CartesianGenerator
 from playground.gp.cartesian.cartesian_evaluator import evaluate
 from playground.gp.cartesian.cartesian_evaluator import default_stop_func
 from playground.gp.cartesian.cartesian_evaluator import print_func
+from playground.gp.cartesian.cartesian_evaluator import plot_func
 
 from playground.selection import Selection
 from playground.recorder.json_store import JSONStore
@@ -31,7 +32,7 @@ if __name__ == "__main__":
         # setup
         # random.seed(10)  # seed random so results can be reproduced
         config = {
-            "max_population": 100,
+            "max_population": 1000,
             "max_generation": 300000,
             "stale_limit": 2000,
             "stop_score": 0,
@@ -78,6 +79,12 @@ if __name__ == "__main__":
 
             "response_variables": [{"name": "y"}],
 
+            "live_plot": {
+                "every": 10,
+                "x-axis": "x",
+                "y-axis": "y"
+            },
+
             "recorder": {
                 "store_file": "/tmp/ea_stats.dat",
                 "record_level": 2
@@ -121,10 +128,12 @@ if __name__ == "__main__":
             selection=selection,
             mutation=mutation,
             print_func=print_func,
+            plot_func=plot_func,
             stop_func=default_stop_func,
             config=config
         )
-        play.play_evolution_strategy(details)
+        # play.play_evolution_strategy(details)
+        play.play(details)
         end_time = time.time()
         print "GP run took: %2.2fsecs\n" % (end_time - start_time)
 

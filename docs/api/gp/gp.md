@@ -11,13 +11,13 @@ ability to perform a given computational task.
 There are two implementations of GP:
 - **Tree based**
     - tree
-    - tree_crossover
-    - tree_editor
-    - tree_evaluation
-    - tree_evaluation_2
-    - tree_generator
-    - tree_mutation
-    - tree_parser
+    - crossover
+    - editor
+    - evaluation
+    - evaluation_2
+    - generator
+    - mutation
+    - parser
 - **Cartesian based**
     - cartesian
     - cartesian_evaluator

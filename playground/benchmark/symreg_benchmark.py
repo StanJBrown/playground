@@ -10,13 +10,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 # import playground.config as config
 import playground.play as play
 from playground.config import load_data
-from playground.gp.tree.tree_generator import TreeGenerator
-from playground.gp.tree.tree_evaluation_2 import evaluate
-# from playground.gp.tree.tree_evaluation import print_func
-from playground.gp.tree.tree_evaluation import default_stop_func
-from playground.gp.tree.tree_editor import edit_trees
-from playground.gp.tree.tree_crossover import TreeCrossover
-from playground.gp.tree.tree_mutation import TreeMutation
+from playground.gp.tree.generator import TreeGenerator
+from playground.gp.tree.evaluation_2 import evaluate
+# from playground.gp.tree.evaluation import print_func
+from playground.gp.tree.evaluation import default_stop_func
+from playground.gp.tree.editor import edit_trees
+from playground.gp.tree.crossover import TreeCrossover
+from playground.gp.tree.mutation import TreeMutation
 # from playground.gp.functions import GPFunctionRegistry
 from playground.selection import Selection
 from playground.recorder.json_store import JSONStore
@@ -29,7 +29,7 @@ def gp_benchmark_loop(config):
         load_data(config, config["call_path"])
         json_store = JSONStore(config)
         # functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        tree_generator = TreeGenerator(config)
+        generator = TreeGenerator(config)
 
         # genetic operators
         selection = Selection(config, recorder=json_store)
@@ -37,7 +37,7 @@ def gp_benchmark_loop(config):
         mutation = TreeMutation(config, recorder=json_store)
 
         # setup the initial random population
-        population = tree_generator.init()
+        population = generator.init()
 
         # create play details
         details = play.play_details(
@@ -47,7 +47,7 @@ def gp_benchmark_loop(config):
             selection=selection,
             crossover=crossover,
             mutation=mutation,
-            tree_editor=edit_trees,
+            editor=edit_trees,
             stop_func=default_stop_func,
             # print_func=print_func,
             config=config,

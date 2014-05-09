@@ -1,4 +1,4 @@
-# playground.gp.tree.tree_evaluation_2
+# playground.gp.tree.evaluation_2
 This module contains methods needed to evaluate the GP tree structure.
 
 **Functions**:
@@ -22,7 +22,7 @@ This module contains methods needed to evaluate the GP tree structure.
         functions (GPFunctionRegistry):
             GPFunctionRegistry instance
 
-        tree_parser (TreeParser):
+        parser (TreeParser):
             TreeParser instance
 
 

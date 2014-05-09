@@ -1,15 +1,15 @@
 #!/usr/bin/env python2
 from sympy import simplify
 
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_parser import TreeParser
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.parser import TreeParser
 from playground.gp.functions import EvaluationError
 
 
 def print_func(population, generation):
     # display best individual
-    tree_parser = TreeParser()
+    parser = TreeParser()
     best_individuals = population.find_best_individuals()
     best = None
     if len(best_individuals):
@@ -24,9 +24,9 @@ def print_func(population, generation):
 
     # best individual
     if best:
-        print "best:", tree_parser.parse_equation(best.root)
+        print "best:", parser.parse_equation(best.root)
         if best.score < 20.0:
-            eq = tree_parser.parse_equation(best.root)
+            eq = parser.parse_equation(best.root)
             if best.size < 20:
                 eq = eq.replace("ADD", "+")
                 eq = eq.replace("SUB", "-")

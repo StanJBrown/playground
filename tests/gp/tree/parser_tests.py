@@ -6,11 +6,11 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
 import playground.config as config
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_parser import TreeParser
-from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree import Tree
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.parser import TreeParser
+from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 
 # SETTINGS
@@ -61,8 +61,8 @@ class TreeParserTests(unittest.TestCase):
         }
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        self.tree_generator = TreeGenerator(self.config)
-        self.tree_parser = TreeParser()
+        self.generator = TreeGenerator(self.config)
+        self.parser = TreeParser()
 
         # create nodes
         left_node = TreeNode(TreeNodeType.TERM, value=1.0)
@@ -97,12 +97,12 @@ class TreeParserTests(unittest.TestCase):
 
     def tearDown(self):
         del self.config
-        del self.tree_generator
-        del self.tree_parser
+        del self.generator
+        del self.parser
 
     def test_parse_tree(self):
-        # self.tree_parser.print_tree(tree.root)
-        program = self.tree_parser.parse_tree(self.tree, self.tree.root)
+        # self.parser.print_tree(tree.root)
+        program = self.parser.parse_tree(self.tree, self.tree.root)
         for i in program:
             if i.name is not None:
                 print i.name
@@ -119,8 +119,8 @@ class TreeParserTests(unittest.TestCase):
         self.assertEquals(len(self.tree.input_nodes), 0)
 
     def test_parse_equation(self):
-        # self.tree_parser.print_tree(tree.root)
-        equation = self.tree_parser.parse_equation(self.tree.root)
+        # self.parser.print_tree(tree.root)
+        equation = self.parser.parse_equation(self.tree.root)
         self.assertEquals(equation, "((COS(1.0)) ADD (SIN(2.0)))")
 
     def test_tree_to_dict(self):
@@ -133,7 +133,7 @@ class TreeParserTests(unittest.TestCase):
                 {'arity': 2, 'type': 'FUNCTION', 'root': True, 'name': 'ADD'}
             ]
         }
-        results = self.tree_parser.tree_to_dict(self.tree, self.tree.root)
+        results = self.parser.tree_to_dict(self.tree, self.tree.root)
         self.assertEquals(results["program"], solution["program"])
 
 

@@ -10,10 +10,10 @@ import playground.config as config
 from playground.recorder.json_store import JSONStore
 from playground.selection import Selection
 from playground.gp.functions import GPFunctionRegistry
-from playground.gp.tree.tree_evaluation import evaluate
-from playground.gp.tree.tree_generator import TreeGenerator
-from playground.gp.tree.tree_crossover import TreeCrossover
-from playground.gp.tree.tree_mutation import TreeMutation
+from playground.gp.tree.evaluation import evaluate
+from playground.gp.tree.generator import TreeGenerator
+from playground.gp.tree.crossover import TreeCrossover
+from playground.gp.tree.mutation import TreeMutation
 
 # SETTINGS
 script_path = os.path.dirname(__file__)
@@ -26,12 +26,12 @@ class JSONStoreTests(unittest.TestCase):
         self.config = config.load_config(config_path)
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
         self.json_store = JSONStore(self.config)
         self.json_store.setup_store()
 
-        self.population = self.tree_generator.init()
+        self.population = self.generator.init()
         results = []
         cache = {}
         evaluate(
@@ -53,7 +53,7 @@ class JSONStoreTests(unittest.TestCase):
 
         del self.config
         del self.functions
-        del self.tree_generator
+        del self.generator
         del self.population
         del self.json_store
 

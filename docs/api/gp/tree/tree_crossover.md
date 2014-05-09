@@ -1,4 +1,4 @@
-# playground.gp.tree.tree_crossover
+# playground.gp.tree.crossover
 `crossover` contains crossover operators that form part of the Genetic
 Programming process. It can currently perform the following crossover methods
 on a Tree.

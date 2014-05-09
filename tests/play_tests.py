@@ -11,12 +11,12 @@ import playground.config as config
 from playground.selection import Selection
 from playground.gp.functions import GPFunctionRegistry
 import playground.gp.functions as functions
-from playground.gp.tree.tree_generator import TreeGenerator
-from playground.gp.tree.tree_evaluation import evaluate
-from playground.gp.tree.tree_evaluation import default_stop_func
-from playground.gp.tree.tree_evaluation import print_func
-from playground.gp.tree.tree_crossover import TreeCrossover
-from playground.gp.tree.tree_mutation import TreeMutation
+from playground.gp.tree.generator import TreeGenerator
+from playground.gp.tree.evaluation import evaluate
+from playground.gp.tree.evaluation import default_stop_func
+from playground.gp.tree.evaluation import print_func
+from playground.gp.tree.crossover import TreeCrossover
+from playground.gp.tree.mutation import TreeMutation
 
 from playground.gp.cartesian.cartesian_generator import CartesianGenerator
 import playground.gp.cartesian.cartesian_evaluator as cgp_evaluate
@@ -33,7 +33,7 @@ class PlayTests(unittest.TestCase):
         random.seed(0)
         self.config = config.load_config(config_fp)
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
         self.selection = Selection(self.config, recorder=None)
         self.crossover = TreeCrossover(self.config, recorder=None)
@@ -42,7 +42,7 @@ class PlayTests(unittest.TestCase):
     def tearDown(self):
         del self.config
 
-        del self.tree_generator
+        del self.generator
 
         del self.selection
         del self.crossover
@@ -54,7 +54,7 @@ class PlayTests(unittest.TestCase):
         for i in range(tests):
             res = []
 
-            population = self.tree_generator.init()
+            population = self.generator.init()
             evaluate(population.individuals, self.functions, self.config, res)
             population.individuals = res
 
@@ -92,7 +92,7 @@ class PlayTests(unittest.TestCase):
 
     def test_play(self):
         print "PLAY"
-        population = self.tree_generator.init()
+        population = self.generator.init()
 
         # with cache
         start_time = time.time()
@@ -137,7 +137,7 @@ class PlayTests(unittest.TestCase):
 
     def test_play_multicore(self):
         print "PLAY MULTICORE"
-        population = self.tree_generator.init()
+        population = self.generator.init()
 
         start_time = time.time()
         details = play.play_details(
@@ -162,7 +162,7 @@ class PlayTests(unittest.TestCase):
 
     def test_play_evolution_strategy(self):
         print "EVOLUTION STRATEGY"
-        population = self.tree_generator.init()
+        population = self.generator.init()
         self.config["max_population"] = 4
 
         start_time = time.time()

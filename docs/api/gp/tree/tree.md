@@ -153,7 +153,7 @@ within a tree, as well as the size and depth, etc.
         input_nodes (list of TreeNode):
             list of input nodes
 
-        tree_parser (TreeParser):
+        parser (TreeParser):
             tree parser instance
 
 **Methods**:

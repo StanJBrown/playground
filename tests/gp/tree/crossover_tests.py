@@ -6,12 +6,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
 import playground.config as config
 from playground.gp.functions import GPFunctionRegistry
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_parser import TreeParser
-from playground.gp.tree.tree_generator import TreeGenerator
-from playground.gp.tree.tree_crossover import TreeCrossover
+from playground.gp.tree import Tree
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.parser import TreeParser
+from playground.gp.tree.generator import TreeGenerator
+from playground.gp.tree.crossover import TreeCrossover
 
 # SETTINGS
 script_path = os.path.dirname(__file__)
@@ -24,10 +24,10 @@ class TreeCrossoverTests(unittest.TestCase):
         self.config = config.load_config(config_path)
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
         self.crossover = TreeCrossover(self.config)
-        self.tree_parser = TreeParser()
+        self.parser = TreeParser()
 
         # create nodes
         left_node_1 = TreeNode(TreeNodeType.TERM, name="x")
@@ -82,7 +82,7 @@ class TreeCrossoverTests(unittest.TestCase):
         self.tree_1 = Tree()
         self.tree_1.root = add_func
         self.tree_1.update()
-        self.tree_generator._add_input_nodes(self.tree_1)
+        self.generator._add_input_nodes(self.tree_1)
 
         print self.tree_1
 
@@ -90,12 +90,12 @@ class TreeCrossoverTests(unittest.TestCase):
         self.tree_2 = Tree()
         self.tree_2.root = sub_func
         self.tree_2.update()
-        self.tree_generator._add_input_nodes(self.tree_2)
+        self.generator._add_input_nodes(self.tree_2)
 
     def tearDown(self):
         del self.config
-        del self.tree_generator
-        del self.tree_parser
+        del self.generator
+        del self.parser
 
     def build_tree_str(self, tree):
         tree_str = ""

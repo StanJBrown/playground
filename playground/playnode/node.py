@@ -10,8 +10,8 @@ from flask import request
 from flask import jsonify
 from flask import render_template
 
-from playground.gp.tree.tree_evaluation import evaluate
-from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree.evaluation import evaluate
+from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 
 # GLOBAL VARS
@@ -109,9 +109,9 @@ def evaluate_trees():
         individuals = incomming["individuals"]
 
         # convert dict to trees
-        tree_parser = TreeGenerator(config)
+        parser = TreeGenerator(config)
         for individual in list(individuals):
-            tree = tree_parser.generate_tree_from_dict(individual)
+            tree = parser.generate_tree_from_dict(individual)
             individuals.append(tree)
             individuals.remove(individual)
 

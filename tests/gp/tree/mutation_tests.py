@@ -6,13 +6,13 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
 import playground.config as config
-from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_parser import TreeParser
-from playground.gp.tree.tree_mutation import TreeMutation
+from playground.gp.tree import Tree
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.parser import TreeParser
+from playground.gp.tree.mutation import TreeMutation
 
 
 # SETTINGS
@@ -26,10 +26,10 @@ class TreeMutatorTests(unittest.TestCase):
         self.config = config.load_config(config_path)
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
-        self.tree_parser = TreeParser()
-        self.tree_mutation = TreeMutation(self.config)
+        self.parser = TreeParser()
+        self.mutation = TreeMutation(self.config)
 
         # create nodes
         left_node = TreeNode(TreeNodeType.TERM, value=1.0)
@@ -62,12 +62,12 @@ class TreeMutatorTests(unittest.TestCase):
         self.tree.update_program()
         self.tree.update_func_nodes()
         self.tree.update_term_nodes()
-        self.tree_generator._add_input_nodes(self.tree)
+        self.generator._add_input_nodes(self.tree)
 
     def tearDown(self):
         del self.config
-        del self.tree_generator
-        del self.tree_parser
+        del self.generator
+        del self.parser
 
     def build_tree_str(self, tree):
         tree_str = ""
@@ -103,16 +103,16 @@ class TreeMutatorTests(unittest.TestCase):
 
     def test_point_mutation(self):
         print "POINT MUATION!"
-        self.mutated(self.tree, self.tree_mutation.point_mutation)
+        self.mutated(self.tree, self.mutation.point_mutation)
 
     def test_hoist_mutation(self):
         print "HOIST MUATION!"
-        self.mutated(self.tree, self.tree_mutation.hoist_mutation, 3)
+        self.mutated(self.tree, self.mutation.hoist_mutation, 3)
 
-    def test_subtree_mutation(self):
+    def test_SUBTREE_MUTATION(self):
         print "SUBTREE MUATION!"
         tree_before = self.build_tree_str(self.tree)
-        self.tree_mutation.subtree_mutation(self.tree, 3)
+        self.mutation.subtree_mutation(self.tree, 3)
         tree_after = self.build_tree_str(self.tree)
 
         print("Before Mutation")
@@ -128,7 +128,7 @@ class TreeMutatorTests(unittest.TestCase):
     def test_shrink_mutation(self):
         print "SHRINK MUATION!"
         tree_before = self.build_tree_str(self.tree)
-        self.tree_mutation.shrink_mutation(self.tree, 3)
+        self.mutation.shrink_mutation(self.tree, 3)
         tree_after = self.build_tree_str(self.tree)
 
         print("Before Mutation")
@@ -144,7 +144,7 @@ class TreeMutatorTests(unittest.TestCase):
     def test_expansion_mutation(self):
         print "EXPANSION MUATION!"
         tree_before = self.build_tree_str(self.tree)
-        self.tree_mutation.expansion_mutation(self.tree, 3)
+        self.mutation.expansion_mutation(self.tree, 3)
         tree_after = self.build_tree_str(self.tree)
 
         print("Before Mutation")
@@ -160,7 +160,7 @@ class TreeMutatorTests(unittest.TestCase):
     def test_mutate(self):
         print "MUTATE!"
         tree_before = self.build_tree_str(self.tree)
-        self.tree_mutation.mutate(self.tree)
+        self.mutation.mutate(self.tree)
         tree_after = self.build_tree_str(self.tree)
 
         print("Before Mutation")

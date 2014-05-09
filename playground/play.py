@@ -24,7 +24,7 @@ def play_details(**kwargs):
             "stop_func",
             "print_func",
             "plot_func",
-            "tree_editor",
+            "editor",
             "recorder",
         ]
     )
@@ -40,7 +40,7 @@ def play_details(**kwargs):
         kwargs.get("stop_func", None),
         kwargs.get("print_func", None),
         kwargs.get("plot_func", None),
-        kwargs.get("tree_editor", None),
+        kwargs.get("editor", None),
         kwargs.get("recorder", None)
     )
 
@@ -188,11 +188,11 @@ def play_multiprocess_evaluate(play, cache):
 
 
 def play_edit_population(play, stats):
-    if play.config.get("tree_editor", False):
-        every = play.config["tree_editor"]["every"]
+    if play.config.get("editor", False):
+        every = play.config["editor"]["every"]
         if stats["generation"] != 0 and stats["generation"] % every == 0:
             print "\nEDIT TREES!\n"
-            play.tree_editor(play.population, play.functions)
+            play.editor(play.population, play.functions)
 
 
 def play(play):

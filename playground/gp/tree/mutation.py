@@ -3,9 +3,9 @@ from random import randint
 from random import random
 from random import sample
 
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.generator import TreeGenerator
 from playground.recorder.record_type import RecordType
 
 
@@ -13,7 +13,7 @@ class TreeMutation(object):
     def __init__(self, config, **kwargs):
         self.config = config
         self.recorder = kwargs.get("recorder", None)
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
         # mutation stats
         self.method = None
@@ -118,8 +118,8 @@ class TreeMutation(object):
             self.index = mutation_index
             node = tree.program[mutation_index]
 
-        self.tree_generator.max_depth = randint(1, 3)
-        sub_tree = self.tree_generator.generate_tree()
+        self.generator.max_depth = randint(1, 3)
+        sub_tree = self.generator.generate_tree()
         if node is not tree.root:
             tree.replace_node(node, sub_tree.root)
         else:
@@ -182,7 +182,7 @@ class TreeMutation(object):
             self.index = mutation_index
             node = tree.program[mutation_index]
 
-        sub_tree = self.tree_generator.generate_tree()
+        sub_tree = self.generator.generate_tree()
         tree.replace_node(node, sub_tree.root)
         tree.update()
         self.mutated = True

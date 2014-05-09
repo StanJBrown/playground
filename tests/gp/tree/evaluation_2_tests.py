@@ -6,11 +6,11 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
 import playground.config as config
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_generator import TreeGenerator
-import playground.gp.tree.tree_evaluation_2 as evaluator
+from playground.gp.tree import Tree
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.generator import TreeGenerator
+import playground.gp.tree.evaluation_2 as evaluator
 
 
 class TreeEvaluatorTests(unittest.TestCase):
@@ -72,11 +72,11 @@ class TreeEvaluatorTests(unittest.TestCase):
             "LN": "math.ln",
             "LOG": "math.log"
         }
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
     def tearDown(self):
         del self.config
-        del self.tree_generator
+        del self.generator
 
     def test_generate_eq_function(self):
         # create terminal nodes
@@ -208,7 +208,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         self.assertEquals(round(score, 7), 0.5000001)
 
     def test_evaluate(self):
-        population = self.tree_generator.init()
+        population = self.generator.init()
         results = []
 
         start_time = time.time()

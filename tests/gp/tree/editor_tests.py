@@ -4,11 +4,11 @@ import sys
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
-import playground.gp.tree.tree_editor as editor
+import playground.gp.tree.editor as editor
 from playground.gp.functions import GPFunctionRegistry
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
+from playground.gp.tree import Tree
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
 
 
 class TreeEditorTests(unittest.TestCase):

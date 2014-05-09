@@ -6,11 +6,11 @@ import time
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 from playground.config import load_data
-from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
-import playground.gp.tree.tree_evaluation as tree_eval_1
-import playground.gp.tree.tree_evaluation_2 as tree_eval_2
-import playground.gp.tree.tree_evaluation_3 as tree_eval_3
+import playground.gp.tree.evaluation as tree_eval_1
+import playground.gp.tree.evaluation_2 as tree_eval_2
+import playground.gp.tree.evaluation_3 as tree_eval_3
 
 # SETTINGS
 script_path = os.path.dirname(__file__)

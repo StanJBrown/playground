@@ -1,4 +1,4 @@
-# playground.gp.tree.tree_generator
+# playground.gp.tree.generator
 During the Genetic Programming search process an initial random population is
 needed, this module provides methods to produce the initial random population.
 
@@ -21,7 +21,7 @@ Genetic Programming_" by Riccard Poli, Bill Langdon and Nic McPhee.
     config (dict):
         configuration
 
-    tree_parser (TreeParser):
+    parser (TreeParser):
         tree parser instance
 
     tree_evaluator (TreeEvaluator):

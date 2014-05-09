@@ -4,11 +4,11 @@ import os
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_parser import TreeParser
-from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree import Tree
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.parser import TreeParser
+from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 
 # SETTINGS
@@ -116,14 +116,14 @@ class TreeGeneratorTests(unittest.TestCase):
         }
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
-        self.tree_parser = TreeParser()
+        self.parser = TreeParser()
 
     def tearDown(self):
         del self.config
-        del self.tree_generator
-        del self.tree_parser
+        del self.generator
+        del self.parser
 
     def test_tree_add_input_nodes(self):
         # setup
@@ -142,33 +142,33 @@ class TreeGeneratorTests(unittest.TestCase):
         tree.update()
 
         # add input nodes
-        self.tree_generator._add_input_nodes(tree)
+        self.generator._add_input_nodes(tree)
         self.assertTrue(len(tree.input_nodes) == 2)
 
     def test_full_method(self):
         tests = 1000
 
         for i in xrange(tests):
-            tree = self.tree_generator.full_method()
+            tree = self.generator.full_method()
 
             # # func nodes
             # print("FUNCTION NODES!")
             # for func_node in tree.func_nodes:
-            #     self.tree_parser._print_node(func_node)
+            #     self.parser._print_node(func_node)
 
             # # term nodes
             # print("\nTERMINAL NODES!")
             # for term_node in tree.term_nodes:
-            #     self.tree_parser._print_node(term_node)
+            #     self.parser._print_node(term_node)
 
             # program
             # print("\nPROGRAM STACK!")
             # for block in tree.program:
-            #     self.tree_parser._print_node(block)
+            #     self.parser._print_node(block)
 
             # # dot graph
             # print("\nDOT GRAPH!")
-            # self.tree_parser.print_tree(tree.root)
+            # self.parser.print_tree(tree.root)
 
             # asserts
             init_max = self.config["tree_generation"]["initial_max_depth"]
@@ -184,26 +184,26 @@ class TreeGeneratorTests(unittest.TestCase):
         tests = 1000
 
         for i in xrange(tests):
-            tree = self.tree_generator.grow_method()
+            tree = self.generator.grow_method()
 
             # # func nodes
             # print("FUNCTION NODES!")
             # for func_node in tree.func_nodes:
-            #     self.tree_parser._print_node(func_node)
+            #     self.parser._print_node(func_node)
 
             # # term nodes
             # print("\nTERMINAL NODES!")
             # for term_node in tree.term_nodes:
-            #     self.tree_parser._print_node(term_node)
+            #     self.parser._print_node(term_node)
 
             # # program
             # print("\nPROGRAM STACK!")
             # for block in tree.program:
-            #     self.tree_parser._print_node(block)
+            #     self.parser._print_node(block)
 
             # dot graph
             # print("\nDOT GRAPH!")
-            # self.tree_parser.print_tree(tree.root)
+            # self.parser.print_tree(tree.root)
 
             # asserts
             init_max = self.config["tree_generation"]["initial_max_depth"]
@@ -216,10 +216,10 @@ class TreeGeneratorTests(unittest.TestCase):
             )
 
     def test_generate_tree_from_dict(self):
-        population = self.tree_generator.init()
+        population = self.generator.init()
         tree = population.individuals[0]
-        tree_dict = self.tree_parser.tree_to_dict(tree, tree.root)
-        tree_generated = self.tree_generator.generate_tree_from_dict(tree_dict)
+        tree_dict = self.parser.tree_to_dict(tree, tree.root)
+        tree_generated = self.generator.generate_tree_from_dict(tree_dict)
 
         program_str = ""
         for i in tree.program:
@@ -238,7 +238,7 @@ class TreeGeneratorTests(unittest.TestCase):
         self.assertEquals(program_str, generated_str)
 
     def test_init(self):
-        population = self.tree_generator.init()
+        population = self.generator.init()
         self.assertEquals(len(population.individuals), 10)
 
 

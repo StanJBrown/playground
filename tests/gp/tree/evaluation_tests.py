@@ -6,12 +6,12 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
 import playground.config as config
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree import Tree
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
-import playground.gp.tree.tree_evaluation as evaluator
+import playground.gp.tree.evaluation as evaluator
 
 
 class TreeEvaluatorTests(unittest.TestCase):
@@ -62,11 +62,11 @@ class TreeEvaluatorTests(unittest.TestCase):
 
         config.load_data(self.config)
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
     def tearDown(self):
         del self.config
-        del self.tree_generator
+        del self.generator
 
     def test_gen_term_node(self):
         row = 0
@@ -160,7 +160,7 @@ class TreeEvaluatorTests(unittest.TestCase):
         self.assertEquals(res[1][0], 0.0)
 
     def test_evaluate(self):
-        population = self.tree_generator.init()
+        population = self.generator.init()
         results = []
 
         start_time = time.time()

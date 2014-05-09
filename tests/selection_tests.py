@@ -6,7 +6,7 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
 import playground.config as config
-from playground.gp.tree.tree_generator import TreeGenerator
+from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 from playground.selection import Selection
 
@@ -20,10 +20,10 @@ class SelectionTests(unittest.TestCase):
         self.config = config.load_config(config_fp)
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-        self.tree_generator = TreeGenerator(self.config)
+        self.generator = TreeGenerator(self.config)
 
         self.selection = Selection(self.config)
-        self.population = self.tree_generator.init()
+        self.population = self.generator.init()
 
         # give population random scores
         for inidividual in self.population.individuals:

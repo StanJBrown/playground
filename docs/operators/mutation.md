@@ -26,7 +26,7 @@ on a Tree.
         recorder (object):
             Object that records the search process.
 
-        tree_generator (TreeGenerator):
+        generator (TreeGenerator):
             Tree generator
 
         method (str):
@@ -81,7 +81,7 @@ Performs hoist mutation in-place.
             Optional argument to set the mutation pivot point.
 
 
-### subtree_mutation(tree, mutation_index=None)
+### SUBTREE_MUTATION(tree, mutation_index=None)
 Performs subtree mutation in-place.
 
     Args:

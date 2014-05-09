@@ -185,7 +185,7 @@ within a tree, as well as the size and depth, etc.
         input_nodes (list of TreeNode):
             list of input nodes
 
-        tree_parser (TreeParser):
+        parser (TreeParser):
             tree parser instance
 
 
@@ -283,7 +283,7 @@ the Genetic Programming process. It supports tree intialization using the:
         config (dict):
             configuration
 
-        tree_parser (TreeParser):
+        parser (TreeParser):
             tree parser instance
 
         tree_evaluator (TreeEvaluator):
@@ -406,7 +406,7 @@ Returns a string representation of the `Tree` in infix-order.
         functions (GPFunctionRegistry):
             GPFunctionRegistry instance
 
-        tree_parser (TreeParser):
+        parser (TreeParser):
             TreeParser instance
 
 

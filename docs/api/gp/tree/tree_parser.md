@@ -1,4 +1,4 @@
-# playground.gp.tree_parser
+# playground.gp.tree.parser
 This module contains tree parsing methods.
 
 **Classes**:

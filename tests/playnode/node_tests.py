@@ -16,8 +16,8 @@ from playground.playnode.node import PlayNodeType
 from playground.playnode.node import PlayNodeStatus
 
 import playground.config
-from playground.gp.tree.tree_generator import TreeGenerator
-from playground.gp.tree.tree_parser import TreeParser
+from playground.gp.tree.generator import TreeGenerator
+from playground.gp.tree.parser import TreeParser
 
 # SETTINGS
 n_script = "playground/playnode/node.py"
@@ -124,13 +124,13 @@ class NodeTests(unittest.TestCase):
 
         # setup
         config = playground.config.load_config(config_fp)
-        tree_parser = TreeParser()
+        parser = TreeParser()
         population = TreeGenerator(config).init()
 
         # create a dictionary of trees
         data = {"config": config, "individuals": []}
         for individual in population.individuals:
-            tree_json = tree_parser.tree_to_dict(individual, individual.root)
+            tree_json = parser.tree_to_dict(individual, individual.root)
             data["individuals"].append(tree_json)
 
         # make sure population size is equals to number of trees

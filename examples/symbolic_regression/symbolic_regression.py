@@ -8,15 +8,15 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 import playground.config as config
 import playground.play as play
-from playground.gp.tree.tree_generator import TreeGenerator
-from playground.gp.tree.tree_evaluation import default_stop_func
-from playground.gp.tree.tree_evaluation import print_func
-from playground.gp.tree.tree_evaluation_2 import plot_func
-from playground.gp.tree.tree_evaluation_2 import evaluate
-from playground.gp.tree.tree_editor import edit_trees
+from playground.gp.tree.generator import TreeGenerator
+from playground.gp.tree.evaluation import default_stop_func
+from playground.gp.tree.evaluation import print_func
+from playground.gp.tree.evaluation_2 import plot_func
+from playground.gp.tree.evaluation_2 import evaluate
+from playground.gp.tree.editor import edit_trees
 from playground.selection import Selection
-from playground.gp.tree.tree_crossover import TreeCrossover
-from playground.gp.tree.tree_mutation import TreeMutation
+from playground.gp.tree.crossover import TreeCrossover
+from playground.gp.tree.mutation import TreeMutation
 from playground.recorder.json_store import JSONStore
 
 # SETTINGS
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             "LN": "math.ln",
             "LOG": "math.log"
         }
-        tree_generator = TreeGenerator(config)
+        generator = TreeGenerator(config)
 
         # genetic operators
         selection = Selection(config, recorder=json_store)
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         mutation = TreeMutation(config, recorder=json_store)
 
         # run symbolic regression
-        population = tree_generator.init()
+        population = generator.init()
 
         start_time = time.time()
         details = play.play_details(
@@ -66,7 +66,7 @@ if __name__ == "__main__":
             plot_func=plot_func,
             stop_func=default_stop_func,
             config=config,
-            tree_editor=edit_trees,
+            editor=edit_trees,
             recorder=json_store
         )
 

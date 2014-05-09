@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
 
 
 def print_func(population, generation):

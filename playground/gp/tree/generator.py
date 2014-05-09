@@ -3,10 +3,10 @@ from random import sample
 from random import random
 from random import randint
 
-from playground.gp.tree.tree import Tree
-from playground.gp.tree.tree import TreeNode
-from playground.gp.tree.tree import TreeNodeType
-from playground.gp.tree.tree_parser import TreeParser
+from playground.gp.tree import Tree
+from playground.gp.tree import TreeNode
+from playground.gp.tree import TreeNodeType
+from playground.gp.tree.parser import TreeParser
 from playground.population import Population
 
 
@@ -15,7 +15,7 @@ class TreeGenerator(object):
         self.config = config
         self.gen_config = config["tree_generation"]
         self.max_depth = self.gen_config.get("initial_max_depth", 0)
-        self.tree_parser = TreeParser()
+        self.parser = TreeParser()
 
     def _gen_func_node(self, tree, random=True):
         node = None

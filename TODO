@@ -6,7 +6,6 @@
 - Check all arabas test data
 - Run param sweep on f1 - f4
 
-- Refactor evaluation to evaluation_1
 - Refactor input nodes into terminal nodes
 - Impleent the empherical random constant
 - Create a Logic Circuit Demo

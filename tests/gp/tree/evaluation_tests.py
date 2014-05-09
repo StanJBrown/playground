@@ -6,9 +6,9 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
 import playground.config as config
-from playground.gp.tree import Tree
-from playground.gp.tree import TreeNode
-from playground.gp.tree import TreeNodeType
+# from playground.gp.tree import Tree
+# from playground.gp.tree import TreeNode
+# from playground.gp.tree import TreeNodeType
 from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 import playground.gp.tree.evaluation as evaluator
@@ -59,8 +59,8 @@ class TreeEvaluatorTests(unittest.TestCase):
 
             "response_variables": [{"name": "y"}]
         }
-
         config.load_data(self.config)
+
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.generator = TreeGenerator(self.config)
 
@@ -68,96 +68,134 @@ class TreeEvaluatorTests(unittest.TestCase):
         del self.config
         del self.generator
 
-    def test_gen_term_node(self):
-        row = 0
-        node_x = TreeNode(TreeNodeType.INPUT, name="x")
-        term_node = evaluator.gen_term_node(node_x, row, self.config)
+    # def test_generate_eq_function(self):
+    #     # create terminal nodes
+    #     term_node = TreeNode(TreeNodeType.TERM, value=100.0)
+    #     input_node = TreeNode(TreeNodeType.INPUT, name="x")
 
-        # asserts
-        self.assertEquals(term_node.node_type, TreeNodeType.TERM)
-        self.assertEquals(term_node.name, None)
-        self.assertEquals(term_node.value, 0.0)
+    #     # create function nodes
+    #     mul_func = TreeNode(
+    #         TreeNodeType.FUNCTION,
+    #         name="MUL",
+    #         arity=2,
+    #         branches=[input_node, term_node]
+    #     )
 
-    def test_eval_node(self):
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=90.0)
-        term_node_3 = TreeNode(TreeNodeType.TERM, value=10.0)
-        unary_node = TreeNode(TreeNodeType.FUNCTION, arity=1, name="COS")
-        binary_node = TreeNode(TreeNodeType.FUNCTION, arity=2, name="ADD")
+    #     rad_func = TreeNode(
+    #         TreeNodeType.FUNCTION,
+    #         name="RAD",
+    #         arity=1,
+    #         branches=[mul_func]
+    #     )
 
-        # evaluate term_node
-        stack = []
-        evaluator.eval_node(term_node_1, stack, self.functions, self.config)
-        self.assertEquals(len(stack), 1)
-        self.assertTrue(stack[0] is term_node_1)
+    #     sin_func = TreeNode(
+    #         TreeNodeType.FUNCTION,
+    #         name="SIN",
+    #         arity=1,
+    #         branches=[rad_func]
+    #     )
 
-        # evaluate unary_node
-        stack = []
-        stack.append(term_node_1)
-        evaluator.eval_node(unary_node, stack, self.functions, self.config)
-        self.assertEquals(len(stack), 1)
-        self.assertTrue(stack[0].value == 1.0)
+    #     # create tree
+    #     tree = Tree()
+    #     tree.root = sin_func
+    #     tree.update()
 
-        # evaluate binary_node
-        stack = []
-        stack.append(term_node_2)
-        stack.append(term_node_3)
-        evaluator.eval_node(binary_node, stack, self.functions, self.config)
-        self.assertEquals(len(stack), 1)
-        self.assertTrue(stack[0].value == 100.0)
+    #     # generate equation function
+    #     eq_func = evaluator.generate_eq_function(
+    #         tree,
+    #         self.functions,
+    #         self.config
+    #     )
 
-    def test_eval_program(self):
-        # create nodes
-        term_node = TreeNode(TreeNodeType.TERM, value=100.0)
-        input_node = TreeNode(TreeNodeType.INPUT, name="x")
+    #     # assert
+    #     self.assertIsNotNone(eq_func)
+    #     self.assertEquals(round(eq_func(1), 4), 0.9848)
 
-        mul_func = TreeNode(
-            TreeNodeType.FUNCTION,
-            name="MUL",
-            arity=2,
-            branches=[input_node, term_node]
-        )
+    # def test_generate_eq_function_multivars(self):
+    #     # create terminal nodes
+    #     term_node = TreeNode(TreeNodeType.INPUT, name="var2")
+    #     input_node = TreeNode(TreeNodeType.INPUT, name="var1")
 
-        rad_func = TreeNode(
-            TreeNodeType.FUNCTION,
-            name="RAD",
-            arity=1,
-            branches=[mul_func]
-        )
+    #     # create function nodes
+    #     div_func = TreeNode(
+    #         TreeNodeType.FUNCTION,
+    #         name="DIV",
+    #         arity=2,
+    #         branches=[input_node, term_node]
+    #     )
 
-        sin_func = TreeNode(
-            TreeNodeType.FUNCTION,
-            name="SIN",
-            arity=1,
-            branches=[rad_func]
-        )
+    #     # create tree
+    #     tree = Tree()
+    #     tree.root = div_func
+    #     tree.update()
 
-        # create tree
-        tree = Tree()
-        tree.root = sin_func
-        tree.update()
+    #     # generate equation function
+    #     config = {
+    #         "input_variables": [
+    #             {
+    #                 "type": "INPUT",
+    #                 "name": "var1"
+    #             },
+    #             {
+    #                 "type": "INPUT",
+    #                 "name": "var2"
+    #             }
+    #         ],
 
-        # program
-        print("\nPROGRAM STACK!")
-        for block in tree.program:
-            if block.name is not None:
-                print block.name
-            else:
-                print block.value
-        print ""
+    #         "functions": {
+    #             "ADD": "+",
+    #             "SUB": "-",
+    #             "MUL": "*",
+    #             "DIV": "/",
+    #             "POW": "**",
+    #             "SIN": "math.sin",
+    #             "COS": "math.cos",
+    #             "RAD": "math.radians",
+    #             "LN": "math.ln",
+    #             "LOG": "math.log"
+    #         }
+    #     }
+    #     eq_func = evaluator.generate_eq_function(tree, self.functions, config)
 
-        # evaluate tree
-        res = evaluator.eval_program(
-            tree,
-            tree.size,
-            self.functions,
-            self.config
-        )
+    #     # assert
+    #     self.assertIsNotNone(eq_func)
+    #     self.assertEquals(eq_func(1.0, 2.0), 0.5)
 
-        # assert
-        self.assertTrue(res is not None)
-        self.assertEquals(round(res[0], 4), 0.5)
-        self.assertEquals(res[1][0], 0.0)
+    # def test_eval_tree(self):
+    #     # create terminal nodes
+    #     term_node = TreeNode(TreeNodeType.TERM, value=100.0)
+    #     input_node = TreeNode(TreeNodeType.INPUT, name="x")
+
+    #     # create function nodes
+    #     mul_func = TreeNode(
+    #         TreeNodeType.FUNCTION,
+    #         name="MUL",
+    #         arity=2,
+    #         branches=[input_node, term_node]
+    #     )
+
+    #     rad_func = TreeNode(
+    #         TreeNodeType.FUNCTION,
+    #         name="RAD",
+    #         arity=1,
+    #         branches=[mul_func]
+    #     )
+
+    #     sin_func = TreeNode(
+    #         TreeNodeType.FUNCTION,
+    #         name="SIN",
+    #         arity=1,
+    #         branches=[rad_func]
+    #     )
+
+    #     # create tree
+    #     tree = Tree()
+    #     tree.root = sin_func
+    #     tree.update()
+
+    #     # evaluate tree
+    #     result = evaluator.eval_tree(tree, self.functions, self.config)
+    #     self.assertEquals(round(result, 7), 0.5000001)
 
     def test_evaluate(self):
         population = self.generator.init()

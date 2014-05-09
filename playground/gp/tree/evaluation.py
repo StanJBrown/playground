@@ -1,54 +1,32 @@
 #!/usr/bin/env python2
-from sympy import simplify
 
 from playground.gp.tree import TreeNode
 from playground.gp.tree import TreeNodeType
-from playground.gp.tree.parser import TreeParser
-from playground.gp.functions import EvaluationError
 
 
 def print_func(population, generation):
     # display best individual
-    parser = TreeParser()
     best_individuals = population.find_best_individuals()
-    best = None
-    if len(best_individuals):
+    if best_individuals:
         best = best_individuals[0]
+        print "generation:", generation
+        print "generation_best_score:", str(best.score)
 
-    print "generation:", generation
-    if best:
-        print "best_score:", str(best.score)
-        print "tree_size:", str(best.size)
-    else:
-        print "No valid trees in this generation"
-
-    # best individual
-    if best:
-        print "best:", parser.parse_equation(best.root)
-        if best.score < 20.0:
-            eq = parser.parse_equation(best.root)
-            if best.size < 20:
-                eq = eq.replace("ADD", "+")
-                eq = eq.replace("SUB", "-")
-                eq = eq.replace("MUL", "*")
-                eq = eq.replace("DIV", "/")
-                eq = eq.replace("POW", "**")
-                eq = eq.replace("SIN", "sin")
-                eq = eq.replace("COS", "cos")
-                eq = eq.replace("RAD", "rad")
-                eq = eq.replace("LN", "ln")
-                eq = eq.replace("LOG", "log")
-                print "EQ SIMPLIFIED:", simplify(eq)
+        # best individual
+        print "generatio_best:", str(best)
 
         # population diversity
         p = []
         for i in population.individuals:
-            p.append(str(i))
+            p.append(str(i.graph()))
         p = set(p)
         diversity = (len(p) / float(len(population.individuals))) * 100
         diversity = round(diversity, 2)
         print "population diversity:", str(diversity) + "%"
-    print ""
+        print ""
+
+    else:
+        print "generation:", generation
 
 
 def default_stop_func(popualtion, stats, config):
@@ -72,49 +50,46 @@ def default_stop_func(popualtion, stats, config):
     return stop
 
 
-def gen_term_node(node, row, config):
-    try:
-        value = config["data"][node.name][row]
-        term_node = TreeNode(TreeNodeType.TERM, value=value)
-        return term_node
-    except KeyError:
-        print node.name, row
-
-
-def eval_node(node, stack, functions, config, data_row=None):
+def evaluate_node(node, stack, functions, config):
     try:
         if node.is_terminal():
+            # obtain terminal node data and add to stack
+            value = node.value
+            node.value = [value for i in range(config["data"]["rows"])]
             stack.append(node)
 
         elif node.is_input():
-            term_node = gen_term_node(node, data_row, config)
+            # convert input node to terminal node
+            node_data = config["data"][node.name]
+            term_node = TreeNode(TreeNodeType.TERM, value=node_data)
             stack.append(term_node)
 
         elif node.is_function():
-            # get input values from stack
-            input_values = [stack.pop().value for i in xrange(node.arity)]
+            # get input data to function from stack
+            input_data = [stack.pop().value for i in xrange(node.arity)]
 
             # execute function
             function = functions.get_function(node.name)
-            result_value = function(*input_values)
-            result = TreeNode(TreeNodeType.TERM, value=result_value)
+
+            function_output = []
+            for data_row in zip(*input_data):
+                function_output.append(function(*data_row))
 
             # push result back to stack
-            stack.append(result)
+            result_node = TreeNode(TreeNodeType.TERM, value=function_output)
+            stack.append(result_node)
 
-    except EvaluationError:
+    except:
         raise
 
 
-def eval_program(tree, tree_size, functions, config):
+def evaluate_tree(tree, functions, config):
     try:
         stack = []
-        err = 0.0  # sum squared error
-        score = 0.0
+        score = None
+        sse = 0.0  # sum squared error
         response_var = config["response_variables"][0]["name"]
         response_data = config["data"][response_var]
-        rows = len(response_data)
-        result = []
 
         # pre-check
         if len(config["response_variables"]) > 1:
@@ -122,28 +97,20 @@ def eval_program(tree, tree_size, functions, config):
             raise RuntimeError(err)
 
         # evaluate tree
-        for i in xrange(rows):
-            # evaluate program
-            for node in tree.program:
-                eval_node(node, stack, functions, config, i)
+        for node in tree.program:
+            evaluate_node(node, stack, functions, config)
 
-            # calculate score
-            node = stack.pop()
-            result.append(node.value)
-            err += pow(response_data[i] - node.value, 2)
-
-            # reset stack
-            del stack[:]
+        # calculate sum squared error
+        node = stack.pop()
+        for i in range(config["data"]["rows"]):
+            sse += pow(response_data[i] - node.value[i], 2)
 
         # calculate fitness score
-        score = err + (tree_size * 0.1)
+        score = sse + (tree.size * 0.1)
 
-        return score, result
+        return (score, None)
 
-    except EvaluationError:
-        return None, None
-
-    except OverflowError:
+    except:
         return None, None
 
 
@@ -173,66 +140,35 @@ def record_eval(recorder, **kwargs):
     recorder.record_evaluation(eval_stats)
 
 
-def filter_trees(trees):
-    result = []
-    min_size = 2
-    max_size = 50
-    min_inputs = 1
-
-    for tree in trees:
-        valid_tree = True
-
-        if tree.size < min_size:
-            valid_tree = False
-
-        if tree.size > max_size:
-            valid_tree = False
-
-        if len(tree.input_nodes) < min_inputs:
-            valid_tree = False
-
-        if valid_tree:
-            result.append(tree)
-
-    return result
-
-
 def evaluate(trees, functions, config, results, cache={}, recorder=None):
-    evaluator_config = config.get("evaluator", None)
-    use_cache = evaluator_config.get("use_cache", False)
-
+    use_cache = True
     best_score = None
-    best_result = None
+    best_output = None
     trees_evaluated = 0
     nodes_evaluated = 0
     match_cached = 0
 
     # evaluate trees
-    for tree in filter_trees(trees):
+    for tree in trees:
         score = None
-        res = None
+        output = None
+        tree_string = str(tree)
 
         # use cahce?
         if use_cache:
             if str(tree) not in cache:
-                score, res = eval_program(
-                    tree,
-                    tree.size,
-                    functions,
-                    config
-                )
+                score, output = evaluate_tree(tree, functions, config)
                 nodes_evaluated += tree.size
                 trees_evaluated += 1
+
             else:
-                score = cache[str(tree)]
+                cached_record = cache[str(tree)]
+                score = cached_record["score"]
+                output = cached_record["output"]
                 match_cached += 1
 
         else:
-            score, res = eval_program(
-                tree,
-                tree.size,
-                functions,
-                config)
+            score, output = evaluate_tree(tree, functions, config)
             nodes_evaluated += tree.size
 
         # check result
@@ -240,17 +176,17 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             tree.score = score
             results.append(tree)
 
-            if score < best_score or best_score is None:
+            if score <= best_score or best_score is None:
                 best_score = score
-                best_result = res
+                best_output = output
 
         # cache tree
-        cache[str(tree)] = score
+        cache[tree_string] = {"score": score, "output": output}
 
     if recorder:
         # calculate tree diversity
-        tree_strings = set([str(tree) for tree in trees])
-        diversity = len(tree_strings) / float(len(trees))
+        unique_trees = set([str(tree) for tree in trees])
+        diversity = len(unique_trees) / float(len(trees))
 
         # record evaluation statistics
         record_eval(
@@ -264,4 +200,4 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             diversity=diversity
         )
 
-    return best_result
+    return best_output

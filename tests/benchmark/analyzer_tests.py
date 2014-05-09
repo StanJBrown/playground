@@ -179,24 +179,24 @@ class AnalzyerTests(unittest.TestCase):
         self.assertTrue(len(result["mutation"]["mutations"]), 14)
         self.assertTrue(len(result["mutation"]["no_mutations"]), 14)
 
-    # def test_plot_summary(self):
-    #     # tes data
-    #     test_dir = "./analyzer_test_data/arabas_et_al-f1/seed_0/pop_100/"
-    #     test_data_1 = "0.8-0.8.zip"
-    #     test_1_fp = os.path.join(test_dir, test_data_1)
+    def test_plot_summary(self):
+        # tes data
+        test_dir = "./analyzer_test_data/arabas_et_al-f1/seed_0/pop_100/"
+        test_data_1 = "0.8-0.8.zip"
+        test_1_fp = os.path.join(test_dir, test_data_1)
 
-    #     test_data_2 = "0.8-0.7.zip"
-    #     test_2_fp = os.path.join(test_dir, test_data_2)
+        test_data_2 = "0.8-0.7.zip"
+        test_2_fp = os.path.join(test_dir, test_data_2)
 
-    #     # summarize data
-    #     test_data_1 = analyzer.summarize_data(test_1_fp)
-    #     test_data_2 = analyzer.summarize_data(test_2_fp)
-    #     data = [test_data_1, test_data_2]
-    #     labels = [
-    #         "c_prob = 0.8, mut_prob = 0.8",
-    #         "c_prob = 0.8, mut_prob = 0.7"
-    #     ]
-    #     analyzer.plot_summary(data, labels)
+        # summarize data
+        test_data_1 = analyzer.summarize_data(test_1_fp)
+        test_data_2 = analyzer.summarize_data(test_2_fp)
+        data = [test_data_1, test_data_2]
+        labels = [
+            "c_prob = 0.8, mut_prob = 0.8",
+            "c_prob = 0.8, mut_prob = 0.7"
+        ]
+        analyzer.plot_summary(data, labels)
 
 
 if __name__ == "__main__":

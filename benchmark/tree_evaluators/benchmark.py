@@ -10,7 +10,6 @@ from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 import playground.gp.tree.evaluation as tree_eval_1
 import playground.gp.tree.evaluation_2 as tree_eval_2
-import playground.gp.tree.evaluation_3 as tree_eval_3
 
 # SETTINGS
 script_path = os.path.dirname(__file__)
@@ -96,18 +95,6 @@ if __name__ == "__main__":
     tree_eval_2.evaluate(
         copy.deepcopy(population.individuals),
         functions,
-        config,
-        results
-    )
-    end_time = time.time()
-    time_taken = end_time - start_time
-    print "Evaluator 2 took:", str(round(time_taken, 2)) + "s"
-
-    # TREE EVALUTOR 3
-    start_time = time.time()
-    tree_eval_3.evaluate(
-        copy.deepcopy(population.individuals),
-        GPFunctionRegistry("SYMBOLIC_REGRESSION"),
         config,
         results
     )

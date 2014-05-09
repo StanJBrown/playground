@@ -10,12 +10,6 @@ from playground.gp.tree import TreeNode
 from playground.gp.tree import TreeNodeType
 from playground.gp.tree.parser import TreeParser
 
-# SETTINGS
-cwd = os.path.dirname(__file__)
-tree_config = os.path.join(cwd, "../../config/tree.json")
-tree_init_config = os.path.join(cwd, "../../config/initializer.json")
-eval_config = os.path.join(cwd, "../../config/evaluator.json")
-
 
 class TreeNodeTests(unittest.TestCase):
     def setUp(self):
@@ -74,7 +68,44 @@ class TreeNodeTests(unittest.TestCase):
 
 class TreeTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(tree_config)
+        self.config = {
+            "max_population" : 10,
+
+            "tree_generation": {
+                "method" : "FULL_METHOD",
+                "initial_max_depth" : 4
+            },
+
+            "function_nodes" : [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "COS", "arity": 1},
+                {"type": "FUNCTION", "name": "SIN", "arity": 1}
+            ],
+
+            "terminal_nodes" : [
+                {"type": "TERM", "value": 1.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 3.0},
+                {"type": "TERM", "value": 4.0},
+                {"type": "TERM", "value": 5.0},
+                {"type": "TERM", "value": 6.0},
+                {"type": "TERM", "value": 7.0},
+                {"type": "TERM", "value": 8.0},
+                {"type": "TERM", "value": 9.0},
+                {"type": "TERM", "value": 10.0}
+            ],
+
+            "input_variables" : [
+                {"name": "x"},
+                {"name": "y"},
+                {"name": "z"}
+            ]
+        }
+
         self.t_parser = TreeParser()
         self.tree = Tree()
 

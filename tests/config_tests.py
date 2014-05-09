@@ -7,13 +7,16 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import playground.config as config
 
-# SETTINGS
-config_fp = os.path.join(os.path.dirname(__file__), "config/data_loader.json")
-
 
 class ConfigTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_fp)
+        self.config = {
+            "data_file": "tests/data/sine.dat",
+
+            "input_variables": [{"type": "INPUT", "name": "x"}],
+            "response_variables": [{"name": "y"}]
+        }
+
         self.data_file = open(self.config["data_file"], "rb")
         self.csv_reader = csv.reader(self.data_file, delimiter=',')
 

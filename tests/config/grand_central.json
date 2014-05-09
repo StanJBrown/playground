@@ -1,9 +1,0 @@
-{
-    "playnodes": [
-        {
-            "type": "EVALUATOR",
-            "host": "localhost",
-            "port": 8080
-        }
-    ]
-}

@@ -15,14 +15,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
 from playground.playnode.node import PlayNodeType
 from playground.playnode.node import PlayNodeStatus
 
-import playground.config
 from playground.gp.tree.generator import TreeGenerator
 from playground.gp.tree.parser import TreeParser
 
 # SETTINGS
 n_script = "playground/playnode/node.py"
-cwd = os.path.dirname(__file__)
-config_fp = os.path.normpath(os.path.join(cwd, "../config/playnode.json"))
 
 
 def check_call_modify(command, output_file):
@@ -123,7 +120,69 @@ class NodeTests(unittest.TestCase):
         # }
 
         # setup
-        config = playground.config.load_config(config_fp)
+        config = {
+            "max_population" : 10,
+            "max_generation" : 5,
+
+            "tree_generation" : {
+                "method" : "GROW_METHOD",
+                "initial_max_depth" : 3
+            },
+
+            "evaluator": {
+                "use_cache" : True
+            },
+
+            "selection" : {
+                "method" : "TOURNAMENT_SELECTION",
+                "tournament_size": 5
+            },
+
+            "crossover" : {
+                "method" : "POINT_CROSSOVER",
+                "probability" : 0.8
+            },
+
+            "mutation" : {
+                "methods": [
+                    "POINT_MUTATION",
+                    "HOIST_MUTATION",
+                    "SUBTREE_MUTATION",
+                    "SHRINK_MUTATION",
+                    "EXPAND_MUTATION"
+                ],
+                "probability" : 0.9
+            },
+
+            "function_nodes" : [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "COS", "arity": 1},
+                {"type": "FUNCTION", "name": "SIN", "arity": 1}
+            ],
+
+            "terminal_nodes" : [
+                {"type": "TERM", "value": 1.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 3.0},
+                {"type": "TERM", "value": 4.0},
+                {"type": "TERM", "value": 5.0},
+                {"type": "TERM", "value": 6.0},
+                {"type": "TERM", "value": 7.0},
+                {"type": "TERM", "value": 8.0},
+                {"type": "TERM", "value": 9.0},
+                {"type": "TERM", "value": 10.0}
+            ],
+
+
+            "data_file" : "tests/data/sine.dat",
+
+            "input_variables" : [{"type": "INPUT", "name": "x"}],
+            "response_variables" : [{"name": "y"}]
+        }
         parser = TreeParser()
         population = TreeGenerator(config).init()
 

@@ -15,15 +15,53 @@ from playground.gp.tree.parser import TreeParser
 from playground.gp.tree.mutation import TreeMutation
 
 
-# SETTINGS
-script_path = os.path.dirname(__file__)
-config_file = "../../config/mutation.json"
-config_path = os.path.normpath(os.path.join(script_path, config_file))
-
-
 class TreeMutatorTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_path)
+        self.config = {
+            "tree_generation" : {
+                "method" : "GROW_METHOD",
+                "initial_max_depth" : 4
+            },
+
+            "mutation" : {
+                "methods": [
+                    "POINT_MUTATION",
+                    "HOIST_MUTATION",
+                    "SUBTREE_MUTATION",
+                    "SHRINK_MUTATION",
+                    "EXPAND_MUTATION"
+                ],
+                "probability": 1.0
+            },
+
+            "function_nodes" : [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2},
+                {"type": "FUNCTION", "name": "MUL", "arity": 2},
+                {"type": "FUNCTION", "name": "DIV", "arity": 2},
+                {"type": "FUNCTION", "name": "COS", "arity": 1},
+                {"type": "FUNCTION", "name": "SIN", "arity": 1},
+                {"type": "FUNCTION", "name": "RAD", "arity": 1}
+            ],
+            "terminal_nodes" : [
+                {"type": "TERM", "value": 1.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 2.0},
+                {"type": "TERM", "value": 3.0},
+                {"type": "TERM", "value": 4.0},
+                {"type": "TERM", "value": 5.0},
+                {"type": "TERM", "value": 6.0},
+                {"type": "TERM", "value": 7.0},
+                {"type": "TERM", "value": 8.0},
+                {"type": "TERM", "value": 9.0},
+                {"type": "TERM", "value": 10.0}
+            ],
+
+            "input_variables" : [
+                {"type": "INPUT", "name": "x"}
+            ]
+
+        }
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.generator = TreeGenerator(self.config)

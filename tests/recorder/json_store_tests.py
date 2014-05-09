@@ -15,15 +15,60 @@ from playground.gp.tree.generator import TreeGenerator
 from playground.gp.tree.crossover import TreeCrossover
 from playground.gp.tree.mutation import TreeMutation
 
-# SETTINGS
-script_path = os.path.dirname(__file__)
-config_path = "../config/json_store.json"
-config_path = os.path.normpath(os.path.join(script_path, config_path))
-
 
 class JSONStoreTests(unittest.TestCase):
     def setUp(self):
-        self.config = config.load_config(config_path)
+        self.config = {
+            "max_population" : 10,
+
+            "tree_generation" : {
+                "method" : "FULL_METHOD",
+                "initial_max_depth" : 4
+            },
+
+            "evaluator" : {
+                "use_cache": True
+            },
+
+            "selection" : {
+                "method" : "TOURNAMENT_SELECTION",
+                "tournament_size": 2
+            },
+
+            "crossover" : {
+                "method" : "POINT_CROSSOVER",
+                "probability" : 0.6
+            },
+
+            "mutation" : {
+                "methods": ["POINT_MUTATION"],
+                "probability" : 0.8
+            },
+
+            "function_nodes" : [
+                {"type": "FUNCTION", "name": "ADD", "arity": 2},
+                {"type": "FUNCTION", "name": "SUB", "arity": 2}
+            ],
+
+            "terminal_nodes" : [
+                {"type": "TERM", "value": 1.0},
+            ],
+
+            "input_variables" : [
+                {"type": "INPUT", "name": "x"}
+            ],
+
+            "data_file" : "tests/data/sine.dat",
+            "response_variables" : [{"name": "y"}],
+
+
+            "recorder" : {
+                "store_file": "json_store_test.json",
+                "compress": True
+            }
+        }
+        config.load_data(self.config)
+
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.generator = TreeGenerator(self.config)

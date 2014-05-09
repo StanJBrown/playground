@@ -45,26 +45,31 @@ def print_func(population, generation):
         for i in population.individuals:
             p.append(str(i))
         p = set(p)
-        diversity = round((len(p) / float(len(population.individuals))) * 100, 2)
+        diversity = (len(p) / float(len(population.individuals))) * 100
+        diversity = round(diversity, 2)
         print "population diversity:", str(diversity) + "%"
     print ""
 
 
-def default_stop_func(popualtion, general_stats, config):
+def default_stop_func(popualtion, stats, config):
     max_gen = config["max_generation"]
     stale_limit = config.get("stale_limit", 10)
+    stop_score = config.get("stop_score", None)
+    curr_best = stats["all_time_best"]
+    curr_best_score = None if curr_best is None else curr_best.score
+    stop = False
 
-    if general_stats["generation"] >= max_gen:
-        return True
+    if stats["generation"] >= max_gen:
+        stop = True
 
-    elif general_stats["stale_counter"] >= stale_limit:
-        return True
+    if stats["stale_counter"] >= stale_limit:
+        stop = True
 
-    elif config.get("stop_score", None):
-        if config["stop_score"] <= general_stats["best"].score:
-            return True
+    if stop_score is not None:
+        if curr_best_score is not None and stop_score >= curr_best_score:
+            stop = True
 
-    return False
+    return stop
 
 
 def gen_term_node(node, row, config):

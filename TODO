@@ -6,6 +6,12 @@
 - Check all arabas test data
 - Run param sweep on f1 - f4
 
+- Refactor tree_evaluation_3 to tree_evaluation_1
+- Refactor input nodes into terminal nodes
+- Impleent the empherical random constant
+- Create a Logic Circuit Demo
+- Create nearest neighbour algorithm
+
 
 # TODO Documentation
 - Examples

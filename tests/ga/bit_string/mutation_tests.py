@@ -3,10 +3,10 @@ import os
 import sys
 import random
 import unittest
-sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
-from playground.ga.bit_string_generator import BitStringGenerator
-from playground.ga.bit_string_mutation import BitStringMutation
+from playground.ga.bit_string.generator import BitStringGenerator
+from playground.ga.bit_string.mutation import BitStringMutation
 
 
 class BitStrMutationTests(unittest.TestCase):

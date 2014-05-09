@@ -4,6 +4,7 @@
 def check_iterations(max_iterations, iteration):
     if max_iterations is None:
         raise RuntimeError("max_iterations is not defined for stop function!")
+
     if iteration is None:
         raise RuntimeError("iteration is not defined for stop function!")
 
@@ -16,8 +17,10 @@ def check_iterations(max_iterations, iteration):
 def check_score(target_score, score, comparator):
     if target_score is None:
         raise RuntimeError("taget_score is not defined for stop function!")
+
     if score is None:
         raise RuntimeError("score is not defined for stop function!")
+
     if comparator is None:
         raise RuntimeError("comparator is not defined for stop function!")
 
@@ -30,6 +33,7 @@ def check_score(target_score, score, comparator):
 def check_time(max_time, time):
     if max_time is None:
         raise RuntimeError("max_time is not defined for stop function!")
+
     if time is None:
         raise RuntimeError("time is not defined for stop function!")
 

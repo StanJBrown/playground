@@ -3,7 +3,7 @@ from random import randint
 from random import random
 from random import sample
 
-from playground.ga.bit_string_generator import BitStringGenerator
+from playground.ga.bit_string.generator import BitStringGenerator
 from playground.recorder.record_type import RecordType
 
 

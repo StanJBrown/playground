@@ -5,9 +5,9 @@ import time
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
 import playground.play as play
-from playground.ga.bit_string_generator import BitStringGenerator
-from playground.ga.bit_string_crossover import BitStringCrossover
-from playground.ga.bit_string_mutation import BitStringMutation
+from playground.ga.bit_string.generator import BitStringGenerator
+from playground.ga.bit_string.crossover import BitStringCrossover
+from playground.ga.bit_string.mutation import BitStringMutation
 from playground.selection import Selection
 
 # GLOBAL VARS

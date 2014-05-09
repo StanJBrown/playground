@@ -3,10 +3,10 @@ import sys
 import os
 import random
 import unittest
-sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
-from playground.ga.bit_string_generator import BitStringGenerator
-from playground.ga.bit_string_crossover import BitStringCrossover
+from playground.ga.bit_string.generator import BitStringGenerator
+from playground.ga.bit_string.crossover import BitStringCrossover
 
 
 class BitStringCrossoverTests(unittest.TestCase):

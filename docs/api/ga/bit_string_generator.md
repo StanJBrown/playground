@@ -1,4 +1,4 @@
-# playground.ga.bit_string_generator
+# playground.ga.bit_string.generator
 
 **Classes**:
 - BitStringGenerator(object)

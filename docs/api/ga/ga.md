@@ -10,6 +10,6 @@ The Genetic Algorithm module contains a bit string implementation in
 sub-modules:
 
 - bit_string
-- bit_string_generator
-- bit_string_crossover
-- bit_string_mutation
+- bit_string.generator
+- bit_string.crossover
+- bit_string.mutation

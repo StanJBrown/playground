@@ -1,4 +1,4 @@
-# playground.ga.bit_string_crossover
+# playground.ga.bit_string.crossover
 
 **Classes**:
 - BitStringCrossover(object)

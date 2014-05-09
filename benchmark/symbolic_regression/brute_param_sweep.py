@@ -55,18 +55,7 @@ if __name__ == "__main__":
         ],
 
         "terminal_nodes": [
-            {"type": "TERM", "value": 0.0},
             {"type": "TERM", "value": 1.0},
-            {"type": "TERM", "value": 2.0},
-            {"type": "TERM", "value": 2.0},
-            {"type": "TERM", "value": 3.0},
-            {"type": "TERM", "value": 4.0},
-            {"type": "TERM", "value": 5.0},
-            {"type": "TERM", "value": 6.0},
-            {"type": "TERM", "value": 7.0},
-            {"type": "TERM", "value": 8.0},
-            {"type": "TERM", "value": 9.0},
-            {"type": "TERM", "value": 10.0},
             {"type": "TERM", "value": math.pi}
         ],
 
@@ -92,7 +81,7 @@ if __name__ == "__main__":
 
         "population_size": {
             "range": [
-                100
+                # 100
                 # 150,
                 # 200,
                 # 250,
@@ -100,7 +89,7 @@ if __name__ == "__main__":
                 # 350,
                 # 400,
                 # 450,
-                # 500,
+                500,
                 # 550,
                 # 600,
                 # 650,
@@ -116,7 +105,7 @@ if __name__ == "__main__":
 
         "crossover_probability": {
             "range": [
-                0.05
+                # 0.05
                 # 0.10,
                 # 0.15,
                 # 0.20,
@@ -126,10 +115,10 @@ if __name__ == "__main__":
                 # 0.40,
                 # 0.45,
                 # 0.50,
-                # 0.55,
-                # 0.60,
-                # 0.65,
-                # 0.70,
+                0.55,
+                0.60,
+                0.65,
+                0.70,
                 # 0.75,
                 # 0.80,
                 # 0.85,
@@ -141,7 +130,7 @@ if __name__ == "__main__":
 
         "mutation_probability": {
             "range": [
-                0.05
+                # 0.05
                 # 0.10,
                 # 0.15,
                 # 0.20,
@@ -150,13 +139,13 @@ if __name__ == "__main__":
                 # 0.35,
                 # 0.40,
                 # 0.45,
-                # 0.50,
-                # 0.55,
-                # 0.60,
-                # 0.65,
-                # 0.70,
-                # 0.75,
-                # 0.80,
+                0.50,
+                0.55,
+                0.60,
+                0.65,
+                0.70,
+                0.75,
+                0.80,
                 # 0.85,
                 # 0.90,
                 # 0.95,
@@ -171,5 +160,17 @@ if __name__ == "__main__":
         "record_dir": "$HOME/data",
         "log_path": "$HOME/data/f1.log"
     }
+    functions = {
+        "ADD": "+",
+        "SUB": "-",
+        "MUL": "*",
+        "DIV": "/",
+        "POW": "**",
+        "SIN": "math.sin",
+        "COS": "math.cos",
+        "RAD": "math.radians",
+        "LN": "math.ln",
+        "LOG": "math.log"
+    }
 
-    brute_parameter_sweep(test_parameters, gp_benchmark_loop)
+    brute_parameter_sweep(test_parameters, functions, gp_benchmark_loop)

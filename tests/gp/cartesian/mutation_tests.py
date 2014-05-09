@@ -6,8 +6,8 @@ import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
-from playground.gp.cartesian.cartesian import Cartesian
-from playground.gp.cartesian.cartesian_mutation import CartesianMutation
+from playground.gp.cartesian import Cartesian
+from playground.gp.cartesian.mutation import CartesianMutation
 
 
 class CartesianMutationTests(unittest.TestCase):

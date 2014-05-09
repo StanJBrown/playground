@@ -4,7 +4,7 @@ import sys
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
-from playground.gp.cartesian.cartesian import Cartesian
+from playground.gp.cartesian import Cartesian
 
 
 class CartesianTests(unittest.TestCase):

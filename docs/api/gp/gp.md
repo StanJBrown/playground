@@ -20,6 +20,6 @@ There are two implementations of GP:
     - parser
 - **Cartesian based**
     - cartesian
-    - cartesian_evaluator
-    - cartesian_generator
-    - cartesian_mutation
+    - cartesian.evaluator
+    - cartesian.generator
+    - cartesian.mutation

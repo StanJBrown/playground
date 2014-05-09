@@ -5,7 +5,7 @@ from random import random
 from random import sample
 
 from playground.recorder.record_type import RecordType
-from playground.gp.cartesian.cartesian_generator import CartesianGenerator
+from playground.gp.cartesian.generator import CartesianGenerator
 
 
 class CartesianMutation(object):

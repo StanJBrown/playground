@@ -6,7 +6,7 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
 from playground.config import load_data
-from playground.gp.cartesian.cartesian_generator import CartesianGenerator
+from playground.gp.cartesian.generator import CartesianGenerator
 
 
 class CartesianGeneratorTests(unittest.TestCase):

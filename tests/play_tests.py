@@ -18,9 +18,9 @@ from playground.gp.tree.evaluation import print_func
 from playground.gp.tree.crossover import TreeCrossover
 from playground.gp.tree.mutation import TreeMutation
 
-from playground.gp.cartesian.cartesian_generator import CartesianGenerator
-import playground.gp.cartesian.cartesian_evaluator as cgp_evaluate
-from playground.gp.cartesian.cartesian_mutation import CartesianMutation
+from playground.gp.cartesian.generator import CartesianGenerator
+import playground.gp.cartesian.evaluator as cgp_evaluate
+from playground.gp.cartesian.mutation import CartesianMutation
 
 
 # SETTINGS

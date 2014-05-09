@@ -4,8 +4,8 @@ import sys
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
-from playground.gp.cartesian.cartesian import Cartesian
-from playground.gp.cartesian.cartesian_evaluator import evaluate_cartesian
+from playground.gp.cartesian import Cartesian
+from playground.gp.cartesian.evaluator import evaluate_cartesian
 import playground.gp.functions as functions
 
 from playground.config import load_data

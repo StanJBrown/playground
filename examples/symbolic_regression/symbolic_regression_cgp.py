@@ -10,12 +10,12 @@ import playground.play as play
 from playground.config import load_data
 
 import playground.gp.functions as funcs
-from playground.gp.cartesian.cartesian_mutation import CartesianMutation
-from playground.gp.cartesian.cartesian_generator import CartesianGenerator
-from playground.gp.cartesian.cartesian_evaluator import evaluate
-from playground.gp.cartesian.cartesian_evaluator import default_stop_func
-from playground.gp.cartesian.cartesian_evaluator import print_func
-from playground.gp.cartesian.cartesian_evaluator import plot_func
+from playground.gp.cartesian.mutation import CartesianMutation
+from playground.gp.cartesian.generator import CartesianGenerator
+from playground.gp.cartesian.evaluator import evaluate
+from playground.gp.cartesian.evaluator import default_stop_func
+from playground.gp.cartesian.evaluator import print_func
+from playground.gp.cartesian.evaluator import plot_func
 
 from playground.selection import Selection
 from playground.recorder.json_store import JSONStore

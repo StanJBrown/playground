@@ -2,7 +2,7 @@
 from random import randint
 from random import sample
 
-from playground.gp.cartesian.cartesian import Cartesian
+from playground.gp.cartesian import Cartesian
 from playground.population import Population
 
 

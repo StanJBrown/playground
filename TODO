@@ -8,6 +8,7 @@
 
 - Refactor input nodes into terminal nodes
 - Impleent the empherical random constant
+
 - Create a Logic Circuit Demo
 - Create nearest neighbour algorithm
 

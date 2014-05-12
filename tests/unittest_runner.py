@@ -62,7 +62,9 @@ if __name__ == "__main__":
     for unittest in unittests:
         # execute unittest
         try:
-            print("UNITTEST [{0}] ".format(unittest)),
+            print "UNITTEST [{0}] ".format(unittest),
+            sys.stdout.flush()
+
             unittest_output_fp = os.path.join(
                 orig_cwd,
                 unittests_log_dir,
@@ -82,11 +84,11 @@ if __name__ == "__main__":
                 stderr=unittest_output
             )
             unittest_output.close()
-            print("{0}PASSED!{1}".format(TC.OKGREEN, TC.ENDC))
+            print "{0}PASSED!{1}".format(TC.OKGREEN, TC.ENDC)
 
         except:
             unittest_output.close()
-            print("{0}FAILED!{1}".format(TC.FAIL, TC.ENDC))
+            print "{0}FAILED!{1}".format(TC.FAIL, TC.ENDC)
             print_stdout(unittest_output_fp)
             error = True
 

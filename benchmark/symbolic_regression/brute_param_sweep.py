@@ -55,8 +55,8 @@ if __name__ == "__main__":
         ],
 
         "terminal_nodes": [
-            {"type": "TERM", "value": 1.0},
-            {"type": "TERM", "value": math.pi}
+            {"type": "CONSTANT", "value": 1.0},
+            {"type": "CONSTANT", "value": math.pi}
         ],
 
         "data_file": None,

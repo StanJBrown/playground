@@ -13,10 +13,6 @@ from playground.gp.tree.parser import TreeParser
 from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 
-# SETTINGS
-cwd = os.path.dirname(__file__)
-tree_config = os.path.join(cwd, "../../config/tree.json")
-
 
 class TreeParserTests(unittest.TestCase):
     def setUp(self):
@@ -40,17 +36,10 @@ class TreeParserTests(unittest.TestCase):
             ],
 
             "terminal_nodes" : [
-                {"type": "TERM", "value": 1.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 3.0},
-                {"type": "TERM", "value": 4.0},
-                {"type": "TERM", "value": 5.0},
-                {"type": "TERM", "value": 6.0},
-                {"type": "TERM", "value": 7.0},
-                {"type": "TERM", "value": 8.0},
-                {"type": "TERM", "value": 9.0},
-                {"type": "TERM", "value": 10.0}
+                {"type": "CONSTANT", "value": 1.0},
+                {"type": "INPUT", "name": "x"},
+                {"type": "INPUT", "name": "y"},
+                {"type": "INPUT", "name": "z"}
             ],
 
             "input_variables" : [
@@ -65,8 +54,8 @@ class TreeParserTests(unittest.TestCase):
         self.parser = TreeParser()
 
         # create nodes
-        left_node = TreeNode(TreeNodeType.TERM, value=1.0)
-        right_node = TreeNode(TreeNodeType.TERM, value=2.0)
+        left_node = TreeNode(TreeNodeType.CONSTANT, value=1.0)
+        right_node = TreeNode(TreeNodeType.CONSTANT, value=2.0)
 
         cos_func = TreeNode(
             TreeNodeType.FUNCTION,
@@ -111,8 +100,6 @@ class TreeParserTests(unittest.TestCase):
 
         self.assertEquals(self.tree.size, 5)
         self.assertEquals(self.tree.depth, 2)
-        self.assertEquals(self.tree.branches, 2)
-        self.assertEquals(self.tree.open_branches, 0)
 
         self.assertEquals(len(self.tree.func_nodes), 2)
         self.assertEquals(len(self.tree.term_nodes), 2)
@@ -126,9 +113,9 @@ class TreeParserTests(unittest.TestCase):
     def test_tree_to_dict(self):
         solution = {
             'program': [
-                {'type': 'TERM', 'value': 1.0},
+                {'type': 'CONSTANT', 'value': 1.0},
                 {'arity': 1, 'type': 'FUNCTION', 'name': 'COS'},
-                {'type': 'TERM', 'value': 2.0},
+                {'type': 'CONSTANT', 'value': 2.0},
                 {'arity': 1, 'type': 'FUNCTION', 'name': 'SIN'},
                 {'arity': 2, 'type': 'FUNCTION', 'root': True, 'name': 'ADD'}
             ]

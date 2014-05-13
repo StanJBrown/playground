@@ -60,18 +60,18 @@ class SymRegBenchmarkTests(unittest.TestCase):
             ],
 
             "terminal_nodes": [
-                {"type": "TERM", "value": 1.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 3.0},
-                {"type": "TERM", "value": 4.0},
-                {"type": "TERM", "value": 5.0},
-                {"type": "TERM", "value": 6.0},
-                {"type": "TERM", "value": 7.0},
-                {"type": "TERM", "value": 8.0},
-                {"type": "TERM", "value": 9.0},
-                {"type": "TERM", "value": 10.0},
-                {"type": "TERM", "value": math.pi}
+                {"type": "CONSTANT", "value": 1.0},
+                {"type": "CONSTANT", "value": 2.0},
+                {"type": "CONSTANT", "value": 2.0},
+                {"type": "CONSTANT", "value": 3.0},
+                {"type": "CONSTANT", "value": 4.0},
+                {"type": "CONSTANT", "value": 5.0},
+                {"type": "CONSTANT", "value": 6.0},
+                {"type": "CONSTANT", "value": 7.0},
+                {"type": "CONSTANT", "value": 8.0},
+                {"type": "CONSTANT", "value": 9.0},
+                {"type": "CONSTANT", "value": 10.0},
+                {"type": "CONSTANT", "value": math.pi}
             ],
 
             "data_file": "../data/sine.dat",

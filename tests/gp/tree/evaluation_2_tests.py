@@ -37,17 +37,7 @@ class TreeEvaluatorTests(unittest.TestCase):
             ],
 
             "terminal_nodes": [
-                {"type": "TERM", "value": 1.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 3.0},
-                {"type": "TERM", "value": 4.0},
-                {"type": "TERM", "value": 5.0},
-                {"type": "TERM", "value": 6.0},
-                {"type": "TERM", "value": 7.0},
-                {"type": "TERM", "value": 8.0},
-                {"type": "TERM", "value": 9.0},
-                {"type": "TERM", "value": 10.0}
+                {"type": "CONSTANT", "value": 1.0},
             ],
 
             "input_variables": [
@@ -80,7 +70,7 @@ class TreeEvaluatorTests(unittest.TestCase):
 
     def test_generate_eq_function(self):
         # create terminal nodes
-        term_node = TreeNode(TreeNodeType.TERM, value=100.0)
+        term_node = TreeNode(TreeNodeType.CONSTANT, value=100.0)
         input_node = TreeNode(TreeNodeType.INPUT, name="x")
 
         # create function nodes
@@ -173,7 +163,7 @@ class TreeEvaluatorTests(unittest.TestCase):
 
     def test_eval_tree(self):
         # create terminal nodes
-        term_node = TreeNode(TreeNodeType.TERM, value=100.0)
+        term_node = TreeNode(TreeNodeType.CONSTANT, value=100.0)
         input_node = TreeNode(TreeNodeType.INPUT, name="x")
 
         # create function nodes

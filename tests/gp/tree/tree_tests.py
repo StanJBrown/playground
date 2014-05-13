@@ -13,11 +13,11 @@ from playground.gp.tree.parser import TreeParser
 
 class TreeNodeTests(unittest.TestCase):
     def setUp(self):
-        self.left_node = TreeNode(TreeNodeType.TERM, value=1.0)
-        self.left_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        self.left_node = TreeNode(TreeNodeType.CONSTANT, value=1.0)
+        self.left_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
 
-        self.right_node = TreeNode(TreeNodeType.TERM, value=2.0)
-        self.right_node_2 = TreeNode(TreeNodeType.TERM, value=2.0)
+        self.right_node = TreeNode(TreeNodeType.CONSTANT, value=2.0)
+        self.right_node_2 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
 
         self.binary_node = TreeNode(
             TreeNodeType.FUNCTION,
@@ -43,7 +43,7 @@ class TreeNodeTests(unittest.TestCase):
         self.assertFalse(res)
 
     def test_equal(self):
-        term_node = TreeNode(TreeNodeType.TERM, value=2)
+        term_node = TreeNode(TreeNodeType.CONSTANT, value=2)
 
         # assert UNARY_OP node
         unary_node = TreeNode(TreeNodeType.FUNCTION, name="SIN")
@@ -56,7 +56,7 @@ class TreeNodeTests(unittest.TestCase):
         self.assertFalse(binary_node.equals(term_node))
 
         # assert TERM node
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        term_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
         self.assertTrue(term_node_2.equals(term_node_2))
         self.assertFalse(term_node_2.equals(term_node))
 
@@ -86,17 +86,10 @@ class TreeTests(unittest.TestCase):
             ],
 
             "terminal_nodes" : [
-                {"type": "TERM", "value": 1.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 3.0},
-                {"type": "TERM", "value": 4.0},
-                {"type": "TERM", "value": 5.0},
-                {"type": "TERM", "value": 6.0},
-                {"type": "TERM", "value": 7.0},
-                {"type": "TERM", "value": 8.0},
-                {"type": "TERM", "value": 9.0},
-                {"type": "TERM", "value": 10.0}
+                {"type": "CONSTANT", "value": 1.0},
+                {"type": "INPUT", "name": "x"},
+                {"type": "INPUT", "name": "y"},
+                {"type": "INPUT", "name": "z"}
             ],
 
             "input_variables" : [
@@ -182,11 +175,11 @@ class TreeTests(unittest.TestCase):
 
     def test_equal(self):
         # create nodes
-        left_node_1 = TreeNode(TreeNodeType.TERM, value=1.0)
-        right_node_1 = TreeNode(TreeNodeType.TERM, value=2.0)
+        left_node_1 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
+        right_node_1 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
 
-        left_node_2 = TreeNode(TreeNodeType.TERM, value=3.0)
-        right_node_2 = TreeNode(TreeNodeType.TERM, value=4.0)
+        left_node_2 = TreeNode(TreeNodeType.CONSTANT, value=3.0)
+        right_node_2 = TreeNode(TreeNodeType.CONSTANT, value=4.0)
 
         cos_func_1 = TreeNode(
             TreeNodeType.FUNCTION,

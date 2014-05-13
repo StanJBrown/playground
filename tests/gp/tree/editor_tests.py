@@ -15,8 +15,8 @@ class TreeEditorTests(unittest.TestCase):
     def setUp(self):
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
 
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        term_node_1 = TreeNode(TreeNodeType.CONSTANT, value=0.0)
+        term_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
         func_node_1 = TreeNode(
             TreeNodeType.FUNCTION,
             name="ADD",
@@ -24,7 +24,7 @@ class TreeEditorTests(unittest.TestCase):
             branches=[term_node_1, term_node_2]
         )
 
-        term_node_3 = TreeNode(TreeNodeType.TERM, value=2.0)
+        term_node_3 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
         term_node_4 = TreeNode(TreeNodeType.INPUT, name="x")
         func_node_2 = TreeNode(
             TreeNodeType.FUNCTION,
@@ -49,8 +49,8 @@ class TreeEditorTests(unittest.TestCase):
             print node
 
     def test_analyze_children_terminals_only(self):
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        term_node_1 = TreeNode(TreeNodeType.CONSTANT, value=0.0)
+        term_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
         func_node = TreeNode(
             TreeNodeType.FUNCTION,
             name="ADD",
@@ -63,7 +63,7 @@ class TreeEditorTests(unittest.TestCase):
 
     def test_analyze_children_inputs_and_terminals(self):
         term_node_1 = TreeNode(TreeNodeType.INPUT, name="x")
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        term_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
         func_node = TreeNode(
             TreeNodeType.FUNCTION,
             name="ADD",
@@ -88,8 +88,8 @@ class TreeEditorTests(unittest.TestCase):
         self.assertEquals(result, (False, False, True, False))
 
     def test_analyze_children_contains_zero(self):
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        term_node_1 = TreeNode(TreeNodeType.CONSTANT, value=0.0)
+        term_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
         func_node = TreeNode(
             TreeNodeType.FUNCTION,
             name="ADD",
@@ -102,8 +102,8 @@ class TreeEditorTests(unittest.TestCase):
 
     def test_edit_tree_zero_only(self):
         # TEST CONTAINS ZERO
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        term_node_1 = TreeNode(TreeNodeType.CONSTANT, value=0.0)
+        term_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
         func_node = TreeNode(
             TreeNodeType.FUNCTION,
             name="ADD",
@@ -123,8 +123,8 @@ class TreeEditorTests(unittest.TestCase):
 
     def test_edit_tree_terminals_only(self):
         # TEST TERMINALS ONLY
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=2.0)
-        term_node_2 = TreeNode(TreeNodeType.TERM, value=1.0)
+        term_node_1 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
+        term_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
         func_node = TreeNode(
             TreeNodeType.FUNCTION,
             name="ADD",
@@ -144,7 +144,7 @@ class TreeEditorTests(unittest.TestCase):
 
     def test_edit_tree_inputs_and_terminals(self):
         # TEST INPUTS AND TERMINALS
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=2.0)
+        term_node_1 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
         term_node_2 = TreeNode(TreeNodeType.INPUT, name="x")
         func_node = TreeNode(
             TreeNodeType.FUNCTION,
@@ -163,7 +163,7 @@ class TreeEditorTests(unittest.TestCase):
 
     def test_edit_tree_prune(self):
         # TEST PRUNE
-        term_node_1 = TreeNode(TreeNodeType.TERM, value=0.0)
+        term_node_1 = TreeNode(TreeNodeType.CONSTANT, value=0.0)
         term_node_2 = TreeNode(TreeNodeType.INPUT, name="x")
         func_node = TreeNode(
             TreeNodeType.FUNCTION,
@@ -180,7 +180,7 @@ class TreeEditorTests(unittest.TestCase):
         print "AFTER:", func_node
         print
 
-        self.assertEquals(func_node.node_type, TreeNodeType.TERM)
+        self.assertEquals(func_node.node_type, TreeNodeType.CONSTANT)
         self.assertIsNone(func_node.name)
         self.assertEquals(func_node.value, 0)
 

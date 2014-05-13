@@ -22,22 +22,18 @@ class TreeParser(object):
 
             tree.size = 0
             tree.depth = 0
-            tree.branches = 1
-            tree.open_branches = 1
             del tree.func_nodes[:]
             del tree.term_nodes[:]
             del tree.input_nodes[:]
 
         if node.is_terminal():
             tree.size += 1
-            tree.open_branches -= 1
             tree.term_nodes.append(node)
 
             stack.append(node)
 
         elif node.is_input():
             tree.size += 1
-            tree.open_branches -= 1
             tree.input_nodes.append(node)
 
             stack.append(node)
@@ -47,8 +43,6 @@ class TreeParser(object):
                 self.parse_tree(tree, value_node, depth + 1, stack)
 
             tree.size += 1
-            tree.branches += (node.arity - 1)
-            tree.open_branches += (node.arity - 1)
             if node is not tree.root:
                 tree.func_nodes.append(node)
 
@@ -60,7 +54,7 @@ class TreeParser(object):
     def parse_equation(self, node, eq_str=None):
         eq_str = eq_str if eq_str is not None else ""
 
-        if node.is_terminal() or node.is_input():
+        if node.is_terminal():
             if node.name is not None:
                 eq_str += node.name
             else:

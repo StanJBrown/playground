@@ -4,24 +4,14 @@ import sys
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
-import playground.config as config
 import playground.gp.functions as funcs
 from playground.gp.functions import GPFunctionRegistry
 from playground.gp.functions import EvaluationError
 
-# SETTINGS
-script_path = os.path.dirname(__file__)
-config_file = "../config/initializer.json"
-config_fp = os.path.join(script_path, config_file)
-
 
 class FunctionsTests(unittest.TestCase):
     def setUp(self):
-        self.config_file = config.load_config(config_fp)
         self.function = GPFunctionRegistry("SYMBOLIC_REGRESSION")
-
-    def tearDown(self):
-        del self.config_file
 
     def test_symbolic_regression_functions(self):
         # ADD

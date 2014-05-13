@@ -47,7 +47,7 @@ node.
                 expected.
 
             # terminal node specific
-            if node_type is TreeNodeType.TERM:
+            if node_type is TreeNodeType.CONSTANT:
                 name (str) and value (object) are expected.
 
             else node_type is TreeNodeType.INPUT:

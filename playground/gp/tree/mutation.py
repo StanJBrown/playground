@@ -42,9 +42,9 @@ class TreeMutation(object):
                 name=details["name"]
             )
 
-        elif details["type"] == TreeNodeType.TERM:
+        elif details["type"] == TreeNodeType.CONSTANT:
             return TreeNode(
-                TreeNodeType.TERM,
+                TreeNodeType.CONSTANT,
                 name=details.get("name", None),
                 value=details["value"]
             )
@@ -98,7 +98,7 @@ class TreeMutation(object):
         # new indivdiaul generated from subtree
         node = None
         if mutation_index is None:
-            self.index = randint(0, len(tree.program) - 1)
+            self.index = randint(0, len(tree.program) - 2)
             node = tree.program[self.index]
         else:
             self.index = mutation_index

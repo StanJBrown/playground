@@ -51,7 +51,7 @@ class JSONStoreTests(unittest.TestCase):
             ],
 
             "terminal_nodes" : [
-                {"type": "TERM", "value": 1.0},
+                {"type": "CONSTANT", "value": 1.0},
             ],
 
             "input_variables" : [

@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
-import sys
 import os
+import sys
+import decimal
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
@@ -22,102 +23,38 @@ class TreeGeneratorTests(unittest.TestCase):
 
             "tree_generation": {
                 "method": "RAMPED_HALF_AND_HALF_METHOD",
-                "initial_max_depth": 4
+                "initial_max_depth": 3
             },
 
             "function_nodes": [
-                {
-                    "type": "FUNCTION",
-                    "arity": 2,
-                    "name": "ADD"
-                },
-                {
-                    "type": "FUNCTION",
-                    "arity": 2,
-                    "name": "SUB"
-                },
-                {
-                    "type": "FUNCTION",
-                    "arity": 2,
-                    "name": "MUL"
-                },
-                {
-                    "type": "FUNCTION",
-                    "arity": 2,
-                    "name": "DIV"
-                },
-                {
-                    "type": "FUNCTION",
-                    "arity": 1,
-                    "name": "COS"
-                },
-                {
-                    "type": "FUNCTION",
-                    "arity": 1,
-                    "name": "SIN"
-                }
+                {"type": "FUNCTION", "arity": 2, "name": "ADD"},
+                {"type": "FUNCTION", "arity": 2, "name": "SUB"},
+                {"type": "FUNCTION", "arity": 2, "name": "MUL"},
+                {"type": "FUNCTION", "arity": 2, "name": "DIV"},
+                {"type": "FUNCTION", "arity": 1, "name": "COS"},
+                {"type": "FUNCTION", "arity": 1, "name": "SIN"}
             ],
 
             "terminal_nodes": [
+                {"type": "CONSTANT", "value": 1.0},
+                {"type": "INPUT", "name": "x"},
+                {"type": "INPUT", "name": "y"},
                 {
-                    "type": "TERM",
-                    "value": 1.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 2.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 2.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 3.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 4.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 5.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 6.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 7.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 8.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 9.0
-                },
-                {
-                    "type": "TERM",
-                    "value": 10.0
+                    "type": "RANDOM_CONSTANT",
+                    "upper_bound": 10.0,
+                    "lower_bound": -10.0,
+                    "decimal_places": 1
                 }
             ],
 
             "input_variables": [
-                {
-                    "name": "x"
-                },
-                {
-                    "name": "y"
-                }
+                {"name": "x"},
+                {"name": "y"}
             ]
         }
 
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.generator = TreeGenerator(self.config)
-
         self.parser = TreeParser()
 
     def tearDown(self):
@@ -125,60 +62,73 @@ class TreeGeneratorTests(unittest.TestCase):
         del self.generator
         del self.parser
 
-    def test_tree_add_input_nodes(self):
-        # setup
-        # create nodes
-        left_node = TreeNode(TreeNodeType.TERM, value=1.0)
-        right_node = TreeNode(TreeNodeType.TERM, value=2.0)
-        add_func = TreeNode(
-            TreeNodeType.FUNCTION,
-            name="ADD",
-            arity=2,
-            branches=[left_node, right_node]
-        )
-        # create tree
-        tree = Tree()
-        tree.root = add_func
-        tree.update()
+    def test_generate_func_node(self):
+        for i in range(100):
+            tree = Tree()
+            node = self.generator.generate_func_node(tree)
+            self.assertEquals(node.node_type, TreeNodeType.FUNCTION)
 
-        # add input nodes
-        self.generator._add_input_nodes(tree)
-        self.assertTrue(len(tree.input_nodes) == 2)
+    def test_resolve_random_constant(self):
+        upper_bound = 10.0
+        lower_bound = -10.0
+        decimal_places = 0
+
+        for i in range(100):
+            node_details = {
+                "type": "RANDOM_CONSTANT",
+                "lower_bound": lower_bound,
+                "upper_bound": upper_bound,
+                "decimal_places": decimal_places
+            }
+            new_node_details = self.generator.resolve_random_constant(node_details)
+            node_type = new_node_details["type"]
+            node_value = new_node_details["value"]
+
+            self.assertEquals(node_type, "CONSTANT")
+            self.assertTrue(upper_bound >= node_value)
+            self.assertTrue(lower_bound <= node_value)
+            self.assertEquals(node_value, int(node_value))
+
+        upper_bound = 100.0
+        lower_bound = -100.0
+        decimal_places = 1
+
+        for i in range(100):
+            node_details = {
+                "type": "RANDOM_CONSTANT",
+                "lower_bound": lower_bound,
+                "upper_bound": upper_bound,
+                "decimal_places": decimal_places
+            }
+            new_node_details = self.generator.resolve_random_constant(node_details)
+            node_type = new_node_details["type"]
+            node_value = new_node_details["value"]
+
+            self.assertEquals(node_type, "CONSTANT")
+            self.assertTrue(upper_bound >= node_value)
+            self.assertTrue(lower_bound <= node_value)
+
+            node_value = decimal.Decimal(str(node_value))
+            node_decimal_places = abs(node_value.as_tuple().exponent)
+            self.assertEquals(decimal_places, node_decimal_places)
+
+    def test_generate_term_node(self):
+        for i in range(100):
+            node = self.generator.generate_term_node()
+            self.assertTrue(
+                node.node_type == TreeNodeType.CONSTANT or TreeNodeType.INPUT
+            )
 
     def test_full_method(self):
-        tests = 1000
+        tests = 1
 
         for i in xrange(tests):
             tree = self.generator.full_method()
-
-            # # func nodes
-            # print("FUNCTION NODES!")
-            # for func_node in tree.func_nodes:
-            #     self.parser._print_node(func_node)
-
-            # # term nodes
-            # print("\nTERMINAL NODES!")
-            # for term_node in tree.term_nodes:
-            #     self.parser._print_node(term_node)
-
-            # program
-            # print("\nPROGRAM STACK!")
-            # for block in tree.program:
-            #     self.parser._print_node(block)
-
-            # # dot graph
-            # print("\nDOT GRAPH!")
-            # self.parser.print_tree(tree.root)
 
             # asserts
             init_max = self.config["tree_generation"]["initial_max_depth"]
             self.assertEquals(tree.depth, init_max)
             self.assertTrue(tree.size > init_max)
-            self.assertTrue(tree.branches > 0)
-            self.assertEquals(tree.open_branches, 0)
-            self.assertTrue(
-                len(tree.input_nodes) >= len(self.config["input_variables"])
-            )
 
     def test_grow_method(self):
         tests = 1000
@@ -186,34 +136,10 @@ class TreeGeneratorTests(unittest.TestCase):
         for i in xrange(tests):
             tree = self.generator.grow_method()
 
-            # # func nodes
-            # print("FUNCTION NODES!")
-            # for func_node in tree.func_nodes:
-            #     self.parser._print_node(func_node)
-
-            # # term nodes
-            # print("\nTERMINAL NODES!")
-            # for term_node in tree.term_nodes:
-            #     self.parser._print_node(term_node)
-
-            # # program
-            # print("\nPROGRAM STACK!")
-            # for block in tree.program:
-            #     self.parser._print_node(block)
-
-            # dot graph
-            # print("\nDOT GRAPH!")
-            # self.parser.print_tree(tree.root)
-
             # asserts
             init_max = self.config["tree_generation"]["initial_max_depth"]
             self.assertEquals(tree.depth, init_max)
             self.assertTrue(tree.size > init_max)
-            self.assertTrue(tree.branches > 0)
-            self.assertEquals(tree.open_branches, 0)
-            self.assertTrue(
-                len(tree.input_nodes) >= len(self.config["input_variables"])
-            )
 
     def test_generate_tree_from_dict(self):
         population = self.generator.init()

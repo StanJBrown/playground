@@ -41,17 +41,17 @@ class TreeCrossoverTests(unittest.TestCase):
             ],
 
             "terminal_nodes": [
-                {"type": "TERM", "value": 1.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 3.0},
-                {"type": "TERM", "value": 4.0},
-                {"type": "TERM", "value": 5.0},
-                {"type": "TERM", "value": 6.0},
-                {"type": "TERM", "value": 7.0},
-                {"type": "TERM", "value": 8.0},
-                {"type": "TERM", "value": 9.0},
-                {"type": "TERM", "value": 10.0}
+                {"type": "CONSTANT", "value": 1.0},
+                {"type": "CONSTANT", "value": 2.0},
+                {"type": "CONSTANT", "value": 2.0},
+                {"type": "CONSTANT", "value": 3.0},
+                {"type": "CONSTANT", "value": 4.0},
+                {"type": "CONSTANT", "value": 5.0},
+                {"type": "CONSTANT", "value": 6.0},
+                {"type": "CONSTANT", "value": 7.0},
+                {"type": "CONSTANT", "value": 8.0},
+                {"type": "CONSTANT", "value": 9.0},
+                {"type": "CONSTANT", "value": 10.0}
             ],
 
             "input_variables": [
@@ -66,12 +66,12 @@ class TreeCrossoverTests(unittest.TestCase):
         self.parser = TreeParser()
 
         # create nodes
-        left_node_1 = TreeNode(TreeNodeType.TERM, name="x")
-        right_node_1 = TreeNode(TreeNodeType.TERM, value=2.0)
-        node = TreeNode(TreeNodeType.TERM, value=2.0)
+        left_node_1 = TreeNode(TreeNodeType.INPUT, name="x")
+        right_node_1 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
+        node = TreeNode(TreeNodeType.CONSTANT, value=2.0)
 
-        left_node_2 = TreeNode(TreeNodeType.TERM, value=3.0)
-        right_node_2 = TreeNode(TreeNodeType.TERM, value=4.0)
+        left_node_2 = TreeNode(TreeNodeType.CONSTANT, value=3.0)
+        right_node_2 = TreeNode(TreeNodeType.CONSTANT, value=4.0)
 
         cos_func_1 = TreeNode(
             TreeNodeType.FUNCTION,
@@ -118,7 +118,6 @@ class TreeCrossoverTests(unittest.TestCase):
         self.tree_1 = Tree()
         self.tree_1.root = add_func
         self.tree_1.update()
-        self.generator._add_input_nodes(self.tree_1)
 
         print self.tree_1
 
@@ -126,7 +125,6 @@ class TreeCrossoverTests(unittest.TestCase):
         self.tree_2 = Tree()
         self.tree_2.root = sub_func
         self.tree_2.update()
-        self.generator._add_input_nodes(self.tree_2)
 
     def tearDown(self):
         del self.config

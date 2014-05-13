@@ -10,7 +10,7 @@ def simplify(node, functions):
             # simplify
             node.value = func(node.branches[0].value)
 
-            node.node_type = TreeNodeType.TERM
+            node.node_type = TreeNodeType.CONSTANT
             node.name = None
 
         elif node.arity == 2:
@@ -19,7 +19,7 @@ def simplify(node, functions):
             # simplify
             node.value = func(node.branches[0].value, node.branches[1].value)
 
-            node.node_type = TreeNodeType.TERM
+            node.node_type = TreeNodeType.CONSTANT
             node.name = None
 
         else:
@@ -31,14 +31,14 @@ def simplify(node, functions):
 
 
 def prune(node, functions):
-    node.node_type = TreeNodeType.TERM
+    node.node_type = TreeNodeType.CONSTANT
     node.name = None
     node.value = 0.0
     node.branches = None
 
 
 def substitute(node, functions):
-    node.node_type = TreeNodeType.TERM
+    node.node_type = TreeNodeType.CONSTANT
     node.name = None
     node.value = 0.0
     node.branches = None
@@ -104,7 +104,7 @@ def analyze_children(node):
     inputs_counter = 0
 
     for child in node.branches:
-        if child.is_terminal() is False:
+        if child.is_constant() is False:
             terminals_only = False
             inputs_and_terminals = True
             inputs_counter += 1

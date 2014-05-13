@@ -2,6 +2,7 @@
 from random import sample
 from random import random
 from random import randint
+from random import uniform
 
 from playground.gp.tree import Tree
 from playground.gp.tree import TreeNode
@@ -17,7 +18,7 @@ class TreeGenerator(object):
         self.max_depth = self.gen_config.get("initial_max_depth", 0)
         self.parser = TreeParser()
 
-    def _gen_func_node(self, tree, random=True):
+    def generate_func_node(self, random=True):
         node = None
         if random:
             node = sample(self.config["function_nodes"], 1)[0]
@@ -28,138 +29,125 @@ class TreeGenerator(object):
             arity=node["arity"],
             branches=[]
         )
-        tree.branches += (func_node.arity - 1)
-        tree.open_branches += (func_node.arity - 1)
 
         return func_node
 
-    def _gen_term_node(self, tree, random=True, index=None):
-        node = None
+    def resolve_random_constant(self, node_details):
+        # pre-check
+        if node_details["type"] != TreeNodeType.RANDOM_CONSTANT:
+            err = "Error! [{0}] is not a RANDOM_CONSTANT!".format(node_details)
+            raise RuntimeError
+
+        # generate random floating point
+        lower_bound = node_details["lower_bound"]
+        upper_bound = node_details["upper_bound"]
+        constant = uniform(lower_bound, upper_bound)
+        decimal_places = node_details.pop("decimal_places", False)
+        if decimal_places is not False and isinstance(decimal_places, int):
+            constant = round(constant, decimal_places)
+
+        # create new node details
+        new_node_details = {
+            "type": TreeNodeType.CONSTANT,
+            "value": float(constant)
+        }
+
+        return new_node_details
+
+    def generate_term_node(self, random=True, index=None):
+        node_details = None
+        # get random terminal node details
         if random:
-            node = sample(self.config["terminal_nodes"], 1)[0]
+            node_details = sample(self.config["terminal_nodes"], 1)[0]
         else:
-            node = self.config["terminal_nodes"][index]
+            node_details = self.config["terminal_nodes"][index]
+
+        # resolve if random constant
+        if node_details["type"] == TreeNodeType.RANDOM_CONSTANT:
+            node_details = self.resolve_random_constant(node_details)
 
         term_node = TreeNode(
-            TreeNodeType.TERM,
-            name=node.get("name", None),
-            value=node.get("value", None)
+            node_details["type"],
+            name=node_details.get("name", None),
+            value=node_details.get("value", None)
         )
-        tree.open_branches -= 1
 
         return term_node
 
-    def _gen_input_node(self, index):
-        node = self.config["input_variables"][index]
-        input_node = TreeNode(TreeNodeType.INPUT, name=node.get("name", None))
-        return input_node
+    def add_func_node_to_tree(self, tree, parent_node, func_node):
+        parent_node.branches.append(func_node)
+        tree.func_nodes.append(func_node)
+        tree.size += 1
 
-    def _build_tree(self, node, tree, depth, node_generator):
-        if node.is_function():
-            for i in xrange(node.arity):
-                value_node = node_generator(tree, depth)
-                node.branches.append(value_node)
-                self._build_tree(value_node, tree, depth + 1, node_generator)
+    def add_term_node_to_tree(self, tree, parent_node, term_node):
+        parent_node.branches.append(term_node)
+        tree.size += 1
 
-    def _add_input_nodes(self, tree, mode="ALL"):
-        # determine mode
-        inputs = 0
-        if mode == "ALL":
-            inputs = len(self.config["input_variables"])
-        else:
-            inputs = randint(0, len(self.config["input_variables"]))
-
-        # add input nodes
-        index = 0
-        term_nodes = sample(tree.term_nodes, inputs)
-        for term_node in term_nodes:
-            input_node = self._gen_input_node(index)
-            tree.replace_node(term_node, input_node)
-
-            # increment index
-            index += 1
-            if index == len(self.config["input_variables"]) - 1:
-                index = 0
-
-            # increment inputs modified
-            inputs -= 1
-
-    def _full_method_node_gen(self, tree, depth):
-        if depth + 1 == self.max_depth:
-                term_node = self._gen_term_node(tree)
-                tree.term_nodes.append(term_node)
-                tree.size += 1
-                tree.depth = self.max_depth
-                return term_node
-        else:
-                func_node = self._gen_func_node(tree)
-                tree.func_nodes.append(func_node)
-                tree.size += 1
-                return func_node
-
-    def full_method(self, input_nodes=True):
-        while True:
-            # setup
-            tree = Tree()
-            tree.root = self._gen_func_node(tree)
-
-            # build tree
-            self._build_tree(tree.root, tree, 0, self._full_method_node_gen)
-            tree.update_program()
-
-            # add input nodes
-            if input_nodes:
-                if len(tree.term_nodes) > len(self.config["input_variables"]):
-                    self._add_input_nodes(tree)
-                    return tree
-
-        return tree
-
-    def _grow_method_node_gen(self, tree, depth):
-        if depth + 1 == self.max_depth:
-            term_node = self._gen_term_node(tree)
+        if term_node.is_input():
+            tree.input_nodes.append(term_node)
+        elif term_node.is_constant():
             tree.term_nodes.append(term_node)
-            tree.size += 1
-            tree.depth = self.max_depth
-            return term_node
         else:
+            err = "Unrecognised node type [{0}]!".format(term_node)
+            raise RuntimeError(err)
+
+    def grow_method_build_tree(self, tree, node, depth):
+        for branch_index in range(node.arity):
             prob = random()
-            node = None
-            if tree.open_branches == 1:
-                node = self._gen_func_node(tree)
-                tree.func_nodes.append(node)
-            elif prob < 0.5:
-                node = self._gen_func_node(tree)
-                tree.func_nodes.append(node)
+
+            if prob > 0.5 or depth + 1 == self.max_depth:
+                term_node = self.generate_term_node()
+                self.add_term_node_to_tree(tree, node, term_node)
+
             else:
-                node = self._gen_term_node(tree)
-                tree.term_nodes.append(node)
-            tree.size += 1
-            return node
+                func_node = self.generate_func_node()
+                self.add_func_node_to_tree(tree, node, func_node)
+                self.full_method_build_tree(tree, func_node, depth + 1)
 
-    def grow_method(self, input_nodes=True):
-        while True:
-            # setup
-            tree = Tree()
-            tree.root = self._gen_func_node(tree)
+    def grow_method(self):
+        # initialize tree
+        tree = Tree()
+        tree.size = 1
+        tree.depth = self.max_depth
+        tree.root = self.generate_func_node()
 
-            # build tree
-            self._build_tree(tree.root, tree, 0, self._grow_method_node_gen)
-            tree.update()
-
-            # add input nodes
-            if input_nodes:
-                if len(tree.term_nodes) > len(self.config["input_variables"]):
-                    self._add_input_nodes(tree)
-                    return tree
+        # build tree via full method
+        self.full_method_build_tree(tree, tree.root, 0)
+        tree.update()
 
         return tree
 
-    def ramped_half_and_half_method(self, input_nodes=True):
+    def full_method_build_tree(self, tree, node, depth):
+        for branch_index in range(node.arity):
+            # create terminal node
+            if depth + 1 == self.max_depth:
+                term_node = self.generate_term_node()
+                self.add_term_node_to_tree(tree, node, term_node)
+
+            # create function node
+            else:
+                func_node = self.generate_func_node()
+                self.add_func_node_to_tree(tree, node, func_node)
+                self.full_method_build_tree(tree, func_node, depth + 1)
+
+    def full_method(self):
+        # initialize tree
+        tree = Tree()
+        tree.size = 1
+        tree.depth = self.max_depth
+        tree.root = self.generate_func_node()
+
+        # build tree via full method
+        self.full_method_build_tree(tree, tree.root, 0)
+        tree.update()
+
+        return tree
+
+    def ramped_half_and_half_method(self):
         if random() < 0.5:
-            tree = self.grow_method(input_nodes)
+            tree = self.grow_method()
         else:
-            tree = self.full_method(input_nodes)
+            tree = self.full_method()
 
         return tree
 
@@ -194,9 +182,9 @@ class TreeGenerator(object):
                 tree.program.append(node)
                 stack.append(node)
 
-            elif n_type == TreeNodeType.TERM:
+            elif n_type == TreeNodeType.CONSTANT:
                 node = TreeNode(
-                    TreeNodeType.TERM,
+                    TreeNodeType.CONSTANT,
                     name=node_dict.get("name", None),
                     value=node_dict.get("value", None)
                 )

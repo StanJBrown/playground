@@ -61,7 +61,7 @@ def evaluate_node(node, stack, functions, config):
         elif node.is_input():
             # convert input node to terminal node
             node_data = config["data"][node.name]
-            term_node = TreeNode(TreeNodeType.TERM, value=node_data)
+            term_node = TreeNode(TreeNodeType.CONSTANT, value=node_data)
             stack.append(term_node)
 
         elif node.is_function():
@@ -76,7 +76,7 @@ def evaluate_node(node, stack, functions, config):
                 function_output.append(function(*data_row))
 
             # push result back to stack
-            result_node = TreeNode(TreeNodeType.TERM, value=function_output)
+            result_node = TreeNode(TreeNodeType.CONSTANT, value=function_output)
             stack.append(result_node)
 
     except:

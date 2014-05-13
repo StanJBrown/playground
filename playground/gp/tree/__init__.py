@@ -4,7 +4,8 @@ from playground.gp.tree.parser import TreeParser
 
 class TreeNodeType(object):
     FUNCTION = "FUNCTION"
-    TERM = "TERM"
+    CONSTANT = "CONSTANT"
+    RANDOM_CONSTANT = "RANDOM_CONSTANT"
     INPUT = "INPUT"
 
 
@@ -12,17 +13,18 @@ class TreeNode(object):
     def __init__(self, node_type, **kwargs):
         self.node_type = node_type
 
-        # function node specific
+        # FUNCTION node specific
         if node_type == TreeNodeType.FUNCTION:
             self.name = kwargs.get("name", None)
             self.arity = kwargs.get("arity", None)
             self.branches = kwargs.get("branches", None)
 
-        # terminal node specific
-        if node_type == TreeNodeType.TERM:
+        # CONSTANT node specific
+        if node_type == TreeNodeType.CONSTANT:
             self.name = kwargs.get("name", None)
             self.value = kwargs.get("value", None)
 
+        # INPUT node specific
         elif node_type == TreeNodeType.INPUT:
             self.name = kwargs.get("name", None)
 
@@ -46,14 +48,20 @@ class TreeNode(object):
         else:
             return False
 
-    def is_terminal(self):
-        if self.node_type == TreeNodeType.TERM:
+    def is_constant(self):
+        if self.node_type == TreeNodeType.CONSTANT:
             return True
         else:
             return False
 
     def is_input(self):
         if self.node_type == TreeNodeType.INPUT:
+            return True
+        else:
+            return False
+
+    def is_terminal(self):
+        if self.is_input() or self.is_constant():
             return True
         else:
             return False
@@ -67,8 +75,8 @@ class TreeNode(object):
                 else:
                     return False
 
-            elif node.is_terminal():
-                if self.name == node.name and self.value == node.value:
+            elif node.is_constant():
+                if self.value == node.value:
                     return True
                 else:
                     return False
@@ -87,7 +95,7 @@ class TreeNode(object):
         if self.is_function():
             obj_str += "name: " + self.name + " "
             obj_str += "address: " + str(id(self))
-        elif self.is_terminal():
+        elif self.is_constant():
             if self.name is not None:
                 obj_str += "name: " + self.name + " "
                 obj_str += "value: " + str(self.value) + " "
@@ -100,29 +108,6 @@ class TreeNode(object):
             obj_str += "address: " + str(id(self))
 
         return obj_str
-#
-#     def __dict__(self):
-#         node_dict = {}
-#
-#         node_dict["node_type"] = self.node_type
-#
-#         # function node specific
-#         if self.node_type == TreeNodeType.UNARY_OP:
-#             node_dict["name"] = self.name
-#             node_dict["value_branch"] = self.value_branch.__dict__()
-#         elif self.node_type == TreeNodeType.BINARY_OP:
-#             node_dict["name"] = self.name
-#             node_dict["left_branch"] = self.left_branch.__dict__()
-#             node_dict["right_branch"] = self.right_branch.__dict__()
-#
-#         # terminal node specific
-#         if self.node_type == TreeNodeType.TERM:
-#             node_dict["name"] = self.name
-#             node_dict["value"] = self.value
-#         elif self.node_type == TreeNodeType.INPUT:
-#             node_dict["name"] = self.name
-#
-#         return node_dict
 
 
 class Tree(object):
@@ -133,9 +118,6 @@ class Tree(object):
         self.root = None
         self.depth = 0
         self.size = 0
-
-        self.branches = 1
-        self.open_branches = 1
 
         self.program = []
         self.func_nodes = []
@@ -232,7 +214,6 @@ class Tree(object):
 
             "size": self.size,
             "depth": self.depth,
-            "branches": self.branches,
 
             "func_nodes_len": len(self.func_nodes),
             "term_nodes_len": len(self.term_nodes),

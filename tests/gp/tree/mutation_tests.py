@@ -44,17 +44,8 @@ class TreeMutatorTests(unittest.TestCase):
                 {"type": "FUNCTION", "name": "RAD", "arity": 1}
             ],
             "terminal_nodes" : [
-                {"type": "TERM", "value": 1.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 2.0},
-                {"type": "TERM", "value": 3.0},
-                {"type": "TERM", "value": 4.0},
-                {"type": "TERM", "value": 5.0},
-                {"type": "TERM", "value": 6.0},
-                {"type": "TERM", "value": 7.0},
-                {"type": "TERM", "value": 8.0},
-                {"type": "TERM", "value": 9.0},
-                {"type": "TERM", "value": 10.0}
+                {"type": "CONSTANT", "value": 1.0},
+                {"type": "INPUT", "name": "x"}
             ],
 
             "input_variables" : [
@@ -70,7 +61,7 @@ class TreeMutatorTests(unittest.TestCase):
         self.mutation = TreeMutation(self.config)
 
         # create nodes
-        left_node = TreeNode(TreeNodeType.TERM, value=1.0)
+        left_node = TreeNode(TreeNodeType.CONSTANT, value=1.0)
         right_node = TreeNode(TreeNodeType.INPUT, name="x")
 
         cos_func = TreeNode(
@@ -100,7 +91,6 @@ class TreeMutatorTests(unittest.TestCase):
         self.tree.update_program()
         self.tree.update_func_nodes()
         self.tree.update_term_nodes()
-        self.generator._add_input_nodes(self.tree)
 
     def tearDown(self):
         del self.config
@@ -201,6 +191,7 @@ class TreeMutatorTests(unittest.TestCase):
         self.mutation.mutate(self.tree)
         tree_after = self.build_tree_str(self.tree)
 
+        print "----->", self.mutation.method
         print("Before Mutation")
         print(tree_before)
 

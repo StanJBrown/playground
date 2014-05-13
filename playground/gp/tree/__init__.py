@@ -3,10 +3,10 @@ from playground.gp.tree.parser import TreeParser
 
 
 class TreeNodeType(object):
+    INPUT = "INPUT"
     FUNCTION = "FUNCTION"
     CONSTANT = "CONSTANT"
     RANDOM_CONSTANT = "RANDOM_CONSTANT"
-    INPUT = "INPUT"
 
 
 class TreeNode(object):

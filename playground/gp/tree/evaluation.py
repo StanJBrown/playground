@@ -18,7 +18,7 @@ def print_func(population, generation):
         # population diversity
         p = []
         for i in population.individuals:
-            p.append(str(i.graph()))
+            p.append(str(i))
         p = set(p)
         diversity = (len(p) / float(len(population.individuals))) * 100
         diversity = round(diversity, 2)
@@ -71,12 +71,12 @@ def evaluate_node(node, stack, functions, config):
             # execute function
             function = functions.get_function(node.name)
 
-            function_output = []
+            func_output = []
             for data_row in zip(*input_data):
-                function_output.append(function(*data_row))
+                func_output.append(function(*data_row))
 
             # push result back to stack
-            result_node = TreeNode(TreeNodeType.CONSTANT, value=function_output)
+            result_node = TreeNode(TreeNodeType.CONSTANT, value=func_output)
             stack.append(result_node)
 
     except:

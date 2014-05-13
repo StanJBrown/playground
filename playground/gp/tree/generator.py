@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 from random import sample
 from random import random
-from random import randint
 from random import uniform
 
 from playground.gp.tree import Tree
@@ -18,6 +17,28 @@ class TreeGenerator(object):
         self.max_depth = self.gen_config.get("initial_max_depth", 0)
         self.parser = TreeParser()
 
+    def resolve_random_constant(self, node_details):
+        # pre-check
+        if node_details["type"] != TreeNodeType.RANDOM_CONSTANT:
+            err = "Error! [{0}] is not a RANDOM_CONSTANT!".format(node_details)
+            raise RuntimeError(err)
+
+        # generate random floating point
+        lower_bound = node_details["lower_bound"]
+        upper_bound = node_details["upper_bound"]
+        constant = uniform(lower_bound, upper_bound)
+        decimal_places = node_details.get("decimal_places", None)
+        if decimal_places is not None:
+            constant = round(constant, decimal_places)
+
+        # create new node details
+        new_node_details = {
+            "type": TreeNodeType.CONSTANT,
+            "value": float(constant)
+        }
+
+        return new_node_details
+
     def generate_func_node(self, random=True):
         node = None
         if random:
@@ -31,28 +52,6 @@ class TreeGenerator(object):
         )
 
         return func_node
-
-    def resolve_random_constant(self, node_details):
-        # pre-check
-        if node_details["type"] != TreeNodeType.RANDOM_CONSTANT:
-            err = "Error! [{0}] is not a RANDOM_CONSTANT!".format(node_details)
-            raise RuntimeError
-
-        # generate random floating point
-        lower_bound = node_details["lower_bound"]
-        upper_bound = node_details["upper_bound"]
-        constant = uniform(lower_bound, upper_bound)
-        decimal_places = node_details.pop("decimal_places", False)
-        if decimal_places is not False and isinstance(decimal_places, int):
-            constant = round(constant, decimal_places)
-
-        # create new node details
-        new_node_details = {
-            "type": TreeNodeType.CONSTANT,
-            "value": float(constant)
-        }
-
-        return new_node_details
 
     def generate_term_node(self, random=True, index=None):
         node_details = None

@@ -13,7 +13,7 @@ class ConfigTests(unittest.TestCase):
         self.config = {
             "data_file": "tests/data/sine.dat",
 
-            "input_variables": [{"type": "INPUT", "name": "x"}],
+            "input_variables": [{"name": "x"}],
             "response_variables": [{"name": "y"}]
         }
 

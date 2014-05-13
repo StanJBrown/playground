@@ -22,8 +22,8 @@ from playground.recorder.json_store import JSONStore
 # SETTINGS
 record_exception = False
 script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-config_fp = os.path.join(script_path, "sine_config.json")
-# config_fp = os.path.join(script_path, "simple_test_func_4-config.json")
+# config_fp = os.path.join(script_path, "sine_config.json")
+config_fp = os.path.join(script_path, "simple_test_func_5-config.json")
 
 
 if __name__ == "__main__":
@@ -42,6 +42,7 @@ if __name__ == "__main__":
             "COS": "math.cos",
             "RAD": "math.radians",
             "LN": "math.ln",
+            "EXP": "math.exp",
             "LOG": "math.log"
         }
         generator = TreeGenerator(config)

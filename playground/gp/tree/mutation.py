@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
-from random import randint
 from random import random
 from random import sample
+from random import randint
 
 from playground.gp.tree import TreeNode
 from playground.gp.tree import TreeNodeType
@@ -48,17 +48,23 @@ class TreeMutation(object):
                 name=details.get("name", None),
                 value=details["value"]
             )
+        elif details["type"] == TreeNodeType.RANDOM_CONSTANT:
+            resolved_details = self.resolve_random_constant(details)
+            return TreeNode(
+                TreeNodeType.CONSTANT,
+                name=resolved_details.get("name", None),
+                value=resolved_details["value"]
+            )
 
     def _get_new_node(self, node):
         # determine what kind of node it is
-        nodes = []
+        node_pool = []
         if node.is_function():
             tmp = list(self.config["function_nodes"])
             tmp = [n for n in tmp if n["arity"] == node.arity]
-            nodes.extend(tmp)
-        elif node.is_terminal() or node.is_input():
-            nodes.extend(self.config["terminal_nodes"])
-            nodes.extend(self.config["input_variables"])
+            node_pool.extend(tmp)
+        elif node.is_terminal():
+            node_pool.extend(self.config["terminal_nodes"])
 
         # check the node and return
         retry = 0
@@ -69,11 +75,13 @@ class TreeMutation(object):
             else:
                 retry += 1
 
-            new_node_details = sample(nodes, 1)[0]
-            new_node = self._gen_new_node(new_node_details)
+            n_details = sample(node_pool, 1)[0]
+            if n_details["type"] == TreeNodeType.RANDOM_CONSTANT:
+                n_details = self.generator.resolve_random_constant(n_details)
+            new_node = self._gen_new_node(n_details)
 
             if node.equals(new_node) is False:
-                return new_node_details
+                return n_details
 
     def point_mutation(self, tree, mutation_index=None):
         # mutate node
@@ -83,10 +91,11 @@ class TreeMutation(object):
 
         if new_node is None:
             return
+
         elif node.is_function():
             node.name = new_node["name"]
 
-        elif node.is_terminal() or node.is_input():
+        elif node.is_terminal():
             node.node_type = new_node.get("type")
             node.name = new_node.get("name", None)
             node.value = new_node.get("value", None)

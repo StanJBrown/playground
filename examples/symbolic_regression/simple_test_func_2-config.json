@@ -17,7 +17,8 @@
     },
 
     "selection" : {
-        "method" : "ELITEST_SELECTION"
+        "method" : "TOURNAMENT_SELECTION",
+        "tournament_size": 5
     },
 
     "crossover" : {
@@ -40,27 +41,27 @@
     ],
 
     "terminal_nodes" : [
-        {"type": "CONSTANT", "value": 0.0},
-        {"type": "CONSTANT", "value": 1.0},
-        {"type": "CONSTANT", "value": 2.0},
-        {"type": "CONSTANT", "value": 2.0},
-        {"type": "CONSTANT", "value": 3.0},
-        {"type": "CONSTANT", "value": 4.0},
-        {"type": "CONSTANT", "value": 5.0},
-        {"type": "CONSTANT", "value": 6.0},
-        {"type": "CONSTANT", "value": 7.0},
-        {"type": "CONSTANT", "value": 8.0},
-        {"type": "CONSTANT", "value": 9.0},
-        {"type": "CONSTANT", "value": 10.0}
+        {
+            "type": "RANDOM_CONSTANT",
+            "lower_bound": 0.0,
+            "upper_bound": 10.0,
+            "decimal_places": 0
+        },
+        {"type": "INPUT", "name": "x"}
     ],
 
     "data_file" : "training_data/simple_test_funcs2.dat",
 
     "input_variables" : [
-        {"type": "INPUT", "name": "var1"}
+        {"type": "INPUT", "name": "x"}
     ],
+    "response_variables" : [{"name": "y"}],
 
-    "response_variables" : [{"name": "answer"}],
+    "live_plot": {
+        "every": 1,
+        "x-axis": "x",
+        "y-axis": "y"
+    },
 
     "recorder" : {
         "store_file": "/tmp/ea_stats.json"

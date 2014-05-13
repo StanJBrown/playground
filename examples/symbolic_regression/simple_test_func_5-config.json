@@ -1,6 +1,6 @@
 {
     "max_population" : 500,
-    "max_generation" : 10,
+    "max_generation" : 30,
 
     "tree_generation": {
         "method" : "RAMPED_HALF_AND_HALF_METHOD",
@@ -17,7 +17,7 @@
 
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",
-        "tournament_size": 5
+        "tournament_size": 100
     },
 
     "crossover" : {
@@ -36,7 +36,8 @@
         {"type": "FUNCTION", "name": "ADD", "arity": 2},
         {"type": "FUNCTION", "name": "SUB", "arity": 2},
         {"type": "FUNCTION", "name": "MUL", "arity": 2},
-        {"type": "FUNCTION", "name": "DIV", "arity": 2}
+        {"type": "FUNCTION", "name": "DIV", "arity": 2},
+        {"type": "FUNCTION", "name": "EXP", "arity": 1}
     ],
 
     "terminal_nodes" : [
@@ -48,7 +49,8 @@
         },
         {"type": "INPUT", "name": "x"}
     ],
-    "data_file" : "training_data/simple_test_funcs3.dat",
+
+    "data_file" : "training_data/simple_test_funcs5.dat",
 
     "input_variables" : [{"type": "INPUT", "name": "x"}],
     "response_variables" : [{"name": "y"}],

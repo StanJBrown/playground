@@ -26,7 +26,7 @@ is symbolic regression?][3]):
 
     # curve fitting - genetic programming
     cd examples/symbolic_regression
-    python symbolic_regression.py  # takes a while (20 generations)
+    python symbolic_regression.py
 
 The example uses data in `examples/symbolic_regression/sine.dat` to find the
 answer (an equation), this is also an example of data-driven search.

@@ -1,6 +1,6 @@
 {
     "max_population" : 700,
-    "max_generation" : 100,
+    "max_generation" : 65,
     "stale_limit": 10,
 
     "tree_generation": {

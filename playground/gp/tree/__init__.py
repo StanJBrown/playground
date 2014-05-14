@@ -18,6 +18,7 @@ class TreeNode(object):
             self.name = kwargs.get("name", None)
             self.arity = kwargs.get("arity", None)
             self.branches = kwargs.get("branches", None)
+            self.attribute = kwargs.get("attribute", None)
 
         # CONSTANT node specific
         if node_type == TreeNodeType.CONSTANT:

@@ -17,13 +17,13 @@ class TreeGenerator(object):
         self.max_depth = self.gen_config.get("initial_max_depth", 0)
         self.parser = TreeParser()
 
-    def create_random_constant(self, node_details):
+    def create_random_constant(self, details):
         # generate random floating point
-        lower_bound = node_details["lower_bound"]
-        upper_bound = node_details["upper_bound"]
+        lower_bound = details["lower_bound"]
+        upper_bound = details["upper_bound"]
         constant = uniform(lower_bound, upper_bound)
 
-        decimal_places = node_details.get("decimal_places", None)
+        decimal_places = details.get("decimal_places", None)
         if decimal_places is not None:
             constant = round(constant, decimal_places)
 

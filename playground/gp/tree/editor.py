@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-from playground.gp.tree import TreeNodeType
+from playground.gp.tree import NodeType
 
 
 def simplify(node, functions):
@@ -10,7 +10,7 @@ def simplify(node, functions):
             # simplify
             node.value = func(node.branches[0].value)
 
-            node.node_type = TreeNodeType.CONSTANT
+            node.node_type = NodeType.CONSTANT
             node.name = None
 
         elif node.arity == 2:
@@ -19,7 +19,7 @@ def simplify(node, functions):
             # simplify
             node.value = func(node.branches[0].value, node.branches[1].value)
 
-            node.node_type = TreeNodeType.CONSTANT
+            node.node_type = NodeType.CONSTANT
             node.name = None
 
         else:
@@ -31,14 +31,14 @@ def simplify(node, functions):
 
 
 def prune(node, functions):
-    node.node_type = TreeNodeType.CONSTANT
+    node.node_type = NodeType.CONSTANT
     node.name = None
     node.value = 0.0
     node.branches = None
 
 
 def substitute(node, functions):
-    node.node_type = TreeNodeType.CONSTANT
+    node.node_type = NodeType.CONSTANT
     node.name = None
     node.value = 0.0
     node.branches = None

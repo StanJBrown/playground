@@ -1,6 +1,6 @@
 {
     "max_population" : 800,
-    "max_generation" : 30,
+    "max_generation" : 15,
 
     "tree_generation": {
         "method" : "RAMPED_HALF_AND_HALF_METHOD",

@@ -34,6 +34,9 @@ def plot_func(play, stats):
     generation = stats["generation"]
     every = play.config["live_plot"].get("every", 100)
 
+    if generation == 0:
+        plt.figure(figsize=(10, 8))
+
     if (generation % every) == 0:
         # obtain data
         x_data = play.config["data"][x_axis]

@@ -10,7 +10,7 @@ from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 from playground.gp.tree import Tree
 from playground.gp.tree import TreeNode
-from playground.gp.tree import TreeNodeType
+from playground.gp.tree import NodeType
 from playground.gp.tree.parser import TreeParser
 from playground.gp.tree.mutation import TreeMutation
 
@@ -61,25 +61,25 @@ class TreeMutatorTests(unittest.TestCase):
         self.mutation = TreeMutation(self.config)
 
         # create nodes
-        left_node = TreeNode(TreeNodeType.CONSTANT, value=1.0)
-        right_node = TreeNode(TreeNodeType.INPUT, name="x")
+        left_node = TreeNode(NodeType.CONSTANT, value=1.0)
+        right_node = TreeNode(NodeType.INPUT, name="x")
 
         cos_func = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="COS",
             arity=1,
             branches=[left_node]
         )
 
         sin_func = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="SIN",
             arity=1,
             branches=[right_node]
         )
 
         add_func = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="ADD",
             arity=2,
             branches=[cos_func, sin_func]

@@ -4,7 +4,7 @@ from random import sample
 from random import randint
 
 from playground.gp.tree import TreeNode
-from playground.gp.tree import TreeNodeType
+from playground.gp.tree import NodeType
 from playground.gp.tree.generator import TreeGenerator
 from playground.recorder.record_type import RecordType
 
@@ -28,30 +28,30 @@ class TreeMutation(object):
         if details is None:
             return None
 
-        elif details["type"] == TreeNodeType.FUNCTION:
+        elif details["type"] == NodeType.FUNCTION:
             return TreeNode(
-                TreeNodeType.FUNCTION,
+                NodeType.FUNCTION,
                 name=details["name"],
                 arity=details["arity"],
                 branches=[]
             )
 
-        elif details["type"] == TreeNodeType.INPUT:
+        elif details["type"] == NodeType.INPUT:
             return TreeNode(
-                TreeNodeType.INPUT,
+                NodeType.INPUT,
                 name=details["name"]
             )
 
-        elif details["type"] == TreeNodeType.CONSTANT:
+        elif details["type"] == NodeType.CONSTANT:
             return TreeNode(
-                TreeNodeType.CONSTANT,
+                NodeType.CONSTANT,
                 name=details.get("name", None),
                 value=details["value"]
             )
-        elif details["type"] == TreeNodeType.RANDOM_CONSTANT:
+        elif details["type"] == NodeType.RANDOM_CONSTANT:
             resolved_details = self.resolve_random_constant(details)
             return TreeNode(
-                TreeNodeType.CONSTANT,
+                NodeType.CONSTANT,
                 name=resolved_details.get("name", None),
                 value=resolved_details["value"]
             )
@@ -76,7 +76,7 @@ class TreeMutation(object):
                 retry += 1
 
             n_details = sample(node_pool, 1)[0]
-            if n_details["type"] == TreeNodeType.RANDOM_CONSTANT:
+            if n_details["type"] == NodeType.RANDOM_CONSTANT:
                 n_details = self.generator.resolve_random_constant(n_details)
             new_node = self._gen_new_node(n_details)
 

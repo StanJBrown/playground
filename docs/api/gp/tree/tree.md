@@ -39,18 +39,18 @@ node.
         **kwargs:
 
             # function node specific
-            if node_type is TreeNodeType.UNARY_OP:
+            if node_type is NodeType.UNARY_OP:
                 name (str) and value_branch (object) are expected.
 
-            else if node_type is TreeNodeType.BINARY_OP:
+            else if node_type is NodeType.BINARY_OP:
                 name (str), left_branch (object) and right_branch (object) are
                 expected.
 
             # terminal node specific
-            if node_type is TreeNodeType.CONSTANT:
+            if node_type is NodeType.CONSTANT:
                 name (str) and value (object) are expected.
 
-            else node_type is TreeNodeType.INPUT:
+            else node_type is NodeType.INPUT:
                 name (str) is expected.
 
 **Methods**:

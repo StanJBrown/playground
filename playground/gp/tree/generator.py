@@ -5,7 +5,7 @@ from random import uniform
 
 from playground.gp.tree import Tree
 from playground.gp.tree import TreeNode
-from playground.gp.tree import TreeNodeType
+from playground.gp.tree import NodeType
 from playground.gp.tree.parser import TreeParser
 from playground.population import Population
 
@@ -17,25 +17,49 @@ class TreeGenerator(object):
         self.max_depth = self.gen_config.get("initial_max_depth", 0)
         self.parser = TreeParser()
 
-    def resolve_random_constant(self, node_details):
-        # pre-check
-        if node_details["type"] != TreeNodeType.RANDOM_CONSTANT:
-            err = "Error! [{0}] is not a RANDOM_CONSTANT!".format(node_details)
-            raise RuntimeError(err)
-
+    def create_random_constant(self, node_details):
         # generate random floating point
         lower_bound = node_details["lower_bound"]
         upper_bound = node_details["upper_bound"]
         constant = uniform(lower_bound, upper_bound)
+
         decimal_places = node_details.get("decimal_places", None)
         if decimal_places is not None:
             constant = round(constant, decimal_places)
 
+        return constant
+
+    def resolve_random_constant(self, node_details):
+        # pre-check
+        node_type = node_details["type"]
+        if node_type != NodeType.RANDOM_CONSTANT:
+            err = "Invalid NodeType -> [{0}]".format(node_details)
+            raise RuntimeError(err)
+
         # create new node details
+        constant = self.create_random_constant(node_details["data_range"])
         new_node_details = {
-            "type": TreeNodeType.CONSTANT,
+            "type": NodeType.CONSTANT,
             "value": float(constant)
         }
+
+        return new_node_details
+
+    def resolve_class_function(self, node_details):
+        # pre-check
+        node_type = node_details["type"]
+        if node_type != NodeType.CLASS_FUNCTION:
+            err = "Invalid NodeType -> [{0}]".format(node_details)
+            raise RuntimeError(err)
+
+        # create new node details
+        new_node_details = dict(node_details)
+        constant = self.create_random_constant(node_details["data_range"])
+        if node_details["data_type"] == "INTEGER":
+            new_node_details["value"] = int(constant)
+
+        elif node_details["data_type"] == "FLOAT":
+            new_node_details["value"] = float(constant)
 
         return new_node_details
 
@@ -44,12 +68,28 @@ class TreeGenerator(object):
         if random:
             node = sample(self.config["function_nodes"], 1)[0]
 
-        func_node = TreeNode(
-            TreeNodeType.FUNCTION,
-            name=node["name"],
-            arity=node["arity"],
-            branches=[]
-        )
+        tree_type = self.gen_config.get("tree_type", "SYMBOLIC_REGRESSION")
+        if tree_type == "SYMBOLIC_REGRESSION":
+            func_node = TreeNode(
+                NodeType.FUNCTION,
+                name=node["name"],
+                arity=node["arity"],
+                branches=[]
+            )
+        elif tree_type == "CLASSIFICATION_TREE":
+            node = self.resolve_class_function(node)
+            func_node = TreeNode(
+                NodeType.CLASS_FUNCTION,
+                name=node["name"],
+                class_attribute=node["class_attribute"],
+                arity=node["arity"],
+                branches=[],
+                data_type=node["data_type"],
+                value=node["value"]
+            )
+        else:
+            err = "Unrecognised tree generation type"
+            raise RuntimeError(err)
 
         return func_node
 
@@ -62,7 +102,7 @@ class TreeGenerator(object):
             node_details = self.config["terminal_nodes"][index]
 
         # resolve if random constant
-        if node_details["type"] == TreeNodeType.RANDOM_CONSTANT:
+        if node_details["type"] == NodeType.RANDOM_CONSTANT:
             node_details = self.resolve_random_constant(node_details)
 
         term_node = TreeNode(
@@ -169,21 +209,21 @@ class TreeGenerator(object):
 
         tree.tree_id = tree_dict["id"]
         for node_dict in tree_dict["program"]:
-            n_type = node_dict["type"]
+            node_type = node_dict["type"]
             node = None
 
-            if n_type == TreeNodeType.INPUT:
+            if node_type == NodeType.INPUT:
                 node = TreeNode(
-                    TreeNodeType.INPUT,
+                    NodeType.INPUT,
                     name=node_dict.get("name", None)
                 )
 
                 tree.program.append(node)
                 stack.append(node)
 
-            elif n_type == TreeNodeType.CONSTANT:
+            elif node_type == NodeType.CONSTANT:
                 node = TreeNode(
-                    TreeNodeType.CONSTANT,
+                    NodeType.CONSTANT,
                     name=node_dict.get("name", None),
                     value=node_dict.get("value", None)
                 )
@@ -191,13 +231,13 @@ class TreeGenerator(object):
                 tree.program.append(node)
                 stack.append(node)
 
-            elif n_type == TreeNodeType.FUNCTION:
+            elif node_type == NodeType.FUNCTION:
                 value_nodes = []
                 for i in xrange(node_dict["arity"]):
                     value_nodes.append(stack.pop())
 
                 node = TreeNode(
-                    TreeNodeType.FUNCTION,
+                    NodeType.FUNCTION,
                     name=node_dict["name"],
                     arity=node_dict["arity"],
                     branches=value_nodes

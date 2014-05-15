@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 import playground.config as config
 # from playground.gp.tree import Tree
 # from playground.gp.tree import TreeNode
-# from playground.gp.tree import TreeNodeType
+# from playground.gp.tree import NodeType
 from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
 import playground.gp.tree.evaluation as evaluator
@@ -60,26 +60,26 @@ class TreeEvaluatorTests(unittest.TestCase):
 
     # def test_generate_eq_function(self):
     #     # create terminal nodes
-    #     term_node = TreeNode(TreeNodeType.CONSTANT, value=100.0)
-    #     input_node = TreeNode(TreeNodeType.INPUT, name="x")
+    #     term_node = TreeNode(NodeType.CONSTANT, value=100.0)
+    #     input_node = TreeNode(NodeType.INPUT, name="x")
 
     #     # create function nodes
     #     mul_func = TreeNode(
-    #         TreeNodeType.FUNCTION,
+    #         NodeType.FUNCTION,
     #         name="MUL",
     #         arity=2,
     #         branches=[input_node, term_node]
     #     )
 
     #     rad_func = TreeNode(
-    #         TreeNodeType.FUNCTION,
+    #         NodeType.FUNCTION,
     #         name="RAD",
     #         arity=1,
     #         branches=[mul_func]
     #     )
 
     #     sin_func = TreeNode(
-    #         TreeNodeType.FUNCTION,
+    #         NodeType.FUNCTION,
     #         name="SIN",
     #         arity=1,
     #         branches=[rad_func]
@@ -103,12 +103,12 @@ class TreeEvaluatorTests(unittest.TestCase):
 
     # def test_generate_eq_function_multivars(self):
     #     # create terminal nodes
-    #     term_node = TreeNode(TreeNodeType.INPUT, name="var2")
-    #     input_node = TreeNode(TreeNodeType.INPUT, name="var1")
+    #     term_node = TreeNode(NodeType.INPUT, name="var2")
+    #     input_node = TreeNode(NodeType.INPUT, name="var1")
 
     #     # create function nodes
     #     div_func = TreeNode(
-    #         TreeNodeType.FUNCTION,
+    #         NodeType.FUNCTION,
     #         name="DIV",
     #         arity=2,
     #         branches=[input_node, term_node]
@@ -153,26 +153,26 @@ class TreeEvaluatorTests(unittest.TestCase):
 
     # def test_eval_tree(self):
     #     # create terminal nodes
-    #     term_node = TreeNode(TreeNodeType.CONSTANT, value=100.0)
-    #     input_node = TreeNode(TreeNodeType.INPUT, name="x")
+    #     term_node = TreeNode(NodeType.CONSTANT, value=100.0)
+    #     input_node = TreeNode(NodeType.INPUT, name="x")
 
     #     # create function nodes
     #     mul_func = TreeNode(
-    #         TreeNodeType.FUNCTION,
+    #         NodeType.FUNCTION,
     #         name="MUL",
     #         arity=2,
     #         branches=[input_node, term_node]
     #     )
 
     #     rad_func = TreeNode(
-    #         TreeNodeType.FUNCTION,
+    #         NodeType.FUNCTION,
     #         name="RAD",
     #         arity=1,
     #         branches=[mul_func]
     #     )
 
     #     sin_func = TreeNode(
-    #         TreeNodeType.FUNCTION,
+    #         NodeType.FUNCTION,
     #         name="SIN",
     #         arity=1,
     #         branches=[rad_func]

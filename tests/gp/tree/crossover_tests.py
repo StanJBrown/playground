@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
 from playground.gp.tree import Tree
 from playground.gp.tree import TreeNode
-from playground.gp.tree import TreeNodeType
+from playground.gp.tree import NodeType
 from playground.gp.tree.parser import TreeParser
 from playground.gp.tree.generator import TreeGenerator
 from playground.gp.tree.crossover import TreeCrossover
@@ -66,49 +66,49 @@ class TreeCrossoverTests(unittest.TestCase):
         self.parser = TreeParser()
 
         # create nodes
-        left_node_1 = TreeNode(TreeNodeType.INPUT, name="x")
-        right_node_1 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
-        node = TreeNode(TreeNodeType.CONSTANT, value=2.0)
+        left_node_1 = TreeNode(NodeType.INPUT, name="x")
+        right_node_1 = TreeNode(NodeType.CONSTANT, value=2.0)
+        node = TreeNode(NodeType.CONSTANT, value=2.0)
 
-        left_node_2 = TreeNode(TreeNodeType.CONSTANT, value=3.0)
-        right_node_2 = TreeNode(TreeNodeType.CONSTANT, value=4.0)
+        left_node_2 = TreeNode(NodeType.CONSTANT, value=3.0)
+        right_node_2 = TreeNode(NodeType.CONSTANT, value=4.0)
 
         cos_func_1 = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="ADD",
             arity=2,
             branches=[left_node_1, right_node_1]
         )
 
         sin_func_1 = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="SIN",
             arity=1,
             branches=[node]
         )
 
         cos_func_2 = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="COS",
             arity=1,
             branches=[left_node_2]
         )
         sin_func_2 = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="SIN",
             arity=1,
             branches=[right_node_2]
         )
 
         add_func = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="ADD",
             arity=2,
             branches=[cos_func_1, sin_func_1]
         )
 
         sub_func = TreeNode(
-            TreeNodeType.FUNCTION,
+            NodeType.FUNCTION,
             name="SUB",
             arity=2,
             branches=[sin_func_2, cos_func_2]

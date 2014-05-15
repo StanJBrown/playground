@@ -26,11 +26,8 @@ class TreeNode(object):
         if node_type == NodeType.CLASS_FUNCTION:
             self.name = kwargs.get("name", None)
             self.class_attribute = kwargs.get("class_attribute", None)
-
             self.arity = kwargs.get("arity", None)
             self.branches = kwargs.get("branches", None)
-
-            self.data_type = kwargs.get("data_type", None)
             self.value = kwargs.get("value", None)
 
         # CONSTANT node specific

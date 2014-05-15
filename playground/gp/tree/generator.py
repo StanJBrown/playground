@@ -76,14 +76,14 @@ class TreeGenerator(object):
 
         elif tree_type == "CLASSIFICATION_TREE":
             node = self.resolve_class_function(node)
+            class_attribute = sample(self.config["class_attributes"], 1)[0]
             func_node = TreeNode(
                 NodeType.CLASS_FUNCTION,
                 name=node["name"],
-                class_attribute=node["class_attribute"],
+                class_attribute=class_attribute,
                 arity=node["arity"],
                 branches=[],
-                data_type=node["data_type"],
-                value=node["value"]
+                value=node.get("value", None)
             )
 
         else:

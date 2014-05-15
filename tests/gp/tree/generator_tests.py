@@ -77,8 +77,6 @@ class TreeGeneratorTests(unittest.TestCase):
                 "name": "GREATER_THAN",
                 "arity": 2,
 
-                "class_attribute": "sepal_length",
-                "data_type": "FLOAT",
                 "data_range": {
                     "lower_bound": 0.0,
                     "upper_bound": 10.0,
@@ -86,10 +84,17 @@ class TreeGeneratorTests(unittest.TestCase):
                 }
             }
         ]
+        self.config["class_attributes"] = [
+            "attrubte_1",
+            "attrubte_2",
+            "attrubte_3"
+        ]
         generator = TreeGenerator(self.config)
-        for i in range(1):
+        for i in range(100):
             node = generator.generate_func_node()
+            class_attribute = node.class_attribute
             self.assertEquals(node.node_type, NodeType.CLASS_FUNCTION)
+            self.assertTrue(class_attribute in self.config["class_attributes"])
 
     def test_resolve_random_constant(self):
         upper_bound = 10.0

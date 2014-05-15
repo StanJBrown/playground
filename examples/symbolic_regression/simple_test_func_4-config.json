@@ -17,7 +17,7 @@
 
     "selection" : {
         "method" : "TOURNAMENT_SELECTION",
-        "tournament_size": 5
+        "tournament_size": 100
     },
 
     "crossover" : {

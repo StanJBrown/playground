@@ -5,25 +5,24 @@ import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
-import playground.config as config
-from playground.gp.tree.generator import TreeGenerator
-from playground.gp.functions import GPFunctionRegistry
 from playground.gp.tree import Tree
 from playground.gp.tree import TreeNode
 from playground.gp.tree import NodeType
 from playground.gp.tree.parser import TreeParser
 from playground.gp.tree.mutation import TreeMutation
+from playground.gp.tree.generator import TreeGenerator
+from playground.gp.functions import GPFunctionRegistry
 
 
 class TreeMutatorTests(unittest.TestCase):
     def setUp(self):
         self.config = {
-            "tree_generation" : {
-                "method" : "GROW_METHOD",
-                "initial_max_depth" : 4
+            "tree_generation": {
+                "method": "GROW_METHOD",
+                "initial_max_depth": 4
             },
 
-            "mutation" : {
+            "mutation": {
                 "methods": [
                     "POINT_MUTATION",
                     "HOIST_MUTATION",
@@ -34,7 +33,7 @@ class TreeMutatorTests(unittest.TestCase):
                 "probability": 1.0
             },
 
-            "function_nodes" : [
+            "function_nodes": [
                 {"type": "FUNCTION", "name": "ADD", "arity": 2},
                 {"type": "FUNCTION", "name": "SUB", "arity": 2},
                 {"type": "FUNCTION", "name": "MUL", "arity": 2},
@@ -43,12 +42,13 @@ class TreeMutatorTests(unittest.TestCase):
                 {"type": "FUNCTION", "name": "SIN", "arity": 1},
                 {"type": "FUNCTION", "name": "RAD", "arity": 1}
             ],
-            "terminal_nodes" : [
+
+            "terminal_nodes": [
                 {"type": "CONSTANT", "value": 1.0},
                 {"type": "INPUT", "name": "x"}
             ],
 
-            "input_variables" : [
+            "input_variables": [
                 {"type": "INPUT", "name": "x"}
             ]
 
@@ -139,51 +139,15 @@ class TreeMutatorTests(unittest.TestCase):
 
     def test_SUBTREE_MUTATION(self):
         print "SUBTREE MUATION!"
-        tree_before = self.build_tree_str(self.tree)
-        self.mutation.subtree_mutation(self.tree, 3)
-        tree_after = self.build_tree_str(self.tree)
-
-        print("Before Mutation")
-        print(tree_before)
-
-        print("\nAfter Mutation")
-        print(tree_after)
-
-        self.assertTrue(self.tree_equals(tree_before, tree_before))
-        self.assertTrue(self.tree_equals(tree_after, tree_after))
-        self.assertFalse(self.tree_equals(tree_before, tree_after))
+        self.mutated(self.tree, self.mutation.subtree_mutation, 3)
 
     def test_shrink_mutation(self):
         print "SHRINK MUATION!"
-        tree_before = self.build_tree_str(self.tree)
-        self.mutation.shrink_mutation(self.tree, 3)
-        tree_after = self.build_tree_str(self.tree)
-
-        print("Before Mutation")
-        print(tree_before)
-
-        print("\nAfter Mutation")
-        print(tree_after)
-
-        self.assertTrue(self.tree_equals(tree_before, tree_before))
-        self.assertTrue(self.tree_equals(tree_after, tree_after))
-        self.assertFalse(self.tree_equals(tree_before, tree_after))
+        self.mutated(self.tree, self.mutation.shrink_mutation, 3)
 
     def test_expansion_mutation(self):
         print "EXPANSION MUATION!"
-        tree_before = self.build_tree_str(self.tree)
-        self.mutation.expansion_mutation(self.tree, 3)
-        tree_after = self.build_tree_str(self.tree)
-
-        print("Before Mutation")
-        print(tree_before)
-
-        print("\nAfter Mutation")
-        print(tree_after)
-
-        self.assertTrue(self.tree_equals(tree_before, tree_before))
-        self.assertTrue(self.tree_equals(tree_after, tree_after))
-        self.assertFalse(self.tree_equals(tree_before, tree_after))
+        self.mutated(self.tree, self.mutation.expansion_mutation, 3)
 
     def test_mutate(self):
         print "MUTATE!"

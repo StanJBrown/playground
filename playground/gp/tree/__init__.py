@@ -89,7 +89,7 @@ class TreeNode(object):
     def equals(self, node):
         if self.node_type == node.node_type:
 
-            if node.is_function():
+            if node.is_function() or node.is_class_function():
                 if self.name == node.name:
                     return True
                 else:

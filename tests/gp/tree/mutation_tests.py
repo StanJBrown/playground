@@ -45,6 +45,7 @@ class TreeMutatorTests(unittest.TestCase):
 
             "terminal_nodes": [
                 {"type": "CONSTANT", "value": 1.0},
+                {"type": "CONSTANT", "value": 2.0},
                 {"type": "INPUT", "name": "x"}
             ],
 
@@ -53,7 +54,6 @@ class TreeMutatorTests(unittest.TestCase):
             ]
 
         }
-
         self.functions = GPFunctionRegistry("SYMBOLIC_REGRESSION")
         self.generator = TreeGenerator(self.config)
 
@@ -129,24 +129,95 @@ class TreeMutatorTests(unittest.TestCase):
         self.assertTrue(self.tree_equals(tree_after, tree_after))
         self.assertFalse(self.tree_equals(tree_before, tree_after))
 
+    def test_mutate_new_node_details(self):
+        # MUTATE NEW FUNCTION NODE DETAILS
+        for i in range(100):
+            func_node = TreeNode(
+                NodeType.FUNCTION,
+                name="ADD",
+                arity=2,
+                branches=[]
+            )
+            node_details = self.mutation.mutate_new_node_details(func_node)
+            self.assertNotEquals(node_details["name"], func_node.name)
+            self.assertEquals(node_details["arity"], func_node.arity)
+            self.assertEquals(node_details["type"], func_node.node_type)
+
+        # MUTATE NEW TERMINAL NODE DETAILS
+        for i in range(100):
+            term_node = TreeNode(
+                NodeType.CONSTANT,
+                value=1.0
+            )
+            node_details = self.mutation.mutate_new_node_details(term_node)
+            if node_details["type"] == NodeType.CONSTANT:
+                self.assertNotEqual(node_details["value"], term_node.value)
+
+            elif node_details["type"] == NodeType.INPUT:
+                self.assertNotEqual(node_details["name"], term_node.name)
+
+        # MUTATE NEW CLASS FUNCTION NODE DETAILS
+        self.config["function_nodes"] = [
+            {
+                "type": "CLASS_FUNCTION",
+                "name": "GREATER_THAN",
+                "arity": 2,
+
+                "data_range": {
+                    "lower_bound": 0.0,
+                    "upper_bound": 10.0,
+                    "decimal_places": 0,
+                }
+            },
+            {
+                "type": "CLASS_FUNCTION",
+                "name": "LESS_THAN",
+                "arity": 2,
+
+                "data_range": {
+                    "lower_bound": 0.0,
+                    "upper_bound": 10.0,
+                    "decimal_places": 0,
+                }
+            },
+            {
+                "type": "CLASS_FUNCTION",
+                "name": "EQUALS",
+                "arity": 2,
+                "decimal_precision": 2
+            }
+        ]
+        mutation = TreeMutation(self.config)
+
+        for i in range(100):
+            class_func_node = TreeNode(
+                NodeType.CLASS_FUNCTION,
+                name="GREATER_THAN",
+                arity=2
+            )
+            node_details = mutation.mutate_new_node_details(class_func_node)
+            self.assertNotEquals(node_details["name"], class_func_node.name)
+            self.assertEquals(node_details["arity"], class_func_node.arity)
+            self.assertEquals(node_details["type"], class_func_node.node_type)
+
     def test_point_mutation(self):
-        print "POINT MUATION!"
+        print "---------- POINT MUATION! ----------"
         self.mutated(self.tree, self.mutation.point_mutation)
 
     def test_hoist_mutation(self):
-        print "HOIST MUATION!"
+        print "---------- HOIST MUATION! ----------"
         self.mutated(self.tree, self.mutation.hoist_mutation, 3)
 
     def test_SUBTREE_MUTATION(self):
-        print "SUBTREE MUATION!"
+        print "---------- SUBTREE MUATION! ----------"
         self.mutated(self.tree, self.mutation.subtree_mutation, 3)
 
     def test_shrink_mutation(self):
-        print "SHRINK MUATION!"
+        print "---------- SHRINK MUATION! ----------"
         self.mutated(self.tree, self.mutation.shrink_mutation, 3)
 
     def test_expansion_mutation(self):
-        print "EXPANSION MUATION!"
+        print "---------- EXPANSION MUATION! ----------"
         self.mutated(self.tree, self.mutation.expansion_mutation, 3)
 
     def test_mutate(self):

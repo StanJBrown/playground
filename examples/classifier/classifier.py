@@ -70,12 +70,10 @@ if __name__ == "__main__":
 
             "function_nodes": [
                 {
-                    "type": "FUNCTION",
-                    "name": "BOOL",
+                    "type": "CLASS_FUNCTION",
+                    "name": "GREATER_THAN",
                     "arity": 2,
 
-                    "attribute": "sepal_length",
-                    "data_type": "INTEGER",
                     "data_range": {
                         "lower_bound": 0.0,
                         "upper_bound": 10.0,
@@ -83,12 +81,10 @@ if __name__ == "__main__":
                     }
                 },
                 {
-                    "type": "FUNCTION",
-                    "name": "BOOL",
+                    "type": "CLASS_FUNCTION",
+                    "name": "LESS_THAN",
                     "arity": 2,
 
-                    "attribute": "sepal_width",
-                    "data_type": "INTEGER",
                     "data_range": {
                         "lower_bound": 0.0,
                         "upper_bound": 10.0,
@@ -96,31 +92,18 @@ if __name__ == "__main__":
                     }
                 },
                 {
-                    "type": "FUNCTION",
-                    "name": "BOOL",
+                    "type": "CLASS_FUNCTION",
+                    "name": "EQUALS",
                     "arity": 2,
+                    "decimal_precision": 2
+                }
+            ],
 
-                    "attribute": "petal_length",
-                    "data_type": "INTEGER",
-                    "data_range": {
-                        "lower_bound": 0.0,
-                        "upper_bound": 10.0,
-                        "decimal_places": 0,
-                    }
-                },
-                {
-                    "type": "FUNCTION",
-                    "name": "BOOL",
-                    "arity": 2,
-
-                    "attribute": "petal_width",
-                    "data_type": "INTEGER",
-                    "data_range": {
-                        "lower_bound": 0.0,
-                        "upper_bound": 10.0,
-                        "decimal_places": 0,
-                    }
-                },
+            "classification_attributes": [
+                "sepal_length",
+                "sepal_width",
+                "petal_length",
+                "petal_width"
             ],
 
             "terminal_nodes": [

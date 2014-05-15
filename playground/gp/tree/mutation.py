@@ -24,13 +24,21 @@ class TreeMutation(object):
         self.before_mutation = None
         self.after_mutation = None
 
-    def _gen_new_node(self, details):
+    def generate_new_node(self, details):
         if details is None:
             return None
 
         elif details["type"] == NodeType.FUNCTION:
             return TreeNode(
                 NodeType.FUNCTION,
+                name=details["name"],
+                arity=details["arity"],
+                branches=[]
+            )
+
+        elif details["type"] == NodeType.CLASS_FUNCTION:
+            return TreeNode(
+                NodeType.CLASS_FUNCTION,
                 name=details["name"],
                 arity=details["arity"],
                 branches=[]
@@ -48,27 +56,29 @@ class TreeMutation(object):
                 name=details.get("name", None),
                 value=details["value"]
             )
+
         elif details["type"] == NodeType.RANDOM_CONSTANT:
-            resolved_details = self.resolve_random_constant(details)
+            resolved_details = self.generator.resolve_random_constant(details)
             return TreeNode(
                 NodeType.CONSTANT,
                 name=resolved_details.get("name", None),
                 value=resolved_details["value"]
             )
 
-    def _get_new_node(self, node):
-        # determine what kind of node it is
+    def mutate_new_node_details(self, old_node):
+        # determine what kind of old_node it is
         node_pool = []
-        if node.is_function():
+        if old_node.is_function() or old_node.is_class_function():
             tmp = list(self.config["function_nodes"])
-            tmp = [n for n in tmp if n["arity"] == node.arity]
+            tmp = [n for n in tmp if n["arity"] == old_node.arity]
             node_pool.extend(tmp)
-        elif node.is_terminal():
+
+        elif old_node.is_terminal():
             node_pool.extend(self.config["terminal_nodes"])
 
         # check the node and return
         retry = 0
-        retry_limit = 5
+        retry_limit = 100
         while True:
             if retry == retry_limit:
                 return None
@@ -78,16 +88,18 @@ class TreeMutation(object):
             n_details = sample(node_pool, 1)[0]
             if n_details["type"] == NodeType.RANDOM_CONSTANT:
                 n_details = self.generator.resolve_random_constant(n_details)
-            new_node = self._gen_new_node(n_details)
+            elif n_details["type"] == NodeType.CLASS_FUNCTION:
+                n_details = self.generator.resolve_class_function(n_details)
+            new_node = self.generate_new_node(n_details)
 
-            if node.equals(new_node) is False:
+            if old_node.equals(new_node) is False:
                 return n_details
 
     def point_mutation(self, tree, mutation_index=None):
         # mutate node
         self.index = randint(0, len(tree.program) - 1)
         node = tree.program[self.index]
-        new_node = self._get_new_node(node)
+        new_node = self.mutate_new_node_details(node)
 
         if new_node is None:
             return
@@ -154,8 +166,8 @@ class TreeMutation(object):
             candidate_nodes = tree.term_nodes
             candidate_nodes.extend(tree.input_nodes)
             new_node_detail = sample(candidate_nodes, 1)[0]
-            node_details = self._get_new_node(new_node_detail)
-            new_node = self._gen_new_node(node_details)
+            node_details = self.mutate_new_node_details(new_node_detail)
+            new_node = self.generate_new_node(node_details)
 
             if new_node:
                 tree.replace_node(node, new_node)

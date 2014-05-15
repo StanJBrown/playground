@@ -54,11 +54,8 @@ class TreeGenerator(object):
 
         # create new node details
         new_node_details = dict(node_details)
-        constant = self.create_random_constant(node_details["data_range"])
-        if node_details["data_type"] == "INTEGER":
-            new_node_details["value"] = int(constant)
-
-        elif node_details["data_type"] == "FLOAT":
+        if new_node_details.get("data_range", False):
+            constant = self.create_random_constant(node_details["data_range"])
             new_node_details["value"] = float(constant)
 
         return new_node_details

@@ -76,6 +76,7 @@ class TreeGenerator(object):
                 arity=node["arity"],
                 branches=[]
             )
+
         elif tree_type == "CLASSIFICATION_TREE":
             node = self.resolve_class_function(node)
             func_node = TreeNode(
@@ -87,6 +88,7 @@ class TreeGenerator(object):
                 data_type=node["data_type"],
                 value=node["value"]
             )
+
         else:
             err = "Unrecognised tree generation type"
             raise RuntimeError(err)

@@ -20,7 +20,7 @@ Prints the tree structure in dot graph language
 
     Args:
 
-        root_node (TreeNode): root of the tree
+        root_node (Node): root of the tree
 
 
 ### post_order_traverse(node, stack=None)
@@ -28,15 +28,15 @@ Traverses the tree in post-order, as the tree is traversed a stack is built.
 
     Args:
 
-        node (TreeNode):
+        node (Node):
             node to start traversing from (usually node is the root)
 
-        stack (list of TreeNode):
+        stack (list of Node):
             stack in post-order form
 
     Returns:
 
-        A list of TreeNode in post-order form
+        A list of Node in post-order form
 
 
 ### parse_tree(tree, node, depth=None, stack=None)
@@ -49,7 +49,7 @@ also creates a stack in post-order form as well.
         tree (Tree):
             Tree to be parsed
 
-        node (TreeNode):
+        node (Node):
             Tree node to start parsing from
 
         depth (int):
@@ -60,7 +60,7 @@ also creates a stack in post-order form as well.
 
     Returns:
 
-        A list of TreeNode in post-order form
+        A list of Node in post-order form
 
 
 ### parse_equation(node, eq_str=None)
@@ -69,7 +69,7 @@ Returns a string representation of the `Tree` in infix-order.
 
     Args:
 
-        node (TreeNode):
+        node (Node):
             Tree node to start parsing from
 
         eq_str (str):

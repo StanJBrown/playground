@@ -5,9 +5,7 @@ import decimal
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
-from playground.gp.tree import Tree
-from playground.gp.tree import TreeNode
-from playground.gp.tree import TreeNodeType
+from playground.gp.tree import NodeType
 from playground.gp.tree.parser import TreeParser
 from playground.gp.tree.generator import TreeGenerator
 from playground.gp.functions import GPFunctionRegistry
@@ -22,6 +20,7 @@ class TreeGeneratorTests(unittest.TestCase):
             "max_population": 10,
 
             "tree_generation": {
+                "tree_type": "SYMBOLIC_REGRESSION",
                 "method": "RAMPED_HALF_AND_HALF_METHOD",
                 "initial_max_depth": 3
             },
@@ -41,9 +40,11 @@ class TreeGeneratorTests(unittest.TestCase):
                 {"type": "INPUT", "name": "y"},
                 {
                     "type": "RANDOM_CONSTANT",
-                    "upper_bound": 10.0,
-                    "lower_bound": -10.0,
-                    "decimal_places": 1
+                    "data_range": {
+                        "upper_bound": 10.0,
+                        "lower_bound": -10.0,
+                        "decimal_places": 1
+                    }
                 }
             ],
 
@@ -63,10 +64,37 @@ class TreeGeneratorTests(unittest.TestCase):
         del self.parser
 
     def test_generate_func_node(self):
+        # SYMBOLIC REGRESSION TREES
         for i in range(100):
-            tree = Tree()
-            node = self.generator.generate_func_node(tree)
-            self.assertEquals(node.node_type, TreeNodeType.FUNCTION)
+            node = self.generator.generate_func_node()
+            self.assertEquals(node.node_type, NodeType.FUNCTION)
+
+        # CLASSIFICATION TREES
+        self.config["tree_generation"]["tree_type"] = "CLASSIFICATION_TREE"
+        self.config["function_nodes"] = [
+            {
+                "type": "CLASS_FUNCTION",
+                "name": "GREATER_THAN",
+                "arity": 2,
+
+                "data_range": {
+                    "lower_bound": 0.0,
+                    "upper_bound": 10.0,
+                    "decimal_places": 1
+                }
+            }
+        ]
+        self.config["class_attributes"] = [
+            "attrubte_1",
+            "attrubte_2",
+            "attrubte_3"
+        ]
+        generator = TreeGenerator(self.config)
+        for i in range(100):
+            node = generator.generate_func_node()
+            class_attribute = node.class_attribute
+            self.assertEquals(node.node_type, NodeType.CLASS_FUNCTION)
+            self.assertTrue(class_attribute in self.config["class_attributes"])
 
     def test_resolve_random_constant(self):
         upper_bound = 10.0
@@ -74,15 +102,17 @@ class TreeGeneratorTests(unittest.TestCase):
         decimal_places = 0
 
         for i in range(100):
-            node_details = {
+            n_details = {
                 "type": "RANDOM_CONSTANT",
-                "lower_bound": lower_bound,
-                "upper_bound": upper_bound,
-                "decimal_places": decimal_places
+                "data_range": {
+                    "lower_bound": lower_bound,
+                    "upper_bound": upper_bound,
+                    "decimal_places": decimal_places
+                }
             }
-            new_node_details = self.generator.resolve_random_constant(node_details)
-            node_type = new_node_details["type"]
-            node_value = new_node_details["value"]
+            new_n_details = self.generator.resolve_random_constant(n_details)
+            node_type = new_n_details["type"]
+            node_value = new_n_details["value"]
 
             self.assertEquals(node_type, "CONSTANT")
             self.assertTrue(upper_bound >= node_value)
@@ -94,15 +124,17 @@ class TreeGeneratorTests(unittest.TestCase):
         decimal_places = 1
 
         for i in range(100):
-            node_details = {
+            n_details = {
                 "type": "RANDOM_CONSTANT",
-                "lower_bound": lower_bound,
-                "upper_bound": upper_bound,
-                "decimal_places": decimal_places
+                "data_range": {
+                    "lower_bound": lower_bound,
+                    "upper_bound": upper_bound,
+                    "decimal_places": decimal_places
+                }
             }
-            new_node_details = self.generator.resolve_random_constant(node_details)
-            node_type = new_node_details["type"]
-            node_value = new_node_details["value"]
+            new_n_details = self.generator.resolve_random_constant(n_details)
+            node_type = new_n_details["type"]
+            node_value = new_n_details["value"]
 
             self.assertEquals(node_type, "CONSTANT")
             self.assertTrue(upper_bound >= node_value)
@@ -116,7 +148,7 @@ class TreeGeneratorTests(unittest.TestCase):
         for i in range(100):
             node = self.generator.generate_term_node()
             self.assertTrue(
-                node.node_type == TreeNodeType.CONSTANT or TreeNodeType.INPUT
+                node.node_type == NodeType.CONSTANT or NodeType.INPUT
             )
 
     def test_full_method(self):

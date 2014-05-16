@@ -43,10 +43,10 @@ back into the stack.
 
     Args:
 
-        node (TreeNode):
+        node (Node):
             Node to be evaluated
 
-        stack (list of TreeNode):
+        stack (list of Node):
             Evaluation stack
 
     Throws:
@@ -60,7 +60,7 @@ form.
 
     Args:
 
-        program (list of TreeNode):
+        program (list of Node):
             Tree in post-order form in a stack
 
         tree_size ():

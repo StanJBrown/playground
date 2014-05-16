@@ -38,7 +38,7 @@ class TreeParser(object):
 
             stack.append(node)
 
-        elif node.is_function():
+        elif node.is_function() or node.is_class_function():
             for value_node in node.branches:
                 self.parse_tree(tree, value_node, depth + 1, stack)
 
@@ -78,6 +78,41 @@ class TreeParser(object):
             raise RuntimeError("arity of > 2 has not been implemented!")
 
         return eq_str
+
+    def parse_classification_tree(self, node, tree_str=None):
+        tree_str = tree_str if tree_str is not None else ""
+
+        if node.is_terminal():
+            tree_str += "{0}[{1}]".format(node.name, node.value)
+
+        elif node.arity == 1:
+            child = node.branches[0]
+
+            tree_str += "("
+            tree_str += node.name
+            tree_str += "("
+            tree_str = self.parse_classification_tree(child, tree_str)
+            tree_str += ")"
+            tree_str += ")"
+
+        elif node.arity == 2:
+            child_1 = node.branches[0]
+            child_2 = node.branches[1]
+
+            tree_str += "("
+            tree_str = self.parse_classification_tree(child_1, tree_str)
+            tree_str += " {0}[{1}][{2}] ".format(
+                node.name,
+                node.class_attribute,
+                node.value
+            )
+            tree_str = self.parse_classification_tree(child_2, tree_str)
+            tree_str += ")"
+
+        else:
+            raise RuntimeError("arity of > 2 has not been implemented!")
+
+        return tree_str
 
     def tree_to_dict(self, tree, node, results=None):
         if results is None:

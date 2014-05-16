@@ -130,7 +130,7 @@ def play_plot(play, stats):
 
 
 def play_record(play):
-    if play.recorder and isinstance(play.recorder, JSONStore):
+    if play.recorder is not None and isinstance(play.recorder, JSONStore):
         play.recorder.record_population(play.population)
         play.recorder.record_to_file()
 

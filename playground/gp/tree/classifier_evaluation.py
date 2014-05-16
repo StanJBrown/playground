@@ -1,4 +1,6 @@
 #!/usr/bin/env python2
+import networkx as nx
+import matplotlib.pyplot as plt
 
 from playground.gp.tree import Node
 from playground.gp.tree import NodeType
@@ -28,90 +30,110 @@ def print_func(population, generation):
     else:
         print "generation:", generation
 
+def plot_process_tree(node, graph, origin=None):
+    node_id = None
 
-def default_stop_func(popualtion, stats, config):
-    max_gen = config["max_generation"]
-    stale_limit = config.get("stale_limit", 10)
-    stop_score = config.get("stop_score", None)
-    curr_best = stats["all_time_best"]
-    curr_best_score = None if curr_best is None else curr_best.score
-    stop = False
+    if node.is_class_function():
+        node_id = id(node)
+        label = "{0} {1} {2}".format(
+            node.class_attribute,
+            node.name,
+            node.value
+        )
+        graph.add_node(node_id, label=label)
 
-    if stats["generation"] >= max_gen:
-        stop = True
+        for child in node.branches:
+            traverse_tree(child, graph, node_id)
 
-    if stats["stale_counter"] >= stale_limit:
-        stop = True
+    elif node.is_terminal():
+        node_id = id(node)
+        label = "{0} = {1}".format(node.name, node.value)
+        graph.add_node(node_id, label=label)
 
-    if stop_score is not None:
-        if curr_best_score is not None and stop_score >= curr_best_score:
-            stop = True
-
-    return stop
+    if origin:
+        graph.add_edge(origin, node_id)
 
 
-def evaluate_node(node, stack, functions, config):
-    try:
-        if node.is_terminal():
-            # obtain terminal node data and add to stack
-            value = node.value
-            node.value = [value for i in range(config["data"]["rows"])]
-            stack.append(node)
+def plot_func(play, stats):
+    generation = stats["generation"]
+    best = stats["generation_best"]
+    every = play.config["live_plot"].get("every", 100)
 
-        elif node.is_input():
-            # convert input node to terminal node
-            node_data = config["data"][node.name]
-            term_node = Node(NodeType.CONSTANT, value=node_data)
-            stack.append(term_node)
+    if generation == 0:
+        plt.figure(figsize=(10, 8))
 
-        elif node.is_function():
-            # get input data to function from stack
-            input_data = [stack.pop().value for i in xrange(node.arity)]
+    if (generation % every) == 0:
+        plt.clf()
 
-            # execute function
-            function = functions.get_function(node.name)
+        # create graph
+        graph = nx.DiGraph()
+        traverse_tree(best.root, graph)
+        labels = dict((n, d["label"]) for n, d in graph.nodes(data=True))
 
-            func_output = []
-            for data_row in zip(*input_data):
-                func_output.append(function(*data_row))
+        pos = nx.graphviz_layout(graph, prog='dot')
+        nx.draw(
+            graph,
+            pos,
+            with_labels=True,
+            labels=labels,
+            arrows=False,
+            node_shape=None
+        )
 
-            # push result back to stack
-            result_node = Node(NodeType.CONSTANT, value=func_output)
-            stack.append(result_node)
+        # plot graph
+        plt.draw()
+        plt.pause(0.0001)  # very important else plot won't be displayed
 
-    except:
-        raise
+
+def get_row_data(data, index):
+    data_row = {}
+    for key in data.keys():
+        if key != "rows":
+            data_row[key] = data[key][index]
+
+    return data_row
+
+
+def traverse_tree(node, functions, data):
+    if node.is_terminal():
+        if node.value == data[node.name]:
+            return True
+        else:
+            return False
+
+    elif node.is_class_function():
+        value = node.value
+        class_attribute = node.class_attribute
+
+        func = functions.get_function(node.name)
+        result = func(value, data[class_attribute])
+
+        if result:
+            return traverse_tree(node.branches[0], functions, data)
+        else:
+            return traverse_tree(node.branches[1], functions, data)
 
 
 def evaluate_tree(tree, functions, config):
-    try:
-        stack = []
-        score = None
-        sse = 0.0  # sum squared error
-        response_var = config["response_variables"][0]["name"]
-        response_data = config["data"][response_var]
+    hits = 0
+    output = []
+    data = config["data"]
+    rows = config["data"]["rows"]
 
-        # pre-check
-        if len(config["response_variables"]) > 1:
-            err = "Tree evaluation only supports 1 response variable!"
-            raise RuntimeError(err)
+    # go through each data row
+    for i in range(rows):
+        data_row = get_row_data(data, i)
+        result = traverse_tree(tree.root, functions, data_row)
 
-        # evaluate tree
-        for node in tree.program:
-            evaluate_node(node, stack, functions, config)
+        if result:
+            hits += 1
 
-        # calculate sum squared error
-        node = stack.pop()
-        for i in range(config["data"]["rows"]):
-            sse += pow(response_data[i] - node.value[i], 2)
+        output.append(result)
 
-        # calculate fitness score
-        score = sse + (tree.size * 0.1)
+    # calcuate score
+    score = ((rows - hits) ** 2) + tree.size
 
-        return (score, None)
-
-    except:
-        return None, None
+    return score, output
 
 
 def record_eval(recorder, **kwargs):
@@ -144,8 +166,6 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
     use_cache = True
     best_score = None
     best_output = None
-    trees_evaluated = 0
-    nodes_evaluated = 0
     match_cached = 0
 
     # evaluate trees
@@ -158,8 +178,6 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
         if use_cache:
             if str(tree) not in cache:
                 score, output = evaluate_tree(tree, functions, config)
-                nodes_evaluated += tree.size
-                trees_evaluated += 1
 
             else:
                 cached_record = cache[str(tree)]
@@ -169,7 +187,6 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
 
         else:
             score, output = evaluate_tree(tree, functions, config)
-            nodes_evaluated += tree.size
 
         # check result
         if score is not None:
@@ -195,8 +212,6 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
             cache=cache,
             cache_size=len(cache),
             match_cached=match_cached,
-            trees_evaluated=trees_evaluated,
-            tree_nodes_evaluated=nodes_evaluated,
             diversity=diversity
         )
 

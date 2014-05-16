@@ -11,13 +11,12 @@ from playground.config import load_data
 from playground.gp.tree.generator import TreeGenerator
 from playground.gp.tree.evaluation import default_stop_func
 from playground.gp.tree.evaluation import print_func
-from playground.gp.tree.evaluation_2 import plot_func
-from playground.gp.tree.evaluation_2 import evaluate
+from playground.gp.tree.classifier_evaluation import evaluate
 from playground.gp.tree.editor import edit_trees
 from playground.selection import Selection
 from playground.gp.tree.crossover import TreeCrossover
 from playground.gp.tree.mutation import TreeMutation
-from playground.recorder.json_store import JSONStore
+from playground.gp.functions import GPFunctionRegistry
 
 # SETTINGS
 record_exception = False
@@ -26,16 +25,41 @@ config_fp = os.path.join(script_path, "sine_config.json")
 # config_fp = os.path.join(script_path, "simple_test_func_4-config.json")
 
 
+def traverse_tree(node, graph, origin=None):
+    node_id = None
+
+    if node.is_class_function():
+        node_id = id(node)
+        label = "{0} {1} {2}".format(
+            node.class_attribute,
+            node.name,
+            node.value
+        )
+        graph.add_node(node_id, label=label)
+
+        for child in node.branches:
+            traverse_tree(child, graph, node_id)
+
+    elif node.is_terminal():
+        node_id = id(node)
+        label = "{0} = {1}".format(node.name, node.value)
+        graph.add_node(node_id, label=label)
+
+    if origin:
+        graph.add_edge(origin, node_id)
+
+
 if __name__ == "__main__":
     try:
         # setup
         random.seed(10)  # seed random so results can be reproduced
         config = {
-            "max_population": 700,
-            "max_generation": 100,
+            "max_population": 500,
+            "max_generation": 30,
             "stale_limit": 10,
 
             "tree_generation": {
+                "tree_type": "CLASSIFICATION_TREE",
                 "method": "RAMPED_HALF_AND_HALF_METHOD",
                 "depth_ranges": [
                     {"size": 4, "percentage": 0.25},
@@ -51,7 +75,7 @@ if __name__ == "__main__":
 
             "selection": {
                 "method": "TOURNAMENT_SELECTION",
-                "tournament_size": 150
+                "tournament_size": 10
             },
 
             "crossover": {
@@ -61,8 +85,6 @@ if __name__ == "__main__":
 
             "mutation": {
                 "methods": [
-                    "SUBTREE_MUTATION",
-                    "SHRINK_MUTATION",
                     "POINT_MUTATION"
                 ],
                 "probability": 0.8
@@ -70,94 +92,76 @@ if __name__ == "__main__":
 
             "function_nodes": [
                 {
-                    "type": "FUNCTION",
-                    "name": "BOOL",
+                    "type": "CLASS_FUNCTION",
+                    "name": "GREATER_THAN",
                     "arity": 2,
 
-                    "attribute": "sepal_length",
-                    "data_type": "INTEGER",
                     "data_range": {
                         "lower_bound": 0.0,
                         "upper_bound": 10.0,
-                        "decimal_places": 0,
+                        "decimal_places": 1,
                     }
                 },
                 {
-                    "type": "FUNCTION",
-                    "name": "BOOL",
+                    "type": "CLASS_FUNCTION",
+                    "name": "LESS_THAN",
                     "arity": 2,
 
-                    "attribute": "sepal_width",
-                    "data_type": "INTEGER",
                     "data_range": {
                         "lower_bound": 0.0,
                         "upper_bound": 10.0,
-                        "decimal_places": 0,
+                        "decimal_places": 1,
                     }
                 },
                 {
-                    "type": "FUNCTION",
-                    "name": "BOOL",
+                    "type": "CLASS_FUNCTION",
+                    "name": "EQUALS",
                     "arity": 2,
 
-                    "attribute": "petal_length",
-                    "data_type": "INTEGER",
                     "data_range": {
                         "lower_bound": 0.0,
                         "upper_bound": 10.0,
-                        "decimal_places": 0,
+                        "decimal_places": 1
                     }
-                },
-                {
-                    "type": "FUNCTION",
-                    "name": "BOOL",
-                    "arity": 2,
-
-                    "attribute": "petal_width",
-                    "data_type": "INTEGER",
-                    "data_range": {
-                        "lower_bound": 0.0,
-                        "upper_bound": 10.0,
-                        "decimal_places": 0,
-                    }
-                },
+                }
             ],
 
             "terminal_nodes": [
-                {"type": "INPUT", "name": "species"}
+                {
+                    "type": "RANDOM_CONSTANT",
+                    "name": "species",
+                    "range": [
+                        1.0,
+                        2.0,
+                        3.0
+                    ]
+                },
             ],
 
-            "data_file": "training_data/sine.dat",
+            "class_attributes": [
+                "sepal_length",
+                "sepal_width",
+                "petal_length",
+                "petal_width"
+            ],
 
+            "data_file": "data/iris.dat",
             "input_variables": [
-                {"type": "INPUT", "name": "sepal_length"},
-                {"type": "INPUT", "name": "sepal_width"},
-                {"type": "INPUT", "name": "petal_length"},
-                {"type": "INPUT", "name": "petal_width"}
+                {"name": "sepal_length"},
+                {"name": "sepal_width"},
+                {"name": "petal_length"},
+                {"name": "petal_width"}
             ],
-
-            "response_variables": [{"name": "species"}],
-
-            "live_plot": {
-                "every": 1,
-                "x-axis": "x",
-                "y-axis": "y"
-            },
-
-            "recorder": {
-                "store_file": "/tmp/ea_stats.dat",
-                "record_level": 2
-            }
+            "response_variables": [{"name": "species"}]
         }
         load_data(config, script_path)
-        json_store = JSONStore(config)
-        functions = None
+        functions = GPFunctionRegistry("CLASSIFICATION")
         generator = TreeGenerator(config)
 
         # genetic operators
-        selection = Selection(config, recorder=json_store)
-        crossover = TreeCrossover(config, recorder=json_store)
-        mutation = TreeMutation(config, recorder=json_store)
+        selection = Selection(config)
+        crossover = TreeCrossover(config)
+        mutation = TreeMutation(config)
 
         # run symbolic regression
         population = generator.init()
@@ -171,15 +175,30 @@ if __name__ == "__main__":
             crossover=crossover,
             mutation=mutation,
             print_func=print_func,
-            plot_func=plot_func,
             stop_func=default_stop_func,
             config=config,
             editor=edit_trees,
-            recorder=json_store
         )
-
         play.play(details)
-        # play.play_evolution_strategy(details)
+
+        import networkx as nx
+        import matplotlib.pyplot as plt
+        best = population.best_individuals[0]
+
+        graph = nx.DiGraph()
+        traverse_tree(best.root, graph)
+        labels = dict((n, d["label"]) for n, d in graph.nodes(data=True))
+
+        pos = nx.graphviz_layout(graph, prog='dot')
+        nx.draw(
+            graph,
+            pos,
+            with_labels=True,
+            labels=labels,
+            arrows=False,
+            node_shape=None
+        )
+        plt.show()
 
         end_time = time.time()
         print "GP run took: %2.2fsecs\n" % (end_time - start_time)

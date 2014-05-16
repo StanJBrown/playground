@@ -1,12 +1,12 @@
 # playground.gp.tree
 
 **Classes**:
-- TreeNode(object)
+- Node(object)
 - Tree(object)
 
 
-## TreeNode(object)
-`TreeNode` represents a node in a tree, be it a function, terminal or input
+## Node(object)
+`Node` represents a node in a tree, be it a function, terminal or input
 node.
 
 
@@ -39,18 +39,18 @@ node.
         **kwargs:
 
             # function node specific
-            if node_type is TreeNodeType.UNARY_OP:
+            if node_type is NodeType.UNARY_OP:
                 name (str) and value_branch (object) are expected.
 
-            else if node_type is TreeNodeType.BINARY_OP:
+            else if node_type is NodeType.BINARY_OP:
                 name (str), left_branch (object) and right_branch (object) are
                 expected.
 
             # terminal node specific
-            if node_type is TreeNodeType.CONSTANT:
+            if node_type is NodeType.CONSTANT:
                 name (str) and value (object) are expected.
 
-            else node_type is TreeNodeType.INPUT:
+            else node_type is NodeType.INPUT:
                 name (str) is expected.
 
 **Methods**:
@@ -70,7 +70,7 @@ return `True`, else `False`.
 
     Args:
 
-        node (TreeNode):
+        node (Node):
             node to check against
 
     Returns:
@@ -79,7 +79,7 @@ return `True`, else `False`.
 
 
 ### is_function()
-A boolean function that checks to see if `TreeNode` instance is a function.
+A boolean function that checks to see if `Node` instance is a function.
 
     Returns:
 
@@ -87,7 +87,7 @@ A boolean function that checks to see if `TreeNode` instance is a function.
 
 
 ### is_terminal()
-A boolean function that checks to see if `TreeNode` instance is a terminal.
+A boolean function that checks to see if `Node` instance is a terminal.
 
     Returns:
 
@@ -95,7 +95,7 @@ A boolean function that checks to see if `TreeNode` instance is a terminal.
 
 
 ### is_input()
-A boolean function that checks to see if `TreeNode` instance is an input.
+A boolean function that checks to see if `Node` instance is an input.
 
     Returns:
 
@@ -103,11 +103,11 @@ A boolean function that checks to see if `TreeNode` instance is an input.
 
 
 ### equals(node)
-A boolean function that checks to see if `TreeNode` instance is equals to node.
+A boolean function that checks to see if `Node` instance is equals to node.
 
     Args:
 
-        node (TreeNode):
+        node (Node):
             node to check against
 
     Returns:
@@ -126,7 +126,7 @@ within a tree, as well as the size and depth, etc.
         score (float):
             score of the tree
 
-        root (TreeNode):
+        root (Node):
             root of the tree
 
         depth (int):
@@ -141,16 +141,16 @@ within a tree, as well as the size and depth, etc.
         open_branches (int):
             number of open branches in a tree
 
-        program (list of TreeNode):
+        program (list of Node):
             tree in post-order form in a stack
 
-        func_nodes (list of TreeNode):
+        func_nodes (list of Node):
             list of function nodes
 
-        term_nodes (list of TreeNode):
+        term_nodes (list of Node):
             list of terminal nodes
 
-        input_nodes (list of TreeNode):
+        input_nodes (list of Node):
             list of input nodes
 
         parser (TreeParser):
@@ -191,13 +191,13 @@ node.
 
     Args:
 
-        target_node (TreeNode):
+        target_node (Node):
             target node to be used to find the function node that contains this
             `target_node`
 
     Returns:
 
-        linked function node (TreeNode)
+        linked function node (Node)
 
 
 ### replace_node(target_node, replace_with, override_update=False)
@@ -207,10 +207,10 @@ set to `True`.
 
     Args:
 
-        target_node (TreeNode):
+        target_node (Node):
             target node to replace
 
-        replace_with (TreeNode):
+        replace_with (Node):
             node to replace with
 
         override_update (bool)[default=False]:

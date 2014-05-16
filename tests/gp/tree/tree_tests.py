@@ -4,23 +4,22 @@ import sys
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
-import playground.config as config
 from playground.gp.tree import Tree
-from playground.gp.tree import TreeNode
-from playground.gp.tree import TreeNodeType
+from playground.gp.tree import Node
+from playground.gp.tree import NodeType
 from playground.gp.tree.parser import TreeParser
 
 
-class TreeNodeTests(unittest.TestCase):
+class NodeTests(unittest.TestCase):
     def setUp(self):
-        self.left_node = TreeNode(TreeNodeType.CONSTANT, value=1.0)
-        self.left_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
+        self.left_node = Node(NodeType.CONSTANT, value=1.0)
+        self.left_node_2 = Node(NodeType.CONSTANT, value=1.0)
 
-        self.right_node = TreeNode(TreeNodeType.CONSTANT, value=2.0)
-        self.right_node_2 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
+        self.right_node = Node(NodeType.CONSTANT, value=2.0)
+        self.right_node_2 = Node(NodeType.CONSTANT, value=2.0)
 
-        self.binary_node = TreeNode(
-            TreeNodeType.FUNCTION,
+        self.binary_node = Node(
+            NodeType.FUNCTION,
             arity=2,
             branches=[self.left_node, self.right_node]
         )
@@ -43,25 +42,25 @@ class TreeNodeTests(unittest.TestCase):
         self.assertFalse(res)
 
     def test_equal(self):
-        term_node = TreeNode(TreeNodeType.CONSTANT, value=2)
+        term_node = Node(NodeType.CONSTANT, value=2)
 
         # assert UNARY_OP node
-        unary_node = TreeNode(TreeNodeType.FUNCTION, name="SIN")
+        unary_node = Node(NodeType.FUNCTION, name="SIN")
         self.assertTrue(unary_node.equals(unary_node))
         self.assertFalse(unary_node.equals(term_node))
 
         # assert BINARY_OP node
-        binary_node = TreeNode(TreeNodeType.FUNCTION, name="ADD")
+        binary_node = Node(NodeType.FUNCTION, name="ADD")
         self.assertTrue(binary_node.equals(binary_node))
         self.assertFalse(binary_node.equals(term_node))
 
         # assert TERM node
-        term_node_2 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
+        term_node_2 = Node(NodeType.CONSTANT, value=1.0)
         self.assertTrue(term_node_2.equals(term_node_2))
         self.assertFalse(term_node_2.equals(term_node))
 
         # assert INPUT node
-        input_node = TreeNode(TreeNodeType.INPUT, name="x")
+        input_node = Node(NodeType.INPUT, name="x")
         self.assertTrue(input_node.equals(input_node))
         self.assertFalse(input_node.equals(term_node))
 
@@ -69,14 +68,14 @@ class TreeNodeTests(unittest.TestCase):
 class TreeTests(unittest.TestCase):
     def setUp(self):
         self.config = {
-            "max_population" : 10,
+            "max_population": 10,
 
             "tree_generation": {
-                "method" : "FULL_METHOD",
-                "initial_max_depth" : 4
+                "method": "FULL_METHOD",
+                "initial_max_depth": 4
             },
 
-            "function_nodes" : [
+            "function_nodes": [
                 {"type": "FUNCTION", "name": "ADD", "arity": 2},
                 {"type": "FUNCTION", "name": "SUB", "arity": 2},
                 {"type": "FUNCTION", "name": "MUL", "arity": 2},
@@ -85,14 +84,14 @@ class TreeTests(unittest.TestCase):
                 {"type": "FUNCTION", "name": "SIN", "arity": 1}
             ],
 
-            "terminal_nodes" : [
+            "terminal_nodes": [
                 {"type": "CONSTANT", "value": 1.0},
                 {"type": "INPUT", "name": "x"},
                 {"type": "INPUT", "name": "y"},
                 {"type": "INPUT", "name": "z"}
             ],
 
-            "input_variables" : [
+            "input_variables": [
                 {"name": "x"},
                 {"name": "y"},
                 {"name": "z"}
@@ -102,9 +101,9 @@ class TreeTests(unittest.TestCase):
         self.t_parser = TreeParser()
         self.tree = Tree()
 
-        node_x = TreeNode(TreeNodeType.INPUT, name="x")
-        node_y = TreeNode(TreeNodeType.INPUT, name="y")
-        node_z = TreeNode(TreeNodeType.INPUT, name="z")
+        node_x = Node(NodeType.INPUT, name="x")
+        node_y = Node(NodeType.INPUT, name="y")
+        node_z = Node(NodeType.INPUT, name="z")
 
         self.tree.input_nodes.append(node_x)
         self.tree.input_nodes.append(node_y)
@@ -123,10 +122,10 @@ class TreeTests(unittest.TestCase):
     def test_get_linked_node(self):
         # setup
         del self.tree.input_nodes[:]
-        left_node = TreeNode(TreeNodeType.INPUT, name="x")
-        right_node = TreeNode(TreeNodeType.INPUT, name="y")
-        add_func = TreeNode(
-            TreeNodeType.FUNCTION,
+        left_node = Node(NodeType.INPUT, name="x")
+        right_node = Node(NodeType.INPUT, name="y")
+        add_func = Node(
+            NodeType.FUNCTION,
             name="ADD",
             arity=2,
             branches=[left_node, right_node]
@@ -141,16 +140,16 @@ class TreeTests(unittest.TestCase):
         self.assertTrue(linked_node is add_func)
 
         # fail test
-        random_node = TreeNode(TreeNodeType.INPUT, name="z")
+        random_node = Node(NodeType.INPUT, name="z")
         linked_node = self.tree.get_linked_node(random_node)
         self.assertFalse(linked_node is add_func)
 
     def test_replace_node(self):
         # setup
-        node_x = TreeNode(TreeNodeType.INPUT, name="x")
-        node_y = TreeNode(TreeNodeType.INPUT, name="y")
-        add_func = TreeNode(
-            TreeNodeType.FUNCTION,
+        node_x = Node(NodeType.INPUT, name="x")
+        node_y = Node(NodeType.INPUT, name="y")
+        add_func = Node(
+            NodeType.FUNCTION,
             name="ADD",
             arity=2,
             branches=[node_x, node_y]
@@ -162,7 +161,7 @@ class TreeTests(unittest.TestCase):
         tree.update_program()
 
         # replace input node
-        new_node = TreeNode(TreeNodeType.INPUT, name="z")
+        new_node = Node(NodeType.INPUT, name="z")
         before_replace = list(tree.program)
         tree.replace_node(node_x, new_node)
         after_replace = list(tree.program)
@@ -175,47 +174,47 @@ class TreeTests(unittest.TestCase):
 
     def test_equal(self):
         # create nodes
-        left_node_1 = TreeNode(TreeNodeType.CONSTANT, value=1.0)
-        right_node_1 = TreeNode(TreeNodeType.CONSTANT, value=2.0)
+        left_node_1 = Node(NodeType.CONSTANT, value=1.0)
+        right_node_1 = Node(NodeType.CONSTANT, value=2.0)
 
-        left_node_2 = TreeNode(TreeNodeType.CONSTANT, value=3.0)
-        right_node_2 = TreeNode(TreeNodeType.CONSTANT, value=4.0)
+        left_node_2 = Node(NodeType.CONSTANT, value=3.0)
+        right_node_2 = Node(NodeType.CONSTANT, value=4.0)
 
-        cos_func_1 = TreeNode(
-            TreeNodeType.FUNCTION,
+        cos_func_1 = Node(
+            NodeType.FUNCTION,
             name="COS",
             arity=1,
             branches=[left_node_1]
         )
-        sin_func_1 = TreeNode(
-            TreeNodeType.FUNCTION,
+        sin_func_1 = Node(
+            NodeType.FUNCTION,
             name="SIN",
             arity=1,
             branches=[right_node_1]
         )
 
-        cos_func_2 = TreeNode(
-            TreeNodeType.FUNCTION,
+        cos_func_2 = Node(
+            NodeType.FUNCTION,
             name="COS",
             arity=1,
             branches=[left_node_2]
         )
-        sin_func_2 = TreeNode(
-            TreeNodeType.FUNCTION,
+        sin_func_2 = Node(
+            NodeType.FUNCTION,
             name="SIN",
             arity=1,
             branches=[right_node_2]
         )
 
-        add_func = TreeNode(
-            TreeNodeType.FUNCTION,
+        add_func = Node(
+            NodeType.FUNCTION,
             name="ADD",
             arity=2,
             branches=[cos_func_1, sin_func_1]
         )
 
-        sub_func = TreeNode(
-            TreeNodeType.FUNCTION,
+        sub_func = Node(
+            NodeType.FUNCTION,
             name="SUB",
             arity=2,
             branches=[sin_func_2, cos_func_2]
@@ -239,10 +238,10 @@ class TreeTests(unittest.TestCase):
     def test_str(self):
         # setup
         del self.tree.input_nodes[:]
-        left_node = TreeNode(TreeNodeType.INPUT, name="x")
-        right_node = TreeNode(TreeNodeType.INPUT, name="y")
-        add_func = TreeNode(
-            TreeNodeType.FUNCTION,
+        left_node = Node(NodeType.INPUT, name="x")
+        right_node = Node(NodeType.INPUT, name="y")
+        add_func = Node(
+            NodeType.FUNCTION,
             name="ADD",
             arity=2,
             branches=[left_node, right_node]

@@ -7,8 +7,8 @@ tree data structure.
 - **playground.gp.tree**
     - **classes**:
         - Tree
-        - TreeNode
-        - TreeNodeType
+        - Node
+        - NodeType
 - **playground.gp.generator**
     - **classes**:
         - TreeGenerator

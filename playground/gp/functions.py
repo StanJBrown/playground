@@ -137,12 +137,37 @@ def xnor_function(input_1, input_2):
     return not xor_function(input_1, input_2)
 
 
+# CLASSIFICATION FUNCTIONS
+def gt_function(left, right):
+    if left > right:
+        return True
+    else:
+        return False
+
+
+def lt_function(left, right):
+    if left < right:
+        return True
+    else:
+        return False
+
+
+def eq_function(left, right):
+    if left == right:
+        return True
+    else:
+        return False
+
+
 class GPFunctionRegistry(object):
     def __init__(self, functions_type=None):
         self.functions = {}
 
         if functions_type == "SYMBOLIC_REGRESSION":
             self.symbolic_regression_mode()
+
+        elif functions_type == "CLASSIFICATION":
+            self.classification_mode()
 
     def symbolic_regression_mode(self):
         self.register("ADD", add_function)
@@ -158,6 +183,11 @@ class GPFunctionRegistry(object):
         self.register("LN", ln_function)
         self.register("LOG", log_function)
         self.register("EXP", exp_function)
+
+    def classification_mode(self):
+        self.register("GREATER_THAN", gt_function)
+        self.register("LESS_THAN", lt_function)
+        self.register("EQUALS", eq_function)
 
     def register(self, function_name, function):
         self.functions[function_name] = function

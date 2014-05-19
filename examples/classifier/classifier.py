@@ -55,7 +55,7 @@ if __name__ == "__main__":
         random.seed(10)  # seed random so results can be reproduced
         config = {
             "max_population": 500,
-            "max_generation": 30,
+            "max_generation": 20,
             "stale_limit": 10,
 
             "tree_generation": {

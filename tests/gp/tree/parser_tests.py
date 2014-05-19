@@ -5,7 +5,6 @@ import random
 import unittest
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../.."))
 
-import playground.config as config
 from playground.gp.tree import Tree
 from playground.gp.tree import Node
 from playground.gp.tree import NodeType
@@ -19,14 +18,14 @@ class TreeParserTests(unittest.TestCase):
         random.seed(10)
 
         self.config = {
-            "max_population" : 10,
+            "max_population": 10,
 
             "tree_generation": {
-                "method" : "FULL_METHOD",
-                "initial_max_depth" : 4
+                "method": "FULL_METHOD",
+                "initial_max_depth": 4
             },
 
-            "function_nodes" : [
+            "function_nodes": [
                 {"type": "FUNCTION", "name": "ADD", "arity": 2},
                 {"type": "FUNCTION", "name": "SUB", "arity": 2},
                 {"type": "FUNCTION", "name": "MUL", "arity": 2},
@@ -35,14 +34,14 @@ class TreeParserTests(unittest.TestCase):
                 {"type": "FUNCTION", "name": "SIN", "arity": 1}
             ],
 
-            "terminal_nodes" : [
+            "terminal_nodes": [
                 {"type": "CONSTANT", "value": 1.0},
                 {"type": "INPUT", "name": "x"},
                 {"type": "INPUT", "name": "y"},
                 {"type": "INPUT", "name": "z"}
             ],
 
-            "input_variables" : [
+            "input_variables": [
                 {"name": "x"},
                 {"name": "y"},
                 {"name": "z"}

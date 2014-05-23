@@ -20,34 +20,6 @@ Currently the best way is to clone the repo and install the dependencies:
     git clone git@github.com:chutsu/playground.git
     pip install -r requirements.txt  # installs dependencies for playground
 
-## Examples
-At the moment the best example is the [symbolic regression][4] example.  ([what
-is symbolic regression?][3]):
-
-    # curve fitting - genetic programming
-    cd examples/symbolic_regression
-    python symbolic_regression.py
-
-The example uses data in `examples/symbolic_regression/sine.dat` to find the
-answer (an equation), this is also an example of data-driven search.
-
-Others include:
-
-    # HILL CLIMBING
-    # find the word "hello world!"
-    cd examples/climbing
-    python hill_climbing.py
-
-    # GENETIC ALGORITHM
-    # find the word "hello world!"
-    cd examples/hello_world
-    python hello_world.py
-
-    # PARTICLE SWARM OPTIMIZATION
-    # find the most optimal point in a x-y graph
-    cd examples/pso
-    python pso.py
-
 
 ## Licence
 LGPL License

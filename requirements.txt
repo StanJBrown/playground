@@ -4,3 +4,4 @@ paramiko
 numpy
 scipy
 matplotlib
+networkx

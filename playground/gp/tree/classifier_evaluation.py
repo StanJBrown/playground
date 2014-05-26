@@ -2,9 +2,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from playground.gp.tree import Node
-from playground.gp.tree import NodeType
-
 
 def print_func(population, generation):
     # display best individual
@@ -29,6 +26,7 @@ def print_func(population, generation):
 
     else:
         print "generation:", generation
+
 
 def plot_process_tree(node, graph, origin=None):
     node_id = None
@@ -216,3 +214,34 @@ def evaluate(trees, functions, config, results, cache={}, recorder=None):
         )
 
     return best_output
+
+
+def predict(node, functions, data):
+    if node.is_terminal():
+        return node.value
+
+    elif node.is_class_function():
+        value = node.value
+        class_attribute = node.class_attribute
+
+        func = functions.get_function(node.name)
+        result = func(value, data[class_attribute])
+
+        if result:
+            return predict(node.branches[0], functions, data)
+        else:
+            return predict(node.branches[1], functions, data)
+
+
+def predict_tree(tree, functions, config):
+    output = []
+    data = config["data"]
+    rows = config["data"]["rows"]
+
+    # go through each data row
+    for i in range(rows):
+        data_row = get_row_data(data, i)
+        result = predict(tree.root, functions, data_row)
+        output.append(result)
+
+    return output

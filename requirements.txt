@@ -3,5 +3,6 @@ flask
 paramiko
 numpy
 scipy
+skll
 matplotlib
 networkx

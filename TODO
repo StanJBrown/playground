@@ -23,6 +23,9 @@
 - operators
 - playnode
 
+# BENCHMARK PAPER
+- Look for paper "GP under test" or combinations similar
+
 
 # TODO Queue
 - Run Meta-GA benchmark

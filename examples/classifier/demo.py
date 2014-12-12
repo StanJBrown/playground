@@ -468,12 +468,12 @@ if __name__ == "__main__":
     np.random.seed(0)
 
     # create test data
-    data, categories, solution = simple_test_data(1000)
-    # data, categories = datasets.make_circles(
-    #     noise=0.2,
-    #     factor=0.5,
-    #     random_state=1
-    # )
+    # data, categories, solution = simple_test_data(1000)
+    data, categories = datasets.make_circles(
+        noise=0.2,
+        factor=0.5,
+        random_state=1
+    )
     # data, categories = datasets.make_moons(noise=0.2, random_state=1)
 
     x_min, x_max = data[:, 0].min() - .5, data[:, 0].max() + .5

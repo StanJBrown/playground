@@ -60,7 +60,7 @@ if __name__ == "__main__":
         "response_variables": [{"name": "answer"}],
         "data_file": "arabas_et_al-f1.dat"
     }
-    config["max_population"] = 10000
+    config["max_population"] = 100000
     load_data(config, data_dir)
     generator = TreeGenerator(config)
     population = generator.init()
@@ -79,25 +79,30 @@ if __name__ == "__main__":
     print "Evaluator 1 took:", str(round(time_taken, 2)) + "s"
 
     # TREE EVALUTOR 2
-    functions = {
-        "ADD": "+",
-        "SUB": "-",
-        "MUL": "*",
-        "DIV": "/",
-        "POW": "**",
-        "SIN": "math.sin",
-        "COS": "math.cos",
-        "RAD": "math.radians",
-        "LN": "math.ln",
-        "LOG": "math.log"
-    }
-    start_time = time.time()
-    tree_eval_2.evaluate(
-        copy.deepcopy(population.individuals),
-        functions,
-        config,
-        results
+    # functions = {
+    #     "ADD": "+",
+    #     "SUB": "-",
+    #     "MUL": "*",
+    #     "DIV": "/",
+    #     "POW": "**",
+    #     "SIN": "math.sin",
+    #     "COS": "math.cos",
+    #     "RAD": "math.radians",
+    #     "LN": "math.ln",
+    #     "LOG": "math.log"
+    # }
+    # start_time = time.time()
+    # tree_eval_2.evaluate(
+    #     copy.deepcopy(population.individuals),
+    #     functions,
+    #     config,
+    #     results
+    # )
+    # end_time = time.time()
+    # time_taken = end_time - start_time
+    # print "Evaluator 2 took:", str(round(time_taken, 2)) + "s"
+
+    import resource
+    print "Memory usage: {0}MB".format(
+        resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
     )
-    end_time = time.time()
-    time_taken = end_time - start_time
-    print "Evaluator 2 took:", str(round(time_taken, 2)) + "s"
